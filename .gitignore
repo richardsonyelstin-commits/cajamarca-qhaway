@@ -1,0 +1,32 @@
+# El script de scaffolding renombra este archivo a .gitignore
+
+# Secretos — nunca, bajo ninguna circunstancia
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+secrets/
+
+# Dependencias y artefactos
+node_modules/
+dist/
+build/
+out/
+target/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Local de la máquina
+.claude/settings.local.json
+.DS_Store
+Thumbs.db
+*.log
+
+# Contexto generado: reconstruible, no versionado
+context/snapshots/*.tmp
+.cache/
+coverage/

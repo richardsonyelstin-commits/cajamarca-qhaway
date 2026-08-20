@@ -1,0 +1,45 @@
+# Manifiesto máquina del proyecto. Lo lee todo agente antes que cualquier otra cosa.
+version: 1
+
+id: cajamarca-qhaway
+title: Cajamarca Qhaway
+domain: fullstack          # backend | frontend | fullstack | data | ai | tooling | research
+status: active              # active | paused | archived | proposed
+created: 2026-08-20
+owner: richardsonyelstin
+
+summary: >
+  Una o dos frases. Qué hace y para quién.
+
+stack:
+  language: null
+  framework: null
+  runtime: null
+  datastore: null
+  tests: null
+
+commands:
+  install: null
+  dev: null
+  test: null
+  lint: null
+  build: null
+
+entrypoints: []             # rutas de los puntos de entrada del código
+
+context:
+  l0: [CLAUDE.md, PROJECT.yaml]
+  index: docs/INDEX.md
+  snapshot: context/snapshots/latest.md
+  manifest: context/manifest.yaml
+
+knowledge:
+  hub: brain/20-projects/cajamarca-qhaway/hub.md
+  business_context: brain/20-projects/cajamarca-qhaway/context.md
+  patterns: []              # ids de brain/10-knowledge/patterns aplicados aquí
+
+repo:
+  remote: null
+  default_branch: main
+
+dependencies_on_projects: []  # otros proyectos de los que este depende

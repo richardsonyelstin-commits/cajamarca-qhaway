@@ -1,0 +1,39 @@
+# Ingeniería de contexto: qué cargar, cuándo, y con qué presupuesto.
+version: 1
+
+budgets:
+  l0: 4000
+  l1: 20000
+
+always:
+  - CLAUDE.md
+  - PROJECT.yaml
+
+on_demand:
+  - path: docs/architecture/overview.md
+    triggers: [architecture, refactor, new-module, design]
+    tokens: 1800
+  - path: docs/adr/
+    triggers: [why, decision, rationale, tradeoff]
+    tokens: null
+  - path: docs/roadmap.md
+    triggers: [plan, priority, next]
+    tokens: 400
+  - path: docs/glossary.md
+    triggers: [term, jargon]
+    tokens: 300
+
+never:
+  - node_modules/
+  - dist/
+  - build/
+  - .env
+  - .env.*
+  - "**/*.pem"
+  - "**/*.key"
+  - tasks/done/
+  - .git/objects/
+
+snapshot: context/snapshots/latest.md
+
+brain_refs: []   # brain://... para conocimiento transversal relevante a este proyecto
