@@ -41,3 +41,7 @@ addopts = "-ra --strict-markers"
 markers = [
     "contract: prueba de contrato derivada de un criterio de aceptacion de una spec",
 ]
+
+[tool.vercel]
+entrypoint = "api.index:app"
+

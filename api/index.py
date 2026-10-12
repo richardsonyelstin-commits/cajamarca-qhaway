@@ -1,28 +1,34 @@
-"""Serverless Function para despliegue en Vercel (Python Runtime).
+"""Punto de entrada Serverless para Vercel Python Runtime (WSGI + BaseHTTPRequestHandler).
 
-Expone los endpoints /api/* y sirve los activos estaticos de web/ reutilizando
-la logica canonica de WebApiHandler en cajamarca_qhaway.web.server.
+Expone tanto la aplicacion WSGI `app` (preferida por @vercel/python) como la clase
+`handler(BaseHTTPRequestHandler)` para compatibilidad total con cualquier preset de Vercel.
+Cumple con Antislop R-02 (cero em-dash).
 """
 
 from __future__ import annotations
 
 import sys
-from http.server import BaseHTTPRequestHandler
 from pathlib import Path
 
-# Asegurar que src/ este en sys.path para importaciones en Vercel
+# Asegurar que src/ y la raiz del proyecto esten en sys.path dentro del runtime de Vercel
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-SRC_DIR = PROJECT_ROOT / "src"
-if str(SRC_DIR) not in sys.path:
-    sys.path.insert(0, str(SRC_DIR))
+SRC_PATH = PROJECT_ROOT / "src"
 
-from cajamarca_qhaway.web.server import WebApiHandler
+if str(SRC_PATH) not in sys.path:
+    sys.path.insert(0, str(SRC_PATH))
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-# Configurar web_dir hacia la ruta absoluta del proyecto
+from cajamarca_qhaway.web.server import WebApiHandler, app as wsgi_app  # noqa: E402
+
+# Configurar directorio web absoluto para el entorno serverless
 WebApiHandler.web_dir = PROJECT_ROOT / "web"
 
+# Entrypoint WSGI primario para @vercel/python
+app = wsgi_app
 
-class handler(WebApiHandler, BaseHTTPRequestHandler):
-    """Manejador principal detectado por el runtime @vercel/python."""
 
-    pass
+class handler(WebApiHandler):
+    """Manejador Serverless compatible con BaseHTTPRequestHandler de Vercel."""
+
+    web_dir = PROJECT_ROOT / "web"

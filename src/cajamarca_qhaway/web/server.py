@@ -1,4 +1,4 @@
-"""Servidor HTTP y API REST ligera para Cajamarca Qhaway.
+"""Servidor HTTP, aplicacion WSGI y API REST ligera para Cajamarca Qhaway.
 
 Sirve la plataforma web estatica y expone los endpoints JSON REST de la plataforma:
 - GET /api/health
@@ -12,6 +12,8 @@ Sirve la plataforma web estatica y expone los endpoints JSON REST de la platafor
 - POST /api/reports (valida legal_disclaimer_shown == True, CA-006-01)
 - POST /api/review (valida reviewed_by no generico y review_notes si status == 'discarded', Art. 14)
 
+Expone tanto `app(environ, start_response)` (estandar WSGI nativo para Vercel Python Runtime)
+como `WebApiHandler(BaseHTTPRequestHandler)` para ejecucion local y serverless.
 Cumple con politicas de seguridad (CSP, nosniff, DENY) y Antislop R-02 (cero em-dash).
 """
 
@@ -23,7 +25,7 @@ import os
 import posixpath
 import urllib.parse
 from http import HTTPStatus
-from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 
@@ -31,6 +33,8 @@ from cajamarca_qhaway.capabilities.denuncia_intake import DenunciaIntakeService
 from cajamarca_qhaway.capabilities.review_panel import ReviewPanelService
 from cajamarca_qhaway.models.alert import GENERIC_REVIEWERS
 from cajamarca_qhaway.web.exporter import build_verified_web_snapshot, export_verified_snapshot
+
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 SECURITY_HEADERS = {
     "X-Content-Type-Options": "nosniff",
@@ -40,19 +44,22 @@ SECURITY_HEADERS = {
 }
 
 
-class WebApiHandler(SimpleHTTPRequestHandler):
+class WebApiHandler(BaseHTTPRequestHandler):
     """Manejador HTTP que combina servicio de estaticos con API REST."""
 
-    # Directorio base para servir estaticos
-    web_dir: Path = Path("web")
+    # Directorio base absoluto por defecto para servir estaticos
+    web_dir: Path = PROJECT_ROOT / "web"
     snapshot_cache: dict[str, Any] | None = None
     denuncia_service: DenunciaIntakeService = DenunciaIntakeService()
     review_service: ReviewPanelService = ReviewPanelService()
 
     @classmethod
     def get_snapshot(cls) -> dict[str, Any]:
-        """Obtiene el snapshot canónico, leyendolo del disco o generandolo."""
-        snapshot_file = cls.web_dir / "src" / "data" / "verified-snapshot.json"
+        """Obtiene el snapshot canonico, leyendolo del disco o generandolo."""
+        if cls.snapshot_cache is not None:
+            return cls.snapshot_cache
+
+        snapshot_file = Path(cls.web_dir) / "src" / "data" / "verified-snapshot.json"
         if snapshot_file.exists():
             try:
                 data = json.loads(snapshot_file.read_text(encoding="utf-8"))
@@ -61,52 +68,62 @@ class WebApiHandler(SimpleHTTPRequestHandler):
             except Exception:
                 pass
 
-        # Si no existe en disco, generar inmediatamente
+        # Si no existe en disco, generar inmediatamente en memoria
         data = build_verified_web_snapshot()
         cls.snapshot_cache = data
         return data
 
-    def _set_headers(self, status_code: int = 200, content_type: str = "application/json") -> None:
-        self.send_response(status_code)
-        self.send_header("Content-Type", f"{content_type}; charset=utf-8")
-        for header, val in SECURITY_HEADERS.items():
-            self.send_header(header, val)
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
-        self.end_headers()
+    @classmethod
+    def _json_bytes(cls, data: Any, status_code: int = 200) -> tuple[int, str, bytes]:
+        encoded = json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8")
+        return status_code, "application/json; charset=utf-8", encoded
 
-    def _send_json(self, data: Any, status_code: int = 200) -> None:
-        self._set_headers(status_code, "application/json")
-        body = json.dumps(data, ensure_ascii=False, indent=2)
-        self.wfile.write(body.encode("utf-8"))
+    @classmethod
+    def _error_bytes(cls, message: str, status_code: int = 400) -> tuple[int, str, bytes]:
+        return cls._json_bytes({"error": message, "status": status_code}, status_code=status_code)
 
-    def _send_error(self, message: str, status_code: int = 400) -> None:
-        self._send_json({"error": message, "status": status_code}, status_code=status_code)
+    @classmethod
+    def dispatch(
+        cls,
+        method: str,
+        path: str,
+        query: dict[str, list[str]],
+        body_bytes: bytes = b"",
+    ) -> tuple[int, str, bytes]:
+        """Despachador central compartido entre WSGI (`app`) y `BaseHTTPRequestHandler`."""
+        method_upper = method.upper()
+        if method_upper == "OPTIONS":
+            return 200, "text/plain; charset=utf-8", b"OK"
 
-    def do_OPTIONS(self) -> None:
-        """Maneja preflight requests para CORS."""
-        self._set_headers(200, "text/plain")
-        self.wfile.write(b"OK")
+        if method_upper == "GET":
+            if path in ("/api/index.py", "/api/index", "/api"):
+                return cls._resolve_static("/index.html")
+            if path.startswith("/api/"):
+                return cls._dispatch_api_get(path, query)
+            return cls._resolve_static(path)
 
-    def do_GET(self) -> None:
-        parsed = urllib.parse.urlparse(self.path)
-        path = parsed.path
-        query = urllib.parse.parse_qs(parsed.query)
+        if method_upper == "POST":
+            if not body_bytes:
+                return cls._error_bytes("Cuerpo de solicitud vacio", 400)
+            try:
+                data = json.loads(body_bytes.decode("utf-8"))
+            except Exception as exc:
+                return cls._error_bytes(f"JSON invalido: {str(exc)}", 400)
 
-        # Enrutamiento de API
-        if path.startswith("/api/"):
-            self._handle_api_get(path, query)
-            return
+            if path == "/api/reports":
+                return cls._dispatch_post_reports(data)
+            if path == "/api/review":
+                return cls._dispatch_post_review(data)
+            return cls._error_bytes(f"Ruta POST no encontrada: {path}", 404)
 
-        # Servicio de archivos estaticos desde web_dir
-        self._serve_static(path)
+        return cls._error_bytes(f"Metodo HTTP no soportado: {method_upper}", 405)
 
-    def _handle_api_get(self, path: str, query: dict[str, list[str]]) -> None:
-        snapshot = self.get_snapshot()
+    @classmethod
+    def _dispatch_api_get(cls, path: str, query: dict[str, list[str]]) -> tuple[int, str, bytes]:
+        snapshot = cls.get_snapshot()
 
         if path == "/api/health":
-            self._send_json({
+            return cls._json_bytes({
                 "status": "healthy",
                 "service": "cajamarca-qhaway-web",
                 "version": "1.0.0",
@@ -119,48 +136,45 @@ class WebApiHandler(SimpleHTTPRequestHandler):
                     "art_18_universe_size": 14,
                 },
             })
-            return
 
         if path == "/api/snapshot":
-            self._send_json(snapshot)
-            return
+            return cls._json_bytes(snapshot)
 
         if path == "/api/entities":
             entities = snapshot.get("contracting_entities", [])
             entity_id = query.get("id", [None])[0]
             if entity_id:
-                matched = next((e for e in entities if e.get("entity_id") == entity_id or e.get("ruc") == entity_id), None)
+                matched = next(
+                    (e for e in entities if e.get("entity_id") == entity_id or e.get("ruc") == entity_id),
+                    None,
+                )
                 if matched:
-                    self._send_json(matched)
-                else:
-                    self._send_error(f"Entidad no encontrada con ID: {entity_id}", 404)
-                return
-            self._send_json(entities)
-            return
+                    return cls._json_bytes(matched)
+                return cls._error_bytes(f"Entidad no encontrada con ID: {entity_id}", 404)
+            return cls._json_bytes(entities)
 
         if path == "/api/procurements":
             procurements = snapshot.get("procurement_records", [])
             entity_id = query.get("entity_id", [None])[0]
             ocid = query.get("ocid", [None])[0]
             if ocid:
-                matched = next((p for p in procurements if p.get("ocid") == ocid or p.get("procurement_id") == ocid), None)
+                matched = next(
+                    (p for p in procurements if p.get("ocid") == ocid or p.get("procurement_id") == ocid),
+                    None,
+                )
                 if matched:
-                    self._send_json(matched)
-                else:
-                    self._send_error(f"Contratacion no encontrada con OCID: {ocid}", 404)
-                return
+                    return cls._json_bytes(matched)
+                return cls._error_bytes(f"Contratacion no encontrada con OCID: {ocid}", 404)
             if entity_id:
                 procurements = [p for p in procurements if p.get("entity_id") == entity_id]
-            self._send_json(procurements)
-            return
+            return cls._json_bytes(procurements)
 
         if path == "/api/budget":
             budget = snapshot.get("budget_execution_records", [])
             entity_id = query.get("entity_id", [None])[0]
             if entity_id:
                 budget = [b for b in budget if b.get("entity_id") == entity_id]
-            self._send_json(budget)
-            return
+            return cls._json_bytes(budget)
 
         if path == "/api/alerts":
             # Invariante Art. 14: Solo alertas con status == 'published' para vista publica
@@ -170,185 +184,248 @@ class WebApiHandler(SimpleHTTPRequestHandler):
             if alert_id:
                 matched = next((a for a in published_only if a.get("alert_id") == alert_id), None)
                 if matched:
-                    self._send_json(matched)
-                else:
-                    self._send_error(f"Alerta publicada no encontrada con ID: {alert_id}", 404)
-                return
+                    return cls._json_bytes(matched)
+                return cls._error_bytes(f"Alerta publicada no encontrada con ID: {alert_id}", 404)
             entity_id = query.get("entity_id", [None])[0]
             if entity_id:
                 published_only = [a for a in published_only if a.get("entity_id") == entity_id]
-            self._send_json(published_only)
-            return
+            return cls._json_bytes(published_only)
 
         if path == "/api/red-flags":
-            # Banderas rojas tecnicas para el panel interno de revision (CU5)
             flags = snapshot.get("red_flags", [])
             flag_id = query.get("id", [None])[0]
             if flag_id:
                 matched = next((f for f in flags if f.get("red_flag_id") == flag_id), None)
                 if matched:
-                    self._send_json(matched)
-                else:
-                    self._send_error(f"Bandera roja no encontrada con ID: {flag_id}", 404)
-                return
-            self._send_json(flags)
-            return
+                    return cls._json_bytes(matched)
+                return cls._error_bytes(f"Bandera roja no encontrada con ID: {flag_id}", 404)
+            return cls._json_bytes(flags)
 
         if path == "/api/reports":
             reports = snapshot.get("citizen_reports", [])
-            self._send_json(reports)
-            return
+            return cls._json_bytes(reports)
 
-        self._send_error(f"Ruta API no encontrada: {path}", 404)
+        return cls._error_bytes(f"Ruta API no encontrada: {path}", 404)
 
-    def do_POST(self) -> None:
-        parsed = urllib.parse.urlparse(self.path)
-        path = parsed.path
-
-        content_length = int(self.headers.get("Content-Length", 0))
-        if content_length <= 0:
-            self._send_error("Cuerpo de solicitud vacio", 400)
-            return
-
-        try:
-            body = self.rfile.read(content_length).decode("utf-8")
-            data = json.loads(body)
-        except Exception as exc:
-            self._send_error(f"JSON invalido: {str(exc)}", 400)
-            return
-
-        if path == "/api/reports":
-            self._handle_post_reports(data)
-            return
-
-        if path == "/api/review":
-            self._handle_post_review(data)
-            return
-
-        self._send_error(f"Ruta POST no encontrada: {path}", 404)
-
-    def _handle_post_reports(self, data: dict[str, Any]) -> None:
+    @classmethod
+    def _dispatch_post_reports(cls, data: dict[str, Any]) -> tuple[int, str, bytes]:
         """Procesa una denuncia ciudadana cumpliendo CA-006-01."""
-        raw_text = data.get("raw_text", "").strip()
+        raw_text = str(data.get("raw_text", "")).strip()
         legal_disclaimer = data.get("legal_disclaimer_shown", False)
         channel = data.get("channel", "web")
         entity_id = data.get("related_entity_id")
 
         if not raw_text:
-            self._send_error("El campo 'raw_text' es obligatorio", 400)
-            return
+            return cls._error_bytes("El campo 'raw_text' es obligatorio", 400)
 
         # Invariante CA-006-01: descargo legal obligatorio
         if not legal_disclaimer:
-            self._send_error(
+            return cls._error_bytes(
                 "La denuncia no puede ser aceptada sin previa confirmacion del descargo legal (CA-006-01)",
                 400,
             )
-            return
 
         try:
-            report = self.denuncia_service.submit_report(
+            report = cls.denuncia_service.submit_report(
                 raw_text=raw_text,
                 legal_disclaimer_shown=True,
                 channel=channel,
                 related_entity_id=entity_id,
             )
-            # Actualizar memoria del snapshot
-            snapshot = self.get_snapshot()
-            snapshot.setdefault("citizen_reports", []).append(report.model_dump(mode="json"))
-            self._send_json(report.model_dump(mode="json"), status_code=201)
+            snapshot = cls.get_snapshot()
+            payload = report.model_dump(mode="json")
+            snapshot.setdefault("citizen_reports", []).append(payload)
+            return cls._json_bytes(payload, status_code=201)
         except Exception as exc:
-            self._send_error(f"Error al procesar denuncia: {str(exc)}", 400)
+            return cls._error_bytes(f"Error al procesar denuncia: {str(exc)}", 400)
 
-    def _handle_post_review(self, data: dict[str, Any]) -> None:
+    @classmethod
+    def _dispatch_post_review(cls, data: dict[str, Any]) -> tuple[int, str, bytes]:
         """Procesa una decision de revision humana cumpliendo Art. 14 y CA-005-02."""
-        entity_id = data.get("entity_id", "").strip()
+        entity_id = str(data.get("entity_id", "")).strip()
         red_flag_ids = data.get("red_flag_ids", [])
-        status = data.get("status", "").strip()
-        reviewed_by = data.get("reviewed_by", "").strip()
-        review_notes = data.get("review_notes", "").strip() or None
+        status = str(data.get("status", "")).strip()
+        reviewed_by = str(data.get("reviewed_by", "")).strip()
+        review_notes = str(data.get("review_notes", "")).strip() or None
 
         if not entity_id or not red_flag_ids or not status or not reviewed_by:
-            self._send_error("Campos requeridos: entity_id, red_flag_ids, status, reviewed_by", 400)
-            return
+            return cls._error_bytes(
+                "Campos requeridos: entity_id, red_flag_ids, status, reviewed_by",
+                400,
+            )
 
         # CA-005-02: rechazar revisores genericos
         cleaned_reviewer = reviewed_by.lower()
         if cleaned_reviewer in GENERIC_REVIEWERS or not cleaned_reviewer:
-            self._send_error(f"reviewed_by no puede ser generico o vacio: '{reviewed_by}'", 400)
-            return
+            return cls._error_bytes(f"reviewed_by no puede ser generico o vacio: '{reviewed_by}'", 400)
 
         # CA-005-04: review_notes obligatorio si status == 'discarded'
         if status == "discarded" and not review_notes:
-            self._send_error("review_notes es obligatorio cuando el estado es 'discarded' (CA-005-04)", 400)
-            return
+            return cls._error_bytes(
+                "review_notes es obligatorio cuando el estado es 'discarded' (CA-005-04)",
+                400,
+            )
 
         try:
             if status == "published":
-                alert = self.review_service.publish_alert(
+                alert = cls.review_service.publish_alert(
                     entity_id=entity_id,
                     red_flags=red_flag_ids,
                     reviewer_id=reviewed_by,
                     review_notes=review_notes,
                 )
             elif status == "discarded":
-                alert = self.review_service.discard_alert(
+                alert = cls.review_service.discard_alert(
                     entity_id=entity_id,
                     red_flags=red_flag_ids,
                     reviewer_id=reviewed_by,
                     review_notes=review_notes or "Descarte documentado",
                 )
             else:
-                self._send_error(f"Estado invalido: {status}. Debe ser 'published' o 'discarded'", 400)
-                return
+                return cls._error_bytes(
+                    f"Estado invalido: {status}. Debe ser 'published' o 'discarded'",
+                    400,
+                )
 
-            snapshot = self.get_snapshot()
-            snapshot.setdefault("alerts", []).append(alert.model_dump(mode="json"))
-            self._send_json(alert.model_dump(mode="json"), status_code=201)
+            snapshot = cls.get_snapshot()
+            payload = alert.model_dump(mode="json")
+            snapshot.setdefault("alerts", []).append(payload)
+            return cls._json_bytes(payload, status_code=201)
         except Exception as exc:
-            self._send_error(f"Error al procesar decision: {str(exc)}", 400)
+            return cls._error_bytes(f"Error al procesar decision: {str(exc)}", 400)
 
-    def _serve_static(self, path: str) -> None:
-        """Sirve archivos estaticos desde web_dir respetando la raiz del proyecto."""
-        # Limpiar ruta
+    @classmethod
+    def _resolve_static(cls, path: str) -> tuple[int, str, bytes]:
+        """Resuelve y lee archivos estaticos desde web_dir respetando la raiz del proyecto."""
         clean_path = posixpath.normpath(path).lstrip("/")
         if not clean_path or clean_path == ".":
             clean_path = "index.html"
 
-        file_path = (self.web_dir / clean_path).resolve()
-        base_path = self.web_dir.resolve()
+        base_path = Path(cls.web_dir).resolve()
+        file_path = (base_path / clean_path).resolve()
 
         # Evitar directory traversal
         try:
             file_path.relative_to(base_path)
         except ValueError:
-            self._send_error("Acceso denegado", 403)
-            return
+            return cls._error_bytes("Acceso denegado", 403)
 
         if not file_path.exists() or file_path.is_dir():
-            # Fallback a index.html para soportar rutas del router si se solicitan directamente
-            index_path = self.web_dir / "index.html"
+            index_path = base_path / "index.html"
             if index_path.exists():
                 file_path = index_path
             else:
-                self._send_error("Recurso no encontrado", 404)
-                return
+                return cls._error_bytes("Recurso no encontrado", 404)
 
         ctype, _ = mimetypes.guess_type(str(file_path))
         if not ctype:
             ctype = "application/octet-stream"
+        if ctype.startswith("text/") or ctype in ("application/javascript", "application/json", "image/svg+xml"):
+            content_type_header = f"{ctype}; charset=utf-8"
+        else:
+            content_type_header = ctype
 
         try:
             content = file_path.read_bytes()
-            self._set_headers(200, ctype)
-            self.wfile.write(content)
+            return 200, content_type_header, content
         except Exception as exc:
-            self._send_error(f"Error al leer archivo: {str(exc)}", 500)
+            return cls._error_bytes(f"Error al leer archivo: {str(exc)}", 500)
+
+    def _set_headers(
+        self,
+        status_code: int = 200,
+        content_type: str = "application/json; charset=utf-8",
+        content_length: int | None = None,
+    ) -> None:
+        self.send_response(status_code)
+        if "charset=" not in content_type and (
+            content_type.startswith("text/") or content_type in ("application/json", "application/javascript")
+        ):
+            content_type = f"{content_type}; charset=utf-8"
+        self.send_header("Content-Type", content_type)
+        if content_length is not None:
+            self.send_header("Content-Length", str(content_length))
+        for header, val in SECURITY_HEADERS.items():
+            self.send_header(header, val)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+        self.end_headers()
+
+    def _write_dispatch_result(self, status_code: int, content_type: str, body: bytes) -> None:
+        self._set_headers(status_code, content_type, content_length=len(body))
+        self.wfile.write(body)
+
+    def do_OPTIONS(self) -> None:
+        """Maneja preflight requests para CORS."""
+        status_code, content_type, body = self.dispatch("OPTIONS", self.path, {})
+        self._write_dispatch_result(status_code, content_type, body)
+
+    def do_GET(self) -> None:
+        parsed = urllib.parse.urlparse(self.path)
+        query = urllib.parse.parse_qs(parsed.query)
+        status_code, content_type, body = self.dispatch("GET", parsed.path, query)
+        self._write_dispatch_result(status_code, content_type, body)
+
+    def do_POST(self) -> None:
+        parsed = urllib.parse.urlparse(self.path)
+        query = urllib.parse.parse_qs(parsed.query)
+        content_length = int(self.headers.get("Content-Length", 0))
+        body_bytes = self.rfile.read(content_length) if content_length > 0 else b""
+        status_code, content_type, body = self.dispatch("POST", parsed.path, query, body_bytes)
+        self._write_dispatch_result(status_code, content_type, body)
 
 
-def run_server(port: int = 8080, web_dir: Path | str = "web") -> ThreadingHTTPServer:
+def app(environ: dict[str, Any], start_response: Any) -> list[bytes]:
+    """Aplicacion WSGI estandar (PEP 3333) para Vercel Python Runtime y servidores WSGI."""
+    method = environ.get("REQUEST_METHOD", "GET").upper()
+    raw_path = environ.get("PATH_INFO", "/") or "/"
+    query_string = environ.get("QUERY_STRING", "")
+    query = urllib.parse.parse_qs(query_string)
+
+    body_bytes = b""
+    if method in ("POST", "PUT", "PATCH"):
+        try:
+            content_length = int(environ.get("CONTENT_LENGTH") or 0)
+        except (ValueError, TypeError):
+            content_length = 0
+        wsgi_input = environ.get("wsgi.input")
+        if wsgi_input is not None:
+            body_bytes = wsgi_input.read(content_length) if content_length > 0 else wsgi_input.read()
+
+    status_code, content_type, response_body = WebApiHandler.dispatch(
+        method=method,
+        path=raw_path,
+        query=query,
+        body_bytes=body_bytes,
+    )
+
+    try:
+        phrase = HTTPStatus(status_code).phrase
+    except ValueError:
+        phrase = "OK"
+    status_line = f"{status_code} {phrase}"
+
+    response_headers: list[tuple[str, str]] = [
+        ("Content-Type", content_type),
+        ("Content-Length", str(len(response_body))),
+        ("Access-Control-Allow-Origin", "*"),
+        ("Access-Control-Allow-Methods", "GET, POST, OPTIONS"),
+        ("Access-Control-Allow-Headers", "Content-Type, Authorization"),
+    ]
+    for k, v in SECURITY_HEADERS.items():
+        response_headers.append((k, v))
+
+    start_response(status_line, response_headers)
+    return [response_body]
+
+
+def run_server(port: int = 8080, web_dir: Path | str | None = None) -> ThreadingHTTPServer:
     """Inicia el servidor HTTP en el puerto indicado."""
-    WebApiHandler.web_dir = Path(web_dir)
+    if web_dir is not None:
+        WebApiHandler.web_dir = Path(web_dir).resolve()
+    else:
+        WebApiHandler.web_dir = (PROJECT_ROOT / "web").resolve()
     server_address = ("", port)
     httpd = ThreadingHTTPServer(server_address, WebApiHandler)
     return httpd

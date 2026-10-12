@@ -299,3 +299,45 @@ def test_16_snapshot_integrity_validation_suite():
     """Ejecuta la auditoria integral de contratos sobre el snapshot final en disco."""
     errors = validate_snapshot_integrity(Path("web/src/data/verified-snapshot.json"))
     assert not errors, f"Errores de integridad detectados en verified-snapshot.json: {errors}"
+
+
+def test_17_wsgi_vercel_entrypoint():
+    """Verifica que el entrypoint WSGI (api/index.py:app) funcione para /, /api/index.py y /api/health."""
+    from api.index import app as vercel_wsgi_app
+
+    def call_wsgi(method: str, path: str, query: str = "", body: bytes = b""):
+        captured = {}
+
+        def start_response(status, headers):
+            captured["status"] = status
+            captured["headers"] = dict(headers)
+
+        environ = {
+            "REQUEST_METHOD": method,
+            "PATH_INFO": path,
+            "QUERY_STRING": query,
+            "CONTENT_LENGTH": str(len(body)),
+            "wsgi.input": io.BytesIO(body),
+        }
+        chunks = vercel_wsgi_app(environ, start_response)
+        return captured["status"], captured["headers"], b"".join(chunks)
+
+    # 1. Raiz / sirve index.html
+    status, headers, body = call_wsgi("GET", "/")
+    assert status.startswith("200")
+    assert "text/html" in headers["Content-Type"]
+    assert b"Cajamarca Qhaway" in body
+
+    # 2. /api/index.py tambien sirve index.html en caso de rewrite directo
+    status_idx, _, body_idx = call_wsgi("GET", "/api/index.py")
+    assert status_idx.startswith("200")
+    assert b"Cajamarca Qhaway" in body_idx
+
+    # 3. /api/health devuelve JSON valido con Content-Length exacto
+    status_h, headers_h, body_h = call_wsgi("GET", "/api/health")
+    assert status_h.startswith("200")
+    assert int(headers_h["Content-Length"]) == len(body_h)
+    health_data = json.loads(body_h.decode("utf-8"))
+    assert health_data["status"] == "healthy"
+    assert health_data["invariants"]["art_18_universe_size"] == 14
+
