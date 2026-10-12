@@ -1,28 +1,27 @@
 {
-  "version": 2,
-  "public": false,
-  "builds": [
-    {
-      "src": "api/index.py",
-      "use": "@vercel/python"
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "functions": {
+    "api/index.py": {
+      "includeFiles": "{web,src,data}/**"
     }
-  ],
-  "routes": [
+  },
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "api/index.py"
+      "source": "/api/(.*)",
+      "destination": "/api/index.py"
     },
     {
-      "src": "/media/(.*)",
-      "dest": "web/media/$1"
+      "source": "/media/(.*)",
+      "destination": "/api/index.py"
     },
     {
-      "src": "/src/(.*)",
-      "dest": "web/src/$1"
+      "source": "/src/(.*)",
+      "destination": "/api/index.py"
     },
     {
-      "src": "/(.*)",
-      "dest": "web/$1"
+      "source": "/(.*)",
+      "destination": "/api/index.py"
     }
   ],
   "headers": [

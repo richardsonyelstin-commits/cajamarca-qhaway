@@ -1,27 +1,21 @@
-# Cajamarca Qhaway
+# Cajamarca Qhaway (Fase 1)
 
-<!-- Tres frases: qué hace, para quién, y qué no hace. -->
+Observatorio cívico de monitoreo ciudadano y periodismo de datos anticorrupción para la
+región Cajamarca (Perú).
 
-## Empezar
+## Alcance Constitucional (Fase 1)
+
+- **Universo (Art. 18)**: 14 entidades públicas verificadas (Gobierno Regional de Cajamarca + 13 Municipalidades Provinciales).
+- **Fuentes Oficiales (Art. 10)**: API OCDS del SEACE (`seace-ocds`) y CKAN DataStore del MEF (`mef-datastore`), conservando `raw_payload` íntegro.
+- **Revisión Humana Obligatoria (Art. 14)**: Ninguna bandera roja técnica (`RedFlag`) se publica como `Alert` sin revisión nominal acreditada (`005-review-panel`).
+- **Explicabilidad Algorítmica (Art. 15)**: Toda alerta publicada expone fórmula, umbral, valor observado, fuente, revisor humano y descargo legal obligatorio.
+- **No-Scoring de Personas (Art. 16)** y **Reserva Legal Ley 29733 (Art. 17 / CA-006-01)**.
+
+## Ejecución Local
 
 ```bash
-# instalar
-
-# ejecutar
+pip install -e ".[dev]"
+pytest -q
+python -m cajamarca_qhaway.cli web audit
+python -m cajamarca_qhaway.cli web serve --port 8080
 ```
-
-## Documentación
-
-| Necesito | Voy a |
-|---|---|
-| Mapa completo | [docs/INDEX.md](docs/INDEX.md) |
-| Arquitectura | [docs/architecture/overview.md](docs/architecture/overview.md) |
-| Decisiones | [docs/adr/](docs/adr/) |
-| Roadmap | [docs/roadmap.md](docs/roadmap.md) |
-| Cambios | [CHANGELOG.md](CHANGELOG.md) |
-
-Si eres un agente IA, empieza por [CLAUDE.md](CLAUDE.md).
-
-## Estado
-
-Ver `PROJECT.yaml`.
