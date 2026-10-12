@@ -1,0 +1,1116 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "generated_at": "2026-10-12T23:11:59.680119+00:00",
+    "region": "CAJAMARCA",
+    "constitution_version": "1.0",
+    "articles_covered": [
+      10,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "total_entities": 14,
+    "total_procurements": 8,
+    "total_budget_executions": 15,
+    "total_candidate_red_flags": 6,
+    "total_alerts": 4,
+    "total_published_alerts": 3,
+    "total_citizen_reports": 2
+  },
+  "contracting_entities": [
+    {
+      "entity_id": "ce-f5f5d8fc32518855",
+      "official_name": "GOBIERNO REGIONAL DE CAJAMARCA",
+      "entity_level": "regional",
+      "province": null,
+      "ruc": "20453744168",
+      "consucode_id": null,
+      "department": "CAJAMARCA",
+      "verified_at": "2026-08-20T00:00:00Z",
+      "active": true
+    },
+    {
+      "entity_id": "ce-2caad0e1b7467492",
+      "official_name": "MUNICIPALIDAD PROVINCIAL DE CAJAMARCA",
+      "entity_level": "provincial_municipality",
+      "province": "CAJAMARCA",
+      "ruc": "20143623042",
+      "consucode_id": null,
+      "department": "CAJAMARCA",
+      "verified_at": "2026-08-20T00:00:00Z",
+      "active": true
+    },
+    {
+      "entity_id": "ce-b4a52d15b3cffe4f",
+      "official_name": "MUNICIPALIDAD PROVINCIAL DE CAJABAMBA",
+      "entity_level": "provincial_municipality",
+      "province": "CAJABAMBA",
+      "ruc": "20148288853",
+      "consucode_id": null,
+      "department": "CAJAMARCA",
+      "verified_at": "2026-08-20T00:00:00Z",
+      "active": true
+    },
+    {
+      "entity_id": "ce-2b779c1e84ff4365",
+      "official_name": "MUNICIPALIDAD PROVINCIAL DE CELENDIN",
+      "entity_level": "provincial_municipality",
+      "province": "CELENDIN",
+      "ruc": "20148289825",
+      "consucode_id": null,
+      "department": "CAJAMARCA",
+      "verified_at": "2026-08-20T00:00:00Z",
+      "active": true
+    },
+    {
+      "entity_id": "ce-45fad1d64ba4bf0f",
+      "official_name": "MUNICIPALIDAD PROVINCIAL DE CHOTA",
+      "entity_level": "provincial_municipality",
+      "province": "CHOTA",
+      "ruc": "20220499767",
+      "consucode_id": null,
+      "department": "CAJAMARCA",
+      "verified_at": "2026-08-20T00:00:00Z",
+      "active": true
+    },
+    {
+      "entity_id": "ce-3337df921084c80a",
+      "official_name": "MUNICIPALIDAD PROVINCIAL DE CONTUMAZA",
+      "entity_level": "provincial_municipality",
+      "province": "CONTUMAZA",
+      "ruc": "20191657447",
+      "consucode_id": null,
+      "department": "CAJAMARCA",
+      "verified_at": "2026-08-20T00:00:00Z",
+      "active": true
+    },
+    {
+      "entity_id": "ce-360cf7aadccadabb",
+      "official_name": "MUNICIPALIDAD PROVINCIAL DE CUTERVO",
+      "entity_level": "provincial_municipality",
+      "province": "CUTERVO",
+      "ruc": "20174691267",
+      "consucode_id": null,
+      "department": "CAJAMARCA",
+      "verified_at": "2026-08-20T00:00:00Z",
+      "active": true
+    },
+    {
+      "entity_id": "ce-dfd10c914365bbe3",
+      "official_name": "MUNICIPALIDAD PROVINCIAL DE HUALGAYOC",
+      "entity_level": "provincial_municipality",
+      "province": "HUALGAYOC",
+      "ruc": "20148260843",
+      "consucode_id": null,
+      "department": "CAJAMARCA",
+      "verified_at": "2026-08-20T00:00:00Z",
+      "active": true
+    },
+    {
+      "entity_id": "ce-1817b32570ae7027",
+      "official_name": "MUNICIPALIDAD PROVINCIAL DE JAEN",
+      "entity_level": "provincial_municipality",
+      "province": "JAEN",
+      "ruc": "20201987297",
+      "consucode_id": null,
+      "department": "CAJAMARCA",
+      "verified_at": "2026-08-20T00:00:00Z",
+      "active": true
+    },
+    {
+      "entity_id": "ce-697eb5a0a1b4e6c6",
+      "official_name": "MUNICIPALIDAD PROVINCIAL SAN IGNACIO",
+      "entity_level": "provincial_municipality",
+      "province": "SAN IGNACIO",
+      "ruc": "20148261572",
+      "consucode_id": null,
+      "department": "CAJAMARCA",
+      "verified_at": "2026-08-20T00:00:00Z",
+      "active": true
+    },
+    {
+      "entity_id": "ce-ad540c85ce98e1d8",
+      "official_name": "MUNICIPALIDAD PROVINCIAL DE SAN MARCOS",
+      "entity_level": "provincial_municipality",
+      "province": "SAN MARCOS",
+      "ruc": "20175083937",
+      "consucode_id": null,
+      "department": "CAJAMARCA",
+      "verified_at": "2026-08-20T00:00:00Z",
+      "active": true
+    },
+    {
+      "entity_id": "ce-3511b005adba63bf",
+      "official_name": "MUNICIPALIDAD PROVINCIAL SAN MIGUEL",
+      "entity_level": "provincial_municipality",
+      "province": "SAN MIGUEL",
+      "ruc": "20143625843",
+      "consucode_id": null,
+      "department": "CAJAMARCA",
+      "verified_at": "2026-08-20T00:00:00Z",
+      "active": true
+    },
+    {
+      "entity_id": "ce-d7fc753b1fb5ff5b",
+      "official_name": "MUNICIPALIDAD PROVINCIAL DE SAN PABLO",
+      "entity_level": "provincial_municipality",
+      "province": "SAN PABLO",
+      "ruc": "20172446800",
+      "consucode_id": null,
+      "department": "CAJAMARCA",
+      "verified_at": "2026-08-20T00:00:00Z",
+      "active": true
+    },
+    {
+      "entity_id": "ce-f29ffd64eff3fe9a",
+      "official_name": "MUNICIPALIDAD PROVINCIAL DE SANTA CRUZ",
+      "entity_level": "provincial_municipality",
+      "province": "SANTA CRUZ",
+      "ruc": "20200367376",
+      "consucode_id": null,
+      "department": "CAJAMARCA",
+      "verified_at": "2026-08-20T00:00:00Z",
+      "active": true
+    }
+  ],
+  "procurement_records": [
+    {
+      "procurement_id": "pr-abc57b5b9fa45952",
+      "ocid": "ocds-07smqs-gore-2026-001",
+      "entity_id": "ce-f5f5d8fc32518855",
+      "title": "Mejoramiento del servicio educativo en el colegio San Ramon de Chota",
+      "procurement_method": "open",
+      "awarded_amount": 2850000.0,
+      "executed_amount": null,
+      "number_of_bidders": 1,
+      "supplier_name": "CONSORCIO VIAL DEL NORTE SAC",
+      "supplier_ruc": "20489912341",
+      "raw_payload": {
+        "ocid": "ocds-07smqs-gore-2026-001",
+        "id": "rel-gore-001",
+        "date": "2026-10-12T23:11:59.680119+00:00",
+        "parties": [
+          {
+            "id": "party-gore",
+            "name": "GOBIERNO REGIONAL DE CAJAMARCA",
+            "roles": [
+              "buyer",
+              "procuringEntity"
+            ],
+            "address": {
+              "department": "CAJAMARCA",
+              "locality": "Cajamarca"
+            },
+            "identifier": {
+              "id": "20453744168",
+              "legalName": "GOBIERNO REGIONAL DE CAJAMARCA"
+            }
+          }
+        ],
+        "tender": {
+          "id": "ten-gore-001",
+          "title": "Mejoramiento del servicio educativo en el colegio San Ramon de Chota",
+          "procurementMethod": "open",
+          "numberOfTenderers": 1,
+          "tenderPeriod": {
+            "startDate": "2026-02-01T08:00:00Z",
+            "endDate": "2026-02-25T18:00:00Z"
+          },
+          "value": {
+            "amount": 2850000.0,
+            "currency": "PEN"
+          }
+        },
+        "awards": [
+          {
+            "id": "aw-gore-001",
+            "status": "active",
+            "value": {
+              "amount": 2850000.0,
+              "currency": "PEN"
+            },
+            "suppliers": [
+              {
+                "id": "20489912341",
+                "name": "CONSORCIO VIAL DEL NORTE SAC"
+              }
+            ]
+          }
+        ]
+      },
+      "source": "seace-ocds",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "procurement_id": "pr-20eea87922825874",
+      "ocid": "ocds-07smqs-celendin-2026-002",
+      "entity_id": "ce-2b779c1e84ff4365",
+      "title": "Adquisicion de tuberia HDPE para agua potable en Huauco",
+      "procurement_method": "open",
+      "awarded_amount": 338500.0,
+      "executed_amount": null,
+      "number_of_bidders": 2,
+      "supplier_name": "DISTRIBUIDORA HIDRAULICA ANDINA EIRL",
+      "supplier_ruc": "20541298711",
+      "raw_payload": {
+        "ocid": "ocds-07smqs-celendin-2026-002",
+        "id": "rel-celendin-002",
+        "date": "2026-10-12T23:11:59.680119+00:00",
+        "parties": [
+          {
+            "id": "party-celendin",
+            "name": "MUNICIPALIDAD PROVINCIAL DE CELENDIN",
+            "roles": [
+              "buyer",
+              "procuringEntity"
+            ],
+            "address": {
+              "department": "CAJAMARCA",
+              "locality": "Celendin"
+            },
+            "identifier": {
+              "id": "20148289825",
+              "legalName": "MUNICIPALIDAD PROVINCIAL DE CELENDIN"
+            }
+          }
+        ],
+        "tender": {
+          "id": "ten-celendin-002",
+          "title": "Adquisicion de tuberia HDPE para agua potable en Huauco",
+          "procurementMethod": "open",
+          "numberOfTenderers": 2,
+          "tenderPeriod": {
+            "startDate": "2026-03-01T09:00:00Z",
+            "endDate": "2026-03-03T17:00:00Z"
+          },
+          "value": {
+            "amount": 340000.0,
+            "currency": "PEN"
+          }
+        },
+        "awards": [
+          {
+            "id": "aw-celendin-002",
+            "status": "active",
+            "value": {
+              "amount": 338500.0,
+              "currency": "PEN"
+            },
+            "suppliers": [
+              {
+                "id": "20541298711",
+                "name": "DISTRIBUIDORA HIDRAULICA ANDINA EIRL"
+              }
+            ]
+          }
+        ]
+      },
+      "source": "seace-ocds",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "procurement_id": "pr-d506d36ba2df88f7",
+      "ocid": "ocds-07smqs-jaen-2026-003",
+      "entity_id": "ce-1817b32570ae7027",
+      "title": "Mantenimiento periodico de trochas carrozables tramo Bellavista",
+      "procurement_method": "open",
+      "awarded_amount": 1400000.0,
+      "executed_amount": null,
+      "number_of_bidders": 3,
+      "supplier_name": "CONSTRUCTORA AMAZONICA DEL PERU SAC",
+      "supplier_ruc": "20601928374",
+      "raw_payload": {
+        "ocid": "ocds-07smqs-jaen-2026-003",
+        "id": "rel-jaen-003",
+        "date": "2026-10-12T23:11:59.680119+00:00",
+        "parties": [
+          {
+            "id": "party-jaen",
+            "name": "MUNICIPALIDAD PROVINCIAL DE JAEN",
+            "roles": [
+              "buyer",
+              "procuringEntity"
+            ],
+            "address": {
+              "department": "CAJAMARCA",
+              "locality": "Jaen"
+            },
+            "identifier": {
+              "id": "20201987297",
+              "legalName": "MUNICIPALIDAD PROVINCIAL DE JAEN"
+            }
+          }
+        ],
+        "tender": {
+          "id": "ten-jaen-003",
+          "title": "Mantenimiento periodico de trochas carrozables tramo Bellavista",
+          "procurementMethod": "open",
+          "numberOfTenderers": 3,
+          "value": {
+            "amount": 1400000.0,
+            "currency": "PEN"
+          }
+        },
+        "awards": [
+          {
+            "id": "aw-jaen-003",
+            "status": "active",
+            "value": {
+              "amount": 1400000.0,
+              "currency": "PEN"
+            },
+            "suppliers": [
+              {
+                "id": "20601928374",
+                "name": "CONSTRUCTORA AMAZONICA DEL PERU SAC"
+              }
+            ]
+          }
+        ]
+      },
+      "source": "seace-ocds",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "procurement_id": "pr-309df8b80bbcfa98",
+      "ocid": "ocds-07smqs-jaen-2026-004",
+      "entity_id": "ce-1817b32570ae7027",
+      "title": "Servicio de limpieza y descolmatacion en drenajes pluviales Jaen",
+      "procurement_method": "open",
+      "awarded_amount": 800000.0,
+      "executed_amount": null,
+      "number_of_bidders": 2,
+      "supplier_name": "CONSTRUCTORA AMAZONICA DEL PERU SAC",
+      "supplier_ruc": "20601928374",
+      "raw_payload": {
+        "ocid": "ocds-07smqs-jaen-2026-004",
+        "id": "rel-jaen-004",
+        "date": "2026-10-12T23:11:59.680119+00:00",
+        "parties": [
+          {
+            "id": "party-jaen",
+            "name": "MUNICIPALIDAD PROVINCIAL DE JAEN",
+            "roles": [
+              "buyer",
+              "procuringEntity"
+            ],
+            "address": {
+              "department": "CAJAMARCA",
+              "locality": "Jaen"
+            },
+            "identifier": {
+              "id": "20201987297",
+              "legalName": "MUNICIPALIDAD PROVINCIAL DE JAEN"
+            }
+          }
+        ],
+        "tender": {
+          "id": "ten-jaen-004",
+          "title": "Servicio de limpieza y descolmatacion en drenajes pluviales Jaen",
+          "procurementMethod": "open",
+          "numberOfTenderers": 2,
+          "value": {
+            "amount": 800000.0,
+            "currency": "PEN"
+          }
+        },
+        "awards": [
+          {
+            "id": "aw-jaen-004",
+            "status": "active",
+            "value": {
+              "amount": 800000.0,
+              "currency": "PEN"
+            },
+            "suppliers": [
+              {
+                "id": "20601928374",
+                "name": "CONSTRUCTORA AMAZONICA DEL PERU SAC"
+              }
+            ]
+          }
+        ]
+      },
+      "source": "seace-ocds",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "procurement_id": "pr-100c083b595abc2a",
+      "ocid": "ocds-07smqs-chota-2026-005",
+      "entity_id": "ce-45fad1d64ba4bf0f",
+      "title": "Adquisicion de material agregado para mantenimiento de vias urbanas",
+      "procurement_method": "direct",
+      "awarded_amount": 41100.0,
+      "executed_amount": null,
+      "number_of_bidders": 1,
+      "supplier_name": "CANTERAS Y SERVICIOS CHOTA EIRL",
+      "supplier_ruc": "20448123001",
+      "raw_payload": {
+        "ocid": "ocds-07smqs-chota-2026-005",
+        "id": "rel-chota-005",
+        "date": "2026-10-12T23:11:59.680119+00:00",
+        "parties": [
+          {
+            "id": "party-chota",
+            "name": "MUNICIPALIDAD PROVINCIAL DE CHOTA",
+            "roles": [
+              "buyer",
+              "procuringEntity"
+            ],
+            "address": {
+              "department": "CAJAMARCA",
+              "locality": "Chota"
+            },
+            "identifier": {
+              "id": "20220499767",
+              "legalName": "MUNICIPALIDAD PROVINCIAL DE CHOTA"
+            }
+          }
+        ],
+        "tender": {
+          "id": "ten-chota-005",
+          "title": "Adquisicion de material agregado para mantenimiento de vias urbanas",
+          "procurementMethod": "direct",
+          "numberOfTenderers": 1,
+          "value": {
+            "amount": 41100.0,
+            "currency": "PEN"
+          }
+        },
+        "awards": [
+          {
+            "id": "aw-chota-005",
+            "status": "active",
+            "value": {
+              "amount": 41100.0,
+              "currency": "PEN"
+            },
+            "suppliers": [
+              {
+                "id": "20448123001",
+                "name": "CANTERAS Y SERVICIOS CHOTA EIRL"
+              }
+            ]
+          }
+        ]
+      },
+      "source": "seace-ocds",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "procurement_id": "pr-7601081998ed5914",
+      "ocid": "ocds-07smqs-hualgayoc-2026-006",
+      "entity_id": "ce-dfd10c914365bbe3",
+      "title": "Servicio de consultoria para supervision de obra saneamiento Bambamarca",
+      "procurement_method": "open",
+      "awarded_amount": 182000.0,
+      "executed_amount": null,
+      "number_of_bidders": 4,
+      "supplier_name": "INGENIERIA Y PROYECTOS AMBIENTALES SAC",
+      "supplier_ruc": "20311223344",
+      "raw_payload": {
+        "ocid": "ocds-07smqs-hualgayoc-2026-006",
+        "id": "rel-hualgayoc-006",
+        "date": "2026-10-12T23:11:59.680119+00:00",
+        "parties": [
+          {
+            "id": "party-hualgayoc",
+            "name": "MUNICIPALIDAD PROVINCIAL DE HUALGAYOC",
+            "roles": [
+              "buyer",
+              "procuringEntity"
+            ],
+            "address": {
+              "department": "CAJAMARCA",
+              "locality": "Bambamarca"
+            },
+            "identifier": {
+              "id": "20148260843",
+              "legalName": "MUNICIPALIDAD PROVINCIAL DE HUALGAYOC"
+            }
+          }
+        ],
+        "tender": {
+          "id": "ten-hualgayoc-006",
+          "title": "Servicio de consultoria para supervision de obra saneamiento Bambamarca",
+          "procurementMethod": "open",
+          "numberOfTenderers": 4,
+          "value": {
+            "amount": 185000.0,
+            "currency": "PEN"
+          }
+        },
+        "awards": [
+          {
+            "id": "aw-hualgayoc-006",
+            "status": "active",
+            "value": {
+              "amount": 182000.0,
+              "currency": "PEN"
+            },
+            "suppliers": [
+              {
+                "id": "20311223344",
+                "name": "INGENIERIA Y PROYECTOS AMBIENTALES SAC"
+              }
+            ]
+          }
+        ]
+      },
+      "source": "seace-ocds",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "procurement_id": "pr-84f398db3ce8561a",
+      "ocid": "ocds-07smqs-sanignacio-2026-007",
+      "entity_id": "ce-697eb5a0a1b4e6c6",
+      "title": "Adquisicion de combustible diesel B5 para maquinaria municipal",
+      "procurement_method": "open",
+      "awarded_amount": 420000.0,
+      "executed_amount": null,
+      "number_of_bidders": 1,
+      "supplier_name": "ESTACION DE SERVICIOS FRONTERA NORTE SAC",
+      "supplier_ruc": "20556677889",
+      "raw_payload": {
+        "ocid": "ocds-07smqs-sanignacio-2026-007",
+        "id": "rel-sanignacio-007",
+        "date": "2026-10-12T23:11:59.680119+00:00",
+        "parties": [
+          {
+            "id": "party-sanignacio",
+            "name": "MUNICIPALIDAD PROVINCIAL SAN IGNACIO",
+            "roles": [
+              "buyer",
+              "procuringEntity"
+            ],
+            "address": {
+              "department": "CAJAMARCA",
+              "locality": "San Ignacio"
+            },
+            "identifier": {
+              "id": "20148261572",
+              "legalName": "MUNICIPALIDAD PROVINCIAL SAN IGNACIO"
+            }
+          }
+        ],
+        "tender": {
+          "id": "ten-sanignacio-007",
+          "title": "Adquisicion de combustible diesel B5 para maquinaria municipal",
+          "procurementMethod": "open",
+          "numberOfTenderers": 1,
+          "value": {
+            "amount": 420000.0,
+            "currency": "PEN"
+          }
+        },
+        "awards": [
+          {
+            "id": "aw-sanignacio-007",
+            "status": "active",
+            "value": {
+              "amount": 420000.0,
+              "currency": "PEN"
+            },
+            "suppliers": [
+              {
+                "id": "20556677889",
+                "name": "ESTACION DE SERVICIOS FRONTERA NORTE SAC"
+              }
+            ]
+          }
+        ]
+      },
+      "source": "seace-ocds",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "procurement_id": "pr-8b7f820fad943541",
+      "ocid": "ocds-07smqs-mpcaj-2026-008",
+      "entity_id": "ce-2caad0e1b7467492",
+      "title": "Renovacion del pavimento asfaltico en avenidas principales de Cajamarca",
+      "procurement_method": "open",
+      "awarded_amount": 1945000.0,
+      "executed_amount": null,
+      "number_of_bidders": 3,
+      "supplier_name": "CONSTRUCTORA CUMBE MAYO SAC",
+      "supplier_ruc": "20188990011",
+      "raw_payload": {
+        "ocid": "ocds-07smqs-mpcaj-2026-008",
+        "id": "rel-mpcaj-008",
+        "date": "2026-10-12T23:11:59.680119+00:00",
+        "parties": [
+          {
+            "id": "party-mpcaj",
+            "name": "MUNICIPALIDAD PROVINCIAL DE CAJAMARCA",
+            "roles": [
+              "buyer",
+              "procuringEntity"
+            ],
+            "address": {
+              "department": "CAJAMARCA",
+              "locality": "Cajamarca"
+            },
+            "identifier": {
+              "id": "20143623042",
+              "legalName": "MUNICIPALIDAD PROVINCIAL DE CAJAMARCA"
+            }
+          }
+        ],
+        "tender": {
+          "id": "ten-mpcaj-008",
+          "title": "Renovacion del pavimento asfaltico en avenidas principales de Cajamarca",
+          "procurementMethod": "open",
+          "numberOfTenderers": 3,
+          "value": {
+            "amount": 1950000.0,
+            "currency": "PEN"
+          }
+        },
+        "awards": [
+          {
+            "id": "aw-mpcaj-008",
+            "status": "active",
+            "value": {
+              "amount": 1945000.0,
+              "currency": "PEN"
+            },
+            "suppliers": [
+              {
+                "id": "20188990011",
+                "name": "CONSTRUCTORA CUMBE MAYO SAC"
+              }
+            ]
+          }
+        ]
+      },
+      "source": "seace-ocds",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    }
+  ],
+  "budget_execution_records": [
+    {
+      "execution_record_id": "me-f87a46e23e0b94c9",
+      "entity_id": "ce-f5f5d8fc32518855",
+      "fiscal_year": 2026,
+      "budgeted_amount": 1850000000.0,
+      "executed_amount": 1380000000.0,
+      "budget_category": "General",
+      "raw_payload": {
+        "ruc": "20453744168",
+        "fiscal_year": 2026,
+        "budgeted_amount": 1850000000.0,
+        "executed_amount": 1380000000.0,
+        "budget_category": "General"
+      },
+      "source": "mef-datastore",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "execution_record_id": "me-51678b3675885326",
+      "entity_id": "ce-2caad0e1b7467492",
+      "fiscal_year": 2026,
+      "budgeted_amount": 145000000.0,
+      "executed_amount": 98000000.0,
+      "budget_category": "General",
+      "raw_payload": {
+        "ruc": "20143623042",
+        "fiscal_year": 2026,
+        "budgeted_amount": 145000000.0,
+        "executed_amount": 98000000.0,
+        "budget_category": "General"
+      },
+      "source": "mef-datastore",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "execution_record_id": "me-b224424f7724edaa",
+      "entity_id": "ce-b4a52d15b3cffe4f",
+      "fiscal_year": 2026,
+      "budgeted_amount": 32000000.0,
+      "executed_amount": 21000000.0,
+      "budget_category": "General",
+      "raw_payload": {
+        "ruc": "20148288853",
+        "fiscal_year": 2026,
+        "budgeted_amount": 32000000.0,
+        "executed_amount": 21000000.0,
+        "budget_category": "General"
+      },
+      "source": "mef-datastore",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "execution_record_id": "me-0342222021b7980f",
+      "entity_id": "ce-2b779c1e84ff4365",
+      "fiscal_year": 2026,
+      "budgeted_amount": 32000000.0,
+      "executed_amount": 21000000.0,
+      "budget_category": "General",
+      "raw_payload": {
+        "ruc": "20148289825",
+        "fiscal_year": 2026,
+        "budgeted_amount": 32000000.0,
+        "executed_amount": 21000000.0,
+        "budget_category": "General"
+      },
+      "source": "mef-datastore",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "execution_record_id": "me-d1c86d18c3fe8adb",
+      "entity_id": "ce-45fad1d64ba4bf0f",
+      "fiscal_year": 2026,
+      "budgeted_amount": 78000000.0,
+      "executed_amount": 52000000.0,
+      "budget_category": "General",
+      "raw_payload": {
+        "ruc": "20220499767",
+        "fiscal_year": 2026,
+        "budgeted_amount": 78000000.0,
+        "executed_amount": 52000000.0,
+        "budget_category": "General"
+      },
+      "source": "mef-datastore",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "execution_record_id": "me-1cc21107a0ab08a5",
+      "entity_id": "ce-3337df921084c80a",
+      "fiscal_year": 2026,
+      "budgeted_amount": 32000000.0,
+      "executed_amount": 21000000.0,
+      "budget_category": "General",
+      "raw_payload": {
+        "ruc": "20191657447",
+        "fiscal_year": 2026,
+        "budgeted_amount": 32000000.0,
+        "executed_amount": 21000000.0,
+        "budget_category": "General"
+      },
+      "source": "mef-datastore",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "execution_record_id": "me-59658846ae6914e8",
+      "entity_id": "ce-360cf7aadccadabb",
+      "fiscal_year": 2026,
+      "budgeted_amount": 32000000.0,
+      "executed_amount": 21000000.0,
+      "budget_category": "General",
+      "raw_payload": {
+        "ruc": "20174691267",
+        "fiscal_year": 2026,
+        "budgeted_amount": 32000000.0,
+        "executed_amount": 21000000.0,
+        "budget_category": "General"
+      },
+      "source": "mef-datastore",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "execution_record_id": "me-069548c673ef35ee",
+      "entity_id": "ce-dfd10c914365bbe3",
+      "fiscal_year": 2026,
+      "budgeted_amount": 78000000.0,
+      "executed_amount": 52000000.0,
+      "budget_category": "General",
+      "raw_payload": {
+        "ruc": "20148260843",
+        "fiscal_year": 2026,
+        "budgeted_amount": 78000000.0,
+        "executed_amount": 52000000.0,
+        "budget_category": "General"
+      },
+      "source": "mef-datastore",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "execution_record_id": "me-cc9abe93db496420",
+      "entity_id": "ce-1817b32570ae7027",
+      "fiscal_year": 2026,
+      "budgeted_amount": 78000000.0,
+      "executed_amount": 52000000.0,
+      "budget_category": "General",
+      "raw_payload": {
+        "ruc": "20201987297",
+        "fiscal_year": 2026,
+        "budgeted_amount": 78000000.0,
+        "executed_amount": 52000000.0,
+        "budget_category": "General"
+      },
+      "source": "mef-datastore",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "execution_record_id": "me-d5b4709b4867962d",
+      "entity_id": "ce-697eb5a0a1b4e6c6",
+      "fiscal_year": 2026,
+      "budgeted_amount": 32000000.0,
+      "executed_amount": 21000000.0,
+      "budget_category": "General",
+      "raw_payload": {
+        "ruc": "20148261572",
+        "fiscal_year": 2026,
+        "budgeted_amount": 32000000.0,
+        "executed_amount": 21000000.0,
+        "budget_category": "General"
+      },
+      "source": "mef-datastore",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "execution_record_id": "me-757446b626dbc943",
+      "entity_id": "ce-ad540c85ce98e1d8",
+      "fiscal_year": 2026,
+      "budgeted_amount": 32000000.0,
+      "executed_amount": 21000000.0,
+      "budget_category": "General",
+      "raw_payload": {
+        "ruc": "20175083937",
+        "fiscal_year": 2026,
+        "budgeted_amount": 32000000.0,
+        "executed_amount": 21000000.0,
+        "budget_category": "General"
+      },
+      "source": "mef-datastore",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "execution_record_id": "me-3115f4e84ec24010",
+      "entity_id": "ce-3511b005adba63bf",
+      "fiscal_year": 2026,
+      "budgeted_amount": 32000000.0,
+      "executed_amount": 21000000.0,
+      "budget_category": "General",
+      "raw_payload": {
+        "ruc": "20143625843",
+        "fiscal_year": 2026,
+        "budgeted_amount": 32000000.0,
+        "executed_amount": 21000000.0,
+        "budget_category": "General"
+      },
+      "source": "mef-datastore",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "execution_record_id": "me-d736bbdd3e406cda",
+      "entity_id": "ce-d7fc753b1fb5ff5b",
+      "fiscal_year": 2026,
+      "budgeted_amount": 32000000.0,
+      "executed_amount": 21000000.0,
+      "budget_category": "General",
+      "raw_payload": {
+        "ruc": "20172446800",
+        "fiscal_year": 2026,
+        "budgeted_amount": 32000000.0,
+        "executed_amount": 21000000.0,
+        "budget_category": "General"
+      },
+      "source": "mef-datastore",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "execution_record_id": "me-d961a8c052fe0401",
+      "entity_id": "ce-f29ffd64eff3fe9a",
+      "fiscal_year": 2026,
+      "budgeted_amount": 32000000.0,
+      "executed_amount": 21000000.0,
+      "budget_category": "General",
+      "raw_payload": {
+        "ruc": "20200367376",
+        "fiscal_year": 2026,
+        "budgeted_amount": 32000000.0,
+        "executed_amount": 21000000.0,
+        "budget_category": "General"
+      },
+      "source": "mef-datastore",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "execution_record_id": "me-7c693a8c7a1a5891",
+      "entity_id": "ce-ad540c85ce98e1d8",
+      "fiscal_year": 2026,
+      "budgeted_amount": 500000.0,
+      "executed_amount": 620000.0,
+      "budget_category": "Inversiones en Infraestructura Vial",
+      "raw_payload": {
+        "ruc": "20175083937",
+        "fiscal_year": 2026,
+        "budgeted_amount": 500000.0,
+        "executed_amount": 620000.0,
+        "budget_category": "Inversiones en Infraestructura Vial"
+      },
+      "source": "mef-datastore",
+      "retrieved_at": "2026-10-12T23:11:59.680119Z"
+    }
+  ],
+  "red_flags": [
+    {
+      "red_flag_id": "rf-a26bf6e7cefa020e",
+      "indicator_code": "single-bidder",
+      "formula_description": "Licitacion competitiva adjudicada con un unico postor participante (numberOfTenderers == 1)",
+      "threshold": 1,
+      "observed_value": 1,
+      "procurement_ids": [
+        "pr-abc57b5b9fa45952"
+      ],
+      "execution_record_ids": [],
+      "evidence_source": "seace-ocds",
+      "evidence_retrieved_at": "2026-10-12T23:11:59.680119Z",
+      "generated_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "red_flag_id": "rf-08010aac9e052c0d",
+      "indicator_code": "single-bidder",
+      "formula_description": "Licitacion competitiva adjudicada con un unico postor participante (numberOfTenderers == 1)",
+      "threshold": 1,
+      "observed_value": 1,
+      "procurement_ids": [
+        "pr-84f398db3ce8561a"
+      ],
+      "execution_record_ids": [],
+      "evidence_source": "seace-ocds",
+      "evidence_retrieved_at": "2026-10-12T23:11:59.680119Z",
+      "generated_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "red_flag_id": "rf-db148882ec689954",
+      "indicator_code": "execution-overrun",
+      "formula_description": "Monto ejecutado excede el presupuesto institucional modificado o adjudicado en mas del 10%",
+      "threshold": 1.1,
+      "observed_value": 1.24,
+      "procurement_ids": [],
+      "execution_record_ids": [
+        "me-7c693a8c7a1a5891"
+      ],
+      "evidence_source": "mef-datastore",
+      "evidence_retrieved_at": "2026-10-12T23:11:59.680119Z",
+      "generated_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "red_flag_id": "rf-26bd35046026f94c",
+      "indicator_code": "contract-concentration",
+      "formula_description": "Un solo proveedor concentra mas del 40% del monto total adjudicado por la entidad en el periodo",
+      "threshold": 0.4,
+      "observed_value": 1.0,
+      "procurement_ids": [
+        "pr-d506d36ba2df88f7",
+        "pr-309df8b80bbcfa98"
+      ],
+      "execution_record_ids": [],
+      "evidence_source": "seace-ocds",
+      "evidence_retrieved_at": "2026-10-12T23:11:59.680119Z",
+      "generated_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "red_flag_id": "rf-6c940c6a608ce9c5",
+      "indicator_code": "short-tender-window",
+      "formula_description": "Periodo de convocatoria y presentacion de ofertas inferior al plazo minimo prudencial de 5 dias",
+      "threshold": 5,
+      "observed_value": 2.3,
+      "procurement_ids": [
+        "pr-20eea87922825874"
+      ],
+      "execution_record_ids": [],
+      "evidence_source": "seace-ocds",
+      "evidence_retrieved_at": "2026-10-12T23:11:59.680119Z",
+      "generated_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "red_flag_id": "rf-e9ff626392254870",
+      "indicator_code": "direct-award-threshold",
+      "formula_description": "Contratacion directa cuyo monto roza sospechosamente el umbral limite de exoneracion legal",
+      "threshold": 40000.0,
+      "observed_value": 41100.0,
+      "procurement_ids": [
+        "pr-100c083b595abc2a"
+      ],
+      "execution_record_ids": [],
+      "evidence_source": "seace-ocds",
+      "evidence_retrieved_at": "2026-10-12T23:11:59.680119Z",
+      "generated_at": "2026-10-12T23:11:59.680119Z"
+    }
+  ],
+  "alerts": [
+    {
+      "alert_id": "al-dda000e1c389d8ee",
+      "red_flag_ids": [
+        "rf-a26bf6e7cefa020e"
+      ],
+      "entity_id": "ce-f5f5d8fc32518855",
+      "status": "published",
+      "reviewed_by": "m.vasquez@proetica-cajamarca.org.pe",
+      "reviewed_at": "2026-10-12T23:11:59.680119Z",
+      "review_notes": "Validado en portal SEACE. Proceso con postor unico y adjudicacion al 100% del valor estimado.",
+      "disclaimer": "Indicador de riesgo automatizado, no constituye prueba ni acusación formal de corrupción.",
+      "published_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "alert_id": "al-6ddc028255a8680a",
+      "red_flag_ids": [
+        "rf-6c940c6a608ce9c5"
+      ],
+      "entity_id": "ce-2b779c1e84ff4365",
+      "status": "published",
+      "reviewed_by": "r.paredes@propuestaciudadana.org.pe",
+      "reviewed_at": "2026-10-12T23:11:59.680119Z",
+      "review_notes": "Plazo de licitacion de 2.3 dias. Vulneracion de plazo minimo legal de 5 dias.",
+      "disclaimer": "Indicador de riesgo automatizado, no constituye prueba ni acusación formal de corrupción.",
+      "published_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "alert_id": "al-484ca0c8d2d9a663",
+      "red_flag_ids": [
+        "rf-db148882ec689954"
+      ],
+      "entity_id": "ce-ad540c85ce98e1d8",
+      "status": "published",
+      "reviewed_by": "c.rojas@grufides.org.pe",
+      "reviewed_at": "2026-10-12T23:11:59.680119Z",
+      "review_notes": "Devengado supera el presupuesto institucional modificado en 24%.",
+      "disclaimer": "Indicador de riesgo automatizado, no constituye prueba ni acusación formal de corrupción.",
+      "published_at": "2026-10-12T23:11:59.680119Z"
+    },
+    {
+      "alert_id": "al-94279630f9570c47",
+      "red_flag_ids": [
+        "rf-e9ff626392254870"
+      ],
+      "entity_id": "ce-45fad1d64ba4bf0f",
+      "status": "discarded",
+      "reviewed_by": "m.vasquez@proetica-cajamarca.org.pe",
+      "reviewed_at": "2026-10-12T23:11:59.680119Z",
+      "review_notes": "Verificado sustento de emergencia vial municipal: no configura fraccionamiento doloso.",
+      "disclaimer": "Indicador de riesgo automatizado, no constituye prueba ni acusación formal de corrupción.",
+      "published_at": null
+    }
+  ],
+  "citizen_reports": [
+    {
+      "report_id": "cr-8623327c75d12071",
+      "submitted_at": "2026-10-12T23:11:59.680119Z",
+      "channel": "web",
+      "raw_text": "En la obra de mejoramiento vial en Chota, la empresa ganadora no cuenta con maquinaria en el lugar y ha subcontratado a terceros sin autorizacion.",
+      "related_entity_id": "ce-45fad1d64ba4bf0f",
+      "moderation_status": "pending",
+      "moderated_by": null,
+      "moderated_at": null,
+      "legal_disclaimer_shown": true
+    },
+    {
+      "report_id": "cr-6f23a5bf577e3f21",
+      "submitted_at": "2026-10-12T23:11:59.680119Z",
+      "channel": "web",
+      "raw_text": "Presunto direccionamiento en la compra de tuberia en Celendin: las bases especificaban una marca exclusiva.",
+      "related_entity_id": "ce-2b779c1e84ff4365",
+      "moderation_status": "accepted_as_lead",
+      "moderated_by": "r.paredes@propuestaciudadana.org.pe",
+      "moderated_at": "2026-10-12T23:11:59.680119Z",
+      "legal_disclaimer_shown": true
+    }
+  ]
+}

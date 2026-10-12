@@ -1,0 +1,374 @@
+[
+  {
+    "name": "PTT-20260721-WA0041.opus",
+    "type": "multimedia_casual",
+    "size": 247430,
+    "reason": "audio/video informal sin metadata estructurada"
+  },
+  {
+    "name": "PTT-20260721-WA0042.opus",
+    "type": "multimedia_casual",
+    "size": 19556,
+    "reason": "audio/video informal sin metadata estructurada"
+  },
+  {
+    "name": "PTT-20260721-WA0044.opus",
+    "type": "multimedia_casual",
+    "size": 96376,
+    "reason": "audio/video informal sin metadata estructurada"
+  },
+  {
+    "name": "PTT-20260913-WA0048.opus",
+    "type": "multimedia_casual",
+    "size": 1656,
+    "reason": "audio/video informal sin metadata estructurada"
+  },
+  {
+    "name": "RofBot PCM.vcf",
+    "type": "contact_card",
+    "size": 155,
+    "reason": "tarjeta de contacto"
+  },
+  {
+    "name": "STK-20250223-WA0040.webp",
+    "type": "sticker",
+    "size": 49874,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20250224-WA0030.webp",
+    "type": "sticker",
+    "size": 16872,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20250226-WA0006.webp",
+    "type": "sticker",
+    "size": 15972,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20250226-WA0046.webp",
+    "type": "sticker",
+    "size": 290072,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20250228-WA0023.webp",
+    "type": "sticker",
+    "size": 457800,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20250228-WA0030.webp",
+    "type": "sticker",
+    "size": 30706,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20251023-WA0028.webp",
+    "type": "sticker",
+    "size": 45144,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260429-WA0009.webp",
+    "type": "sticker",
+    "size": 60776,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260717-WA0040.webp",
+    "type": "sticker",
+    "size": 125042,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260721-WA0047.webp",
+    "type": "sticker",
+    "size": 601742,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260721-WA0051.webp",
+    "type": "sticker",
+    "size": 236704,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260728-WA0001.webp",
+    "type": "sticker",
+    "size": 106028,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260728-WA0002.webp",
+    "type": "sticker",
+    "size": 95450,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260728-WA0010.webp",
+    "type": "sticker",
+    "size": 54614,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260728-WA0011.webp",
+    "type": "sticker",
+    "size": 77924,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260728-WA0016.webp",
+    "type": "sticker",
+    "size": 9032,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260728-WA0023.webp",
+    "type": "sticker",
+    "size": 294308,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260804-WA0003.was",
+    "type": "sticker",
+    "size": 13574,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260810-WA0016.webp",
+    "type": "sticker",
+    "size": 62428,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260818-WA0032.webp",
+    "type": "sticker",
+    "size": 126424,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260829-WA0105.webp",
+    "type": "sticker",
+    "size": 440204,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260830-WA0006.webp",
+    "type": "sticker",
+    "size": 21660,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260831-WA0098.webp",
+    "type": "sticker",
+    "size": 27678,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260901-WA0021.webp",
+    "type": "sticker",
+    "size": 24944,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260909-WA0094.webp",
+    "type": "sticker",
+    "size": 17796,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260909-WA0095.webp",
+    "type": "sticker",
+    "size": 406408,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260909-WA0096.webp",
+    "type": "sticker",
+    "size": 137672,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260910-WA0086.webp",
+    "type": "sticker",
+    "size": 472008,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260911-WA0085.webp",
+    "type": "sticker",
+    "size": 285368,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260911-WA0087.webp",
+    "type": "sticker",
+    "size": 62770,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260911-WA0111.webp",
+    "type": "sticker",
+    "size": 35540,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260911-WA0117.webp",
+    "type": "sticker",
+    "size": 259652,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260916-WA0021.webp",
+    "type": "sticker",
+    "size": 219386,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260916-WA0022.webp",
+    "type": "sticker",
+    "size": 380522,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260916-WA0023.webp",
+    "type": "sticker",
+    "size": 46324,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260916-WA0028.webp",
+    "type": "sticker",
+    "size": 407664,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20260919-WA0049.webp",
+    "type": "sticker",
+    "size": 283484,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20261009-WA0011.webp",
+    "type": "sticker",
+    "size": 93534,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20261009-WA0012.webp",
+    "type": "sticker",
+    "size": 17758,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20261009-WA0013.webp",
+    "type": "sticker",
+    "size": 7548,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20261009-WA0014.webp",
+    "type": "sticker",
+    "size": 271138,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20261009-WA0015.webp",
+    "type": "sticker",
+    "size": 14586,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20261009-WA0016.webp",
+    "type": "sticker",
+    "size": 501420,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20261009-WA0017.webp",
+    "type": "sticker",
+    "size": 246084,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20261009-WA0018.webp",
+    "type": "sticker",
+    "size": 361260,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20261009-WA0019.webp",
+    "type": "sticker",
+    "size": 788610,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20261009-WA0020.webp",
+    "type": "sticker",
+    "size": 183992,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20261009-WA0021.webp",
+    "type": "sticker",
+    "size": 22578,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20261009-WA0035.webp",
+    "type": "sticker",
+    "size": 177980,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20261009-WA0036.webp",
+    "type": "sticker",
+    "size": 206782,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20261009-WA0037.webp",
+    "type": "sticker",
+    "size": 865024,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20261009-WA0038.webp",
+    "type": "sticker",
+    "size": 137880,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20261009-WA0039.webp",
+    "type": "sticker",
+    "size": 476978,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "STK-20261009-WA0041.webp",
+    "type": "sticker",
+    "size": 14430,
+    "reason": "sticker grafico sin texto sustantivo"
+  },
+  {
+    "name": "studio taller Llumpa.mp3",
+    "type": "multimedia_casual",
+    "size": 4055040,
+    "reason": "audio/video informal sin metadata estructurada"
+  },
+  {
+    "name": "Sub Gerencia Gestión P ública Bot Bot ia.vcf",
+    "type": "contact_card",
+    "size": 266,
+    "reason": "tarjeta de contacto"
+  },
+  {
+    "name": "VID-20260719-WA0019.mp4",
+    "type": "multimedia_casual",
+    "size": 9951013,
+    "reason": "audio/video informal sin metadata estructurada"
+  }
+]

@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 380" width="100%" height="auto" role="img" aria-labelledby="flow-title flow-desc" class="architecture-flow-diagram">
+  <title id="flow-title">Flujo Verificable de Datos y Auditoria Algoritmica de Cajamarca Qhaway</title>
+  <desc id="flow-desc">Diagrama del proceso desde fuentes oficiales hasta la publicacion de alertas con revision humana obligatoria</desc>
+
+  <style>
+    .flow-box {
+      rx: 8;
+      stroke-width: 1.5;
+    }
+    .flow-title {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .flow-desc {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-size: 11px;
+      font-weight: 400;
+    }
+    .flow-mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+    }
+    .flow-arrow {
+      stroke-width: 2;
+      fill: none;
+      marker-end: url(#arrow-head);
+    }
+    .flow-gate-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+  </style>
+
+  <defs>
+    <marker id="arrow-head" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#0F766E" />
+    </marker>
+  </defs>
+
+  <!-- Paso 1: Fuentes Oficiales (Art. 10) -->
+  <g transform="translate(20, 40)">
+    <rect width="200" height="260" fill="#FFFFFF" stroke="#0F766E" class="flow-box" />
+    <rect width="200" height="36" rx="8" fill="#0F766E" />
+    <text x="100" y="23" fill="#FFFFFF" text-anchor="middle" class="flow-title">1. FUENTES OFICIALES</text>
+
+    <!-- Sub-fuente SEACE -->
+    <rect x="15" y="55" width="170" height="85" rx="6" fill="#F1F5F9" stroke="#E2E8F0" />
+    <text x="25" y="75" fill="#0F172A" font-weight="700" class="flow-title">SEACE (OCDS API)</text>
+    <text x="25" y="93" fill="#64748B" class="flow-desc">Contrataciones publicas</text>
+    <text x="25" y="110" fill="#0F766E" class="flow-mono">schema: OCDS 1.1</text>
+    <text x="25" y="125" fill="#64748B" class="flow-mono">seace-ocds</text>
+
+    <!-- Sub-fuente MEF -->
+    <rect x="15" y="155" width="170" height="85" rx="6" fill="#F1F5F9" stroke="#E2E8F0" />
+    <text x="25" y="175" fill="#0F172A" font-weight="700" class="flow-title">MEF (CKAN DataStore)</text>
+    <text x="25" y="193" fill="#64748B" class="flow-desc">Presupuesto y ejecucion</text>
+    <text x="25" y="210" fill="#0F766E" class="flow-mono">PIM vs. Devengado</text>
+    <text x="25" y="225" fill="#64748B" class="flow-mono">mef-datastore</text>
+
+    <text x="100" y="285" fill="#64748B" text-anchor="middle" class="flow-mono">Art. 10 (Verificable)</text>
+  </g>
+
+  <!-- Flecha 1 -> 2 -->
+  <path d="M 220 170 L 260 170" class="flow-arrow" stroke="#0F766E" />
+
+  <!-- Paso 2: Motor de Deteccion Algoritmica -->
+  <g transform="translate(260, 40)">
+    <rect width="200" height="260" fill="#FFFFFF" stroke="#334155" class="flow-box" />
+    <rect width="200" height="36" rx="8" fill="#334155" />
+    <text x="100" y="23" fill="#FFFFFF" text-anchor="middle" class="flow-title">2. MOTOR RED FLAGS</text>
+
+    <rect x="15" y="55" width="170" height="185" rx="6" fill="#F8FAFC" stroke="#E2E8F0" />
+    <text x="25" y="78" fill="#0F172A" font-weight="700" class="flow-desc">5 Indicadores Clave:</text>
+
+    <text x="25" y="100" fill="#334155" class="flow-mono">1. Postor unico recurrente</text>
+    <text x="25" y="120" fill="#334155" class="flow-mono">2. Plazo de oferta recortado</text>
+    <text x="25" y="140" fill="#334155" class="flow-mono">3. Concentracion por entidad</text>
+    <text x="25" y="160" fill="#334155" class="flow-mono">4. Desvio PIM vs Devengado</text>
+    <text x="25" y="180" fill="#334155" class="flow-mono">5. Adjudicacion al 100%</text>
+
+    <rect x="25" y="200" width="150" height="24" rx="4" fill="#FEF3C7" stroke="#F59E0B" />
+    <text x="100" y="216" fill="#B45309" text-anchor="middle" font-weight="700" class="flow-mono">RedFlag: Interno</text>
+
+    <text x="100" y="285" fill="#64748B" text-anchor="middle" class="flow-mono">Art. 14 (No Publico)</text>
+  </g>
+
+  <!-- Flecha 2 -> 3 -->
+  <path d="M 460 170 L 500 170" class="flow-arrow" stroke="#B45309" />
+
+  <!-- Paso 3: Compuerta de Revision Humana (CU5) -->
+  <g transform="translate(500, 40)">
+    <rect width="200" height="260" fill="#FFFFFF" stroke="#B45309" class="flow-box" />
+    <rect width="200" height="36" rx="8" fill="#B45309" />
+    <text x="100" y="23" fill="#FFFFFF" text-anchor="middle" class="flow-title">3. REVISION HUMANA</text>
+
+    <rect x="15" y="55" width="170" height="185" rx="6" fill="#FFFBEB" stroke="#FDE68A" />
+    <text x="25" y="78" fill="#0F172A" font-weight="700" class="flow-desc">Compuerta Obligatoria:</text>
+
+    <text x="25" y="105" fill="#334155" class="flow-desc">Triage por auditor</text>
+    <text x="25" y="125" fill="#334155" class="flow-desc">Verificacion contextual</text>
+    <text x="25" y="145" fill="#334155" class="flow-desc">Descarte o Promocion</text>
+
+    <rect x="25" y="165" width="150" height="42" rx="4" fill="#FFFFFF" stroke="#F59E0B" />
+    <text x="100" y="182" fill="#0F172A" text-anchor="middle" font-weight="700" class="flow-mono">reviewed_by: id</text>
+    <text x="100" y="198" fill="#64748B" text-anchor="middle" class="flow-mono">reviewed_at: UTC</text>
+
+    <text x="100" y="285" fill="#B45309" text-anchor="middle" font-weight="700" class="flow-mono">Art. 14 (Mandatorio)</text>
+  </g>
+
+  <!-- Flecha 3 -> 4 -->
+  <path d="M 700 170 L 740 170" class="flow-arrow" stroke="#047857" />
+
+  <!-- Paso 4: Alerta Publicada con Explicabilidad -->
+  <g transform="translate(740, 40)">
+    <rect width="200" height="260" fill="#FFFFFF" stroke="#047857" class="flow-box" />
+    <rect width="200" height="36" rx="8" fill="#047857" />
+    <text x="100" y="23" fill="#FFFFFF" text-anchor="middle" class="flow-title">4. ALERTA PUBLICA</text>
+
+    <rect x="15" y="55" width="170" height="185" rx="6" fill="#F0FDF4" stroke="#BBF7D0" />
+    <text x="25" y="78" fill="#047857" font-weight="700" class="flow-desc">Explicabilidad Art. 15:</text>
+
+    <text x="25" y="102" fill="#334155" class="flow-mono">• formula_description</text>
+    <text x="25" y="122" fill="#334155" class="flow-mono">• threshold</text>
+    <text x="25" y="142" fill="#334155" class="flow-mono">• observed_value</text>
+    <text x="25" y="162" fill="#334155" class="flow-mono">• raw_payload JSON</text>
+    <text x="25" y="182" fill="#334155" class="flow-mono">• disclaimer legal</text>
+
+    <rect x="25" y="200" width="150" height="24" rx="4" fill="#D1FAE5" stroke="#10B981" />
+    <text x="100" y="216" fill="#047857" text-anchor="middle" font-weight="700" class="flow-mono">status: published</text>
+
+    <text x="100" y="285" fill="#047857" text-anchor="middle" font-weight="700" class="flow-mono">Art. 15 (Transparencia)</text>
+  </g>
+
+  <!-- Barra de principios eticos inferior -->
+  <g transform="translate(20, 320)">
+    <rect width="920" height="40" rx="6" fill="#F1F5F9" stroke="#E2E8F0" />
+    <text x="460" y="24" fill="#334155" text-anchor="middle" font-weight="600" class="flow-desc">
+      Invariantes Constitucionales: Sin scoring de personas (Art. 16) | Reserva legal DJI Ley 29733 (Art. 17) | Ambito exclusivo 14 Entidades Cajamarca (Art. 18)
+    </text>
+  </g>
+</svg>

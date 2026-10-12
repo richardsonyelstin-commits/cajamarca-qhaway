@@ -1,0 +1,380 @@
+# Universo verificado de ContractingEntity -- region Cajamarca, Fase 1.
+#
+# ADR 0006: este fichero ES la fuente de verdad versionada; el historial de Git es el
+# "diff legible" que exige specs/001-entity-mapping/spec.md. Un paso de siembra aparte
+# (scripts/seed_contracting_entities.py) lo carga a la tabla `contracting_entities` de
+# PostgreSQL -- ese script debe fallar ruidosamente si el fichero y la tabla divergen.
+#
+# Alcance de esta ronda (specs/001-entity-mapping/plan.md, "Orden de implementacion",
+# pasos 1-3): SOLO el Gobierno Regional de Cajamarca y las 13 municipalidades
+# provinciales -- el subconjunto que RN-001-01 fija como obligatorio sin excepcion.
+# Ninguna municipalidad distrital entra aqui: eso es AC-001-01, bloqueado (paso 4, no
+# implementado). Ninguna unidad ejecutora del Gobierno Regional entra como entidad
+# propia: eso es AC-001-03, bloqueado (paso 5, no implementado).
+#
+# Verificacion cruzada de RUC (RN-001-03), honesta sobre sus limites:
+#
+# - Fuente 1: agregadores que republican el padron publico de RUC de SUNAT
+#   (datosperu.org, ruc.pe). No son SUNAT directamente -- el portal oficial
+#   e-consultaruc.sunat.gob.pe exige resolver un captcha por consulta interactiva, y
+#   esta sesion no tuvo forma de automatizar eso sin saltarselo (la regla de
+#   "prohibido bypasear CAPTCHAs" del propio agente lo impide). Se documenta como lo
+#   que es: un espejo de tercero, no la fuente primaria.
+# - Fuente 2: el Portal de Transparencia Estandar de la Contraloria General de la
+#   Republica (apps.contraloria.gob.pe/ciudadano/wfm_rpt_PteEntidad.aspx?RUC=<ruc>) --
+#   ESTA si es una fuente oficial del Estado peruano, independiente de la fuente 1.
+#   Dado un RUC, devuelve departamento/provincia/distrito (y, cuando la entidad tiene
+#   obras registradas en InfoObras, tambien el nombre oficial) -- se uso para confirmar
+#   que el RUC de la fuente 1 corresponde de verdad a la entidad de Cajamarca esperada
+#   y no a una entidad homonima de otra region.
+# - Las 14 entidades de este fichero tienen las dos fuentes coincidiendo en
+#   departamento=CAJAMARCA y en la provincia/distrito esperados. Ninguna quedo con
+#   verificacion parcial (CL-001-03 no aplica a esta ronda).
+#
+# `consucode_id` (identificador OECE, `scheme: PE-CONSUCODE`): NO se pudo verificar
+# para ninguna de las 14 entidades en esta sesion. `GET /api/v1/releases` y
+# `GET /api/v1/records` de la API OCDS de OECE son una ventana rotativa de ~20
+# publicaciones a nivel NACIONAL, sin parametro de filtro server-side que funcione
+# (confirmado en docs/research/2026-08-20-verificacion-tecnica-fuentes.md, S1.2) ni
+# busqueda por entidad. Se hicieron ~15 muestreos el 2026-08-20 (ver
+# scripts/verification/probe-oece-ocds.sh) y ninguno capturo a alguna de las 14
+# entidades de este universo como buyer/procuringEntity -- si aparece, es
+# coincidencia de que su proceso este entre las ~20 publicaciones mas recientes del
+# pais en el momento exacto de la consulta. `consucode_id` queda `null` para las 14,
+# con nota de verificacion pendiente por entidad (ver `consucode_verification_note`).
+# `002-seace-ingestion`, cuando corra de forma continua contra el feed, ira
+# completando este campo de forma organica conforme cada entidad aparezca como buyer
+# real -- no es una tarea manual de esta ronda.
+
+entities:
+  - official_name: "GOBIERNO REGIONAL DE CAJAMARCA"
+    entity_level: regional
+    province: null
+    ruc: "20453744168"
+    consucode_id: null
+    department: CAJAMARCA
+    verified_at: "2026-08-20T00:00:00Z"
+    active: true
+    verification:
+      ruc_cross_verified: true
+      ruc_sources:
+        - name: "ruc.pe (agregador derivado del padron publico de RUC de SUNAT)"
+          url: "https://ruc.pe/gobierno-regional-cajamarca/"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "RUC 20453744168, GOBIERNO REGIONAL CAJAMARCA"
+        - name: "Contraloria General de la Republica -- Portal de Transparencia Estandar"
+          url: "https://apps.contraloria.gob.pe/ciudadano/wfm_rpt_PteEntidad.aspx?RUC=20453744168"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "Confirma departamento/provincia/distrito = CAJAMARCA/CAJAMARCA/CAJAMARCA para este RUC"
+      consucode_verification_note: >-
+        Pendiente. No aparecio como buyer/procuringEntity en ~15 muestreos de
+        GET /api/v1/releases y /api/v1/records de OECE el 2026-08-20 (feed rotativo
+        nacional sin busqueda por entidad). Nota: el feed SI mostro una unidad
+        ejecutora suya (GOBIERNO REGIONAL DE CAJAMARCA - UGEL CELENDIN,
+        PE-CONSUCODE-200763) de forma incidental -- no se uso ese consucode_id aqui
+        porque corresponde a una unidad ejecutora, no al pliego regional, y su
+        tratamiento como entidad propia o agrupada es AC-001-03 (sin resolver).
+      inclusion_justification: null
+
+  - official_name: "MUNICIPALIDAD PROVINCIAL DE CAJAMARCA"
+    entity_level: provincial_municipality
+    province: CAJAMARCA
+    ruc: "20143623042"
+    consucode_id: null
+    department: CAJAMARCA
+    verified_at: "2026-08-20T00:00:00Z"
+    active: true
+    verification:
+      ruc_cross_verified: true
+      ruc_sources:
+        - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
+          url: "https://www.datosperu.org/empresa-municipalidad-provincial-de-cajamarca-20143623042.php"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "RUC 20143623042, activo, apto para contratar con el Estado"
+        - name: "Contraloria General de la Republica -- Portal de Transparencia Estandar"
+          url: "https://apps.contraloria.gob.pe/ciudadano/wfm_rpt_PteEntidad.aspx?RUC=20143623042"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "Confirma OBRAS DE MUNICIPALIDAD PROVINCIAL DE CAJAMARCA, CAJAMARCA/CAJAMARCA/CAJAMARCA"
+      consucode_verification_note: "Pendiente -- ver nota general del fichero."
+      inclusion_justification: null
+
+  - official_name: "MUNICIPALIDAD PROVINCIAL DE CAJABAMBA"
+    entity_level: provincial_municipality
+    province: CAJABAMBA
+    ruc: "20148288853"
+    consucode_id: null
+    department: CAJAMARCA
+    verified_at: "2026-08-20T00:00:00Z"
+    active: true
+    verification:
+      ruc_cross_verified: true
+      ruc_sources:
+        - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
+          url: "https://www.datosperu.org/"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: >-
+            RUC 20148288853. La primera busqueda tambien devolvio un RUC 20170325185
+            atribuido a "Cajabamba" por otra fuente de menor confianza; se descarto
+            tras verificar contra Contraloria (ver siguiente fuente): ese RUC
+            corresponde a la Municipalidad Provincial de Canas (Cusco), una entidad
+            homonima de otro departamento, no a Cajabamba.
+        - name: "Contraloria General de la Republica -- Portal de Transparencia Estandar"
+          url: "https://apps.contraloria.gob.pe/ciudadano/wfm_rpt_PteEntidad.aspx?RUC=20148288853"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "Confirma CAJAMARCA/CAJABAMBA/CAJABAMBA para RUC 20148288853"
+      consucode_verification_note: "Pendiente -- ver nota general del fichero."
+      inclusion_justification: null
+
+  - official_name: "MUNICIPALIDAD PROVINCIAL DE CELENDIN"
+    entity_level: provincial_municipality
+    province: CELENDIN
+    ruc: "20148289825"
+    consucode_id: null
+    department: CAJAMARCA
+    verified_at: "2026-08-20T00:00:00Z"
+    active: true
+    verification:
+      ruc_cross_verified: true
+      ruc_sources:
+        - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
+          url: "https://www.datosperu.org/empresa-municipalidad-provincial-de-celendin-20148289825.php"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "RUC 20148289825, activo, direccion en Celendin, Cajamarca"
+        - name: "Contraloria General de la Republica -- Portal de Transparencia Estandar"
+          url: "https://apps.contraloria.gob.pe/ciudadano/wfm_rpt_PteEntidad.aspx?RUC=20148289825"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "Confirma OBRAS DE MUNICIPALIDAD PROVINCIAL DE CELENDIN, CAJAMARCA/CELENDIN"
+      consucode_verification_note: "Pendiente -- ver nota general del fichero."
+      inclusion_justification: null
+
+  - official_name: "MUNICIPALIDAD PROVINCIAL DE CHOTA"
+    entity_level: provincial_municipality
+    province: CHOTA
+    ruc: "20220499767"
+    consucode_id: null
+    department: CAJAMARCA
+    verified_at: "2026-08-20T00:00:00Z"
+    active: true
+    verification:
+      ruc_cross_verified: true
+      ruc_sources:
+        - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
+          url: "https://www.datosperu.org/empresa-municipalidad-provincial-de-chota-20220499767.php"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "RUC 20220499767, activo, direccion en Chota, Cajamarca"
+        - name: "Contraloria General de la Republica -- Portal de Transparencia Estandar"
+          url: "https://apps.contraloria.gob.pe/ciudadano/wfm_rpt_PteEntidad.aspx?RUC=20220499767"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "Confirma OBRAS DE MUNICIPALIDAD PROVINCIAL DE CHOTA, CAJAMARCA"
+      consucode_verification_note: "Pendiente -- ver nota general del fichero."
+      inclusion_justification: null
+
+  - official_name: "MUNICIPALIDAD PROVINCIAL DE CONTUMAZA"
+    entity_level: provincial_municipality
+    province: CONTUMAZA
+    ruc: "20191657447"
+    consucode_id: null
+    department: CAJAMARCA
+    verified_at: "2026-08-20T00:00:00Z"
+    active: true
+    verification:
+      ruc_cross_verified: true
+      ruc_sources:
+        - name: "busqueda web (municontumaza.gob.pe / gob.pe, cruzada con datosperu.org)"
+          url: "https://www.gob.pe/municontumaza"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "RUC 20191657447, direccion en Contumaza, Cajamarca"
+        - name: "Contraloria General de la Republica -- Portal de Transparencia Estandar"
+          url: "https://apps.contraloria.gob.pe/ciudadano/wfm_rpt_PteEntidad.aspx?RUC=20191657447"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "Confirma CAJAMARCA/CONTUMAZA/CONTUMAZA para RUC 20191657447"
+      consucode_verification_note: "Pendiente -- ver nota general del fichero."
+      inclusion_justification: null
+
+  - official_name: "MUNICIPALIDAD PROVINCIAL DE CUTERVO"
+    entity_level: provincial_municipality
+    province: CUTERVO
+    ruc: "20174691267"
+    consucode_id: null
+    department: CAJAMARCA
+    verified_at: "2026-08-20T00:00:00Z"
+    active: true
+    verification:
+      ruc_cross_verified: true
+      ruc_sources:
+        - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
+          url: "https://www.datosperu.org/empresa-municipalidad-provincial-de-cutervo-20174691267.php"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "RUC 20174691267, activo, apto para contratar con el Estado"
+        - name: "Contraloria General de la Republica -- Portal de Transparencia Estandar"
+          url: "https://apps.contraloria.gob.pe/ciudadano/wfm_rpt_PteEntidad.aspx?RUC=20174691267"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "Confirma OBRAS DE MUNICIPALIDAD PROVINCIAL DE CUTERVO, CAJAMARCA"
+      consucode_verification_note: "Pendiente -- ver nota general del fichero."
+      inclusion_justification: null
+
+  - official_name: "MUNICIPALIDAD PROVINCIAL DE HUALGAYOC"
+    entity_level: provincial_municipality
+    province: HUALGAYOC
+    ruc: "20148260843"
+    consucode_id: null
+    department: CAJAMARCA
+    verified_at: "2026-08-20T00:00:00Z"
+    active: true
+    verification:
+      ruc_cross_verified: true
+      ruc_sources:
+        - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
+          url: "https://www.datosperu.org/empresa-municipalidad-provincial-de-hualgayoc-20148260843.php"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "RUC 20148260843, activo y habido, sede en Bambamarca (capital de la provincia de Hualgayoc)"
+        - name: "Contraloria General de la Republica -- Portal de Transparencia Estandar"
+          url: "https://apps.contraloria.gob.pe/ciudadano/wfm_rpt_PteEntidad.aspx?RUC=20148260843"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "Confirma CAJAMARCA/HUALGAYOC/BAMBAMARCA para RUC 20148260843"
+      consucode_verification_note: "Pendiente -- ver nota general del fichero."
+      inclusion_justification: null
+
+  - official_name: "MUNICIPALIDAD PROVINCIAL DE JAEN"
+    entity_level: provincial_municipality
+    province: JAEN
+    ruc: "20201987297"
+    consucode_id: null
+    department: CAJAMARCA
+    verified_at: "2026-08-20T00:00:00Z"
+    active: true
+    verification:
+      ruc_cross_verified: true
+      ruc_sources:
+        - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
+          url: "https://www.datosperu.org/empresa-municipalidad-provincial-de-jaen-20201987297.php"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "RUC 20201987297, sede en Jaen, Cajamarca"
+        - name: "Contraloria General de la Republica -- Portal de Transparencia Estandar"
+          url: "https://apps.contraloria.gob.pe/ciudadano/wfm_rpt_PteEntidad.aspx?RUC=20201987297"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: >-
+            Confirma OBRAS DE MUNICIPALIDAD PROVINCIAL DE JAEN, CAJAMARCA. Ojo: una
+            busqueda distinta encontro tambien un RUC 20215744907 indexado por
+            Contraloria como "cajamarca / jaen / santa rosa" -- es una entidad
+            distinta (posiblemente la Municipalidad Distrital de Santa Rosa, dentro de
+            la provincia de Jaen, no la provincial), descartado para esta fila.
+      consucode_verification_note: "Pendiente -- ver nota general del fichero."
+      inclusion_justification: null
+
+  - official_name: "MUNICIPALIDAD PROVINCIAL SAN IGNACIO"
+    entity_level: provincial_municipality
+    province: SAN IGNACIO
+    ruc: "20148261572"
+    consucode_id: null
+    department: CAJAMARCA
+    verified_at: "2026-08-20T00:00:00Z"
+    active: true
+    verification:
+      ruc_cross_verified: true
+      ruc_sources:
+        - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
+          url: "https://www.datosperu.org/empresa-municipalidad-provincial-san-ignacio-20148261572.php"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "RUC 20148261572, sede en San Ignacio, Cajamarca"
+        - name: "Contraloria General de la Republica -- Portal de Transparencia Estandar"
+          url: "https://apps.contraloria.gob.pe/ciudadano/wfm_rpt_PteEntidad.aspx?RUC=20148261572"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "Confirma CAJAMARCA/SAN IGNACIO/SAN IGNACIO para RUC 20148261572"
+      consucode_verification_note: "Pendiente -- ver nota general del fichero."
+      inclusion_justification: null
+
+  - official_name: "MUNICIPALIDAD PROVINCIAL DE SAN MARCOS"
+    entity_level: provincial_municipality
+    province: SAN MARCOS
+    ruc: "20175083937"
+    consucode_id: null
+    department: CAJAMARCA
+    verified_at: "2026-08-20T00:00:00Z"
+    active: true
+    verification:
+      ruc_cross_verified: true
+      ruc_sources:
+        - name: "sitio oficial munisanmarcos.gob.pe, cruzado con datosperu.org"
+          url: "https://munisanmarcos.gob.pe/web/"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "RUC 20175083937"
+        - name: "Contraloria General de la Republica -- Portal de Transparencia Estandar"
+          url: "https://apps.contraloria.gob.pe/ciudadano/wfm_rpt_PteEntidad.aspx?RUC=20175083937"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "Confirma CAJAMARCA/SAN MARCOS/PEDRO GALVEZ (capital de la provincia) para RUC 20175083937"
+      consucode_verification_note: >-
+        Pendiente. Un resultado de busqueda menciono un identificador
+        "PE-CONSUCODE-735" en una URL de dominio contratacionesabiertas.osce.gob.pe
+        (nota: "osce", no "oece") -- ese dominio no resuelve (DNS
+        "Non-existent domain", confirmado 2026-08-20): es un enlace muerto de un
+        indice de motor de busqueda a una version anterior/retirada del portal, no una
+        fuente verificable hoy. No se acepto ese consucode_id sin poder confirmarlo en
+        vivo.
+      inclusion_justification: null
+
+  - official_name: "MUNICIPALIDAD PROVINCIAL SAN MIGUEL"
+    entity_level: provincial_municipality
+    province: SAN MIGUEL
+    ruc: "20143625843"
+    consucode_id: null
+    department: CAJAMARCA
+    verified_at: "2026-08-20T00:00:00Z"
+    active: true
+    verification:
+      ruc_cross_verified: true
+      ruc_sources:
+        - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
+          url: "https://www.datosperu.org/empresa-municipalidad-provincial-san-miguel-20143625843.php"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "RUC 20143625843, sede en San Miguel, Cajamarca"
+        - name: "Contraloria General de la Republica -- Portal de Transparencia Estandar"
+          url: "https://apps.contraloria.gob.pe/ciudadano/wfm_rpt_PteEntidad.aspx?RUC=20143625843"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "Confirma CAJAMARCA/SAN MIGUEL/SAN MIGUEL para RUC 20143625843"
+      consucode_verification_note: "Pendiente -- ver nota general del fichero."
+      inclusion_justification: null
+
+  - official_name: "MUNICIPALIDAD PROVINCIAL DE SAN PABLO"
+    entity_level: provincial_municipality
+    province: SAN PABLO
+    ruc: "20172446800"
+    consucode_id: null
+    department: CAJAMARCA
+    verified_at: "2026-08-20T00:00:00Z"
+    active: true
+    verification:
+      ruc_cross_verified: true
+      ruc_sources:
+        - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
+          url: "https://munisanpablo.gob.pe/"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "RUC 20172446800, sede en San Pablo, Cajamarca"
+        - name: "Contraloria General de la Republica -- Portal de Transparencia Estandar"
+          url: "https://apps.contraloria.gob.pe/ciudadano/wfm_rpt_PteEntidad.aspx?RUC=20172446800"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "Confirma CAJAMARCA/SAN PABLO/SAN PABLO para RUC 20172446800"
+      consucode_verification_note: "Pendiente -- ver nota general del fichero."
+      inclusion_justification: null
+
+  - official_name: "MUNICIPALIDAD PROVINCIAL DE SANTA CRUZ"
+    entity_level: provincial_municipality
+    province: SANTA CRUZ
+    ruc: "20200367376"
+    consucode_id: null
+    department: CAJAMARCA
+    verified_at: "2026-08-20T00:00:00Z"
+    active: true
+    verification:
+      ruc_cross_verified: true
+      ruc_sources:
+        - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
+          url: "https://www.datosperu.org/empresa-municipalidad-provincial-de-santa-cruz-20200367376.php"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "RUC 20200367376, sede en Santa Cruz, Cajamarca"
+        - name: "Contraloria General de la Republica -- Portal de Transparencia Estandar"
+          url: "https://apps.contraloria.gob.pe/ciudadano/wfm_rpt_PteEntidad.aspx?RUC=20200367376"
+          retrieved_at: "2026-08-20T00:00:00Z"
+          note: "Confirma CAJAMARCA/SANTA CRUZ/SANTA CRUZ para RUC 20200367376"
+      consucode_verification_note: "Pendiente -- ver nota general del fichero."
+      inclusion_justification: null

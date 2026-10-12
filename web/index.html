@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Cajamarca Qhaway: Observatorio Civico Regional de contrataciones publicas y ejecucion presupuestal en el departamento de Cajamarca.">
+  <meta name="theme-color" content="#0F766E">
+  <title>Cajamarca Qhaway: Observatorio Civico Regional</title>
+
+  <!-- Tipografias Google Fonts: Plus Jakarta Sans y JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3.3 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+  <!-- Hojas de Estilo Locales del Proyecto -->
+  <link rel="stylesheet" href="src/css/tokens.css">
+  <link rel="stylesheet" href="src/css/main.css">
+  <link rel="stylesheet" href="src/css/components.css">
+</head>
+<body>
+  <!-- Enlace de Salto Accesible (Skip Link) -->
+  <a href="#app-view-container" class="skip-link">Saltar al contenido principal</a>
+
+  <!-- Franja Institucional Superior de Transparencia Activa -->
+  <div class="top-transparency-bar" role="region" aria-label="Informacion de transparencia institucional y accesibilidad">
+    <div class="container">
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <span class="badge bg-secondary-subtle text-secondary-emphasis border px-2 py-1">Ambito: Region Cajamarca (Fase 1)</span>
+        <span id="connection-status-badge" class="badge-connection" role="status" aria-live="polite">
+          <span class="status-indicator" aria-hidden="true"></span>
+          <span id="connection-status-text">Conectado a Red Oficial</span>
+        </span>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <!-- Conmutador de Modo Rural Ligero -->
+        <button type="button" id="btn-rural-mode" class="btn btn-sm btn-outline-secondary py-1 px-2" aria-pressed="false" title="Optimizar vista para conexiones rurales de baja velocidad (2G/3G)">
+          <span class="btn-text">Modo Rural Ligero</span>
+        </button>
+
+        <!-- Conmutador de Tema Claro/Oscuro -->
+        <button type="button" id="btn-theme-toggle" class="btn btn-sm btn-outline-secondary py-1 px-2" aria-label="Cambiar tema de color" title="Alternar entre tema claro y tema oscuro">
+          <span id="theme-toggle-label">Tema Oscuro</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Encabezado y Barra de Navegacion Principal -->
+  <header class="site-header" role="banner">
+    <nav class="navbar navbar-expand-lg py-2" aria-label="Navegacion principal del observatorio">
+      <div class="container">
+        <!-- Logotipo Institucional -->
+        <a class="navbar-brand" href="#/inicio" data-route="#/inicio" aria-label="Ir a la pagina de inicio de Cajamarca Qhaway">
+          <img src="media/brand-mark.svg" alt="Logotipo de Cajamarca Qhaway" width="180" height="38">
+        </a>
+
+        <!-- Boton de Menu Movil Accesible -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMainCollapse" aria-controls="navbarMainCollapse" aria-expanded="false" aria-label="Abrir menu de navegacion">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Menu Colapsable -->
+        <div class="collapse navbar-collapse" id="navbarMainCollapse">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="#/inicio" data-route="#/inicio">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#/entidades" data-route="#/entidades">14 Entidades</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#/alertas" data-route="#/alertas">Alertas Publicadas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#/contrataciones" data-route="#/contrataciones">Contratos SEACE</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#/presupuesto" data-route="#/presupuesto">Presupuesto MEF</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#/denuncia" data-route="#/denuncia">Denuncia Ciudadana</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#/transparencia" data-route="#/transparencia">Transparencia y Datos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#/acerca" data-route="#/acerca">Acerca del Observatorio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-warning-emphasis" href="#/admin/revision" data-route="#/admin/revision">Panel Revisor CU5</a>
+            </li>
+          </ul>
+
+          <!-- Buscador Rapido Global -->
+          <form class="d-flex global-search-container" id="global-search-form" role="search" onsubmit="event.preventDefault();">
+            <label for="global-search-input" class="visually-hidden">Buscar entidad, RUC o contrato</label>
+            <input class="form-control form-control-search me-2" type="search" id="global-search-input" placeholder="Buscar RUC o contrato..." aria-label="Buscar entidad o codigo de contrato">
+          </form>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Contenedor Principal de la SPA con Estado Accesible -->
+  <main id="app-view-container" class="container py-4" tabindex="-1" aria-live="polite" aria-busy="true">
+    <!-- Estado de Carga Inicial Accesible (R-27) -->
+    <div id="app-initial-loading" class="ui-state-loading" role="status">
+      <div class="spinner-border text-primary mb-3" style="width: 2.5rem; height: 2.5rem;" role="status">
+        <span class="visually-hidden">Cargando observatorio civico...</span>
+      </div>
+      <h2 class="h5">Cargando datos verificados de la Region Cajamarca</h2>
+      <p class="text-muted small">Consultando fuentes oficiales OCDS SEACE y MEF DataStore...</p>
+    </div>
+
+    <!-- Estructura de Respaldo Noscript / SSR: Universo de 14 Entidades (Art. 18) -->
+    <noscript>
+      <section class="card mb-4 border-warning shadow-sm" aria-labelledby="noscript-title">
+        <div class="card-header bg-warning-subtle text-warning-emphasis">
+          <h2 id="noscript-title" class="h6 mb-0">Modo de Respaldo Sin JavaScript (Accesibilidad Basica)</h2>
+        </div>
+        <div class="card-body">
+          <p>La plataforma interactiva requiere JavaScript para exploracion dinamica. A continuacion se presenta el directorio verificado del universo de 14 entidades fiscalizadas en la Region Cajamarca (Fase 1):</p>
+          <div class="table-responsive">
+            <table class="table table-bordered table-sm align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">Nivel</th>
+                  <th scope="col">Nombre Oficial de la Entidad</th>
+                  <th scope="col">Provincia</th>
+                  <th scope="col">RUC</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="badge bg-primary">Regional</span></td>
+                  <td><strong>GOBIERNO REGIONAL DE CAJAMARCA</strong></td>
+                  <td>Cajamarca (Sede Central)</td>
+                  <td><code>20453744168</code></td>
+                </tr>
+                <tr>
+                  <td><span class="badge bg-secondary">Provincial</span></td>
+                  <td>MUNICIPALIDAD PROVINCIAL DE CAJAMARCA</td>
+                  <td>Cajamarca</td>
+                  <td><code>20143623042</code></td>
+                </tr>
+                <tr>
+                  <td><span class="badge bg-secondary">Provincial</span></td>
+                  <td>MUNICIPALIDAD PROVINCIAL DE CAJABAMBA</td>
+                  <td>Cajabamba</td>
+                  <td><code>20148288853</code></td>
+                </tr>
+                <tr>
+                  <td><span class="badge bg-secondary">Provincial</span></td>
+                  <td>MUNICIPALIDAD PROVINCIAL DE CELENDIN</td>
+                  <td>Celendin</td>
+                  <td><code>20148289825</code></td>
+                </tr>
+                <tr>
+                  <td><span class="badge bg-secondary">Provincial</span></td>
+                  <td>MUNICIPALIDAD PROVINCIAL DE CHOTA</td>
+                  <td>Chota</td>
+                  <td><code>20220499767</code></td>
+                </tr>
+                <tr>
+                  <td><span class="badge bg-secondary">Provincial</span></td>
+                  <td>MUNICIPALIDAD PROVINCIAL DE CONTUMAZA</td>
+                  <td>Contumaza</td>
+                  <td><code>20191657447</code></td>
+                </tr>
+                <tr>
+                  <td><span class="badge bg-secondary">Provincial</span></td>
+                  <td>MUNICIPALIDAD PROVINCIAL DE CUTERVO</td>
+                  <td>Cutervo</td>
+                  <td><code>20174691267</code></td>
+                </tr>
+                <tr>
+                  <td><span class="badge bg-secondary">Provincial</span></td>
+                  <td>MUNICIPALIDAD PROVINCIAL DE HUALGAYOC</td>
+                  <td>Hualgayoc (Bambamarca)</td>
+                  <td><code>20148260843</code></td>
+                </tr>
+                <tr>
+                  <td><span class="badge bg-secondary">Provincial</span></td>
+                  <td>MUNICIPALIDAD PROVINCIAL DE JAEN</td>
+                  <td>Jaen</td>
+                  <td><code>20201987297</code></td>
+                </tr>
+                <tr>
+                  <td><span class="badge bg-secondary">Provincial</span></td>
+                  <td>MUNICIPALIDAD PROVINCIAL SAN IGNACIO</td>
+                  <td>San Ignacio</td>
+                  <td><code>20148261572</code></td>
+                </tr>
+                <tr>
+                  <td><span class="badge bg-secondary">Provincial</span></td>
+                  <td>MUNICIPALIDAD PROVINCIAL DE SAN MARCOS</td>
+                  <td>San Marcos</td>
+                  <td><code>20175083937</code></td>
+                </tr>
+                <tr>
+                  <td><span class="badge bg-secondary">Provincial</span></td>
+                  <td>MUNICIPALIDAD PROVINCIAL SAN MIGUEL</td>
+                  <td>San Miguel</td>
+                  <td><code>20143625843</code></td>
+                </tr>
+                <tr>
+                  <td><span class="badge bg-secondary">Provincial</span></td>
+                  <td>MUNICIPALIDAD PROVINCIAL DE SAN PABLO</td>
+                  <td>San Pablo</td>
+                  <td><code>20172446800</code></td>
+                </tr>
+                <tr>
+                  <td><span class="badge bg-secondary">Provincial</span></td>
+                  <td>MUNICIPALIDAD PROVINCIAL DE SANTA CRUZ</td>
+                  <td>Santa Cruz</td>
+                  <td><code>20200367376</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="alert alert-info py-2 px-3 mb-0 small">
+            <strong>Descargo Legal:</strong> Indicador de riesgo automatizado, no constituye prueba ni acusacion formal de corrupcion.
+          </div>
+        </div>
+      </section>
+    </noscript>
+  </main>
+
+  <!-- Modal Accesible 1: Ficha de Explicabilidad Algoritmica Completa (Articulo 15) -->
+  <div class="modal fade" id="modal-explicabilidad" tabindex="-1" aria-labelledby="modal-explicabilidad-title" aria-hidden="true" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title h5" id="modal-explicabilidad-title">Ficha de Explicabilidad Algoritmica (Articulo 15)</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar ventana de explicabilidad"></button>
+        </div>
+        <div class="modal-body" id="modal-explicabilidad-body">
+          <!-- Contenido renderizado dinamicamente por explicabilidad.js -->
+          <div class="text-center py-4 text-muted">Cargando desglose algoritmico del indicador...</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Accesible 2: Inspector de Evidencia Original JSON (raw_payload, Articulo 10) -->
+  <div class="modal fade" id="modal-raw-payload" tabindex="-1" aria-labelledby="modal-raw-payload-title" aria-hidden="true" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title h5" id="modal-raw-payload-title">Evidencia Original JSON (raw_payload)</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar inspector de evidencia"></button>
+        </div>
+        <div class="modal-body">
+          <p class="small text-muted mb-2">Registro canónico original capturado desde la API oficial sin alteraciones manuales (Art. 10):</p>
+          <pre class="bg-dark text-light p-3 rounded" style="max-height: 400px; overflow-y: auto;"><code id="modal-raw-payload-code" class="font-monospace text-wrap">{}</code></pre>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btn-copy-payload" class="btn btn-outline-primary">Copiar JSON al portapapeles</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pie de Pagina Sobrio Estructurado en Secciones Reales (R-05) -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="row g-4 mb-4">
+        <div class="col-12 col-md-4">
+          <div class="mb-3">
+            <img src="media/brand-mark.svg" alt="Logotipo Cajamarca Qhaway" width="160" height="34">
+          </div>
+          <p class="small text-muted mb-2">
+            Observatorio civico regional para la vigilancia transparente y ciudadana de las contrataciones publicas y la ejecucion presupuestal en el departamento de Cajamarca.
+          </p>
+          <p class="small text-muted mb-0">
+            Fase 1: Cobertura exclusiva de 14 entidades (Gobierno Regional y 13 Municipalidades Provinciales).
+          </p>
+        </div>
+
+        <div class="col-6 col-md-2">
+          <h6>Explorar Datos</h6>
+          <ul>
+            <li><a href="#/inicio">Inicio</a></li>
+            <li><a href="#/entidades">14 Entidades</a></li>
+            <li><a href="#/alertas">Alertas Publicadas</a></li>
+            <li><a href="#/contrataciones">Contratos SEACE</a></li>
+            <li><a href="#/presupuesto">Presupuesto MEF</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <h6>Participacion Civica</h6>
+          <ul>
+            <li><a href="#/denuncia">Denuncia Ciudadana</a></li>
+            <li><a href="#/transparencia">Transparencia y Metodologia</a></li>
+            <li><a href="#/acerca">Acerca del Observatorio</a></li>
+            <li><a href="#/admin/revision">Panel de Revision (CU5)</a></li>
+          </ul>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <h6>Fuentes Verificadas</h6>
+          <ul class="small text-muted">
+            <li class="mb-1"><strong>SEACE:</strong> Open Contracting Data Standard (OCDS)</li>
+            <li class="mb-1"><strong>MEF:</strong> Portal Datos Abiertos (CKAN DataStore)</li>
+            <li class="mb-1"><strong>RENIEC / SUNAT:</strong> Validacion RUC institucional</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Aviso Legal y Principios Constitucionales SDD -->
+      <div class="footer-legal-notice">
+        <div class="row align-items-center">
+          <div class="col-12 mb-2">
+            <strong>Descargo Legal Obligatorio:</strong> Indicador de riesgo automatizado, no constituye prueba ni acusacion formal de corrupcion.
+          </div>
+          <div class="col-12 col-lg-8">
+            <p class="mb-0 small">
+              <strong>Principios Constitucionales:</strong> Alcance territorial exclusivo para la Region Cajamarca (Art. 18). Prohibicion expresa de calificacion, scoring o ranking sobre personas naturales por nombre propio (Art. 16). La informacion de Declaraciones Juradas de Intereses (DJI) se mantiene en estado reservado y en evaluacion legal estricta conforme a la Ley 29733 de Proteccion de Datos Personales (Art. 17).
+            </p>
+          </div>
+          <div class="col-12 col-lg-4 text-lg-end mt-2 mt-lg-0">
+            <span class="badge bg-secondary-subtle text-secondary-emphasis border">Version 1.0 (Fase 1)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5.3.3 JS Bundle CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+  <!-- Modulo Inicializador de la Aplicacion Web -->
+  <script type="module" src="src/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 740" width="100%" height="auto" role="img" aria-labelledby="map-title map-desc" class="cajamarca-regional-map">
+  <title id="map-title">Mapa de las 13 Provincias del Departamento de Cajamarca</title>
+  <desc id="map-desc">Mapa vectorial esquematico interactivo para exploracion y filtrado de entidades provinciales</desc>
+
+  <style>
+    .province-group {
+      cursor: pointer;
+      transition: fill 0.15s ease, stroke 0.15s ease;
+    }
+    .province-group path {
+      fill: #F1F5F9;
+      stroke: #0F766E;
+      stroke-width: 1.5;
+      stroke-linejoin: round;
+    }
+    .province-group:hover path,
+    .province-group:focus path {
+      fill: #CCFBF1;
+      stroke: #115E59;
+      stroke-width: 2.5;
+    }
+    .province-label {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      fill: #0F172A;
+      text-anchor: middle;
+      pointer-events: none;
+      letter-spacing: 0.02em;
+    }
+    .province-sublabel {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      fill: #64748B;
+      text-anchor: middle;
+      pointer-events: none;
+    }
+  </style>
+
+  <!-- 1. SAN IGNACIO (Extremo Norte) -->
+  <g class="province-group" data-province="SAN IGNACIO" tabindex="0" role="button" aria-label="Provincia de San Ignacio">
+    <path d="M 230,30 L 370,35 L 395,95 L 360,135 L 250,130 L 210,85 Z" />
+    <text x="300" y="80" class="province-label">SAN IGNACIO</text>
+    <text x="300" y="94" class="province-sublabel">Norte</text>
+  </g>
+
+  <!-- 2. JAEN (Norte Medio) -->
+  <g class="province-group" data-province="JAEN" tabindex="0" role="button" aria-label="Provincia de Jaen">
+    <path d="M 250,130 L 360,135 L 430,165 L 405,245 L 290,240 L 235,185 Z" />
+    <text x="330" y="185" class="province-label">JAEN</text>
+    <text x="330" y="199" class="province-sublabel">Valle Nororiental</text>
+  </g>
+
+  <!-- 3. CUTERVO (Centro Norte) -->
+  <g class="province-group" data-province="CUTERVO" tabindex="0" role="button" aria-label="Provincia de Cutervo">
+    <path d="M 235,185 L 290,240 L 330,240 L 320,320 L 210,315 L 175,245 Z" />
+    <text x="250" y="270" class="province-label">CUTERVO</text>
+    <text x="250" y="284" class="province-sublabel">Cordillera Central</text>
+  </g>
+
+  <!-- 4. CHOTA (Centro Norte) -->
+  <g class="province-group" data-province="CHOTA" tabindex="0" role="button" aria-label="Provincia de Chota">
+    <path d="M 210,315 L 320,320 L 380,310 L 390,390 L 265,395 L 205,370 Z" />
+    <text x="295" y="355" class="province-label">CHOTA</text>
+    <text x="295" y="369" class="province-sublabel">Meseta Chotana</text>
+  </g>
+
+  <!-- 5. SANTA CRUZ (Oeste Medio) -->
+  <g class="province-group" data-province="SANTA CRUZ" tabindex="0" role="button" aria-label="Provincia de Santa Cruz">
+    <path d="M 115,345 L 205,370 L 225,435 L 140,440 L 105,395 Z" />
+    <text x="165" y="405" class="province-label">SANTA CRUZ</text>
+    <text x="165" y="418" class="province-sublabel">Cuenca Chancay</text>
+  </g>
+
+  <!-- 6. HUALGAYOC (Bambamarca - Centro) -->
+  <g class="province-group" data-province="HUALGAYOC" tabindex="0" role="button" aria-label="Provincia de Hualgayoc">
+    <path d="M 265,395 L 350,395 L 365,465 L 275,470 L 225,435 Z" />
+    <text x="295" y="435" class="province-label">HUALGAYOC</text>
+    <text x="295" y="449" class="province-sublabel">Bambamarca</text>
+  </g>
+
+  <!-- 7. CELENDIN (Oriente) -->
+  <g class="province-group" data-province="CELENDIN" tabindex="0" role="button" aria-label="Provincia de Celendin">
+    <path d="M 380,310 L 485,340 L 490,460 L 385,470 L 350,395 L 390,390 Z" />
+    <text x="425" y="405" class="province-label">CELENDIN</text>
+    <text x="425" y="419" class="province-sublabel">Cuenca Maranon</text>
+  </g>
+
+  <!-- 8. SAN MIGUEL (Suroeste Medio) -->
+  <g class="province-group" data-province="SAN MIGUEL" tabindex="0" role="button" aria-label="Provincia de San Miguel">
+    <path d="M 100,445 L 210,440 L 230,515 L 145,540 L 85,505 Z" />
+    <text x="160" y="490" class="province-label">SAN MIGUEL</text>
+    <text x="160" y="503" class="province-sublabel">De Pallaques</text>
+  </g>
+
+  <!-- 9. SAN PABLO (Centro Sur) -->
+  <g class="province-group" data-province="SAN PABLO" tabindex="0" role="button" aria-label="Provincia de San Pablo">
+    <path d="M 210,470 L 270,470 L 285,530 L 230,535 L 210,470 Z" />
+    <text x="245" y="500" class="province-label">SAN PABLO</text>
+    <text x="245" y="513" class="province-sublabel">Alto Jequetepeque</text>
+  </g>
+
+  <!-- 10. CAJAMARCA (Capital Departamental) -->
+  <g class="province-group" data-province="CAJAMARCA" tabindex="0" role="button" aria-label="Provincia de Cajamarca">
+    <path d="M 270,470 L 385,470 L 410,565 L 305,580 L 285,530 Z" />
+    <text x="345" y="525" class="province-label">CAJAMARCA</text>
+    <text x="345" y="539" class="province-sublabel">Sede Central GORE</text>
+  </g>
+
+  <!-- 11. CONTUMAZA (Suroeste) -->
+  <g class="province-group" data-province="CONTUMAZA" tabindex="0" role="button" aria-label="Provincia de Contumaza">
+    <path d="M 125,545 L 230,535 L 260,635 L 150,640 L 95,595 Z" />
+    <text x="180" y="585" class="province-label">CONTUMAZA</text>
+    <text x="180" y="599" class="province-sublabel">Vertiente Pacifico</text>
+  </g>
+
+  <!-- 12. SAN MARCOS (Sureste Medio) -->
+  <g class="province-group" data-province="SAN MARCOS" tabindex="0" role="button" aria-label="Provincia de San Marcos">
+    <path d="M 385,545 L 460,545 L 465,630 L 385,635 L 350,575 Z" />
+    <text x="415" y="590" class="province-label">SAN MARCOS</text>
+    <text x="415" y="604" class="province-sublabel">Valle Crisnejas</text>
+  </g>
+
+  <!-- 13. CAJABAMBA (Extremo Sur) -->
+  <g class="province-group" data-province="CAJABAMBA" tabindex="0" role="button" aria-label="Provincia de Cajabamba">
+    <path d="M 345,635 L 465,630 L 440,715 L 340,710 L 315,650 Z" />
+    <text x="390" y="675" class="province-label">CAJABAMBA</text>
+    <text x="390" y="689" class="province-sublabel">Sur Andino</text>
+  </g>
+
+  <!-- Rosa de los Vientos Sobria -->
+  <g transform="translate(520, 60)">
+    <circle cx="0" cy="0" r="22" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1" />
+    <path d="M 0,-18 L 4,-4 L 0,0 L -4,-4 Z" fill="#0F766E" />
+    <path d="M 0,18 L 4,4 L 0,0 L -4,4 Z" fill="#94A3B8" />
+    <text x="0" y="-22" font-family="'Plus Jakarta Sans', sans-serif" font-size="10" font-weight="700" fill="#0F766E" text-anchor="middle">N</text>
+  </g>
+</svg>

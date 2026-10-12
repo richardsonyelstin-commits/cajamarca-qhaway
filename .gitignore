@@ -30,3 +30,9 @@ Thumbs.db
 context/snapshots/*.tmp
 .cache/
 coverage/
+*.egg-info/
+src/*.egg-info/
+
+# Datos crudos locales no publicables (Ley 29733)
+Chat de WhatsApp*/
+

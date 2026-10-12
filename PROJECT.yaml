@@ -9,23 +9,54 @@ created: 2026-08-20
 owner: richardsonyelstin
 
 summary: >
-  Una o dos frases. Qué hace y para quién.
+  Plataforma de monitoreo ciudadano de corrupción en administración pública, con IA
+  aplicada a detección de riesgo (red flags) sobre datos oficiales abiertos. Fase 1
+  acotada a la región Cajamarca, Perú: contrataciones públicas (SEACE/OCDS), ejecución
+  presupuestal (MEF) y declaraciones juradas de intereses (DJI), con canal de denuncia
+  ciudadana curada e incluye acceso alterno (SMS/WhatsApp) por la conectividad rural
+  desigual de la región.
 
 stack:
-  language: null
-  framework: null
-  runtime: null
-  datastore: null
-  tests: null
+  language: python            # ADR 0001, accepted 2026-08-20
+  framework: null              # backend web sin decidir aun; ver docs/adr/0001, seccion "Negativas"
+  runtime: python3.12
+  datastore: PostgreSQL        # ADR 0002/0003, accepted 2026-08-20; CTE recursivas para el grafo
+                                # proveedor-funcionario-contrato
+  tests: pytest                # convencion heredada de scientific-literature-pipeline, ver ADR 0001
 
 commands:
-  install: null
+  install: "python -m venv .venv && .venv/Scripts/python -m pip install -e \".[dev]\""
   dev: null
-  test: null
-  lint: null
+  test: ".venv/Scripts/python -m pytest -q"
+  lint: null                 # sin decidir aun, ver CLAUDE.md
   build: null
 
-entrypoints: []             # rutas de los puntos de entrada del código
+entrypoints:
+  - "cajamarca-qhaway"                     # CLI principal del pipeline de monitoreo (0.1.0)
+  - "scripts/seed_contracting_entities.py"  # siembra data/entities/*.yaml a PostgreSQL (ADR 0006)
+
+scope:
+  fase: 1
+  ambito_geografico: región Cajamarca (Gobierno Regional + 13 municipalidades provinciales)
+  dominios_de_datos:
+    - contrataciones-seace-ocds
+    - ejecucion-presupuestal-mef
+    - dji-relaciones-declaradas
+  incluye_canal_denuncia: true   # decision del usuario 2026-08-20: contra la recomendacion
+                                  # inicial (solo monitoreo pasivo); implica moderacion y
+                                  # proteccion del denunciante desde el dia uno.
+  usa_dji: true                  # limitado a relaciones declaradas funcionario-empresa-familiar,
+                                  # nunca cruces con patrimonio/gasto no declarado. Pendiente:
+                                  # evaluacion legal formal bajo Ley 29733 antes de implementar.
+  coordinacion_previa_requerida: true  # decision del usuario: coordinar con actores existentes
+                                        # (Proetica Cajamarca, Propuesta Ciudadana, GRUFIDES)
+                                        # antes de avanzar con desarrollo tecnico.
+  fuera_de_alcance:
+    - cobertura nacional o de otras regiones
+    - cruce automatizado DJI con datos de terceros (redes sociales, gasto, propiedades)
+    - scoring o ranking publico de personas (solo de procesos/contratos)
+    - imagenes satelitales / verificacion fisica de obras
+    - app movil nativa
 
 context:
   l0: [CLAUDE.md, PROJECT.yaml]

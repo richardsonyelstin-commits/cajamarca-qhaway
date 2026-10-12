@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cajamarca-qhaway"
+version = "0.1.0"
+description = "Monitoreo ciudadano de corrupcion en contratacion publica - Cajamarca, Peru (Fase 1)"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Proprietary" }
+authors = [{ name = "richardsonyelstin" }]
+dependencies = [
+    # ADR 0001: Python 3.12, mismo patron de contratos que scientific-literature-pipeline.
+    "pydantic>=2.7",
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+# ADR 0002/0003/0006: la siembra a PostgreSQL es un paso operativo aparte, no una
+# dependencia de ejecucion del paquete. Ningun modulo bajo src/ importa psycopg a nivel
+# de modulo: solo scripts/seed_contracting_entities.py, que declara este extra.
+db = [
+    "psycopg[binary]>=3.1",
+]
+
+[project.scripts]
+cajamarca-qhaway = "cajamarca_qhaway.cli:main"
+cajamarca-qhaway-seed-entities = "cajamarca_qhaway.capabilities.entity_mapping.seed:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cajamarca_qhaway"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = [
+    "contract: prueba de contrato derivada de un criterio de aceptacion de una spec",
+]

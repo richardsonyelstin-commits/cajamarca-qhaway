@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" width="220" height="48" role="img" aria-labelledby="brand-title brand-desc">
+  <title id="brand-title">Cajamarca Qhaway: Observatorio Civico Regional</title>
+  <desc id="brand-desc">Emblema civico de vigilancia ciudadana y transparencia publica regional en Cajamarca</desc>
+  <defs>
+    <clipPath id="symbol-clip">
+      <rect x="2" y="4" width="40" height="40" rx="8" />
+    </clipPath>
+  </defs>
+
+  <!-- Isotipo: Geometria Andina y Ojo Vigilante Qhaway -->
+  <g id="brand-symbol">
+    <!-- Marco perimetral litoide -->
+    <rect x="2" y="4" width="40" height="40" rx="6" fill="#0F766E" />
+    <!-- Escalonado andino interno -->
+    <path d="M 8 16 L 16 16 L 16 8 L 26 8 L 26 16 L 34 16 L 34 26 L 26 26 L 26 34 L 16 34 L 16 26 L 8 26 Z" fill="#115E59" opacity="0.6"/>
+    <!-- Prisma de vision y lente de transparencia (Qhaway) -->
+    <circle cx="21" cy="24" r="8" fill="#F8FAFC" />
+    <circle cx="21" cy="24" r="4.5" fill="#0F766E" />
+    <circle cx="23" cy="22" r="1.5" fill="#F8FAFC" />
+    <!-- Punto focal terracota de alerta civica -->
+    <circle cx="32" cy="14" r="3" fill="#B45309" />
+  </g>
+
+  <!-- Tipografia Institucional Vectorial -->
+  <g id="brand-text" fill="currentColor">
+    <text x="52" y="24" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="15" font-weight="800" letter-spacing="0.06em" fill="#0F172A">CAJAMARCA</text>
+    <text x="52" y="38" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="13" font-weight="700" letter-spacing="0.14em" fill="#0F766E">QHAWAY</text>
+  </g>
+</svg>

@@ -1,3 +1,14 @@
+---
+title: Índice de documentación — cajamarca-qhaway
+status: active
+created: 2026-08-20
+updated: 2026-10-12
+source: ai
+generator: claude-sonnet-5
+confidence: high
+verified: false
+---
+
 # Índice de documentación — cajamarca-qhaway
 
 **El archivo más importante de este proyecto para un agente.**
@@ -12,9 +23,20 @@ ajustar la columna "Cargar cuando".
 | Documento | Responde a | Cargar cuando | Tokens |
 |---|---|---|---|
 | `architecture/overview.md` | ¿Cómo está construido? | Cambio estructural, módulo nuevo | ~1800 |
-| `roadmap.md` | ¿Qué viene después? | Priorizar, planificar | ~400 |
+| `architecture/002-live-harvester-worker.md` | ¿Cómo opera la cosecha continua SEACE/MEF (Pilar 1)? | Antes de tocar `live_harvest` | ~2200 |
+| `architecture/003-supabase-persistence-architecture.md` | ¿Cómo opera la persistencia relacional en Supabase y el spool local (Pilar 2)? | Antes de tocar `persistence` o migraciones SQL | ~2400 |
+| `architecture/004-sitemap-cajamarca-qhaway.md` | ¿Cuál es el mapa de sitio, árbol de rutas SPA y cobertura de CU1-CU5 (Pilar 3)? | Antes de modificar rutas o vistas de `web/` | ~2000 |
+| `architecture/005-web-platform-architecture.md` | ¿Cómo está estructurada la plataforma web (`web/`, puente Python, Supabase RLS y Vercel)? | Antes de tocar `web/`, `cajamarca_qhaway.web` o `vercel.json` | ~2500 |
+| `deployment/001-cloud-deployment-guide.md` | ¿Cómo se despliega y conecta con GitHub, Supabase (`tiythjlrjhvwkiqsnvwq`) y Vercel? | Antes de tocar `.github/workflows/`, `vercel.json` o `api/index.py` | ~1200 |
+| `roadmap.md` | ¿Qué viene después? | Priorizar, planificar | ~600 |
 | `adr/` | ¿Por qué se decidió X? | Cuestionar una decisión existente | variable |
 | `glossary.md` | ¿Qué significa este término? | Aparece jerga del dominio | ~300 |
+| `research/2026-08-20-diseno-cajamarca-qhaway-fase1.md` | ¿Qué se investigó y diseñó para Fase 1 (Cajamarca)? Casos de uso, arquitectura propuesta, riesgos, decisiones pendientes | Antes de tocar alcance, arquitectura o roadmap | ~3500 |
+| `research/2026-08-20-verificacion-tecnica-fuentes.md` | ¿Funciona de verdad la API OCDS de OECE y hay API real en el MEF? Evidencia HTTP real, no supuesta | Antes de tocar `002-seace-ingestion` o `003-mef-ingestion` | ~2200 |
+| `sdd/constitution.md` | ¿Qué reglas gobiernan cómo se escribe una spec aquí? Incluye los contratos canónicos compartidos | Antes de crear o modificar cualquier `specs/NNN-*/` | ~2800 |
+| `sdd/README.md` | ¿Qué es SDD en este proyecto y cómo se usa? | Primera vez que se toca `specs/` | ~400 |
+| `../specs/README.md` | ¿Qué capacidades tienen spec y cuáles están reservadas, y por qué? | Antes de elegir qué capacidad especificar o implementar | ~500 |
+| `../specs/pending-adrs.md` | ¿Qué decisiones arquitectónicas quedaron pendientes de ADR? | Antes de redactar un ADR nuevo | ~1200 |
 
 <!-- Añade una fila por documento. Sin fila, el documento es invisible para el agente:
      eso es deliberado y a menudo correcto. -->
@@ -30,6 +52,7 @@ ajustar la columna "Cargar cuando".
 | Contexto de negocio | `brain/20-projects/cajamarca-qhaway/context.md` |
 | Decisiones transversales | `brain/30-decisions/` |
 | Patrones aplicados | ver `PROJECT.yaml` → `knowledge.patterns` |
+| Estado del arte de IA anticorrupción (general, no específico de Cajamarca) | `brain/70-inbox/2026-08-20-estado-del-arte-ia-anticorrupcion.md` (`verified: false`) |
 
 ## Presupuesto
 
