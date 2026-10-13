@@ -10,6 +10,7 @@ import json
 import mimetypes
 import posixpath
 import sys
+import time
 import traceback
 import urllib.parse
 from http import HTTPStatus
@@ -299,6 +300,59 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
             meta = sunat_data.get("metadata", {})
             return 200, "application/json; charset=utf-8", json.dumps(meta).encode("utf-8")
 
+        if path == "/api/geospatial/works":
+            works = snap.get("geospatial_works", [])
+            site_id = query.get("id", [None])[0] or query.get("site_id", [None])[0]
+            if site_id:
+                m = next((w for w in works if w.get("site_id") == site_id), None)
+                if m:
+                    return 200, "application/json; charset=utf-8", json.dumps(m).encode("utf-8")
+                return 404, "application/json; charset=utf-8", json.dumps({"error": f"Obra '{site_id}' no encontrada"}).encode("utf-8")
+            prov = query.get("province", [None])[0]
+            if prov:
+                prov_clean = prov.strip().lower()
+                works = [w for w in works if w.get("province", "").strip().lower() == prov_clean]
+            return 200, "application/json; charset=utf-8", json.dumps(works).encode("utf-8")
+
+        if path == "/api/geospatial/divergence":
+            signals = snap.get("geospatial_signals", [])
+            site_id = query.get("site_id", [None])[0] or query.get("id", [None])[0]
+            if site_id:
+                m = next((s for s in signals if s.get("site_id") == site_id), None)
+                if m:
+                    return 200, "application/json; charset=utf-8", json.dumps(m).encode("utf-8")
+                return 404, "application/json; charset=utf-8", json.dumps({"error": f"Senal para '{site_id}' no encontrada"}).encode("utf-8")
+            sev = query.get("severity", [None])[0]
+            if sev:
+                sev_clean = sev.strip().lower()
+                signals = [s for s in signals if s.get("severity", "").strip().lower() == sev_clean]
+            return 200, "application/json; charset=utf-8", json.dumps(signals).encode("utf-8")
+
+        if path == "/api/reports/moderate" and method == "POST":
+            auth_val = req_headers.get("authorization", "")
+            if not auth_val.startswith("Bearer "):
+                return 401, "application/json; charset=utf-8", json.dumps({"error": "Autenticacion requerida"}).encode("utf-8")
+            try:
+                data = json.loads(body.decode("utf-8")) if body else {}
+            except Exception:
+                return 400, "application/json; charset=utf-8", json.dumps({"error": "JSON invalido"}).encode("utf-8")
+            report_id = str(data.get("report_id", "")).strip()
+            status = str(data.get("status") or data.get("moderation_status", "")).strip()
+            moderator = str(data.get("moderated_by", "Veedor Acreditado")).strip()
+            if not report_id:
+                return 400, "application/json; charset=utf-8", json.dumps({"error": "report_id obligatorio"}).encode("utf-8")
+            if status not in ("accepted_as_lead", "rejected"):
+                return 400, "application/json; charset=utf-8", json.dumps({"error": "Estado invalido"}).encode("utf-8")
+            now_iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+            rep_res = {
+                "success": True,
+                "report_id": report_id,
+                "moderation_status": status,
+                "moderated_by": moderator,
+                "moderated_at": now_iso,
+            }
+            return 200, "application/json; charset=utf-8", json.dumps(rep_res).encode("utf-8")
+
         return 404, "application/json; charset=utf-8", json.dumps({"error": f"Ruta no encontrada: {path}", "status": 404}).encode("utf-8")
 
     clean_routes = {
@@ -311,6 +365,8 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
         "proveedores": "proveedores.html",
         "concentracion": "proveedores.html",
         "denuncia": "denuncia.html",
+        "georreferenciacion": "georreferenciacion.html",
+        "mapa": "georreferenciacion.html",
         "transparencia": "transparencia.html",
         "acerca": "acerca.html",
         "admin/revision": "admin-revision.html",

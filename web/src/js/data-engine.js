@@ -429,6 +429,59 @@ class DataEngine {
     };
   }
 
+  /**
+   * Obtiene el catalogo de obras publicas geo-monitoreadas (Capacidad 007).
+   * @param {string|null} province
+   * @returns {Promise<Array>}
+   */
+  async getGeospatialWorks(province = null) {
+    try {
+      const url = province ? `/api/geospatial/works?province=${encodeURIComponent(province)}` : '/api/geospatial/works';
+      const res = await fetch(url);
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch {}
+
+    const snap = await this.getSnapshot();
+    let works = snap.geospatial_works || [];
+    if (province) {
+      const target = province.trim().toLowerCase();
+      works = works.filter(w => (w.province || '').trim().toLowerCase() === target);
+    }
+    return works;
+  }
+
+  /**
+   * Obtiene las senales de divergencia fisico-financiera (Capacidad 007).
+   * @param {string|null} siteId
+   * @param {string|null} severity
+   * @returns {Promise<Array>}
+   */
+  async getGeospatialDivergences(siteId = null, severity = null) {
+    try {
+      const params = new URLSearchParams();
+      if (siteId) params.append('site_id', siteId);
+      if (severity) params.append('severity', severity);
+      const query = params.toString() ? `?${params.toString()}` : '';
+      const res = await fetch(`/api/geospatial/divergence${query}`);
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch {}
+
+    const snap = await this.getSnapshot();
+    let signals = snap.geospatial_signals || [];
+    if (siteId) {
+      signals = signals.filter(s => s.site_id === siteId);
+    }
+    if (severity) {
+      const target = severity.trim().toLowerCase();
+      signals = signals.filter(s => (s.severity || '').trim().toLowerCase() === target);
+    }
+    return signals;
+  }
+
   formatMillions(amount) {
     if (!amount) return 'S/ 0.0 M';
     const millions = amount / 1000000;

@@ -734,7 +734,7 @@ export class SupabaseClient {
    * @returns {Promise<object>}
    */
   async moderateCitizenReport(moderationPayload) {
-    const { report_id, moderation_status, moderated_by } = moderationPayload;
+    const { report_id, moderation_status, moderated_by, review_notes, notes } = moderationPayload;
 
     if (!moderated_by || !moderated_by.trim()) {
       throw new Error('Debe proporcionar el identificador del revisor humano nominal.');
@@ -749,6 +749,60 @@ export class SupabaseClient {
     }
 
     const nowIso = new Date().toISOString();
+    const token = sessionStorage.getItem('cajamarca_veedor_token') || localStorage.getItem('cajamarca_veedor_token') || '';
+    let remoteSuccess = false;
+
+    // 1. Invocar endpoint oficial de backend seguro con Bearer token
+    try {
+      const res = await fetchWithTimeout(`${LOCAL_API_BASE}/reports/moderate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({
+          report_id,
+          moderation_status,
+          moderated_by: moderated_by.trim(),
+          review_notes: review_notes || notes || null
+        })
+      }, 3500);
+
+      if (res.ok) {
+        remoteSuccess = true;
+      }
+    } catch (err) {
+      console.info('Backend no disponible para moderacion de denuncia:', err.message);
+    }
+
+    // 2. Sincronizacion directa con Supabase PostgREST RLS si backend no respondio
+    if (!remoteSuccess && this.supabaseUrl) {
+      try {
+        const patchUrl = `${this.supabaseUrl}/rest/v1/citizen_reports?report_id=eq.${encodeURIComponent(report_id)}`;
+        const patchRes = await fetchWithTimeout(patchUrl, {
+          method: 'PATCH',
+          headers: {
+            ...this.getHeaders(),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({
+            moderation_status,
+            moderated_by: moderated_by.trim(),
+            moderated_at: nowIso
+          })
+        }, 3000);
+
+        if (patchRes.ok) {
+          remoteSuccess = true;
+        }
+      } catch (err) {
+        console.info('Supabase PostgREST no disponible para moderacion:', err.message);
+      }
+    }
+
+    // 3. Persistir en almacenamiento local para resiliencia offline
     const current = getLocalCollection('citizenReports') || [];
     let updated = false;
 
@@ -766,7 +820,6 @@ export class SupabaseClient {
     });
 
     if (!updated) {
-      // Si venia de la semilla inicial
       modified.push({
         report_id,
         moderation_status,
@@ -780,11 +833,25 @@ export class SupabaseClient {
 
     setLocalCollection('citizenReports', modified);
 
+    // 4. Registrar en bitacora de auditoria local
+    const auditLog = getLocalCollection('auditLog') || [];
+    auditLog.unshift({
+      event: 'citizen_report_moderated',
+      report_id,
+      moderation_status,
+      moderated_by: moderated_by.trim(),
+      timestamp: nowIso,
+      remote_synced: remoteSuccess
+    });
+    setLocalCollection('auditLog', auditLog);
+
     return {
       success: true,
       report_id,
       moderation_status,
-      moderated_at: nowIso
+      moderated_by: moderated_by.trim(),
+      moderated_at: nowIso,
+      remote_synced: remoteSuccess
     };
   }
 

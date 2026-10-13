@@ -22,6 +22,11 @@ from typing import Any
 
 from cajamarca_qhaway.capabilities.denuncia_intake import DenunciaIntakeService
 from cajamarca_qhaway.capabilities.entity_mapping.dataset import load_universe
+from cajamarca_qhaway.capabilities.geospatial_monitoring import (
+    CAJAMARCA_PUBLIC_WORKS_CATALOG,
+    PhysicalFinancialDivergenceSignal,
+    PublicWorkSite,
+)
 from cajamarca_qhaway.capabilities.review_panel import ReviewPanelService
 from cajamarca_qhaway.models import (
     Alert,
@@ -564,11 +569,20 @@ def build_verified_web_snapshot(now: datetime | None = None) -> dict[str, Any]:
         seace_releases=seace_releases,
         mef_records=mef_records,
         now=base_time,
+        evaluate_geospatial=False,
     )
 
     candidate_flags = list(detection_result.candidate_red_flags)
     procurements = list(detection_result.procurement_records)
     executions = list(detection_result.execution_records)
+
+    detection_result_geo = pipeline.run_detection(
+        seace_releases=seace_releases,
+        mef_records=mef_records,
+        now=base_time,
+        evaluate_geospatial=True,
+    )
+    geospatial_divergences = list(detection_result_geo.geospatial_divergences)
 
     # 4. Panel de revision humana (ReviewPanelService)
     # Seleccionar banderas para publicar, descartar y dejar pendientes
@@ -680,6 +694,10 @@ def build_verified_web_snapshot(now: datetime | None = None) -> dict[str, Any]:
         Alert.model_validate(a)
     for r in all_reports:
         CitizenReport.model_validate(r)
+    for w in CAJAMARCA_PUBLIC_WORKS_CATALOG:
+        PublicWorkSite.model_validate(w)
+    for s in geospatial_divergences:
+        PhysicalFinancialDivergenceSignal.model_validate(s)
 
     # Estructura del snapshot canonico
     snapshot_data: dict[str, Any] = {
@@ -696,6 +714,7 @@ def build_verified_web_snapshot(now: datetime | None = None) -> dict[str, Any]:
             "total_alerts": len(all_alerts),
             "total_published_alerts": len([a for a in all_alerts if a.status == "published"]),
             "total_citizen_reports": len(all_reports),
+            "total_geospatial_works": len(CAJAMARCA_PUBLIC_WORKS_CATALOG),
         },
         "contracting_entities": [e.model_dump(mode="json") for e in entities],
         "procurement_records": [p.model_dump(mode="json") for p in compacted_procurements],
@@ -703,6 +722,8 @@ def build_verified_web_snapshot(now: datetime | None = None) -> dict[str, Any]:
         "red_flags": [f.model_dump(mode="json") for f in candidate_flags],
         "alerts": [a.model_dump(mode="json") for a in all_alerts],
         "citizen_reports": [r.model_dump(mode="json") for r in all_reports],
+        "geospatial_works": [w.model_dump(mode="json") for w in CAJAMARCA_PUBLIC_WORKS_CATALOG],
+        "geospatial_signals": [s.model_dump(mode="json") for s in geospatial_divergences],
     }
 
     return snapshot_data
