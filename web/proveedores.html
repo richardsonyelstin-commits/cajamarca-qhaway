@@ -453,7 +453,7 @@
 
   <script type="module" src="/src/js/app.js"></script>
   <script type="module">
-    import { dataEngine } from '/src/js/state.js';
+    import { dataEngine } from '/src/js/data-engine.js';
 
     let currentHhiData = null;
 
@@ -462,11 +462,12 @@
 
       // Poblar selector de entidades
       const select = document.getElementById('hhi-entity-select');
-      const entities = dataEngine.getEntities();
+      const entities = await dataEngine.getEntities();
       entities.forEach(ent => {
         const opt = document.createElement('option');
         opt.value = ent.entity_id;
-        opt.textContent = `${ent.name} (${ent.zone})`;
+        const nameShort = ent.official_name.replace('MUNICIPALIDAD PROVINCIAL DE ', 'M. P. ').replace('GOBIERNO REGIONAL DE ', 'GORE ');
+        opt.textContent = `${nameShort} (${ent.province || 'Regional'})`;
         select.appendChild(opt);
       });
 

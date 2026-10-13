@@ -257,7 +257,7 @@
               <span class="material-symbols-outlined text-[18px] text-alert-rose">warning</span>
             </div>
             <div class="font-headline-lg text-headline-lg text-alert-rose font-bold" id="kpi-critical-count">1 de 14</div>
-            <div class="mt-1 font-caption text-caption text-alert-rose font-semibold">&lt;45% de ejecución (San Pablo)</div>
+            <div class="mt-1 font-caption text-caption text-alert-rose font-semibold" id="kpi-critical-sub">&lt;45% de ejecución</div>
           </div>
         </div>
       </div>
@@ -432,8 +432,17 @@
       if (kpiPimEl) kpiPimEl.textContent = dataEngine.formatMillions(kpis.totalPim);
       if (kpiDevEl) kpiDevEl.textContent = dataEngine.formatMillions(kpis.totalDevengado);
       if (kpiRateEl) kpiRateEl.textContent = `${kpis.executionRate}%`;
-      const criticalCount = entitiesWithBudget.filter(e => e.rate < 45.0).length;
-      if (kpiCritEl) kpiCritEl.textContent = `${criticalCount} de ${entitiesWithBudget.length}`;
+      const criticalEntities = entitiesWithBudget.filter(e => e.rate < 45.0);
+      if (kpiCritEl) kpiCritEl.textContent = `${criticalEntities.length} de ${entitiesWithBudget.length}`;
+      const kpiCritSubEl = document.getElementById('kpi-critical-sub');
+      if (kpiCritSubEl) {
+        if (criticalEntities.length > 0) {
+          const names = criticalEntities.map(e => e.province || e.name).slice(0, 2).join(', ');
+          kpiCritSubEl.textContent = `<45% de ejecución (${names}${criticalEntities.length > 2 ? '...' : ''})`;
+        } else {
+          kpiCritSubEl.textContent = 'Ninguna entidad bajo 45%';
+        }
+      }
 
       // Ordenar por PIM descendente
       entitiesWithBudget.sort((a, b) => b.pim - a.pim);

@@ -908,6 +908,17 @@ function hydrateGlobalKPIElements(kpis) {
   const kpiAlertsTotal = document.getElementById('kpi-alerts-total');
   if (kpiAlertsTotal) kpiAlertsTotal.textContent = `${kpis.totalAlerts} Alertas Publicadas`;
 
+  const speedoRisk = document.getElementById('speedo-risk-budget');
+  if (speedoRisk) {
+    const riskAmount = Math.max(0, kpis.totalPim - kpis.totalDevengado);
+    speedoRisk.textContent = dataEngine.formatMillions(riskAmount);
+  }
+
+  const speedoProv = document.getElementById('speedo-alert-provinces');
+  if (speedoProv) {
+    speedoProv.textContent = `${kpis.totalAlerts} de 13 Provincias`;
+  }
+
   // IDs conocidos de entidades.html
   const entPim = document.getElementById('entidades-kpi-pim');
   if (entPim) entPim.textContent = dataEngine.formatMillions(kpis.totalPim);
@@ -921,15 +932,25 @@ function hydrateGlobalKPIElements(kpis) {
   const entProc = document.getElementById('entidades-kpi-contratos');
   if (entProc) entProc.textContent = `${kpis.totalProcurements.toLocaleString('es-PE')}`;
 
-  // IDs conocidos de alertas.html
-  const alTotal = document.getElementById('alertas-kpi-total');
-  if (alTotal) alTotal.textContent = `${kpis.totalAlerts}`;
+  const entBar = document.getElementById('entidades-kpi-bar');
+  if (entBar) {
+    entBar.style.width = `${Math.min(100, kpis.executionRate)}%`;
+    entBar.className = kpis.executionRate >= 45
+      ? 'bg-secondary h-full rounded-full transition-all duration-700 ease-out'
+      : kpis.executionRate >= 30
+      ? 'bg-alert-amber h-full rounded-full transition-all duration-700 ease-out'
+      : 'bg-alert-rose h-full rounded-full transition-all duration-700 ease-out';
+  }
 
-  const alMonto = document.getElementById('alertas-kpi-monto');
-  if (alMonto) alMonto.textContent = dataEngine.formatMillions(kpis.totalDevengado * 0.22);
-
-  const alEnt = document.getElementById('alertas-kpi-entidades');
-  if (alEnt) alEnt.textContent = `3 / 14`;
+  const entAlertasSub = document.getElementById('entidades-kpi-alertas-sub');
+  if (entAlertasSub) {
+    entAlertasSub.innerHTML = `
+      <span>Alertas de riesgo</span>
+      <span class="text-secondary font-semibold flex items-center gap-0.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> ${kpis.totalAlerts} Alertas · ${kpis.totalRedFlags} Banderas
+      </span>
+    `;
+  }
 
   // Equivalencia cotidiana y dinero de bolsillo pedagogico (Pilar 3)
   const pocket = formatCitizenPocketMoney(kpis.executionRate);
@@ -1170,8 +1191,150 @@ async function hydrateIndexPage(kpis) {
   }
 }
 
+function renderEntityCard(ent, stats, flagsCount, procsCount, year) {
+  const isGore = ent.entity_level === 'regional';
+  const prov = ent.province || '';
+  const provUpper = prov.toUpperCase();
+  const zone = isGore ? 'gore' : ['JAEN', 'SAN IGNACIO', 'CUTERVO'].includes(provUpper) ? 'norte' : 'centrosur';
+  const levelText = isGore ? 'Sede Regional · Nivel GORE' : `Provincia de ${prov} · Local`;
+  const nameShort = isGore ? 'Gobierno Regional de Cajamarca' : `M. P. de ${prov}`;
+  const rate = stats.rate;
+  const pimM = (stats.pim / 1e6).toFixed(1);
+  const devM = (stats.devengado / 1e6).toFixed(1);
+  const color = rate >= 45 ? 'secondary' : rate >= 25 ? 'alert-amber' : 'alert-rose';
+  const statusLabel = rate >= 45 ? 'Meta Superada (>=45%)' : rate >= 25 ? 'Moderado (25-45%)' : 'Riesgo Critico (<25%)';
+  const flagBadgeClass = flagsCount > 0 ? (flagsCount >= 4 ? 'bg-error-container text-on-error-container' : 'bg-alert-amber/10 text-alert-amber') : 'bg-surface-container text-on-surface-variant';
+  const flagText = flagsCount > 0 ? `${flagsCount} Banderas` : 'Sin Banderas';
+  const yearLabel = (year && year !== 'all') ? year : 'Consolidado';
+  const observation = rate >= 45
+    ? 'Ejecucion presupuestal regular sobrepasando la meta minima del 45%.'
+    : rate >= 25
+    ? 'Avance moderado de gasto con seguimiento en devengados de obras.'
+    : 'Ritmo critico por debajo del 25%; atencion prioritaria requerida.';
+
+  return `
+    <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow"
+             data-alerts="${flagsCount}"
+             data-entity-id="${ent.entity_id}"
+             data-exec="${rate}"
+             data-name="${ent.official_name}"
+             data-pim="${pimM}"
+             data-ruc="${ent.ruc}"
+             data-zone="${zone}">
+      <div class="p-6 space-y-4">
+        <div class="flex items-start justify-between gap-2 border-b border-slate-border pb-2">
+          <div>
+            <span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-caption text-caption uppercase tracking-wider font-semibold">
+              ${levelText}
+            </span>
+            <h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold mt-1 leading-snug">
+              ${nameShort}
+            </h2>
+          </div>
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded ${flagBadgeClass} font-label-sm text-label-sm shrink-0 font-semibold" title="${flagsCount} senales de alerta">
+            <span class="material-symbols-outlined text-[14px]">flag</span> ${flagText}
+          </span>
+        </div>
+        <div class="flex items-center justify-between text-body-sm font-body-sm text-on-surface-variant">
+          <span>RUC: <strong class="text-on-surface font-mono">${ent.ruc}</strong></span>
+          <button class="inline-flex items-center gap-1 text-secondary hover:text-on-surface font-label-sm text-label-sm cursor-pointer" onclick="copyRuc('${ent.ruc}', this)">
+            <span class="material-symbols-outlined text-[15px]">content_copy</span> Copiar
+          </button>
+        </div>
+        <div class="grid grid-cols-2 gap-2 bg-slate-surface p-3 rounded border border-slate-border">
+          <div>
+            <span class="block text-caption font-caption text-on-surface-variant uppercase">PIM ${yearLabel}</span>
+            <span data-card-pim class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ ${pimM} M</span>
+          </div>
+          <div>
+            <span class="block text-caption font-caption text-on-surface-variant uppercase">Devengado (% / S/.)</span>
+            <span data-card-rate class="font-headline-sm text-headline-sm text-${color} font-semibold">${rate}%</span>
+            <span data-card-dev class="block font-caption text-caption text-on-surface-variant">S/ ${devM} M</span>
+          </div>
+        </div>
+        <div>
+          <div class="flex justify-between items-center text-caption font-caption mb-1">
+            <span class="text-on-surface-variant">Nivel de ejecucion presupuestal</span>
+            <span class="text-${color} font-semibold">${statusLabel}</span>
+          </div>
+          <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
+            <div data-card-bar class="bg-${color} h-full rounded-full transition-all duration-700 ease-out" style="width: ${Math.min(100, rate)}%"></div>
+          </div>
+        </div>
+        <div class="space-y-1 text-body-sm font-body-sm pt-1">
+          <div class="text-caption font-caption text-on-surface-variant bg-surface-container-low p-2 rounded border border-slate-border">
+            <strong class="text-on-surface font-semibold">Diagnostico:</strong> ${observation}
+          </div>
+        </div>
+        <div class="border-t border-slate-border pt-2 flex items-center justify-between text-body-sm font-body-sm text-on-surface-variant">
+          <span>SEACE OCDS: <strong class="text-on-surface">${procsCount} Contratos</strong></span>
+          <span class="text-secondary font-medium font-mono text-caption">RUC ${ent.ruc}</span>
+        </div>
+      </div>
+      <div class="px-6 py-3 bg-surface-container-low border-t border-slate-border flex items-center justify-between">
+        <span class="text-caption font-caption text-on-surface-variant font-mono">ID: ${ent.entity_id.slice(0, 8)}</span>
+        <a class="inline-flex items-center gap-1 font-label-md text-label-md text-secondary hover:underline font-semibold" href="/entidad?id=${ent.entity_id}">
+          Ver Ficha de Auditoria <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+        </a>
+      </div>
+    </article>
+  `;
+}
+
+function renderEntityTableRow(ent, stats, flagsCount, procsCount, year) {
+  const isGore = ent.entity_level === 'regional';
+  const prov = ent.province || '';
+  const levelText = isGore ? 'Nivel Regional (GORE)' : `Provincia de ${prov}`;
+  const rate = stats.rate;
+  const pimM = (stats.pim / 1e6).toFixed(1);
+  const devM = (stats.devengado / 1e6).toFixed(1);
+  const color = rate >= 45 ? 'bg-secondary text-white' : rate >= 25 ? 'bg-alert-amber/20 text-alert-amber' : 'bg-error-container text-on-error-container';
+
+  return `
+    <tr class="hover:bg-slate-surface">
+      <td class="px-4 py-3 font-semibold text-on-surface">${ent.official_name}<br/><span class="font-normal font-mono text-caption text-on-surface-variant">RUC: ${ent.ruc}</span></td>
+      <td class="px-4 py-3 text-on-surface-variant">${levelText}</td>
+      <td class="px-4 py-3 text-right font-medium text-on-surface">S/ ${pimM} M</td>
+      <td class="px-4 py-3 text-right text-on-surface font-medium">S/ ${devM} M</td>
+      <td class="px-4 py-3 text-center"><span class="px-2 py-0.5 rounded ${color} font-semibold">${rate}%</span></td>
+      <td class="px-4 py-3 text-center font-mono">${procsCount}</td>
+      <td class="px-4 py-3 text-center"><span class="${flagsCount > 0 ? 'text-alert-rose font-semibold' : 'text-on-surface-variant'}">${flagsCount > 0 ? `${flagsCount} Banderas` : '0'}</span></td>
+      <td class="px-4 py-3 text-right"><a class="text-secondary hover:underline font-label-sm font-semibold" href="/entidad?id=${ent.entity_id}">Ver Ficha</a></td>
+    </tr>
+  `;
+}
+
+function renderRankingObras(rankingItems) {
+  const container = document.getElementById('ranking-obras-container');
+  if (!container) return;
+
+  container.innerHTML = rankingItems.slice(0, 7).map((item, idx) => {
+    const bgClass = item.rate >= 45 ? 'bg-secondary' : item.rate >= 25 ? 'bg-alert-amber' : 'bg-alert-rose';
+    const textClass = item.rate >= 45 ? 'text-secondary' : item.rate >= 25 ? 'text-alert-amber' : 'text-alert-rose';
+    const name = item.isGore ? 'Gobierno Regional Cajamarca (Sede Central)' : `M. P. ${item.province || item.name}`;
+
+    return `
+      <div>
+        <div class="flex justify-between font-label-sm text-label-sm mb-1">
+          <span class="text-on-surface">${idx + 1}. ${name}</span>
+          <span class="font-semibold ${textClass}">${item.rate}% de avance</span>
+        </div>
+        <div class="w-full bg-surface-container rounded-full h-2.5 overflow-hidden">
+          <div class="${bgClass} h-full rounded-full transition-all duration-700 ease-out" style="width: ${Math.min(100, item.rate)}%"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const brechaEl = document.getElementById('ranking-brecha-text');
+  if (brechaEl && rankingItems.length > 0) {
+    const gap = (rankingItems[0].rate - rankingItems[rankingItems.length - 1].rate).toFixed(1);
+    brechaEl.textContent = `Brecha de ejecucion: ${gap} puntos porcentuales entre 1° y ${rankingItems.length}°`;
+  }
+}
+
 /**
- * Hidratacion de entidades.html con filtro de año y datos en vivo
+ * Hidratacion de entidades.html con filtro de ano y datos en vivo
  */
 async function hydrateEntidadesPage(kpis) {
   const [entities, budgets, procurements] = await Promise.all([
@@ -1198,40 +1361,51 @@ async function hydrateEntidadesPage(kpis) {
   }
   if (donutText) donutText.textContent = `${Math.round(funding.canon.pct)}%`;
 
-  // Mapear estadisticas por entidad
-  const entityStatsMap = new Map();
-  for (const ent of entities) {
-    const stats = await dataEngine.getEntityBudgetStats(ent.entity_id);
-    entityStatsMap.set(ent.entity_id, stats);
+  async function updateEntitiesView(year = 'all') {
+    const updatedKpis = await dataEngine.getMacroKPIs(year);
+    hydrateGlobalKPIElements(updatedKpis);
+
+    const cardsContainer = document.getElementById('cards-container');
+    const tableBody = document.querySelector('#table-container tbody');
+    const cardsHtml = [];
+    const tableRowsHtml = [];
+    const rankingItems = [];
+
+    for (const ent of entities) {
+      const stats = await dataEngine.getEntityBudgetStats(ent.entity_id, year);
+      const procs = await dataEngine.getProcurements(ent.entity_id, year);
+      const flags = await dataEngine.getRedFlags(ent.entity_id);
+
+      cardsHtml.push(renderEntityCard(ent, stats, flags.length, procs.length, year));
+      tableRowsHtml.push(renderEntityTableRow(ent, stats, flags.length, procs.length, year));
+      rankingItems.push({
+        id: ent.entity_id,
+        name: ent.official_name,
+        province: ent.province,
+        isGore: ent.entity_level === 'regional',
+        rate: stats.rate
+      });
+    }
+
+    if (cardsContainer) cardsContainer.innerHTML = cardsHtml.join('');
+    if (tableBody) tableBody.innerHTML = tableRowsHtml.join('');
+
+    // Ordenar ranking por tasa descendente
+    rankingItems.sort((a, b) => b.rate - a.rate);
+    renderRankingObras(rankingItems);
+
+    const resultsCount = document.getElementById('results-count');
+    if (resultsCount) {
+      resultsCount.textContent = `Mostrando ${entities.length} de ${entities.length} entidades fiscalizadas en Fase 1`;
+    }
+
+    if (typeof window.applyFiltersAndSearch === 'function') {
+      window.applyFiltersAndSearch();
+    }
   }
 
-  // Dinamizar y animar las 14 tarjetas de entidades
-  const cards = document.querySelectorAll('.entity-card');
-  cards.forEach(card => {
-    const eid = card.dataset.entityId;
-    const stats = entityStatsMap.get(eid);
-    if (stats) {
-      card.dataset.exec = String(stats.rate);
-      card.dataset.pim = String((stats.pim / 1e6).toFixed(1));
-      const pimEl = card.querySelector('[data-card-pim]');
-      const devEl = card.querySelector('[data-card-dev]');
-      const rateEl = card.querySelector('[data-card-rate]');
-      const barEl = card.querySelector('[data-card-bar]');
-      if (pimEl) pimEl.textContent = dataEngine.formatMillions(stats.pim);
-      if (devEl) devEl.textContent = dataEngine.formatMillions(stats.devengado);
-      if (rateEl) {
-        rateEl.textContent = `${stats.rate}%`;
-        const color = stats.rate >= 45 ? 'text-secondary' : stats.rate >= 30 ? 'text-alert-amber' : 'text-alert-rose';
-        rateEl.className = `font-headline-sm text-headline-sm ${color} font-semibold`;
-      }
-      if (barEl) {
-        barEl.style.width = `${Math.min(100, stats.rate)}%`;
-        barEl.style.transition = 'width 0.8s ease-out';
-        const barColor = stats.rate >= 45 ? 'bg-secondary' : stats.rate >= 30 ? 'bg-alert-amber' : 'bg-alert-rose';
-        barEl.className = `${barColor} h-full rounded-full transition-all duration-700 ease-out`;
-      }
-    }
-  });
+  // Render inicial
+  await updateEntitiesView('all');
 
   const yearFilterContainer = document.getElementById('entidades-year-filter');
   if (yearFilterContainer) {
@@ -1243,41 +1417,9 @@ async function hydrateEntidadesPage(kpis) {
         });
         btn.className = 'year-pill px-3 py-1 rounded bg-on-surface text-on-primary whitespace-nowrap cursor-pointer transition-colors';
         const year = btn.dataset.year;
-
-        const updatedKpis = await dataEngine.getMacroKPIs(year);
-        hydrateGlobalKPIElements(updatedKpis);
-
-        // Actualizar tarjetas dinamicamente al cambiar ano
-        for (const card of cards) {
-          const eid = card.dataset.entityId;
-          const stats = await dataEngine.getEntityBudgetStats(eid, year);
-          card.dataset.exec = String(stats.rate);
-          card.dataset.pim = String((stats.pim / 1e6).toFixed(1));
-          const pimEl = card.querySelector('[data-card-pim]');
-          const devEl = card.querySelector('[data-card-dev]');
-          const rateEl = card.querySelector('[data-card-rate]');
-          const barEl = card.querySelector('[data-card-bar]');
-          if (pimEl) pimEl.textContent = dataEngine.formatMillions(stats.pim);
-          if (devEl) devEl.textContent = dataEngine.formatMillions(stats.devengado);
-          if (rateEl) {
-            rateEl.textContent = `${stats.rate}%`;
-            const color = stats.rate >= 45 ? 'text-secondary' : stats.rate >= 30 ? 'text-alert-amber' : 'text-alert-rose';
-            rateEl.className = `font-headline-sm text-headline-sm ${color} font-semibold`;
-          }
-          if (barEl) {
-            barEl.style.width = `${Math.min(100, stats.rate)}%`;
-            barEl.style.transition = 'width 0.8s ease-out';
-            const barColor = stats.rate >= 45 ? 'bg-secondary' : stats.rate >= 30 ? 'bg-alert-amber' : 'bg-alert-rose';
-            barEl.className = `${barColor} h-full rounded-full transition-all duration-700 ease-out`;
-          }
-        }
+        await updateEntitiesView(year);
       });
     });
-  }
-
-  const resultsCount = document.getElementById('results-count');
-  if (resultsCount) {
-    resultsCount.textContent = `Mostrando ${entities.length} de ${entities.length} entidades fiscalizadas en Fase 1`;
   }
 }
 
@@ -1288,11 +1430,45 @@ async function hydrateAlertasPage(kpis) {
   const alerts = await dataEngine.getAlerts();
   const flags = await dataEngine.getRedFlags();
   const entities = await dataEngine.getEntities();
+  const stats = await dataEngine.getPublishedAlertsStats();
+
   const entitiesMap = new Map();
   entities.forEach(e => entitiesMap.set(e.entity_id, e));
 
   const flagsMap = new Map();
   flags.forEach(f => flagsMap.set(f.red_flag_id, f));
+
+  // Actualizar top KPI cards de alertas.html con valores reales
+  const alTotal = document.getElementById('alertas-kpi-total');
+  if (alTotal) alTotal.textContent = `${stats.total}`;
+
+  const alSevSub = document.getElementById('alertas-kpi-severity-sub');
+  if (alSevSub) alSevSub.innerHTML = `<span class="text-alert-rose font-semibold">${stats.critCount} Criticas</span> · ${stats.highCount} Altas · ${stats.medCount} Medias`;
+
+  const alMonto = document.getElementById('alertas-kpi-monto');
+  if (alMonto) alMonto.textContent = dataEngine.formatMillions(stats.flaggedAmount);
+
+  const alMontoSub = document.getElementById('alertas-kpi-monto-sub');
+  if (alMontoSub) alMontoSub.textContent = 'En expedientes auditados con dictamen activo';
+
+  const alEnt = document.getElementById('alertas-kpi-entidades');
+  if (alEnt) alEnt.textContent = `${stats.distinctEntitiesCount} / ${entities.length}`;
+
+  const alEntSub = document.getElementById('alertas-kpi-entidades-sub');
+  if (alEntSub) alEntSub.textContent = 'Pliegos con alertas formalmente validadas';
+
+  // Actualizar botones de severidad
+  const btnAll = document.getElementById('alert-btn-all');
+  if (btnAll) btnAll.textContent = `Todas (${stats.total})`;
+
+  const btnCrit = document.getElementById('alert-btn-critica');
+  if (btnCrit) btnCrit.innerHTML = `<span class="w-2 h-2 rounded-full bg-alert-rose"></span> Critica (${stats.critCount})`;
+
+  const btnAlta = document.getElementById('alert-btn-alta');
+  if (btnAlta) btnAlta.innerHTML = `<span class="w-2 h-2 rounded-full bg-alert-amber"></span> Alta (${stats.highCount})`;
+
+  const btnMedia = document.getElementById('alert-btn-media');
+  if (btnMedia) btnMedia.innerHTML = `<span class="w-2 h-2 rounded-full bg-civic-teal"></span> Media (${stats.medCount})`;
 
   const container = document.getElementById('alertas-dinamicas-container');
   if (container && alerts.length > 0) {

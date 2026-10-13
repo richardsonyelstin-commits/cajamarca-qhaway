@@ -227,9 +227,9 @@
               </span>
               <span class="material-symbols-outlined text-[18px] text-alert-rose">flag</span>
             </div>
-            <div id="alertas-kpi-total" class="font-headline-lg text-headline-lg text-on-surface font-bold">22</div>
-            <div class="mt-1 font-caption text-caption text-on-surface-variant">
-              <span class="text-alert-rose font-semibold">6 Críticas</span> · 9 Altas · 7 Medias
+            <div id="alertas-kpi-total" class="font-headline-lg text-headline-lg text-on-surface font-bold">3</div>
+            <div id="alertas-kpi-severity-sub" class="mt-1 font-caption text-caption text-on-surface-variant">
+              <span class="text-alert-rose font-semibold">2 Críticas</span> · 1 Alta · 0 Medias
             </div>
           </div>
 
@@ -241,9 +241,9 @@
               </span>
               <span class="material-symbols-outlined text-[18px] text-secondary">payments</span>
             </div>
-            <div id="alertas-kpi-monto" class="font-headline-lg text-headline-lg text-secondary font-bold">S/ 1,368.4 M</div>
-            <div class="mt-1 font-caption text-caption text-on-surface-variant">
-              74% corresponde a canon y obras
+            <div id="alertas-kpi-monto" class="font-headline-lg text-headline-lg text-secondary font-bold">S/ 1.2 M</div>
+            <div id="alertas-kpi-monto-sub" class="mt-1 font-caption text-caption text-on-surface-variant">
+              En expedientes auditados con dictamen activo
             </div>
           </div>
 
@@ -255,9 +255,9 @@
               </span>
               <span class="material-symbols-outlined text-[18px] text-outline">account_balance</span>
             </div>
-            <div id="alertas-kpi-entidades" class="font-headline-lg text-headline-lg text-on-surface font-bold">8 / 14</div>
-            <div class="mt-1 font-caption text-caption text-on-surface-variant">
-              Foco en GORE y Hualgayoc
+            <div id="alertas-kpi-entidades" class="font-headline-lg text-headline-lg text-on-surface font-bold">3 / 14</div>
+            <div id="alertas-kpi-entidades-sub" class="mt-1 font-caption text-caption text-on-surface-variant">
+              Pliegos con alertas formalmente validadas
             </div>
           </div>
 
@@ -300,20 +300,20 @@
 
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div class="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0">
-            <button class="alert-sev-btn px-3 py-1.5 rounded bg-primary text-on-primary font-label-sm text-label-sm whitespace-nowrap shadow-sm cursor-pointer" onclick="filterBySeverity('all', this)" type="button">
-              Todas (22)
+            <button id="alert-btn-all" class="alert-sev-btn px-3 py-1.5 rounded bg-primary text-on-primary font-label-sm text-label-sm whitespace-nowrap shadow-sm cursor-pointer" onclick="filterBySeverity('all', this)" type="button">
+              Todas (3)
             </button>
-            <button class="alert-sev-btn px-3 py-1.5 rounded bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap border border-slate-border hover:bg-error-container hover:text-on-error-container transition-colors flex items-center gap-1.5 cursor-pointer" onclick="filterBySeverity('critica', this)" type="button">
+            <button id="alert-btn-critica" class="alert-sev-btn px-3 py-1.5 rounded bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap border border-slate-border hover:bg-error-container hover:text-on-error-container transition-colors flex items-center gap-1.5 cursor-pointer" onclick="filterBySeverity('critica', this)" type="button">
               <span class="w-2 h-2 rounded-full bg-alert-rose"></span>
-              Crítica (6)
+              Crítica (2)
             </button>
-            <button class="alert-sev-btn px-3 py-1.5 rounded bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap border border-slate-border hover:bg-surface-container-highest transition-colors flex items-center gap-1.5 cursor-pointer" onclick="filterBySeverity('alta', this)" type="button">
+            <button id="alert-btn-alta" class="alert-sev-btn px-3 py-1.5 rounded bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap border border-slate-border hover:bg-surface-container-highest transition-colors flex items-center gap-1.5 cursor-pointer" onclick="filterBySeverity('alta', this)" type="button">
               <span class="w-2 h-2 rounded-full bg-alert-amber"></span>
-              Alta (9)
+              Alta (1)
             </button>
-            <button class="alert-sev-btn px-3 py-1.5 rounded bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap border border-slate-border hover:bg-surface-container-highest transition-colors flex items-center gap-1.5 cursor-pointer" onclick="filterBySeverity('media', this)" type="button">
+            <button id="alert-btn-media" class="alert-sev-btn px-3 py-1.5 rounded bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap border border-slate-border hover:bg-surface-container-highest transition-colors flex items-center gap-1.5 cursor-pointer" onclick="filterBySeverity('media', this)" type="button">
               <span class="w-2 h-2 rounded-full bg-civic-teal"></span>
-              Media (7)
+              Media (0)
             </button>
           </div>
         </div>
@@ -322,177 +322,12 @@
       <!-- Feed de Alertas Documentadas -->
       <div class="flex flex-col gap-6" id="alerts-list">
         <!-- Contenedor Dinamico de Alertas Validadas (Art. 14 y Art. 15) -->
-        <div id="alertas-dinamicas-container" class="flex flex-col gap-6"></div>
-        <!-- Alerta 1 -->
-        <article class="alert-card bg-surface-container-lowest rounded border border-slate-border shadow-sm p-6 flex flex-col gap-4" data-severity="critica" data-text="subejecucion critica canon minero gobierno regional cajamarca ocds-red-084">
-          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-border pb-3">
-            <div class="flex items-center gap-2 flex-wrap">
-              <span class="px-2.5 py-1 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-bold flex items-center gap-1.5 shadow-sm">
-                <span class="material-symbols-outlined text-[16px]">error</span>
-                SEVERIDAD CRÍTICA
-              </span>
-              <span class="font-mono text-label-sm font-bold text-on-surface px-2 py-0.5 rounded bg-surface-container-highest">
-                OCDS-RED-084
-              </span>
-              <span class="text-caption font-label-sm uppercase tracking-wide text-on-surface-variant flex items-center gap-1 font-semibold">
-                <span class="material-symbols-outlined text-[15px]">apartment</span>
-                Gobierno Regional de Cajamarca
-              </span>
-            </div>
-            <div class="text-caption font-label-sm text-civic-emerald font-semibold flex items-center gap-1">
-              <span class="material-symbols-outlined text-[15px]">verified</span> Confianza: 99.4%
-            </div>
+        <div id="alertas-dinamicas-container" class="flex flex-col gap-6">
+          <div class="p-8 text-center bg-surface-container-lowest rounded border border-slate-border text-on-surface-variant font-body-sm">
+            <span class="material-symbols-outlined text-[32px] text-secondary animate-spin block mx-auto mb-2">progress_activity</span>
+            Cargando alertas con dictamen oficial del Panel Revisor...
           </div>
-          <div>
-            <h2 class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight hover:text-secondary cursor-pointer transition-colors">
-              Subejecución Crítica del Canon Minero en Inversiones Productivas y Agropecuarias
-            </h2>
-            <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed mt-1">
-              Brecha detectada de <span class="text-on-surface font-semibold">S/ 720.5 Millones</span> sin devengar ni comprometer en la partida de Recursos Determinados (Canon y Regalías), a falta de 45 días para el cierre del primer semestre. El ritmo actual (0.14% diario) anticipa una reversión histórica al Tesoro Público si no se activan licitaciones públicas de infraestructura hídrica y vial.
-            </p>
-          </div>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 py-2 bg-surface-container-low px-4 rounded border border-slate-border">
-            <div class="flex flex-col">
-              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Monto en Riesgo</span>
-              <span class="font-headline-sm text-headline-sm font-bold text-error">S/ 720.5 M</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Pliego</span>
-              <span class="font-body-sm text-body-sm font-semibold text-on-surface">Pliego 445: GORE</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Regla Algorítmica</span>
-              <span class="font-body-sm text-body-sm font-mono text-secondary">R-CANON-02</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Condición</span>
-              <span class="font-body-sm text-body-sm text-on-surface">Devengado &lt; 20% vs Cronograma</span>
-            </div>
-          </div>
-          <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-border">
-            <button class="px-3.5 py-1.5 rounded bg-primary text-on-primary font-label-sm text-label-sm hover:bg-primary-container transition-colors flex items-center gap-1.5 shadow-sm font-semibold cursor-pointer" onclick="window.location.href='/entidad?id=ce-f5f5d8fc32518855#banderas-rojas'">
-              <span class="material-symbols-outlined text-[16px]">visibility</span>
-              Ver Desglose y Explicabilidad
-            </button>
-            <a class="inline-flex items-center gap-1 text-label-sm font-label-sm text-secondary hover:underline font-semibold" href="/entidad?id=ce-f5f5d8fc32518855">
-              Inspeccionar Ficha de Entidad <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
-            </a>
-          </div>
-        </article>
-
-        <!-- Alerta 2 -->
-        <article class="alert-card bg-surface-container-lowest rounded border border-slate-border shadow-sm p-6 flex flex-col gap-4" data-severity="alta" data-text="concentracion atipica hualgayoc bambamarca ocds-conc-019">
-          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-border pb-3">
-            <div class="flex items-center gap-2 flex-wrap">
-              <span class="px-2.5 py-1 rounded bg-surface-container-highest text-alert-amber font-label-sm text-label-sm font-bold flex items-center gap-1.5 shadow-sm">
-                <span class="material-symbols-outlined text-[16px]">warning</span>
-                SEVERIDAD ALTA
-              </span>
-              <span class="font-mono text-label-sm font-bold text-on-surface px-2 py-0.5 rounded bg-surface-container-highest">
-                OCDS-CONC-019
-              </span>
-              <span class="text-caption font-label-sm uppercase tracking-wide text-on-surface-variant flex items-center gap-1 font-semibold">
-                <span class="material-symbols-outlined text-[15px]">apartment</span>
-                M. P. de Hualgayoc - Bambamarca
-              </span>
-            </div>
-            <div class="text-caption font-label-sm text-civic-emerald font-semibold flex items-center gap-1">
-              <span class="material-symbols-outlined text-[15px]">verified</span> Confianza: 98.1%
-            </div>
-          </div>
-          <div>
-            <h2 class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight hover:text-secondary cursor-pointer transition-colors">
-              Concentración Atípica y Presunto Fraccionamiento en Adjudicaciones Menores a 8 UIT
-            </h2>
-            <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed mt-1">
-              El <span class="text-on-surface font-semibold">73% de las contrataciones directas</span> en el rubro de alquiler de maquinaria pesada han sido otorgadas a dos empresas con vínculos de dirección fiscal compartida, totalizando <span class="text-on-surface font-semibold">S/ 14.8M</span> mediante 48 órdenes de servicio emitidas en lapsos inferiores a 15 días, eludiendo licitación pública abierta.
-            </p>
-          </div>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 py-2 bg-surface-container-low px-4 rounded border border-slate-border">
-            <div class="flex flex-col">
-              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Monto Comprometido</span>
-              <span class="font-headline-sm text-headline-sm font-bold text-alert-amber">S/ 14.8 M</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Índice HHI</span>
-              <span class="font-body-sm text-body-sm font-semibold text-alert-amber">0.68 (Extremo)</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Órdenes Menores</span>
-              <span class="font-body-sm text-body-sm font-mono text-on-surface">48 órdenes (&lt;8 UIT)</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Regla Algorítmica</span>
-              <span class="font-body-sm text-body-sm font-mono text-secondary">R-FRAC-08</span>
-            </div>
-          </div>
-          <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-border">
-            <button class="px-3.5 py-1.5 rounded bg-primary text-on-primary font-label-sm text-label-sm hover:bg-primary-container transition-colors flex items-center gap-1.5 shadow-sm font-semibold cursor-pointer" onclick="window.location.href='/concentracion'">
-              <span class="material-symbols-outlined text-[16px]">visibility</span>
-              Ver Tablero de Concentración HHI
-            </button>
-            <a class="inline-flex items-center gap-1 text-label-sm font-label-sm text-secondary hover:underline font-semibold" href="/entidad?id=ce-dfd10c914365bbe3">
-              Inspeccionar Ficha de Hualgayoc <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
-            </a>
-          </div>
-        </article>
-
-        <!-- Alerta 3 -->
-        <article class="alert-card bg-surface-container-lowest rounded border border-slate-border shadow-sm p-6 flex flex-col gap-4" data-severity="alta" data-text="adendas recurrentes hospital san ignacio ocds-obra-042">
-          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-border pb-3">
-            <div class="flex items-center gap-2 flex-wrap">
-              <span class="px-2.5 py-1 rounded bg-surface-container-highest text-alert-amber font-label-sm text-label-sm font-bold flex items-center gap-1.5 shadow-sm">
-                <span class="material-symbols-outlined text-[16px]">warning</span>
-                SEVERIDAD ALTA
-              </span>
-              <span class="font-mono text-label-sm font-bold text-on-surface px-2 py-0.5 rounded bg-surface-container-highest">
-                OCDS-OBRA-042
-              </span>
-              <span class="text-caption font-label-sm uppercase tracking-wide text-on-surface-variant flex items-center gap-1 font-semibold">
-                <span class="material-symbols-outlined text-[15px]">apartment</span>
-                M. P. de San Ignacio
-              </span>
-            </div>
-            <div class="text-caption font-label-sm text-civic-emerald font-semibold flex items-center gap-1">
-              <span class="material-symbols-outlined text-[15px]">verified</span> Confianza: 97.6%
-            </div>
-          </div>
-          <div>
-            <h2 class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight hover:text-secondary cursor-pointer transition-colors">
-              Adendas Recurrentes y Dilación de Plazos sin Penalidad en Hospital de Frontera
-            </h2>
-            <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed mt-1">
-              La obra estratégica del <span class="text-on-surface font-semibold">Hospital de Frontera San Ignacio</span> acumula 18 meses de prórroga contractual mediante 6 adendas consecutivas sin registro de cobro de penalidades ni apercibimientos en SEACE. El sobrecosto adicional estimado supera el 24.8% del valor referencial original (S/ 35.3M adicionales).
-            </p>
-          </div>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 py-2 bg-surface-container-low px-4 rounded border border-slate-border">
-            <div class="flex flex-col">
-              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Monto Adicional</span>
-              <span class="font-headline-sm text-headline-sm font-bold text-alert-amber">S/ 35.3 M</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Código CUI MEF</span>
-              <span class="font-body-sm text-body-sm font-mono text-on-surface font-semibold">CUI 2315890</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Desviación Temporal</span>
-              <span class="font-body-sm text-body-sm font-bold text-error">+210% plazo</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Regla Algorítmica</span>
-              <span class="font-body-sm text-body-sm font-mono text-secondary">R-ADEN-04</span>
-            </div>
-          </div>
-          <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-border">
-            <button class="px-3.5 py-1.5 rounded bg-primary text-on-primary font-label-sm text-label-sm hover:bg-primary-container transition-colors flex items-center gap-1.5 shadow-sm font-semibold cursor-pointer" onclick="window.location.href='/contrato-detalle.html?id=LP-SM-1-2024-GR.CAJ'">
-              <span class="material-symbols-outlined text-[16px]">visibility</span>
-              Ver Dossier del Contrato
-            </button>
-            <a class="inline-flex items-center gap-1 text-label-sm font-label-sm text-secondary hover:underline font-semibold" href="/entidad?id=ce-697eb5a0a1b4e6c6">
-              Inspeccionar Ficha San Ignacio <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
-            </a>
-          </div>
-        </article>
+        </div>
       </div>
 
       <!-- Explicabilidad Algorítmica (Art. 15 Ley 27806) -->
