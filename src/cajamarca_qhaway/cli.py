@@ -92,6 +92,18 @@ def main() -> int:
     web_serve.add_argument("--port", "-p", type=int, default=8080, help="Puerto de escucha (predeterminado: 8080)")
     web_serve.add_argument("--web-dir", type=str, default="web", help="Directorio estatico base a servir")
 
+    # Comando: sunat (Integracion SUNAT RUC y Enriquecimiento de Proveedores)
+    sunat_parser = subparsers.add_parser("sunat", help="Gestion y consulta de datos tributarios RUC de SUNAT (Art. 16)")
+    sunat_sub = sunat_parser.add_subparsers(dest="sunat_command", help="Subcomandos de sunat")
+
+    # sunat enrich
+    sunat_enrich = sunat_sub.add_parser("enrich", help="Enriquece y consolida el padron RUC de entidades y contratistas")
+    sunat_enrich.add_argument("--registry-file", type=str, default="data/sunat/ruc_registry.json", help="Ruta de destino del padron")
+
+    # sunat lookup
+    sunat_lookup = sunat_sub.add_parser("lookup", help="Consulta informacion y alertas de riesgo de un RUC verificado")
+    sunat_lookup.add_argument("--ruc", type=str, required=True, help="Numero de RUC de 11 digitos a consultar")
+
     args = parser.parse_args()
 
     if args.command == "entities":
@@ -281,6 +293,64 @@ def main() -> int:
 
         else:
             web_parser.print_help()
+            return 0
+
+    elif args.command == "sunat":
+        from cajamarca_qhaway.capabilities.sunat_enrichment import (
+            ConstitutionalPrivacyGuardError,
+            SunatEnrichmentService,
+            assert_constitutional_ruc_only,
+        )
+
+        service = SunatEnrichmentService(registry_path=getattr(args, "registry_file", None))
+
+        if args.sunat_command == "enrich":
+            print("\n--- Enriquecimiento de Datos RUC SUNAT (Art. 16) ---")
+            print("Extrayendo entidades del universo verificado y contratistas de SEACE...")
+            summary = service.enrich_all()
+            print(f"Total registros consolidados: {summary['total_records']}")
+            print(f"  Entidades publicas: {summary['public_entities_count']}")
+            print(f"  Proveedores contratistas: {summary['contractors_count']}")
+            print(f"  Senales de riesgo detectadas: {summary['risk_signals_count']}")
+            print(f"Padron consolidado guardado en: {service.registry_path}\n")
+            return 0
+
+        elif args.sunat_command == "lookup":
+            ruc_input = args.ruc
+            try:
+                profile = service.lookup_ruc(ruc_input)
+            except ConstitutionalPrivacyGuardError as exc:
+                print(f"\n[VIOLACION CONSTITUCIONAL ART. 16] {exc}\n", file=sys.stderr)
+                return 1
+            except ValueError as exc:
+                print(f"\n[ERROR DE VALIDACION RUC] {exc}\n", file=sys.stderr)
+                return 1
+
+            if not profile:
+                print(f"\nNo se encontraron datos para el RUC: {ruc_input}\n")
+                return 1
+
+            print(f"\n--- Ficha Tributaria SUNAT RUC: {profile.ruc} ---")
+            print(f"Razon Social:          {profile.razon_social}")
+            print(f"Estado Contribuyente:  {profile.estado_contribuyente}")
+            print(f"Condicion Domicilio:   {profile.condicion_domicilio}")
+            print(f"Es Entidad Publica:    {'Si' if profile.es_entidad_publica else 'No'}")
+            print(f"Departamento:          {profile.departamento or 'N/A'}")
+            print(f"Provincia:             {profile.provincia or 'N/A'}")
+            print(f"Direccion Fiscal:      {profile.direccion_fiscal or 'N/A'}")
+            print(f"Fuente de Datos:       {profile.source_provider}")
+            print(f"Fecha de Consulta:     {profile.queried_at}")
+            if profile.risk_signals:
+                print("\n[ALERTAS DE RIESGO DETECTADAS]:")
+                for sig in profile.risk_signals:
+                    print(f"  - {sig}")
+            else:
+                print("Senales de Riesgo:     Ninguna (Cumplimiento regular)")
+            print()
+            return 0
+
+        else:
+            sunat_parser.print_help()
             return 0
 
     else:

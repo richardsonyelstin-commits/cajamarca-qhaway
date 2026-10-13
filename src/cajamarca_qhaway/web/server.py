@@ -197,6 +197,15 @@ class WebApiHandler(BaseHTTPRequestHandler):
     def _error_bytes(cls, message: str, status_code: int = 400) -> tuple[int, str, bytes]:
         return cls._json_bytes({"error": message, "status": status_code}, status_code=status_code)
 
+    _sunat_service: Any = None
+
+    @classmethod
+    def get_sunat_service(cls) -> Any:
+        if cls._sunat_service is None:
+            from cajamarca_qhaway.capabilities.sunat_enrichment.service import SunatEnrichmentService
+            cls._sunat_service = SunatEnrichmentService()
+        return cls._sunat_service
+
     @classmethod
     def dispatch(
         cls,
@@ -395,6 +404,57 @@ class WebApiHandler(BaseHTTPRequestHandler):
         if path in ("/api/concentration", "/api/suppliers"):
             entity_id = query.get("entity_id", [None])[0]
             return cls._json_bytes(cls._compute_suppliers_concentration(snapshot, entity_id))
+
+        if path == "/api/sunat/ruc":
+            # Guarda Constitucional Art. 16: Prohibicion de perfilamiento de personas naturales (DNI/RENIEC)
+            dni_param = query.get("dni", [None])[0]
+            if dni_param is not None:
+                return cls._json_bytes(
+                    {
+                        "error": (
+                            "Articulo 16 (Prohibicion de perfilamiento de personas naturales): "
+                            "Queda terminantemente prohibido consultar, almacenar o procesar "
+                            "solicitudes de DNI o RENIEC. El sistema opera exclusivamente sobre "
+                            "entidades publicas y proveedores contratistas del Estado mediante RUC."
+                        ),
+                        "code": "CONSTITUTIONAL_PRIVACY_GUARD_ART_16",
+                    },
+                    status_code=403,
+                )
+
+            ruc_param = query.get("ruc", [None])[0]
+            if ruc_param is not None:
+                cleaned_val = ruc_param.strip().replace("PE-RUC-", "")
+                # Guarda si se pasa un DNI de 8 digitos en el parametro ruc
+                if len(cleaned_val) == 8 and cleaned_val.isdigit():
+                    return cls._json_bytes(
+                        {
+                            "error": (
+                                "Articulo 16 (Prohibicion de perfilamiento de personas naturales): "
+                                f"El identificador '{ruc_param}' corresponde a un DNI de 8 digitos. "
+                                "Se rechaza la operacion para salvaguardar la privacidad de personas naturales."
+                            ),
+                            "code": "CONSTITUTIONAL_PRIVACY_GUARD_ART_16",
+                        },
+                        status_code=403,
+                    )
+
+                if len(cleaned_val) != 11 or not cleaned_val.isdigit():
+                    return cls._error_bytes("RUC invalido: debe contener 11 digitos numericos.", 400)
+
+                service = cls.get_sunat_service()
+                try:
+                    profile = service.lookup_ruc(cleaned_val)
+                except ValueError as exc:
+                    return cls._error_bytes(str(exc), 400)
+
+                if profile:
+                    return cls._json_bytes(profile.model_dump())
+                return cls._error_bytes(f"RUC '{cleaned_val}' no encontrado en el padron verificado.", 404)
+
+            # Si no se especifica RUC ni DNI, devolver resumen del padron consolidado
+            service = cls.get_sunat_service()
+            return cls._json_bytes(service.get_registry_summary())
 
         return cls._error_bytes(f"Ruta API no encontrada: {path}", 404)
 
