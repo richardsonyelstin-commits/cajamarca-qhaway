@@ -62,6 +62,7 @@ CLEAN_PAGE_ROUTES: dict[str, str] = {
     "denuncia": "denuncia.html",
     "transparencia": "transparencia.html",
     "acerca": "acerca.html",
+    "metodologia": "metodologia.html",
     "admin/revision": "admin-revision.html",
     "login": "login.html",
     "acreditacion": "login.html",

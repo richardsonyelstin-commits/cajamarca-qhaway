@@ -173,7 +173,7 @@
 
             <!-- Párrafo Descriptivo -->
             <p class="text-body-lg text-on-surface-variant leading-relaxed max-w-2xl mb-6">
-              Supervisión continua sobre <strong class="text-on-surface font-semibold font-mono tabular-nums">S/ 4,820 Millones</strong> asignados al Gobierno Regional y las 13 Municipalidades Provinciales. Detección preventiva de banderas rojas en contrataciones OCDS y subejecución presupuestal del MEF.
+              Supervisión continua sobre <strong id="hero-total-pim" class="text-on-surface font-semibold font-mono tabular-nums">S/ 4,820 Millones</strong> asignados al Gobierno Regional y las 13 Municipalidades Provinciales. Detección preventiva de banderas rojas en contrataciones OCDS y subejecución presupuestal del MEF.
             </p>
 
             <!-- Jerarquía de Acciones (1 Anchor Dominante + 1 Enlace Secundario) -->
@@ -184,7 +184,7 @@
               </a>
               <a class="px-4 py-2.5 rounded border border-slate-border text-alert-rose hover:bg-surface-container font-semibold text-sm transition-colors inline-flex items-center gap-1.5" href="/alertas">
                 <span class="material-symbols-outlined text-[18px]">warning</span>
-                <span>Ver Alertas Activas (22 Banderas)</span>
+                <span id="hero-alerts-btn">Ver Alertas Activas (22 Banderas)</span>
               </a>
               <a class="text-xs text-on-surface-variant hover:text-on-surface hover:underline inline-flex items-center gap-1 py-2 px-1 transition-colors" href="/transparencia#descarga-microdatos">
                 <span class="material-symbols-outlined text-[16px]">download</span>
@@ -217,7 +217,7 @@
                 <path class="text-surface-container-high" d="M 25 100 A 75 75 0 0 1 175 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="12"></path>
                 <path class="text-outline-variant" d="M 25 100 A 75 75 0 0 1 100 25" fill="none" stroke="currentColor" stroke-dasharray="2 3" stroke-linecap="round" stroke-width="12"></path>
                 <path class="text-alert-rose" d="M 25 100 A 75 75 0 0 1 65 37" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="12"></path>
-                <text class="fill-current text-on-surface font-serif text-2xl font-bold" text-anchor="middle" x="100" y="82">28.4%</text>
+                <text id="speedo-text-pct" class="fill-current text-on-surface font-serif text-2xl font-bold" text-anchor="middle" x="100" y="82">28.4%</text>
                 <text class="fill-current text-outline text-[10px]" x="22" y="112">0%</text>
                 <text class="fill-current text-secondary text-[10px] font-semibold" text-anchor="middle" x="100" y="16">Meta Semestral: 45%</text>
                 <text class="fill-current text-outline text-[10px]" x="178" y="112">100%</text>
@@ -264,7 +264,7 @@
                 <span class="text-xs uppercase tracking-wider font-medium">PIM Total Fiscalizado</span>
                 <span class="material-symbols-outlined text-[20px] text-secondary">account_balance</span>
               </div>
-              <div class="text-2xl font-bold font-serif text-on-surface font-mono tabular-nums mb-1">
+              <div id="kpi-pim-total" class="text-2xl font-bold font-serif text-on-surface font-mono tabular-nums mb-1">
                 S/ 4,820.5 M
               </div>
             </div>
@@ -281,11 +281,11 @@
                 <span class="material-symbols-outlined text-[20px] text-alert-rose">trending_down</span>
               </div>
               <div class="flex items-baseline gap-2 mb-1">
-                <span class="text-2xl font-bold font-serif text-on-surface font-mono tabular-nums">28.4%</span>
+                <span id="kpi-devengado-pct" class="text-2xl font-bold font-serif text-on-surface font-mono tabular-nums">28.4%</span>
                 <span class="text-xs font-semibold text-alert-rose">Crítico</span>
               </div>
               <div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden mt-1 mb-2">
-                <div class="bg-alert-rose h-full rounded-full" style="width: 28.4%"></div>
+                <div id="kpi-devengado-bar" class="bg-alert-rose h-full rounded-full" style="width: 28.4%"></div>
               </div>
             </div>
             <div class="pt-2 text-xs text-alert-rose font-medium border-t border-slate-border">
@@ -300,11 +300,11 @@
                 <span class="text-xs uppercase tracking-wider font-medium">Contratos SEACE OCDS</span>
                 <span class="material-symbols-outlined text-[20px] text-secondary">contract</span>
               </div>
-              <div class="text-2xl font-bold font-serif text-on-surface font-mono tabular-nums mb-1">
+              <div id="kpi-procurements-total" class="text-2xl font-bold font-serif text-on-surface font-mono tabular-nums mb-1">
                 1,425 Procesos
               </div>
             </div>
-            <div class="pt-3 text-xs text-on-surface-variant border-t border-slate-border mt-3">
+            <div id="kpi-procurements-sub" class="pt-3 text-xs text-on-surface-variant border-t border-slate-border mt-3">
               S/ 1,840 M adjudicados · <strong class="text-on-surface font-semibold font-mono">58%</strong> adjudicación directa.
             </div>
           </div>
@@ -317,7 +317,7 @@
                 <span class="material-symbols-outlined text-[20px] text-alert-amber">flag</span>
               </div>
               <div class="flex items-baseline gap-2 mb-1">
-                <span class="text-2xl font-bold font-serif text-alert-rose font-mono tabular-nums">22 Banderas</span>
+                <span id="kpi-alerts-total" class="text-2xl font-bold font-serif text-alert-rose font-mono tabular-nums">22 Banderas</span>
                 <span class="text-xs font-semibold text-alert-amber">En Revisión</span>
               </div>
             </div>
@@ -572,6 +572,88 @@
             <span>Ver el Directorio de las 14 Entidades Auditadas</span>
             <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
           </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Explorador Dinamico de Contrataciones Publicas OCDS (Art. 10 y Art. 18) -->
+    <section class="w-full bg-surface-container-low py-12 px-4 sm:px-6 border-b border-slate-border" id="explorador-contrataciones-sec">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+          <div>
+            <div class="flex items-center gap-2 text-xs uppercase tracking-wider text-secondary font-semibold mb-1">
+              <span>Auditoria en Tiempo Real</span>
+              <span aria-hidden="true" class="text-outline-variant">·</span>
+              <span>Estandar OCDS 1.1</span>
+              <span aria-hidden="true" class="text-outline-variant">·</span>
+              <span id="index-total-procurements-badge" class="px-2 py-0.5 rounded bg-secondary/10 text-secondary font-mono font-bold">474</span>
+            </div>
+            <h2 class="text-headline-lg font-serif text-on-surface">Explorador de Contrataciones Publicas OCDS</h2>
+            <p class="text-body-md text-on-surface-variant mt-1">Busqueda interactiva y descarga de evidencia cruda sobre procesos contractuales de las 14 entidades fiscalizadas.</p>
+          </div>
+          <a href="/contrataciones" class="text-sm text-secondary hover:underline font-semibold inline-flex items-center gap-1 shrink-0">
+            <span>Modulo Avanzado de Contratos</span>
+            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+          </a>
+        </div>
+
+        <!-- Barra de Control: Buscador y Filtro por Ejercicio Fiscal -->
+        <div class="p-4 bg-surface-container-lowest border border-slate-border rounded-lg shadow-sm space-y-4 mb-6">
+          <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+            <div class="relative flex-1 max-w-xl">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+              <input id="index-procurement-search" type="text" class="w-full bg-surface border border-slate-border pl-10 pr-4 py-2 rounded text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-secondary transition-colors" placeholder="Buscar por objeto, OCID, proveedor o entidad (Ctrl+K)..."/>
+            </div>
+
+            <!-- Botones de Ano Fiscal -->
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 text-xs font-semibold">
+              <span class="text-on-surface-variant uppercase tracking-wider text-[11px] mr-1 shrink-0">Ano:</span>
+              <button type="button" class="index-year-btn px-3 py-1.5 rounded bg-primary text-on-primary whitespace-nowrap cursor-pointer transition-colors" data-year="all">Todos</button>
+              <button type="button" class="index-year-btn px-3 py-1.5 rounded bg-surface border border-slate-border text-on-surface-variant hover:text-on-surface whitespace-nowrap cursor-pointer transition-colors" data-year="2026">2026</button>
+              <button type="button" class="index-year-btn px-3 py-1.5 rounded bg-surface border border-slate-border text-on-surface-variant hover:text-on-surface whitespace-nowrap cursor-pointer transition-colors" data-year="2025">2025</button>
+              <button type="button" class="index-year-btn px-3 py-1.5 rounded bg-surface border border-slate-border text-on-surface-variant hover:text-on-surface whitespace-nowrap cursor-pointer transition-colors" data-year="2024">2024</button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between text-xs text-on-surface-variant pt-2 border-t border-slate-border">
+            <span id="index-procurement-counter" class="font-medium">Cargando contrataciones verificadas...</span>
+            <span class="text-[11px] text-outline hidden sm:inline">Presiona JSON OCDS para inspeccionar payload canónico (Art. 10)</span>
+          </div>
+        </div>
+
+        <!-- Tabla de Procesos OCDS Responsive -->
+        <div class="overflow-x-auto bg-surface-container-lowest border border-slate-border rounded-lg shadow-sm">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="border-b border-slate-border bg-surface-container-low text-on-surface-variant font-semibold uppercase tracking-wider text-[11px]">
+                <th class="py-3 px-4">Proceso OCDS / Objeto</th>
+                <th class="py-3 px-4">Entidad Convocante</th>
+                <th class="py-3 px-4">Proveedor / SUNAT</th>
+                <th class="py-3 px-4 text-right">Monto Adjudicado</th>
+                <th class="py-3 px-4 text-center">Evidencia Art. 10</th>
+              </tr>
+            </thead>
+            <tbody id="index-procurements-tbody" class="divide-y divide-slate-border font-body-sm">
+              <tr>
+                <td colspan="5" class="py-8 text-center text-outline">
+                  Inicializando dataset verificado OCDS...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Paginacion Limpia -->
+        <div class="flex items-center justify-between pt-4 mt-2">
+          <span id="index-page-info" class="text-xs text-on-surface-variant font-medium">Pagina 1 de 1</span>
+          <div class="flex items-center gap-2">
+            <button id="index-page-prev" type="button" class="px-3.5 py-1.5 rounded border border-slate-border bg-surface hover:bg-surface-container text-xs font-semibold cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed transition-colors" disabled>
+              Anterior
+            </button>
+            <button id="index-page-next" type="button" class="px-3.5 py-1.5 rounded border border-slate-border bg-surface hover:bg-surface-container text-xs font-semibold cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed transition-colors" disabled>
+              Siguiente
+            </button>
+          </div>
         </div>
       </div>
     </section>

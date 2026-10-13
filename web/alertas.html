@@ -189,7 +189,7 @@
               <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Banderas Activas</span>
               <span class="material-symbols-outlined text-[18px] text-alert-rose">flag</span>
             </div>
-            <div class="font-headline-lg text-headline-lg text-on-surface font-bold">22</div>
+            <div id="alertas-kpi-total" class="font-headline-lg text-headline-lg text-on-surface font-bold">22</div>
             <div class="mt-1 font-caption text-caption text-on-surface-variant">
               <span class="text-alert-rose font-semibold">6 Críticas</span> · 9 Altas · 7 Medias
             </div>
@@ -200,7 +200,7 @@
               <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Monto Observado</span>
               <span class="material-symbols-outlined text-[18px] text-secondary">payments</span>
             </div>
-            <div class="font-headline-lg text-headline-lg text-secondary font-bold">S/ 1,368.4 M</div>
+            <div id="alertas-kpi-monto" class="font-headline-lg text-headline-lg text-secondary font-bold">S/ 1,368.4 M</div>
             <div class="mt-1 font-caption text-caption text-on-surface-variant">
               74% corresponde a canon y obras
             </div>
@@ -211,7 +211,7 @@
               <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Entidades Comprometidas</span>
               <span class="material-symbols-outlined text-[18px] text-outline">account_balance</span>
             </div>
-            <div class="font-headline-lg text-headline-lg text-on-surface font-bold">8 / 14</div>
+            <div id="alertas-kpi-entidades" class="font-headline-lg text-headline-lg text-on-surface font-bold">8 / 14</div>
             <div class="mt-1 font-caption text-caption text-on-surface-variant">
               Foco en GORE y Hualgayoc
             </div>
@@ -222,7 +222,7 @@
               <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Explicabilidad Algorítmica</span>
               <span class="material-symbols-outlined text-[18px] text-civic-emerald">verified</span>
             </div>
-            <div class="font-headline-lg text-headline-lg text-on-surface font-bold">100%</div>
+            <div id="alertas-kpi-explicabilidad" class="font-headline-lg text-headline-lg text-on-surface font-bold">100%</div>
             <div class="mt-1 font-caption text-caption text-civic-emerald font-semibold">
               Fórmulas y reglas OCDS públicas
             </div>
@@ -270,6 +270,8 @@
 
       <!-- Feed de Alertas Documentadas -->
       <div class="flex flex-col gap-6" id="alerts-list">
+        <!-- Contenedor Dinamico de Alertas Validadas (Art. 14 y Art. 15) -->
+        <div id="alertas-dinamicas-container" class="flex flex-col gap-6"></div>
         <!-- Alerta 1 -->
         <article class="alert-card bg-surface-container-lowest rounded border border-slate-border shadow-sm p-6 flex flex-col gap-4" data-severity="critica" data-text="subejecucion critica canon minero gobierno regional cajamarca ocds-red-084">
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-border pb-3">

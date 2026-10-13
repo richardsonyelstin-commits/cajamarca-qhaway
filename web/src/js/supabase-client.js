@@ -385,6 +385,55 @@ export class SupabaseClient {
   /**
    * Consulta una tabla en PostgREST de Supabase con fallback seguro
    */
+  /**
+   * Carga raw_payload bajo demanda para un registro especifico (auditoria JSON Art. 10)
+   * con fallback inmediato al snapshot verificado local.
+   * @param {string} table
+   * @param {string} idColumn
+   * @param {string} idValue
+   * @returns {Promise<object|null>}
+   */
+  async fetchRawPayload(table = 'procurement_records', idColumn = 'ocid', idValue = '') {
+    if (!idValue) return null;
+    const tableName = table.includes('procurement') ? 'procurement_records' : table;
+
+    // 1. Intentar consultar Supabase si estamos online
+    if (this.sourceMode === 'online') {
+      try {
+        const rows = await this.queryTable(tableName, `select=raw_payload&${idColumn}=eq.${encodeURIComponent(idValue)}&limit=1`);
+        if (Array.isArray(rows) && rows.length > 0 && rows[0].raw_payload) {
+          return rows[0].raw_payload;
+        }
+      } catch (err) {
+        console.info('Supabase no retorno raw_payload para', idValue, ', usando snapshot local:', err.message);
+      }
+    }
+
+    // 2. Fallback inmediato al snapshot local
+    try {
+      const snapRes = await fetchWithTimeout(LOCAL_SNAPSHOT_URL, { method: 'GET' }, 2000);
+      if (snapRes.ok) {
+        const snap = await snapRes.json();
+        const records = snap.procurement_records || snap.procurements || [];
+        const found = records.find(p => p[idColumn] === idValue || p.ocid === idValue || p.procurement_id === idValue);
+        if (found && found.raw_payload) {
+          return found.raw_payload;
+        }
+        if (found) return found;
+      }
+    } catch (snapErr) {
+      console.warn('Snapshot local no accesible para raw_payload:', snapErr.message);
+    }
+
+    // 3. Fallback a semilla local
+    const fallbackRecord = FALLBACK_SEED.procurements.find(p => p[idColumn] === idValue || p.ocid === idValue);
+    if (fallbackRecord && fallbackRecord.raw_payload) {
+      return fallbackRecord.raw_payload;
+    }
+
+    return null;
+  }
+
   async queryTable(tableName, queryParams = '') {
     const url = `${this.supabaseUrl}/rest/v1/${tableName}?${queryParams}`;
     const res = await fetchWithTimeout(url, {
@@ -414,13 +463,15 @@ export class SupabaseClient {
 
     let onlineSuccess = false;
 
-    // Intento 1: Supabase PostgREST oficial
+    // Intento 1: Supabase PostgREST oficial (proyeccion ligera de columnas)
     try {
-      const [entities, procurements, budgets, alerts] = await Promise.all([
+      const [entities, procurements, budgets, alerts, redFlags, reports] = await Promise.all([
         this.queryTable('contracting_entities', 'select=*&order=official_name.asc'),
-        this.queryTable('procurement_records', 'select=*&order=retrieved_at.desc&limit=1000'),
-        this.queryTable('budget_execution_records', 'select=*&order=fiscal_year.desc&limit=1000'),
-        this.queryTable('alerts', 'select=*&status=eq.published&order=published_at.desc')
+        this.queryTable('procurement_records', 'select=procurement_id,ocid,entity_id,title,procurement_method,awarded_amount,executed_amount,number_of_bidders,supplier_name,supplier_ruc,source,retrieved_at&order=retrieved_at.desc&limit=1000'),
+        this.queryTable('budget_execution_records', 'select=execution_record_id,entity_id,fiscal_year,budget_category,budgeted_amount,executed_amount,source,retrieved_at&order=fiscal_year.desc&limit=1000'),
+        this.queryTable('alerts', 'select=*&status=eq.published&order=published_at.desc'),
+        this.queryTable('red_flags', 'select=*&order=detected_at.desc').catch(() => []),
+        this.queryTable('citizen_reports', 'select=*&order=submitted_at.desc').catch(() => [])
       ]);
 
       if (Array.isArray(entities) && entities.length > 0) {
@@ -428,19 +479,23 @@ export class SupabaseClient {
         dataset.procurements = procurements || [];
         dataset.budgetExecutions = budgets || [];
         dataset.alerts = alerts || [];
+        dataset.redFlags = Array.isArray(redFlags) && redFlags.length > 0 ? redFlags : [];
+        dataset.citizenReports = Array.isArray(reports) && reports.length > 0 ? reports : [];
         dataset.sourceMode = 'online';
         onlineSuccess = true;
 
-        // Cargar banderas rojas y reportes ciudadanos desde snapshot complementario
-        try {
-          const snapRes = await fetchWithTimeout(LOCAL_SNAPSHOT_URL, { method: 'GET' }, 2000);
-          if (snapRes.ok) {
-            const snapData = await snapRes.json();
-            dataset.redFlags = snapData.red_flags || snapData.redFlags || [];
-            dataset.citizenReports = snapData.citizen_reports || snapData.citizenReports || [];
+        // Cargar banderas rojas y reportes ciudadanos desde snapshot complementario si no vinieron de Supabase
+        if (!dataset.redFlags.length || !dataset.citizenReports.length) {
+          try {
+            const snapRes = await fetchWithTimeout(LOCAL_SNAPSHOT_URL, { method: 'GET' }, 2000);
+            if (snapRes.ok) {
+              const snapData = await snapRes.json();
+              if (!dataset.redFlags.length) dataset.redFlags = snapData.red_flags || snapData.redFlags || [];
+              if (!dataset.citizenReports.length) dataset.citizenReports = snapData.citizen_reports || snapData.citizenReports || [];
+            }
+          } catch {
+            // Si el snapshot local no responde, el bloque posterior fusionara con la semilla canonica local
           }
-        } catch {
-          // Si el snapshot local no responde, el bloque posterior fusionara con la semilla canonica local
         }
       }
     } catch (supaErr) {

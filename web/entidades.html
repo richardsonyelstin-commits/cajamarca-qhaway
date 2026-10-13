@@ -187,7 +187,7 @@
               <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">PIM Total Monitoreado</span>
               <span class="material-symbols-outlined text-[18px] text-outline">account_balance</span>
             </div>
-            <div class="font-headline-lg text-headline-lg text-on-surface font-normal">S/ 4,820.5 M</div>
+            <div id="entidades-kpi-pim" class="font-headline-lg text-headline-lg text-on-surface font-normal">S/ 4,820.5 M</div>
             <div class="mt-1 font-caption text-caption text-on-surface-variant">
               1 Sede Regional + 13 Provincias
             </div>
@@ -198,7 +198,7 @@
               <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Monto Devengado Total</span>
               <span class="material-symbols-outlined text-[18px] text-secondary">payments</span>
             </div>
-            <div class="font-headline-lg text-headline-lg text-secondary font-semibold">S/ 1,368.8 M</div>
+            <div id="entidades-kpi-devengado" class="font-headline-lg text-headline-lg text-secondary font-semibold">S/ 1,368.8 M</div>
             <div class="mt-1 font-caption text-caption text-on-surface-variant">
               Recursos efectivamente pagados
             </div>
@@ -210,7 +210,7 @@
               <span class="material-symbols-outlined text-[18px] text-alert-amber">speed</span>
             </div>
             <div class="flex items-baseline gap-2">
-              <span class="font-headline-lg text-headline-lg text-on-surface font-semibold">28.4%</span>
+              <span id="entidades-kpi-ejecucion" class="font-headline-lg text-headline-lg text-on-surface font-semibold">28.4%</span>
               <span class="px-1.5 py-0.5 rounded text-caption font-label-sm bg-alert-amber/10 text-alert-amber">Meta: 45%</span>
             </div>
             <div class="w-full bg-surface-container rounded-full h-1.5 mt-2 overflow-hidden">
@@ -223,7 +223,7 @@
               <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Contratos Registrados</span>
               <span class="material-symbols-outlined text-[18px] text-outline">description</span>
             </div>
-            <div class="font-headline-lg text-headline-lg text-on-surface font-normal">1,425</div>
+            <div id="entidades-kpi-contratos" class="font-headline-lg text-headline-lg text-on-surface font-normal">1,425</div>
             <div class="mt-1 flex items-center justify-between font-caption text-caption text-on-surface-variant">
               <span>22 Alertas de riesgo</span>
               <span class="text-alert-rose font-semibold flex items-center gap-0.5">
@@ -272,6 +272,15 @@
                 </button>
               </div>
             </div>
+          </div>
+
+          <!-- Filtro de Ejercicio Fiscal -->
+          <div id="entidades-year-filter" class="flex items-center gap-1.5 overflow-x-auto pb-0.5 text-xs font-semibold pt-1">
+            <span class="text-on-surface-variant uppercase tracking-wider text-[11px] mr-1 shrink-0">Ano Fiscal:</span>
+            <button class="year-pill px-3 py-1 rounded bg-on-surface text-on-primary whitespace-nowrap cursor-pointer transition-colors" data-year="all">Todos los anos</button>
+            <button class="year-pill px-3 py-1 rounded bg-surface text-on-surface-variant hover:text-on-surface border border-slate-border whitespace-nowrap cursor-pointer transition-colors" data-year="2026">2026</button>
+            <button class="year-pill px-3 py-1 rounded bg-surface text-on-surface-variant hover:text-on-surface border border-slate-border whitespace-nowrap cursor-pointer transition-colors" data-year="2025">2025</button>
+            <button class="year-pill px-3 py-1 rounded bg-surface text-on-surface-variant hover:text-on-surface border border-slate-border whitespace-nowrap cursor-pointer transition-colors" data-year="2024">2024</button>
           </div>
 
           <!-- Filtros Rápidos por Categoría Territorial -->
