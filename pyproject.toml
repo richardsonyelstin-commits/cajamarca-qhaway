@@ -14,6 +14,7 @@ dependencies = [
     # ADR 0001: Python 3.12, mismo patron de contratos que scientific-literature-pipeline.
     "pydantic>=2.7",
     "PyYAML>=6.0",
+    "httpx>=0.27",
 ]
 
 [project.optional-dependencies]

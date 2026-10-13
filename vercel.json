@@ -1,9 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
+  "buildCommand": "",
   "functions": {
     "api/index.py": {
-      "includeFiles": "{web,src,data}/**"
+      "includeFiles": "{web,src,data}/**",
+      "excludeFiles": "{tests/**,docs/**,specs/**,tasks/**,scripts/**,context/**,Chat*/**,_uv/**}"
     }
   },
   "rewrites": [
