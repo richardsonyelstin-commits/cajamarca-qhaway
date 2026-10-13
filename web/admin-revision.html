@@ -218,8 +218,22 @@
         </div>
       </div>
 
-      <!-- Espacio de Trabajo en 2 Columnas -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Selector de Pestanas de Revision -->
+      <div class="flex items-center gap-2 border-b border-slate-border mb-6">
+        <button id="tab-btn-flags" type="button" class="px-4 py-2.5 text-xs font-bold border-b-2 border-secondary text-secondary flex items-center gap-2 focus:outline-none transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">flag</span>
+          <span>Banderas Rojas Tecnicas (CU5)</span>
+          <span class="px-2 py-0.5 rounded-full bg-secondary/15 text-secondary text-[10px] font-mono" id="tab-flags-badge">0</span>
+        </button>
+        <button id="tab-btn-reports" type="button" class="px-4 py-2.5 text-xs font-semibold border-b-2 border-transparent text-on-surface-variant hover:text-on-surface flex items-center gap-2 focus:outline-none transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">rate_review</span>
+          <span>Denuncias Ciudadanas (Capacidad 006)</span>
+          <span class="px-2 py-0.5 rounded-full bg-alert-amber/15 text-alert-amber text-[10px] font-mono" id="tab-reports-badge">0</span>
+        </button>
+      </div>
+
+      <!-- Espacio de Trabajo: Pestana 1 (Banderas Rojas) -->
+      <div id="tab-panel-flags" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <!-- Columna Izquierda: Bandeja de Casos (5 cols) -->
         <div class="lg:col-span-5 space-y-4">
           <div class="flex items-center justify-between">
@@ -228,7 +242,7 @@
           </div>
 
           <div id="candidates-list" class="space-y-3 max-h-[750px] overflow-y-auto pr-2">
-            <!-- Renderizado dinámico de candidatos -->
+            <!-- Renderizado dinamico de candidatos -->
           </div>
         </div>
 
@@ -243,42 +257,42 @@
                 </h3>
               </div>
               <span class="px-2.5 py-1 rounded bg-secondary-container text-on-secondary-container font-label-sm text-caption font-semibold" id="detail-flag-badge">
-                Pendiente
+                -
               </span>
             </div>
 
-            <!-- Evidencia de Banderas Rojas -->
-            <div class="space-y-3" id="detail-evidence-box">
-              <h4 class="font-label-sm text-xs font-semibold text-on-surface uppercase tracking-wider">Evidencia Oficial Detectada</h4>
-              <div id="detail-flags-container" class="space-y-2 text-body-sm">
-                <p class="text-on-surface-variant text-caption">Haga clic en un expediente de la izquierda para cargar los detalles.</p>
+            <!-- Banderas Rojas Detectadas por el Motor Algoritmico -->
+            <div class="space-y-3">
+              <span class="font-label-sm text-caption uppercase tracking-wider text-outline block font-semibold">Senal Algoritmica y Evidencia Objetiva</span>
+              <div id="detail-flags-container" class="space-y-2">
+                <p class="text-body-sm text-on-surface-variant">Seleccione un caso para ver las anomalias parametricas registradas.</p>
               </div>
             </div>
 
-            <!-- Formulario de Dictamen Colegiado -->
-            <form id="review-decision-form" class="border-t border-slate-border pt-6 space-y-4">
-              <h4 class="font-label-sm text-xs font-semibold text-on-surface uppercase tracking-wider">Emitir Dictamen Colegiado</h4>
+            <!-- Formulario de Dictamen Humano (Art. 14 / CU5) -->
+            <form id="review-decision-form" class="space-y-4 pt-4 border-t border-slate-border">
+              <input type="hidden" id="candidate-id" value=""/>
+              <input type="hidden" id="candidate-entity-id" value=""/>
 
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label for="review-status" class="block font-label-sm text-caption font-semibold text-on-surface mb-1">Decisión del Panel *</label>
-                  <select id="review-status" required class="w-full bg-surface border border-slate-border px-3 py-2 rounded text-body-sm font-body-sm text-on-surface focus:outline-none focus:border-secondary">
-                    <option value="published">Aprobar y Publicar como Alerta</option>
-                    <option value="discarded">Descartar Alerta (Justificación requerida)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label for="reviewed-by" class="block font-label-sm text-caption font-semibold text-on-surface mb-1">Veedor Revisor Acreditado *</label>
-                  <input id="reviewed-by" required readonly type="text" class="w-full bg-surface-container-high border border-slate-border px-3 py-2 rounded text-body-sm font-body-sm text-on-surface focus:outline-none cursor-not-allowed" placeholder="Identidad verificada..."/>
-                  <span class="text-caption text-outline text-[11px] block mt-0.5">Asignado automáticamente por la sesión criptográfica activa.</span>
-                </div>
+              <div>
+                <label for="review-status" class="block font-label-sm text-caption font-semibold text-on-surface mb-1">Sentido del Dictamen Colegiado *</label>
+                <select id="review-status" class="w-full bg-surface border border-slate-border p-2.5 rounded text-body-sm font-body-sm text-on-surface font-semibold focus:outline-none focus:border-secondary">
+                  <option value="published">Validar y Publicar como Alerta Oficial (Aprobada con Pruebas)</option>
+                  <option value="discarded">Descartar Candidato (Falso Positivo Documentado)</option>
+                </select>
+                <span class="text-caption text-outline text-[11px] block mt-0.5">La publicacion hace visible la alerta al publico en general (Art. 14).</span>
               </div>
 
               <div>
-                <label for="review-notes" class="block font-label-sm text-caption font-semibold text-on-surface mb-1">Fundamentación y Notas de Revisión *</label>
-                <textarea id="review-notes" rows="3" required class="w-full bg-surface border border-slate-border p-3 rounded text-body-sm font-body-sm text-on-surface focus:outline-none focus:border-secondary" placeholder="Indique la verificación realizada, contrastes con SEACE o la causa de descarte si corresponde..."></textarea>
-                <span class="text-caption text-outline text-[11px] block mt-0.5">Obligatorio tanto para publicación como para descarte (CA-005-04).</span>
+                <label for="reviewed-by" class="block font-label-sm text-caption font-semibold text-on-surface mb-1">Identidad del Veedor Humano Nominal (Art. 14 y CA-005-02) *</label>
+                <input type="text" id="reviewed-by" readonly class="w-full bg-surface-container border border-slate-border p-2.5 rounded text-body-sm font-mono text-on-surface font-semibold focus:outline-none cursor-not-allowed"/>
+                <span class="text-caption text-outline text-[11px] block mt-0.5">Asignado de forma inmutable a su credencial activa. No se admiten usuarios genericos.</span>
+              </div>
+
+              <div>
+                <label for="review-notes" class="block font-label-sm text-caption font-semibold text-on-surface mb-1">Fundamentacion y Notas de Revision *</label>
+                <textarea id="review-notes" rows="3" required class="w-full bg-surface border border-slate-border p-3 rounded text-body-sm font-body-sm text-on-surface focus:outline-none focus:border-secondary" placeholder="Indique la verificacion realizada, contrastes con SEACE o la causa de descarte si corresponde..."></textarea>
+                <span class="text-caption text-outline text-[11px] block mt-0.5">Obligatorio tanto para publicacion como para descarte (CA-005-04).</span>
               </div>
 
               <div class="flex items-center justify-end gap-3 pt-2">
@@ -287,6 +301,68 @@
                   <span>Registrar Dictamen</span>
                 </button>
               </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Espacio de Trabajo: Pestana 2 (Denuncias Ciudadanas) -->
+      <div id="tab-panel-reports" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Columna Izquierda: Bandeja de Denuncias (5 cols) -->
+        <div class="lg:col-span-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 class="font-headline-sm text-lg font-semibold text-on-surface">Denuncias en Bandeja</h2>
+            <span class="text-caption font-label-sm text-on-surface-variant" id="reports-count-label">-</span>
+          </div>
+
+          <div id="reports-list" class="space-y-3 max-h-[750px] overflow-y-auto pr-2">
+            <!-- Renderizado dinamico de denuncias -->
+          </div>
+        </div>
+
+        <!-- Columna Derecha: Detalle de Denuncia y Formulario de Moderacion (7 cols) -->
+        <div class="lg:col-span-7">
+          <div id="selected-report-dossier" class="p-6 bg-surface-container-low border border-slate-border rounded sticky top-24 space-y-6">
+            <div class="border-b border-slate-border pb-4 flex items-center justify-between">
+              <div>
+                <span class="font-mono text-caption text-secondary font-bold" id="detail-report-id">Seleccione una denuncia</span>
+                <h3 class="font-headline-sm text-xl font-bold text-on-surface mt-1" id="detail-report-entity">
+                  Bandeja de Moderacion de Denuncias
+                </h3>
+              </div>
+              <span class="px-2.5 py-1 text-xs font-mono font-bold rounded bg-surface border border-slate-border text-on-surface-variant" id="detail-report-status-badge">
+                ESTADO
+              </span>
+            </div>
+
+            <!-- Contenido de Denuncia -->
+            <div id="detail-report-content" class="space-y-4">
+              <p class="text-sm text-on-surface-variant">Seleccione una denuncia ciudadana de la lista izquierda para evaluar el texto, verificar el descargo legal y emitir dictamen de moderacion.</p>
+            </div>
+
+            <!-- Formulario de Moderacion -->
+            <form id="report-moderation-form" class="space-y-4 pt-4 border-t border-slate-border">
+              <div>
+                <label for="moderation-decision-status" class="block text-xs font-semibold text-on-surface uppercase mb-1">
+                  Dictamen de Moderacion <span class="text-alert-rose">*</span>
+                </label>
+                <select id="moderation-decision-status" class="w-full px-3 py-2 text-xs bg-surface border border-slate-border rounded text-on-surface font-semibold focus:outline-none focus:ring-1 focus:ring-secondary">
+                  <option value="accepted_as_lead">Aceptar como Linea de Investigacion (Lead Valido)</option>
+                  <option value="rejected">Descartar Denuncia (Improcedente / Sin Sustento)</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="moderation-notes" class="block text-xs font-semibold text-on-surface uppercase mb-1">
+                  Fundamentacion del Veedor Moderador <span class="text-alert-rose">*</span>
+                </label>
+                <textarea id="moderation-notes" rows="3" required class="w-full p-3 text-xs bg-surface border border-slate-border rounded text-on-surface focus:outline-none focus:ring-1 focus:ring-secondary leading-relaxed" placeholder="Documente la justificacion tecnica de aceptacion o descarte..."></textarea>
+              </div>
+
+              <button id="btn-submit-moderation" type="submit" class="w-full py-2.5 px-4 rounded bg-secondary hover:bg-secondary-hover text-white text-xs font-bold transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm">
+                <span class="material-symbols-outlined text-[18px]">verified</span>
+                <span>Registrar Dictamen de Moderacion (Sincronizado)</span>
+              </button>
             </form>
           </div>
         </div>
@@ -379,9 +455,12 @@
   <script type="module" src="/src/js/app.js"></script>
   <script type="module">
     import { dataEngine } from '/src/js/data-engine.js';
+    import { supabaseClient } from '/src/js/supabase-client.js';
 
     let candidates = [];
     let selectedCandidate = null;
+    let reportsList = [];
+    let selectedReport = null;
     let activeToken = null;
     let activeVeedor = null;
 
@@ -449,6 +528,69 @@
         setTimeout(() => {
           window.location.href = '/login';
         }, 400);
+      });
+
+      // Tab Switcher
+      const tabFlags = document.getElementById('tab-btn-flags');
+      const tabReports = document.getElementById('tab-btn-reports');
+      const panelFlags = document.getElementById('tab-panel-flags');
+      const panelReports = document.getElementById('tab-panel-reports');
+
+      tabFlags.addEventListener('click', () => {
+        panelFlags.classList.remove('hidden');
+        panelReports.classList.add('hidden');
+        tabFlags.className = 'px-4 py-2.5 text-xs font-bold border-b-2 border-secondary text-secondary flex items-center gap-2 focus:outline-none transition-colors cursor-pointer';
+        tabReports.className = 'px-4 py-2.5 text-xs font-semibold border-b-2 border-transparent text-on-surface-variant hover:text-on-surface flex items-center gap-2 focus:outline-none transition-colors cursor-pointer';
+      });
+
+      tabReports.addEventListener('click', () => {
+        panelReports.classList.remove('hidden');
+        panelFlags.classList.add('hidden');
+        tabReports.className = 'px-4 py-2.5 text-xs font-bold border-b-2 border-secondary text-secondary flex items-center gap-2 focus:outline-none transition-colors cursor-pointer';
+        tabFlags.className = 'px-4 py-2.5 text-xs font-semibold border-b-2 border-transparent text-on-surface-variant hover:text-on-surface flex items-center gap-2 focus:outline-none transition-colors cursor-pointer';
+      });
+
+      // Listener de Moderacion de Denuncia
+      const modForm = document.getElementById('report-moderation-form');
+      modForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!selectedReport) {
+          window.showToast('Seleccione una denuncia de la bandeja primero.', 'warning');
+          return;
+        }
+
+        const status = document.getElementById('moderation-decision-status').value;
+        const notes = document.getElementById('moderation-notes').value.trim();
+        if (!notes) {
+          window.showToast('La fundamentacion de moderacion es obligatoria.', 'error');
+          return;
+        }
+
+        const submitBtn = document.getElementById('btn-submit-moderation');
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-75');
+
+        try {
+          const modRes = await supabaseClient.moderateCitizenReport({
+            report_id: selectedReport.report_id,
+            moderation_status: status,
+            moderated_by: `${activeVeedor.name} (${activeVeedor.organization})`,
+            review_notes: notes
+          });
+
+          window.showToast(
+            `Denuncia ${selectedReport.report_id} moderada: ${status === 'accepted_as_lead' ? 'Aceptada como Lead' : 'Descartada'}`,
+            'success'
+          );
+          modForm.reset();
+          await loadPanelData();
+        } catch (err) {
+          console.error(err);
+          window.showToast(err.message || 'Error al moderar denuncia', 'error');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.classList.remove('opacity-75');
+        }
       });
 
       // 3. Cargar expedientes y datos
@@ -578,8 +720,17 @@
       document.getElementById('kpi-published-count').textContent = published;
       document.getElementById('kpi-discarded-count').textContent = discarded;
       document.getElementById('candidates-count-label').textContent = `${candidates.length} expedientes`;
+      document.getElementById('tab-flags-badge').textContent = candidates.length;
+
+      // Cargar y renderizar denuncias ciudadanas
+      reportsList = snapshot.citizen_reports || [];
+      const pendingReports = reportsList.filter(r => (r.moderation_status || 'pending') === 'pending');
+      document.getElementById('tab-reports-badge').textContent = pendingReports.length;
+      document.getElementById('reports-count-label').textContent = `${reportsList.length} reportes (${pendingReports.length} pendientes)`;
 
       renderCandidatesList();
+      renderReportsList();
+
       if (candidates.length > 0) {
         selectCandidate(candidates[0]);
       } else {
@@ -591,6 +742,108 @@
           </div>
         `;
       }
+
+      if (reportsList.length > 0) {
+        selectReport(pendingReports[0] || reportsList[0]);
+      }
+    }
+
+    function renderReportsList() {
+      const listEl = document.getElementById('reports-list');
+      if (!listEl) return;
+      if (reportsList.length === 0) {
+        listEl.innerHTML = `
+          <div class="p-6 text-center text-on-surface-variant bg-surface-container-low border border-slate-border rounded">
+            <p class="font-body-sm font-semibold text-on-surface">No hay denuncias en el sistema</p>
+          </div>
+        `;
+        return;
+      }
+
+      listEl.innerHTML = reportsList.map(r => {
+        const status = r.moderation_status || 'pending';
+        let badgeColor = 'bg-alert-amber/15 text-alert-amber border-alert-amber/30';
+        let statusText = 'Pendiente';
+        if (status === 'accepted_as_lead') {
+          badgeColor = 'bg-civic-emerald/15 text-civic-emerald border-civic-emerald/30';
+          statusText = 'Aceptada (Lead)';
+        } else if (status === 'rejected') {
+          badgeColor = 'bg-surface-container text-outline border-slate-border';
+          statusText = 'Descartada';
+        }
+
+        const dateStr = r.submitted_at ? new Date(r.submitted_at).toLocaleDateString('es-PE') : 'Fecha N/D';
+
+        return `
+          <article class="report-item p-4 bg-surface-container-low border border-slate-border rounded hover:border-secondary transition-colors cursor-pointer" data-id="${r.report_id}">
+            <div class="flex items-center justify-between gap-2 mb-1">
+              <span class="font-mono text-caption font-bold ${badgeColor} px-2 py-0.5 rounded border">${statusText}</span>
+              <span class="text-caption font-label-sm text-outline">${dateStr}</span>
+            </div>
+            <h3 class="font-headline-sm text-sm font-semibold text-on-surface line-clamp-1 mt-1">Pliego: ${r.related_entity_id || 'Regional'}</h3>
+            <p class="text-caption text-on-surface-variant line-clamp-2 mt-1 leading-relaxed">${r.raw_text}</p>
+            <div class="mt-2 text-caption font-mono text-outline flex items-center justify-between">
+              <span>Canal: ${(r.channel || 'web').toUpperCase()}</span>
+              <span>ID: ${r.report_id}</span>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      document.querySelectorAll('.report-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const id = item.dataset.id;
+          const found = reportsList.find(r => r.report_id === id);
+          if (found) selectReport(found);
+        });
+      });
+    }
+
+    function selectReport(report) {
+      selectedReport = report;
+
+      document.querySelectorAll('.report-item').forEach(item => {
+        if (item.dataset.id === report.report_id) {
+          item.classList.add('border-secondary', 'bg-surface');
+        } else {
+          item.classList.remove('border-secondary', 'bg-surface');
+        }
+      });
+
+      document.getElementById('detail-report-id').textContent = `Expediente: ${report.report_id}`;
+      document.getElementById('detail-report-entity').textContent = report.related_entity_id ? `Pliego Asociado: ${report.related_entity_id}` : 'Denuncia Ciudadana Regional';
+
+      const status = report.moderation_status || 'pending';
+      const statusBadge = document.getElementById('detail-report-status-badge');
+      statusBadge.textContent = status.toUpperCase();
+
+      const dateFormatted = report.submitted_at ? new Date(report.submitted_at).toLocaleString('es-PE') : 'N/D';
+
+      document.getElementById('detail-report-content').innerHTML = `
+        <div class="p-4 bg-surface border border-slate-border rounded space-y-3">
+          <div class="flex items-center justify-between text-caption font-mono text-outline">
+            <span>Fecha de Envio: ${dateFormatted}</span>
+            <span>Canal Seguro: ${(report.channel || 'web').toUpperCase()}</span>
+          </div>
+
+          <div class="border-t border-slate-border pt-2">
+            <span class="text-caption font-semibold uppercase text-outline block mb-1">Testimonio y Hechos Denunciados</span>
+            <p class="text-body-sm text-on-surface leading-relaxed whitespace-pre-wrap">${report.raw_text}</p>
+          </div>
+
+          <div class="border-t border-slate-border pt-2 flex items-center gap-2 text-caption text-civic-emerald font-semibold">
+            <span class="material-symbols-outlined text-[16px]">verified</span>
+            <span>Descargo legal Ley 29733 verificado y aceptado por el denunciante (CA-006-01)</span>
+          </div>
+
+          ${report.moderated_by ? `
+            <div class="p-2.5 bg-surface-container rounded text-caption font-mono text-on-surface-variant">
+              <span>Moderado por: ${report.moderated_by}</span>
+              ${report.moderated_at ? ` · <span>Fecha: ${new Date(report.moderated_at).toLocaleString('es-PE')}</span>` : ''}
+            </div>
+          ` : ''}
+        </div>
+      `;
     }
 
     function renderCandidatesList() {

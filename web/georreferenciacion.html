@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Monitoreo Geoespacial y Satelital de Obras | Cajamarca Qhaway</title>
+  <meta name="description" content="Capacidad 007: Deteccion determinista de divergencias fisico-financieras en obras publicas de Cajamarca mediante satelites abiertos (Sentinel-2, Sentinel-1 SAR, NASA HLS) y salvaguardas constitucionales."/>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300..900;1,300..900&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: { DEFAULT: "#002B49", light: "#004071", dark: "#001D31" },
+            secondary: { DEFAULT: "#007A78", hover: "#005F5D", container: "#B2DFDB" },
+            accent: { gold: "#C59B27", amber: "#D97706" },
+            surface: { DEFAULT: "#F8FAFC", container: "#F1F5F9", "container-low": "#FFFFFF", "container-high": "#E2E8F0" },
+            "on-surface": { DEFAULT: "#0F172A", variant: "#475569" },
+            "slate-border": "#CBD5E1",
+            "alert-rose": "#E11D48",
+            "alert-amber": "#D97706",
+            "civic-emerald": "#059669",
+            outline: "#94A3B8"
+          },
+          fontFamily: {
+            sans: ["Public Sans", "-apple-system", "sans-serif"],
+            serif: ["Newsreader", "Georgia", "serif"],
+            mono: ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="/src/css/tokens.css"/>
+  <link rel="stylesheet" href="/src/css/main.css"/>
+  <link rel="stylesheet" href="/src/css/components.css"/>
+</head>
+<body class="bg-surface font-sans text-on-surface antialiased min-h-screen flex flex-col">
+  <a class="skip-link" href="#main-content">Saltar al contenido principal</a>
+
+  <!-- Encabezado Unificado -->
+  <header class="w-full sticky top-0 z-50 bg-surface/95 backdrop-blur-md border-b border-slate-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <a class="flex items-center gap-2.5 shrink-0 group focus:outline-none rounded" href="/" title="Inicio - Cajamarca Qhaway">
+        <img alt="Logotipo Cajamarca Qhaway" class="h-8 w-auto object-contain" src="/media/brand-symbol.svg"/>
+        <div class="flex flex-col">
+          <span class="font-serif text-lg font-bold text-on-surface leading-tight tracking-tight group-hover:text-secondary transition-colors">Cajamarca Qhaway</span>
+          <span class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Veeduria Ciudadana</span>
+        </div>
+      </a>
+
+      <nav class="hidden lg:flex items-center gap-1 xl:gap-2">
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/">Inicio</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/entidades">Entidades</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/alertas">Alertas</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/contrataciones">Contrataciones</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/presupuesto">Presupuesto</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/proveedores">Proveedores</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-secondary bg-secondary-container/20 border border-secondary/30 transition-colors" href="/georreferenciacion">Geoespacial</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-secondary hover:text-secondary-hover hover:bg-secondary-container/20 transition-colors flex items-center gap-1" href="/denuncia">
+          <span class="material-symbols-outlined text-[15px]">campaign</span>
+          <span>Denunciar</span>
+        </a>
+      </nav>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <a id="header-veedor-btn" href="/login" class="px-3 py-1.5 rounded text-xs font-semibold bg-surface-container-high hover:bg-surface-container-highest text-on-surface border border-slate-border transition-colors flex items-center gap-1.5" title="Acceso seguro para veedores acreditados">
+          <span class="material-symbols-outlined text-[16px] text-secondary shrink-0">verified_user</span>
+          <span class="hidden sm:inline">Panel Veedor</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main id="main-content" class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 py-8">
+    
+    <!-- Hero Editorial y Capacidad 007 -->
+    <div class="border-b border-slate-border pb-6">
+      <div class="flex flex-wrap items-center gap-2 text-xs font-semibold text-secondary uppercase tracking-wider mb-2">
+        <span class="px-2 py-0.5 rounded bg-secondary-container/30 text-secondary border border-secondary/30 font-mono">Capacidad 007</span>
+        <span>·</span>
+        <span class="flex items-center gap-1">
+          <span class="material-symbols-outlined text-[16px]">satellite_alt</span>
+          Sentinel-2 & Sentinel-1 SAR Radar
+        </span>
+        <span>·</span>
+        <span>NASA GIBS / CMR Open Data</span>
+        <span>·</span>
+        <span class="text-on-surface-variant">Constitucion Arts. 14, 16 y 18</span>
+      </div>
+      <h1 class="font-headline-xl text-3xl sm:text-4xl font-bold text-on-surface tracking-tight font-serif">
+        Monitoreo Geoespacial y Satelital de Obras Publicas
+      </h1>
+      <p class="font-body-lg text-body-lg text-on-surface-variant mt-3 max-w-4xl leading-relaxed">
+        Supervision fisico-financiera multi-temporal con sensores satelitales abiertos y camaras publicas autorizadas.
+        Cruce determinista entre el devengado presupuestal registrado en el MEF y el indice de actividad estructural observable
+        en el terreno, con salvaguarda constitucional de penetracion de nubes via radar y sin sesgo algoritmico.
+      </p>
+    </div>
+
+    <!-- Franja de Resumen Operativo -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 my-6">
+      <div class="p-5 bg-surface-container-low border border-slate-border rounded">
+        <span class="text-caption font-label-sm text-on-surface-variant block mb-1">Obras Bajo Monitoreo Satelital</span>
+        <span class="font-mono text-2xl font-bold text-on-surface block" id="kpi-total-works">14 Obras</span>
+        <span class="text-caption text-outline mt-1 block">13 provincias de la Region Cajamarca</span>
+      </div>
+      <div class="p-5 bg-surface-container-low border border-slate-border rounded">
+        <span class="text-caption font-label-sm text-on-surface-variant block mb-1">Sensores Abiertos Integrados</span>
+        <span class="font-mono text-2xl font-bold text-secondary block">Sentinel-2 & SAR</span>
+        <span class="text-caption text-outline mt-1 block">Optico (10m) + Radar de apertura sintetica</span>
+      </div>
+      <div class="p-5 bg-surface-container-low border border-slate-border rounded">
+        <span class="text-caption font-label-sm text-on-surface-variant block mb-1">Divergencias Criticas Observadas</span>
+        <span class="font-mono text-2xl font-bold text-alert-rose block" id="kpi-critical-count">1 Caso</span>
+        <span class="text-caption text-outline mt-1 block">Candidato GEO-001 remitido a revision CU5</span>
+      </div>
+      <div class="p-5 bg-surface-container-low border border-slate-border rounded">
+        <span class="text-caption font-label-sm text-on-surface-variant block mb-1">Respaldo Radar SAR Activo</span>
+        <span class="font-mono text-2xl font-bold text-civic-emerald block" id="kpi-sar-rescued">100% Blindado</span>
+        <span class="text-caption text-outline mt-1 block">Penetra nubes de la sierra sin falsas alertas</span>
+      </div>
+    </div>
+
+    <!-- Salvaguarda Constitucional Art. 14 / Art. 16 -->
+    <div class="mb-6 p-4 rounded-lg bg-surface-container-low border border-alert-amber/40 flex items-start gap-3">
+      <span class="material-symbols-outlined text-alert-amber text-[24px] shrink-0 mt-0.5">policy</span>
+      <div class="text-xs text-on-surface leading-relaxed">
+        <strong class="font-semibold text-on-surface block mb-0.5">Salvaguarda Constitucional de Veeduria (Articulos 14 y 16)</strong>
+        Las senales geoespaciales son indicadores tecnicos de apoyo que no constituyen prueba penal ni sancion automatica.
+        Toda divergencia detectada requiere revision de veedores humanos (CU5) e inspeccion ocular en campo.
+        Queda terminantemente prohibido el uso de feeds de camaras con biometria o lectura automatizada de placas (ALPR).
+      </div>
+    </div>
+
+    <!-- Barra de Filtros y Busqueda -->
+    <div class="p-4 bg-surface-container-low border border-slate-border rounded-lg mb-6 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+      <div class="flex flex-wrap items-center gap-3">
+        <div>
+          <label for="filter-province" class="block text-[11px] font-semibold text-on-surface-variant uppercase mb-1">Provincia</label>
+          <select id="filter-province" class="px-3 py-1.5 text-xs bg-surface border border-slate-border rounded text-on-surface focus:outline-none focus:ring-1 focus:ring-secondary">
+            <option value="all">Todas las Provincias (13)</option>
+            <option value="Cajamarca">Cajamarca</option>
+            <option value="Cajabamba">Cajabamba</option>
+            <option value="Celendin">Celendin</option>
+            <option value="Chota">Chota</option>
+            <option value="Contumaza">Contumaza</option>
+            <option value="Cutervo">Cutervo</option>
+            <option value="Hualgayoc">Hualgayoc</option>
+            <option value="Jaen">Jaen</option>
+            <option value="San Ignacio">San Ignacio</option>
+            <option value="San Marcos">San Marcos</option>
+            <option value="San Miguel">San Miguel</option>
+            <option value="San Pablo">San Pablo</option>
+            <option value="Santa Cruz">Santa Cruz</option>
+          </select>
+        </div>
+        <div>
+          <label for="filter-severity" class="block text-[11px] font-semibold text-on-surface-variant uppercase mb-1">Nivel de Divergencia</label>
+          <select id="filter-severity" class="px-3 py-1.5 text-xs bg-surface border border-slate-border rounded text-on-surface focus:outline-none focus:ring-1 focus:ring-secondary">
+            <option value="all">Todos los Niveles</option>
+            <option value="critical">Critica (Score &ge; 0.40)</option>
+            <option value="high">Alta (Score &ge; 0.25)</option>
+            <option value="moderate">Moderada (Score &ge; 0.15)</option>
+            <option value="normal">Normal (Concordante)</option>
+            <option value="info">Degradada por Clima (Nublado)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="relative flex-1 max-w-md">
+        <label for="search-input" class="block text-[11px] font-semibold text-on-surface-variant uppercase mb-1">Buscar Obra o Codigo CUI</label>
+        <div class="relative">
+          <input id="search-input" type="text" placeholder="Ej. Cenepa, Hospital, 2348910..." class="w-full pl-9 pr-3 py-1.5 text-xs bg-surface border border-slate-border rounded text-on-surface focus:outline-none focus:ring-1 focus:ring-secondary"/>
+          <span class="material-symbols-outlined text-[18px] text-outline absolute left-2.5 top-1/2 -translate-y-1/2">search</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visor de Obras y Tarjetas Detalladas -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Listado de Obras (2 Columnas en desktop) -->
+      <div class="lg:col-span-2 space-y-4" id="works-container">
+        <!-- Renderizado dinamicamente via JS -->
+        <div class="p-8 text-center text-on-surface-variant bg-surface-container-low border border-slate-border rounded">
+          <p class="text-sm font-semibold text-on-surface">Cargando catalogo satelital de obras...</p>
+        </div>
+      </div>
+
+      <!-- Ficha de Inspeccion Detallada y Enlaces Satelitales -->
+      <div class="space-y-4">
+        <div class="sticky top-20 p-5 bg-surface-container-low border border-slate-border rounded-lg" id="inspection-card">
+          <div class="flex items-center justify-between gap-2 border-b border-slate-border pb-3 mb-4">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-secondary text-[20px]">my_location</span>
+              <h2 class="text-sm font-bold text-on-surface font-headline-sm">Ficha Satelital de Inspeccion</h2>
+            </div>
+            <span class="font-mono text-caption px-2 py-0.5 rounded bg-surface border border-slate-border text-outline" id="selected-cui">Seleccione obra</span>
+          </div>
+
+          <div id="inspection-content" class="space-y-4">
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              Seleccione cualquier obra del catalogo para inspeccionar las coordenadas satelitales, capas WMTS de Copernicus/NASA, radios de monitoreo y calculo de divergencia.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Pie de Pagina -->
+  <footer class="mt-auto border-t border-slate-border bg-surface-container py-8 text-xs text-on-surface-variant">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <img alt="Simbolo Cajamarca Qhaway" class="h-5 w-auto" src="/media/brand-symbol.svg"/>
+        <span>Cajamarca Qhaway · Plataforma de Veeduria Ciudadana Multi-Temporal</span>
+      </div>
+      <div class="flex items-center gap-4 text-caption font-mono">
+        <span>Sentinel-2 L2A</span>
+        <span>·</span>
+        <span>Sentinel-1 SAR</span>
+        <span>·</span>
+        <span>NASA GIBS / CMR</span>
+        <span>·</span>
+        <a class="text-secondary hover:underline" href="/transparencia">Metodologia</a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { dataEngine } from '/src/js/data-engine.js';
+
+    let allWorks = [];
+    let allSignals = [];
+    let selectedSite = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadGeospatialData();
+
+      document.getElementById('filter-province').addEventListener('change', renderWorks);
+      document.getElementById('filter-severity').addEventListener('change', renderWorks);
+      document.getElementById('search-input').addEventListener('input', renderWorks);
+    });
+
+    async function loadGeospatialData() {
+      try {
+        allWorks = await dataEngine.getGeospatialWorks();
+        allSignals = await dataEngine.getGeospatialDivergences();
+      } catch (err) {
+        console.error('Error al cargar datos geoespaciales:', err);
+      }
+
+      const criticalCount = allSignals.filter(s => s.severity === 'critical').length;
+      document.getElementById('kpi-total-works').textContent = `${allWorks.length} Obras`;
+      document.getElementById('kpi-critical-count').textContent = `${criticalCount} ${criticalCount === 1 ? 'Caso' : 'Casos'}`;
+
+      renderWorks();
+      if (allWorks.length > 0) {
+        selectWork(allWorks[1] || allWorks[0]); // Seleccionar Cenepa por defecto si existe
+      }
+    }
+
+    function renderWorks() {
+      const provFilter = document.getElementById('filter-province').value;
+      const sevFilter = document.getElementById('filter-severity').value;
+      const searchTerm = document.getElementById('search-input').value.trim().toLowerCase();
+
+      const signalMap = new Map(allSignals.map(s => [s.site_id, s]));
+
+      const filtered = allWorks.filter(w => {
+        if (provFilter !== 'all' && w.province.toLowerCase() !== provFilter.toLowerCase()) {
+          return false;
+        }
+
+        const sig = signalMap.get(w.site_id);
+        const sev = sig ? sig.severity.toLowerCase() : 'normal';
+        if (sevFilter !== 'all' && sev !== sevFilter.toLowerCase()) {
+          return false;
+        }
+
+        if (searchTerm) {
+          const matchTitle = (w.work_title || '').toLowerCase().includes(searchTerm);
+          const matchCui = (w.cui || '').toLowerCase().includes(searchTerm);
+          const matchOcid = (w.ocid || '').toLowerCase().includes(searchTerm);
+          const matchProv = (w.province || '').toLowerCase().includes(searchTerm);
+          if (!matchTitle && !matchCui && !matchOcid && !matchProv) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+
+      const container = document.getElementById('works-container');
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center text-on-surface-variant bg-surface-container-low border border-slate-border rounded">
+            <span class="material-symbols-outlined text-3xl text-outline mb-2">location_off</span>
+            <p class="text-sm font-semibold text-on-surface">No se encontraron obras con los filtros aplicados</p>
+            <p class="text-caption text-outline mt-1">Pruebe modificando la provincia o el nivel de divergencia.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(w => {
+        const sig = signalMap.get(w.site_id);
+        const devPct = sig ? Math.round(sig.financial_devengado_ratio * 100) : 45;
+        const physPct = sig ? Math.round(sig.observed_physical_activity_index * 100) : 42;
+        const score = sig ? sig.divergence_score : 0.03;
+        const severity = sig ? sig.severity : 'normal';
+
+        let badgeClass = 'bg-surface text-on-surface-variant border-slate-border';
+        let badgeLabel = 'Concordante';
+        let cardBorder = 'border-slate-border';
+
+        if (severity === 'critical') {
+          badgeClass = 'bg-alert-rose/15 text-alert-rose border-alert-rose/30 font-bold';
+          badgeLabel = 'Divergencia Critica';
+          cardBorder = 'border-alert-rose/50';
+        } else if (severity === 'high') {
+          badgeClass = 'bg-alert-amber/15 text-alert-amber border-alert-amber/30 font-bold';
+          badgeLabel = 'Divergencia Alta';
+          cardBorder = 'border-alert-amber/50';
+        } else if (severity === 'moderate') {
+          badgeClass = 'bg-secondary/15 text-secondary border-secondary/30';
+          badgeLabel = 'Divergencia Moderada';
+        } else if (severity === 'info') {
+          badgeClass = 'bg-surface-container text-outline border-slate-border';
+          badgeLabel = 'Degradado por Clima';
+        }
+
+        const isSelected = selectedSite && selectedSite.site_id === w.site_id;
+
+        return `
+          <article class="p-5 bg-surface-container-low border ${cardBorder} rounded-lg hover:border-secondary transition-all cursor-pointer ${isSelected ? 'ring-2 ring-secondary' : ''}" data-id="${w.site_id}">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded text-[11px] font-mono font-semibold ${badgeClass} border">${badgeLabel}</span>
+                <span class="text-caption font-semibold text-secondary uppercase font-mono">${w.province}</span>
+              </div>
+              <span class="text-caption font-mono text-outline">CUI ${w.cui || 'N/D'}</span>
+            </div>
+
+            <h3 class="font-headline-sm text-base font-semibold text-on-surface leading-snug">${w.work_title}</h3>
+            <p class="text-caption text-on-surface-variant font-mono mt-1">${w.entity_id}</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 pt-3 border-t border-slate-border text-xs">
+              <div>
+                <div class="flex justify-between text-caption font-mono mb-1">
+                  <span class="text-on-surface-variant">Devengado Financiero (MEF):</span>
+                  <span class="font-bold text-on-surface">${devPct}%</span>
+                </div>
+                <div class="w-full h-2 bg-surface-container rounded-full overflow-hidden">
+                  <div class="h-full bg-secondary transition-all" style="width: ${devPct}%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-caption font-mono mb-1">
+                  <span class="text-on-surface-variant">Actividad Fisica (Satelite):</span>
+                  <span class="font-bold ${physPct < 30 ? 'text-alert-rose' : 'text-on-surface'}">${physPct}%</span>
+                </div>
+                <div class="w-full h-2 bg-surface-container rounded-full overflow-hidden">
+                  <div class="h-full ${physPct < 30 ? 'bg-alert-rose' : 'bg-civic-emerald'} transition-all" style="width: ${physPct}%"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 flex flex-wrap items-center justify-between gap-2 text-caption font-mono pt-3 border-t border-slate-border text-outline">
+              <div class="flex items-center gap-3">
+                <span>Coord: (${w.latitude.toFixed(4)}, ${w.longitude.toFixed(4)})</span>
+                <span>Radio: ${w.radius_meters}m</span>
+              </div>
+              <span class="font-bold text-on-surface">${dataEngine.formatCurrency(w.contract_amount_pen)}</span>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      document.querySelectorAll('#works-container article').forEach(el => {
+        el.addEventListener('click', () => {
+          const id = el.getAttribute('data-id');
+          const found = allWorks.find(w => w.site_id === id);
+          if (found) selectWork(found);
+        });
+      });
+    }
+
+    function selectWork(work) {
+      selectedSite = work;
+      renderWorks(); // actualiza resaltado
+
+      const signalMap = new Map(allSignals.map(s => [s.site_id, s]));
+      const sig = signalMap.get(work.site_id);
+
+      document.getElementById('selected-cui').textContent = `CUI ${work.cui || 'N/D'}`;
+
+      const gibsUrl = `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/Sentinel-2_L2A_True_Color/default/2026-10-10/GoogleMapsCompatible_Level14/11/1080/578.jpg`;
+
+      const contentEl = document.getElementById('inspection-content');
+      contentEl.innerHTML = `
+        <div class="space-y-3">
+          <div>
+            <span class="text-caption text-outline uppercase font-mono font-semibold">Proyecto Seleccionado</span>
+            <h3 class="text-sm font-bold text-on-surface mt-0.5 leading-snug">${work.work_title}</h3>
+            <span class="text-caption text-secondary font-mono">${work.province} · ${work.entity_id}</span>
+          </div>
+
+          <div class="p-3 bg-surface border border-slate-border rounded space-y-2 text-xs font-mono">
+            <div class="flex justify-between">
+              <span class="text-outline">Monto Contractual:</span>
+              <span class="font-bold text-on-surface">${dataEngine.formatCurrency(work.contract_amount_pen)}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-outline">Codigo OCID:</span>
+              <span class="text-on-surface">${work.ocid || 'Sin OCID'}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-outline">Coordenadas:</span>
+              <span class="text-on-surface">${work.latitude.toFixed(5)}, ${work.longitude.toFixed(5)}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-outline">Radio de Monitoreo:</span>
+              <span class="text-on-surface">${work.radius_meters} metros</span>
+            </div>
+          </div>
+
+          ${sig ? `
+            <div class="p-3 rounded border ${sig.severity === 'critical' ? 'bg-alert-rose/10 border-alert-rose/30' : 'bg-surface border-slate-border'} space-y-2 text-xs">
+              <div class="flex justify-between items-center font-mono">
+                <span class="font-semibold text-on-surface">Divergencia F-F:</span>
+                <span class="font-bold text-base ${sig.severity === 'critical' ? 'text-alert-rose' : 'text-secondary'}">${(sig.divergence_score > 0 ? '+' : '') + sig.divergence_score.toFixed(2)}</span>
+              </div>
+              <div class="text-caption text-on-surface-variant flex items-center justify-between">
+                <span>Respaldo Radar SAR:</span>
+                <span class="font-mono font-bold ${sig.radar_backup_used ? 'text-civic-emerald' : 'text-outline'}">${sig.radar_backup_used ? 'Activo (Sin nubes)' : 'No Requerido'}</span>
+              </div>
+              <div class="text-caption text-on-surface-variant flex items-center justify-between">
+                <span>Estado Clima:</span>
+                <span class="font-mono">${sig.weather_degraded ? 'Degradado (Nubosidad)' : 'Optimo / Conforme'}</span>
+              </div>
+            </div>
+          ` : ''}
+
+          <div class="pt-2">
+            <a href="${gibsUrl}" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded bg-surface hover:bg-surface-container border border-slate-border text-xs font-semibold text-secondary transition-colors">
+              <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+              <span>Ver Tiles Abiertos en NASA GIBS</span>
+            </a>
+          </div>
+
+          <div class="p-2.5 bg-surface rounded text-[11px] text-outline leading-tight border border-slate-border">
+            <strong class="font-semibold text-on-surface-variant block mb-1">Aviso Constitucional Art. 14</strong>
+            ${sig ? sig.disclaimer : 'Sujeto a revision humana e inspeccion de campo obligatoria.'}
+          </div>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

@@ -30,6 +30,7 @@ import secrets
 import time
 import urllib.parse
 import urllib.request
+from datetime import datetime, timezone
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -38,6 +39,7 @@ from typing import Any
 from cajamarca_qhaway.capabilities.denuncia_intake import DenunciaIntakeService
 from cajamarca_qhaway.capabilities.review_panel import ReviewPanelService
 from cajamarca_qhaway.models.alert import GENERIC_REVIEWERS
+from cajamarca_qhaway.models.citizen_report import CitizenReport
 from cajamarca_qhaway.web.exporter import build_verified_web_snapshot, export_verified_snapshot
 
 try:
@@ -75,6 +77,8 @@ CLEAN_PAGE_ROUTES: dict[str, str] = {
     "proveedores": "proveedores.html",
     "concentracion": "proveedores.html",
     "denuncia": "denuncia.html",
+    "georreferenciacion": "georreferenciacion.html",
+    "mapa": "georreferenciacion.html",
     "transparencia": "transparencia.html",
     "acerca": "acerca.html",
     "metodologia": "metodologia.html",
@@ -328,6 +332,8 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 return cls._dispatch_post_login(data, req_headers)
             if path == "/api/reports":
                 return cls._dispatch_post_reports(data)
+            if path == "/api/reports/moderate":
+                return cls._dispatch_post_reports_moderate(data, req_headers)
             if path == "/api/review":
                 return cls._dispatch_post_review(data, req_headers)
             return cls._error_bytes(f"Ruta POST no encontrada: {path}", 404)
@@ -583,6 +589,34 @@ class WebApiHandler(BaseHTTPRequestHandler):
             service = cls.get_sunat_service()
             return cls._json_bytes(service.get_registry_summary())
 
+        if path == "/api/geospatial/works":
+            works = snapshot.get("geospatial_works", [])
+            site_id = query.get("id", [None])[0] or query.get("site_id", [None])[0]
+            if site_id:
+                matched = next((w for w in works if w.get("site_id") == site_id), None)
+                if matched:
+                    return cls._json_bytes(matched)
+                return cls._error_bytes(f"Obra '{site_id}' no encontrada en el catalogo geoespacial", 404)
+            prov = query.get("province", [None])[0]
+            if prov:
+                prov_clean = prov.strip().lower()
+                works = [w for w in works if w.get("province", "").strip().lower() == prov_clean]
+            return cls._json_bytes(works)
+
+        if path == "/api/geospatial/divergence":
+            signals = snapshot.get("geospatial_signals", [])
+            site_id = query.get("site_id", [None])[0] or query.get("id", [None])[0]
+            if site_id:
+                matched = next((s for s in signals if s.get("site_id") == site_id), None)
+                if matched:
+                    return cls._json_bytes(matched)
+                return cls._error_bytes(f"Senal de divergencia para obra '{site_id}' no encontrada", 404)
+            sev = query.get("severity", [None])[0]
+            if sev:
+                sev_clean = sev.strip().lower()
+                signals = [s for s in signals if s.get("severity", "").strip().lower() == sev_clean]
+            return cls._json_bytes(signals)
+
         return cls._error_bytes(f"Ruta API no encontrada: {path}", 404)
 
     @classmethod
@@ -691,6 +725,102 @@ class WebApiHandler(BaseHTTPRequestHandler):
             return cls._json_bytes({**payload, "report": payload}, status_code=201)
         except Exception as exc:
             return cls._error_bytes(f"Error al procesar denuncia: {str(exc)}", 400)
+
+    @classmethod
+    def _dispatch_post_reports_moderate(
+        cls,
+        data: dict[str, Any],
+        req_headers: dict[str, str] | None = None,
+    ) -> tuple[int, str, bytes]:
+        """Modera una denuncia ciudadana (Art. 14 y RN-006-03)."""
+        req_headers = req_headers or {}
+        auth_header = req_headers.get("authorization", "")
+        if not auth_header.startswith("Bearer "):
+            return cls._json_bytes({"error": "Autenticacion requerida: token de veedor ausente"}, status_code=401)
+
+        token = auth_header[7:].strip()
+        session = _verify_veedor_token(token)
+        if not session:
+            return cls._json_bytes({"error": "Sesion de veedor invalida o expirada"}, status_code=401)
+
+        veedor = session["veedor"]
+        moderator_nominal = f"{veedor['name']} ({veedor['organization']})"
+
+        report_id = str(data.get("report_id", "")).strip()
+        status = str(data.get("status") or data.get("moderation_status", "")).strip()
+        custom_moderator = str(data.get("moderated_by", "")).strip()
+        if custom_moderator and custom_moderator.lower() in GENERIC_REVIEWERS:
+            return cls._error_bytes(f"moderated_by no puede ser generico: '{custom_moderator}'", 400)
+
+        moderator_id = custom_moderator or moderator_nominal
+
+        if not report_id:
+            return cls._error_bytes("El campo 'report_id' es obligatorio", 400)
+
+        if status not in ("accepted_as_lead", "rejected"):
+            return cls._error_bytes(
+                f"Estado invalido: '{status}'. Debe ser 'accepted_as_lead' o 'rejected'",
+                400,
+            )
+
+        snapshot = cls.get_snapshot()
+        reports = snapshot.setdefault("citizen_reports", [])
+        matched = next((r for r in reports if r.get("report_id") == report_id), None)
+
+        now_utc = datetime.now(timezone.utc)
+        now_iso = now_utc.isoformat()
+
+        # Si no esta en el servicio en memoria pero si en snapshot o DB, sincronizarlo
+        if not cls.denuncia_service.get_report(report_id):
+            if matched:
+                cls.denuncia_service._reports[report_id] = CitizenReport(
+                    report_id=matched["report_id"],
+                    submitted_at=datetime.fromisoformat(matched.get("submitted_at") or now_iso),
+                    channel=matched.get("channel", "web"),
+                    raw_text=matched.get("raw_text", "Texto de denuncia verificado"),
+                    related_entity_id=matched.get("related_entity_id"),
+                    moderation_status="pending",
+                    legal_disclaimer_shown=True,
+                )
+            elif _report_repo is not None:
+                db_r = _report_repo.get_by_id(report_id)
+                if db_r:
+                    cls.denuncia_service._reports[report_id] = db_r
+
+        try:
+            # Invocar maquina de estados de DenunciaIntakeService
+            updated = cls.denuncia_service.moderate_report(
+                report_id=report_id,
+                new_status=status,
+                moderator_id=moderator_id,
+                moderated_at=now_utc,
+            )
+            payload = updated.model_dump(mode="json")
+
+            # Actualizar en snapshot cache
+            if matched:
+                matched.update(payload)
+            else:
+                reports.append(payload)
+
+            # Persistir en base de datos operativa / Supabase (Pilar 2)
+            if _report_repo is not None:
+                try:
+                    _report_repo.save(updated)
+                except Exception:
+                    pass
+
+            return cls._json_bytes({
+                "success": True,
+                "report_id": updated.report_id,
+                "moderation_status": updated.moderation_status,
+                "moderated_by": updated.moderated_by,
+                "moderated_at": payload["moderated_at"],
+                "report": payload,
+            }, status_code=200)
+
+        except Exception as exc:
+            return cls._error_bytes(f"Error al moderar denuncia: {str(exc)}", 400)
 
     @classmethod
     def _dispatch_post_review(

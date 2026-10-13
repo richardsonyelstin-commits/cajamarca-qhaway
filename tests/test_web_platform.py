@@ -531,3 +531,187 @@ def test_21_vercel_wsgi_security_and_tracking():
     assert s_code_ok == 200
 
 
+def test_22_geospatial_api_endpoints(local_web_server):
+    """Verifica los endpoints REST de la Capacidad 007 (/api/geospatial/works y /api/geospatial/divergence)."""
+    # 1. GET /api/geospatial/works retorna 14 obras
+    req = urllib.request.Request(f"{local_web_server}/api/geospatial/works", method="GET")
+    with urllib.request.urlopen(req) as resp:
+        assert resp.status == 200
+        works = json.loads(resp.read().decode("utf-8"))
+        assert len(works) == 14
+        assert any(w["site_id"] == "site-01-hospital-regional-cajamarca" for w in works)
+
+    # 2. Filtrado por provincia
+    req_chota = urllib.request.Request(f"{local_web_server}/api/geospatial/works?province=Chota", method="GET")
+    with urllib.request.urlopen(req_chota) as resp:
+        assert resp.status == 200
+        chota_works = json.loads(resp.read().decode("utf-8"))
+        assert len(chota_works) >= 1
+        assert all(w["province"] == "Chota" for w in chota_works)
+
+    # 3. Filtrado por ID individual
+    req_single = urllib.request.Request(f"{local_web_server}/api/geospatial/works?id=site-02-av-heroes-cenepa-mp-cajamarca", method="GET")
+    with urllib.request.urlopen(req_single) as resp:
+        assert resp.status == 200
+        single_work = json.loads(resp.read().decode("utf-8"))
+        assert single_work["site_id"] == "site-02-av-heroes-cenepa-mp-cajamarca"
+        assert single_work["cui"] == "2348910"
+
+    # 4. ID inexistente retorna 404
+    req_404 = urllib.request.Request(f"{local_web_server}/api/geospatial/works?id=site-inexistente", method="GET")
+    with pytest.raises(urllib.error.HTTPError) as exc_404:
+        urllib.request.urlopen(req_404)
+    assert exc_404.value.code == 404
+
+    # 5. GET /api/geospatial/divergence
+    req_div = urllib.request.Request(f"{local_web_server}/api/geospatial/divergence", method="GET")
+    with urllib.request.urlopen(req_div) as resp:
+        assert resp.status == 200
+        signals = json.loads(resp.read().decode("utf-8"))
+        assert len(signals) >= 1
+        # Verificar presencia de descargo obligatorio Art. 14
+        assert "Articulo 14" in signals[0]["disclaimer"]
+
+    # 6. Filtrado de divergencia por severidad
+    req_crit = urllib.request.Request(f"{local_web_server}/api/geospatial/divergence?severity=critical", method="GET")
+    with urllib.request.urlopen(req_crit) as resp:
+        assert resp.status == 200
+        crit_signals = json.loads(resp.read().decode("utf-8"))
+        assert all(s["severity"] == "critical" for s in crit_signals)
+
+
+def test_23_reports_moderation_api_sync(local_web_server):
+    """Verifica el endpoint POST /api/reports/moderate con autenticacion y persistencia."""
+    from cajamarca_qhaway.web.server import ACCREDITED_VEEDORES, _issue_veedor_token
+
+    veedor_token, _ = _issue_veedor_token(ACCREDITED_VEEDORES[0])
+
+    # 1. Crear una denuncia de prueba
+    post_req = urllib.request.Request(
+        f"{local_web_server}/api/reports",
+        data=json.dumps({
+            "raw_text": "Denuncia de prueba para moderacion colegiada en Chota.",
+            "legal_disclaimer_shown": True,
+            "channel": "web",
+        }).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with urllib.request.urlopen(post_req) as resp:
+        created = json.loads(resp.read().decode("utf-8"))
+        test_rep_id = created["report_id"]
+
+    # 2. Moderar sin token debe retornar 401
+    mod_unauth = urllib.request.Request(
+        f"{local_web_server}/api/reports/moderate",
+        data=json.dumps({"report_id": test_rep_id, "status": "accepted_as_lead"}).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with pytest.raises(urllib.error.HTTPError) as exc_401:
+        urllib.request.urlopen(mod_unauth)
+    assert exc_401.value.code == 401
+
+    # 3. Moderar con estado invalido debe retornar 400
+    mod_bad_status = urllib.request.Request(
+        f"{local_web_server}/api/reports/moderate",
+        data=json.dumps({"report_id": test_rep_id, "status": "invalid_status"}).encode("utf-8"),
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {veedor_token}",
+        },
+        method="POST",
+    )
+    with pytest.raises(urllib.error.HTTPError) as exc_bad:
+        urllib.request.urlopen(mod_bad_status)
+    assert exc_bad.value.code == 400
+
+    # 4. Moderar con revisor generico debe ser rechazado
+    mod_generic = urllib.request.Request(
+        f"{local_web_server}/api/reports/moderate",
+        data=json.dumps({
+            "report_id": test_rep_id,
+            "status": "accepted_as_lead",
+            "moderated_by": "admin",
+        }).encode("utf-8"),
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {veedor_token}",
+        },
+        method="POST",
+    )
+    with pytest.raises(urllib.error.HTTPError) as exc_gen:
+        urllib.request.urlopen(mod_generic)
+    assert exc_gen.value.code == 400
+
+    # 5. Moderacion legitima con token de veedor colegiado retorna 200
+    mod_valid = urllib.request.Request(
+        f"{local_web_server}/api/reports/moderate",
+        data=json.dumps({
+            "report_id": test_rep_id,
+            "status": "accepted_as_lead",
+            "review_notes": "Verificado con expediente tecnico en campo.",
+        }).encode("utf-8"),
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {veedor_token}",
+        },
+        method="POST",
+    )
+    with urllib.request.urlopen(mod_valid) as resp:
+        assert resp.status == 200
+        res_data = json.loads(resp.read().decode("utf-8"))
+        assert res_data["success"] is True
+        assert res_data["report_id"] == test_rep_id
+        assert res_data["moderation_status"] == "accepted_as_lead"
+        assert res_data["moderated_by"] is not None
+        assert "Carlos Arana" in res_data["moderated_by"] or "Proetica" in res_data["moderated_by"]
+
+    # 6. Consultar estado en /api/reports/track refleja el nuevo estado
+    track_req = urllib.request.Request(f"{local_web_server}/api/reports/track?token={test_rep_id}", method="GET")
+    with urllib.request.urlopen(track_req) as resp:
+        assert resp.status == 200
+        meta = json.loads(resp.read().decode("utf-8"))
+        assert meta["moderation_status"] == "accepted_as_lead"
+
+
+def test_24_vercel_wsgi_geospatial_and_moderation():
+    """Verifica paridad de endpoints geoespaciales y moderacion en api/index.py (WSGI fallback)."""
+    from api.index import _stdlib_fallback_dispatch
+
+    # 1. GET /api/geospatial/works via stdlib fallback
+    code, _, body = _stdlib_fallback_dispatch("GET", "/api/geospatial/works", {})
+    assert code == 200
+    works = json.loads(body.decode("utf-8"))
+    assert len(works) >= 1
+
+    # 2. GET /api/geospatial/divergence via stdlib fallback
+    code_div, _, body_div = _stdlib_fallback_dispatch("GET", "/api/geospatial/divergence", {})
+    assert code_div == 200
+    signals = json.loads(body_div.decode("utf-8"))
+    assert isinstance(signals, list)
+
+    # 3. POST /api/reports/moderate sin auth retorna 401
+    code_unauth, _, _ = _stdlib_fallback_dispatch("POST", "/api/reports/moderate", {}, body=b"{}", req_headers={})
+    assert code_unauth == 401
+
+    # 4. POST /api/reports/moderate con Bearer retorna 200
+    mod_payload = json.dumps({
+        "report_id": "cr-sample",
+        "status": "accepted_as_lead",
+        "moderated_by": "Lic. Carlos Arana Silva (Proetica)",
+    }).encode("utf-8")
+    code_mod, _, body_mod = _stdlib_fallback_dispatch(
+        "POST",
+        "/api/reports/moderate",
+        {},
+        body=mod_payload,
+        req_headers={"authorization": "Bearer sample-token"},
+    )
+    assert code_mod == 200
+    mod_res = json.loads(body_mod.decode("utf-8"))
+    assert mod_res["success"] is True
+    assert mod_res["moderation_status"] == "accepted_as_lead"
+
+
+
