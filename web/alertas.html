@@ -97,6 +97,26 @@
 
       <!-- 3. Acciones Derecha -->
       <div class="flex items-center gap-2 shrink-0">
+        <!-- Selector Modo Ciudadano / Modo Especialista (Pilar 1) -->
+        <button id="lang-mode-toggle"
+                data-action="toggle-lang-mode"
+                class="flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-semibold border transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                aria-pressed="true"
+                aria-checked="true"
+                title="Cambiar entre Lenguaje Ciudadano y Lenguaje Técnico">
+          <span class="material-symbols-outlined text-[17px] lang-mode-icon shrink-0">groups</span>
+          <span class="hidden sm:inline text-[11px] lang-mode-label">Modo Ciudadano</span>
+        </button>
+
+        <!-- Acceso Directo al Diccionario Cívico Popular (Pilar 4) -->
+        <button type="button"
+                data-action="open-civic-dict"
+                class="hidden md:inline-flex items-center gap-1 px-2.5 py-1.5 rounded text-xs font-semibold text-secondary hover:bg-secondary-container/20 border border-secondary/30 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                title="Abrir Diccionario Cívico Popular">
+          <span class="material-symbols-outlined text-[16px]">menu_book</span>
+          <span class="text-[11px]">Diccionario</span>
+        </button>
+
         <!-- Modo Rural Representativo (Antena / Barras 2G) -->
         <button id="rural-toggle" data-action="toggle-rural" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-medium text-on-surface-variant hover:text-on-surface border border-slate-border hover:bg-surface-container transition-all cursor-pointer" title="Modo Rural: Optimizado para 2G / bajo consumo de datos">
           <svg class="w-4 h-4 text-on-surface-variant rural-signal-icon shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -164,13 +184,25 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end pb-6 border-b border-slate-border">
           <div class="lg:col-span-8 space-y-2">
             <h1 class="font-headline-xl text-headline-xl text-on-surface font-bold tracking-tight">
-              Monitor de Alertas y Banderas Rojas Activas
+              <span class="civic-text-swap"
+                    data-ciudadano="Obras y contratos con alertas preventivas en Cajamarca"
+                    data-especialista="Monitor de Alertas y Banderas Rojas Activas">
+                Obras y contratos con alertas preventivas en Cajamarca
+              </span>
             </h1>
             <p class="font-body-lg text-body-lg text-on-surface-variant max-w-4xl leading-relaxed">
-              Detección algorítmica preventiva de anomalías en contrataciones públicas (OCDS SEACE) y ejecución de gasto público (MEF SIAF) en el departamento de Cajamarca sobre las 14 entidades prioritarias bajo observación directa.
+              <span class="civic-text-swap"
+                    data-ciudadano="Revisión automática de contratos y gastos para detectar riesgos antes de que se pierda el dinero en las 14 instituciones vigiladas de Cajamarca."
+                    data-especialista="Detección algorítmica preventiva de anomalías en contrataciones públicas (OCDS SEACE) y ejecución de gasto público (MEF SIAF) en el departamento de Cajamarca sobre las 14 entidades prioritarias bajo observación directa.">
+                Revisión automática de contratos y gastos para detectar riesgos antes de que se pierda el dinero en las 14 instituciones vigiladas de Cajamarca.
+              </span>
             </p>
           </div>
           <div class="lg:col-span-4 flex lg:justify-end gap-2 shrink-0">
+            <button type="button" data-action="open-civic-dict" class="inline-flex items-center gap-1.5 px-3 py-2.5 bg-secondary-container/20 text-secondary border border-secondary/30 rounded text-label-md font-label-md hover:bg-secondary-container/40 transition-colors cursor-pointer" title="Abrir Diccionario Cívico">
+              <span class="material-symbols-outlined text-[18px]">menu_book</span>
+              Glosario
+            </button>
             <a class="inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-on-primary rounded text-label-md font-label-md hover:bg-on-surface-variant transition-colors shadow-sm" href="/transparencia#descarga-microdatos">
               <span class="material-symbols-outlined text-[18px]">download</span>
               Descargar Reporte
@@ -186,7 +218,10 @@
         <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-6">
           <div class="p-4 bg-slate-surface rounded border border-slate-border flex flex-col justify-between">
             <div class="flex items-center justify-between mb-1">
-              <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Banderas Activas</span>
+              <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
+                <span class="civic-text-swap" data-ciudadano="Alertas Activas" data-especialista="Banderas Activas">Alertas Activas</span>
+                <button type="button" class="civic-tooltip-btn" data-term="bandera-roja" aria-label="Qué significa Bandera Roja">?</button>
+              </span>
               <span class="material-symbols-outlined text-[18px] text-alert-rose">flag</span>
             </div>
             <div id="alertas-kpi-total" class="font-headline-lg text-headline-lg text-on-surface font-bold">22</div>
@@ -197,7 +232,10 @@
 
           <div class="p-4 bg-slate-surface rounded border border-slate-border flex flex-col justify-between">
             <div class="flex items-center justify-between mb-1">
-              <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Monto Observado</span>
+              <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
+                <span>Monto Observado</span>
+                <button type="button" class="civic-tooltip-btn" data-term="canon-minero" aria-label="Qué significa canon minero">?</button>
+              </span>
               <span class="material-symbols-outlined text-[18px] text-secondary">payments</span>
             </div>
             <div id="alertas-kpi-monto" class="font-headline-lg text-headline-lg text-secondary font-bold">S/ 1,368.4 M</div>
@@ -208,7 +246,10 @@
 
           <div class="p-4 bg-slate-surface rounded border border-slate-border flex flex-col justify-between">
             <div class="flex items-center justify-between mb-1">
-              <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Entidades Comprometidas</span>
+              <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
+                <span class="civic-text-swap" data-ciudadano="Instituciones Vigiladas" data-especialista="Entidades Comprometidas">Instituciones Vigiladas</span>
+                <button type="button" class="civic-tooltip-btn" data-term="pliego-presupuestal" aria-label="Qué significa entidad o pliego">?</button>
+              </span>
               <span class="material-symbols-outlined text-[18px] text-outline">account_balance</span>
             </div>
             <div id="alertas-kpi-entidades" class="font-headline-lg text-headline-lg text-on-surface font-bold">8 / 14</div>
@@ -219,19 +260,26 @@
 
           <div class="p-4 bg-slate-surface rounded border border-slate-border flex flex-col justify-between">
             <div class="flex items-center justify-between mb-1">
-              <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Explicabilidad Algorítmica</span>
+              <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
+                <span class="civic-text-swap" data-ciudadano="Certeza de los Datos" data-especialista="Explicabilidad Algorítmica">Certeza de los Datos</span>
+                <button type="button" class="civic-tooltip-btn" data-term="alerta-publicada" aria-label="Qué significa alerta verificada">?</button>
+              </span>
               <span class="material-symbols-outlined text-[18px] text-civic-emerald">verified</span>
             </div>
             <div id="alertas-kpi-explicabilidad" class="font-headline-lg text-headline-lg text-on-surface font-bold">100%</div>
             <div class="mt-1 font-caption text-caption text-civic-emerald font-semibold">
-              Fórmulas y reglas OCDS públicas
+              <span class="civic-text-swap" data-ciudadano="Datos oficiales comprobados con el Estado" data-especialista="Fórmulas y reglas OCDS públicas">Datos oficiales comprobados con el Estado</span>
             </div>
           </div>
         </div>
 
         <div class="pt-4 mt-2 border-t border-slate-border flex items-center gap-2 text-body-sm font-body-sm text-on-surface-variant">
           <span class="material-symbols-outlined text-secondary text-[16px]">gavel</span>
-          <span>Marco Normativo: Art. 15, Ley N° 27806 de Transparencia y Veeduría Ciudadana. No constituye imputación judicial directa.</span>
+          <span class="civic-text-swap"
+                data-ciudadano="Aviso importante: Estas alertas son llamadas de atención preventivas calculadas con datos oficiales del Estado. No son acusaciones judiciales ni sentencias. Sirven para que la comunidad y los auditores vigilen a tiempo (Ley Nº 27806)."
+                data-especialista="Marco Normativo: Art. 15, Ley N° 27806 de Transparencia y Veeduría Ciudadana. No constituye imputación judicial directa.">
+            Aviso importante: Estas alertas son llamadas de atención preventivas calculadas con datos oficiales del Estado. No son acusaciones judiciales ni sentencias. Sirven para que la comunidad y los auditores vigilen a tiempo (Ley Nº 27806).
+          </span>
         </div>
       </div>
     </div>

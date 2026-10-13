@@ -11,10 +11,12 @@
  */
 
 import { dataEngine } from './data-engine.js';
+import { CIVIC_DICTIONARY, CIVIC_DICTIONARY_MAP } from './dictionary-data.js';
 
 const STORAGE_KEYS = {
   THEME: 'cajamarca_qhaway_theme',
   RURAL: 'cajamarca_qhaway_rural_lite',
+  LANG_MODE: 'cq_lang_mode',
   TOKEN: 'cajamarca_veedor_token',
   PROFILE: 'cajamarca_veedor_profile'
 };
@@ -203,7 +205,16 @@ export function initGlobalControls() {
   // 5. Estado de Veedor Acreditado en el Encabezado
   updateVeedorHeaderStatus();
 
-  // 6. Hidratacion reactiva de datos reales (DataEngine)
+  // 6. Modo Ciudadano / Especialista (Pedagogia Civica)
+  initLanguageMode();
+
+  // 7. Micro-Tooltips Civicos Accesibles
+  initCivicTooltips();
+
+  // 8. Modal de Diccionario Civico Popular
+  initCivicDictionaryModal();
+
+  // 9. Hidratacion reactiva de datos reales (DataEngine)
   hydrateAllViews();
 }
 
@@ -310,6 +321,473 @@ export function updateVeedorHeaderStatus() {
 }
 
 /**
+ * ============================================================================
+ * PEDAGOGIA CIVICA, LENGUAJE CLARO Y ACCESIBILIDAD COGNITIVA
+ * Politica Antislop R-02: Cero guiones largos em-dash en todo el codigo.
+ * WCAG 2.2 AA: Soporte completo de teclado, trampa de foco y contraste >= 4.5:1.
+ * ============================================================================
+ */
+
+export function formatCitizenPocketMoney(percentage) {
+  const numPct = typeof percentage === 'number' ? percentage : parseFloat(percentage) || 0;
+  const solesPer100 = Math.round(numPct);
+  const remaining = Math.max(0, 100 - solesPer100);
+
+  let statusClass = 'civic-status-warning';
+  let statusIcon = 'schedule';
+  let statusLabel = 'Gasto lento';
+
+  if (solesPer100 < 30) {
+    statusClass = 'civic-status-critical';
+    statusIcon = 'warning';
+    statusLabel = 'Atención requerida';
+  } else if (solesPer100 > 60) {
+    statusClass = 'civic-status-good';
+    statusIcon = 'check_circle';
+    statusLabel = 'Gasto al día';
+  }
+
+  return {
+    solesPer100,
+    remaining,
+    badge: `S/ ${solesPer100} de cada S/ 100`,
+    narrative: `De cada 100 soles recibidos para obras este año, se han gastado ${solesPer100} soles y faltan gastar ${remaining} soles.`,
+    statusClass,
+    statusIcon,
+    statusLabel
+  };
+}
+
+export function formatCitizenPerCapita(montoTotal, poblacion = 1550000) {
+  if (!montoTotal || isNaN(montoTotal)) return '';
+  const porPersona = Math.round(montoTotal / poblacion);
+  return `aprox. S/ ${porPersona.toLocaleString('es-PE')} por cada habitante de Cajamarca`;
+}
+
+export function initLanguageMode() {
+  const savedMode = localStorage.getItem(STORAGE_KEYS.LANG_MODE) ||
+                    localStorage.getItem('cq_lang_mode') ||
+                    localStorage.getItem('cajamarca_qhaway_lang_mode') ||
+                    'ciudadano';
+  applyLanguageMode(savedMode, false);
+
+  const toggleBtns = document.querySelectorAll('[data-action="toggle-lang-mode"], #lang-mode-toggle, .civic-mode-toggle');
+  toggleBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-lang-mode') || 'ciudadano';
+      const nextMode = current === 'ciudadano' ? 'especialista' : 'ciudadano';
+      applyLanguageMode(nextMode, true);
+    });
+  });
+}
+
+export function toggleLanguageMode() {
+  const current = document.documentElement.getAttribute('data-lang-mode') || 'ciudadano';
+  const nextMode = current === 'ciudadano' ? 'especialista' : 'ciudadano';
+  applyLanguageMode(nextMode, true);
+}
+
+export function applyLanguageMode(mode, notify = false) {
+  const isCitizen = mode === 'ciudadano';
+  document.documentElement.setAttribute('data-lang-mode', mode);
+  localStorage.setItem(STORAGE_KEYS.LANG_MODE, mode);
+  localStorage.setItem('cq_lang_mode', mode);
+  localStorage.setItem('cajamarca_qhaway_lang_mode', mode);
+
+  // Actualizar botones de conmutacion en la interfaz
+  const toggleBtns = document.querySelectorAll('[data-action="toggle-lang-mode"], #lang-mode-toggle, .civic-mode-toggle');
+  toggleBtns.forEach(btn => {
+    btn.setAttribute('aria-pressed', String(isCitizen));
+    btn.setAttribute('aria-checked', String(isCitizen));
+    const label = btn.querySelector('.lang-mode-label');
+    const icon = btn.querySelector('.lang-mode-icon');
+    if (isCitizen) {
+      btn.title = 'Modo Ciudadano Activo: Lenguaje claro y explicaciones sencillas (clic para Modo Especialista)';
+      if (label) label.textContent = 'Modo Ciudadano';
+      if (icon) icon.textContent = 'groups';
+      btn.classList.add('border-secondary', 'bg-secondary-container/20', 'text-secondary');
+      btn.classList.remove('border-slate-border', 'text-on-surface-variant');
+    } else {
+      btn.title = 'Modo Especialista Activo: Siglas técnicas y fórmulas oficiales (clic para Modo Ciudadano)';
+      if (label) label.textContent = 'Modo Especialista';
+      if (icon) icon.textContent = 'analytics';
+      btn.classList.remove('border-secondary', 'bg-secondary-container/20', 'text-secondary');
+      btn.classList.add('border-slate-border', 'text-on-surface-variant');
+    }
+  });
+
+  // Intercambio reactivo de textos marcados con .civic-text-swap
+  document.querySelectorAll('.civic-text-swap').forEach(el => {
+    const textCitizen = el.getAttribute('data-ciudadano') || el.getAttribute('data-citizen');
+    const textExpert = el.getAttribute('data-especialista') || el.getAttribute('data-expert');
+    if (isCitizen && textCitizen) {
+      el.textContent = textCitizen;
+    } else if (!isCitizen && textExpert) {
+      el.textContent = textExpert;
+    }
+  });
+
+  // Notificacion toast opcional
+  if (notify) {
+    window.showToast(
+      isCitizen
+        ? 'Modo Ciudadano activado: Explicaciones directas y dinero de bolsillo.'
+        : 'Modo Especialista activado: Terminología técnica presupuestal y OCDS.',
+      'info'
+    );
+  }
+
+  // Despachar evento para sincronizacion de componentes
+  window.dispatchEvent(new CustomEvent('cajamarca:lang-mode-change', { detail: { mode } }));
+}
+
+let activeTooltipPopover = null;
+let activeTooltipTrigger = null;
+
+export function initCivicTooltips() {
+  // Delegacion de eventos para clics en botones de micro-tooltip
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.civic-tooltip-btn, .civic-tooltip-trigger');
+    if (btn) {
+      e.stopPropagation();
+      e.preventDefault();
+      toggleTooltipPopover(btn);
+      return;
+    }
+
+    // Clic fuera cierra el tooltip si estuviera abierto
+    if (activeTooltipPopover && !activeTooltipPopover.contains(e.target)) {
+      closeActiveTooltip();
+    }
+  });
+
+  // Soporte de teclado (Escape para cerrar, Enter/Espacio en botones)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && activeTooltipPopover) {
+      closeActiveTooltip();
+    }
+  });
+}
+
+function toggleTooltipPopover(triggerBtn) {
+  if (activeTooltipTrigger === triggerBtn && activeTooltipPopover) {
+    closeActiveTooltip();
+    return;
+  }
+
+  closeActiveTooltip();
+
+  const termId = triggerBtn.dataset.term || triggerBtn.getAttribute('data-term-id');
+  const termData = termId ? CIVIC_DICTIONARY_MAP.get(termId) : null;
+  if (!termData) return;
+
+  const popover = document.createElement('div');
+  popover.id = 'civic-tooltip-bubble';
+  popover.className = 'civic-tooltip-popover';
+  popover.setAttribute('role', 'tooltip');
+  popover.setAttribute('aria-live', 'polite');
+
+  popover.innerHTML = `
+    <div class="civic-tooltip-header">
+      <div class="civic-tooltip-title">${termData.term}</div>
+      <button type="button" class="civic-tooltip-close" aria-label="Cerrar explicación">
+        <span class="material-symbols-outlined text-[15px]">close</span>
+      </button>
+    </div>
+    <div class="font-semibold text-secondary text-xs mb-1">${termData.alias_ciudadano}</div>
+    <p class="civic-card-def mb-2">${termData.definicion_simple}</p>
+    <div class="civic-tooltip-pocket">
+      <strong>En la vida diaria:</strong> ${termData.ejemplo_cotidiano}
+    </div>
+    <div class="flex items-center justify-between pt-1 border-t border-slate-border mt-2">
+      <button type="button" class="civic-tooltip-more-btn" data-open-term="${termData.id}">
+        <span>Ver en el Diccionario</span>
+        <span class="material-symbols-outlined text-[13px]">open_in_new</span>
+      </button>
+      <span class="text-[10px] text-outline font-semibold uppercase">${termData.categoria}</span>
+    </div>
+  `;
+
+  popover.querySelector('.civic-tooltip-close').addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeActiveTooltip();
+  });
+
+  const moreBtn = popover.querySelector('.civic-tooltip-more-btn');
+  if (moreBtn) {
+    moreBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeActiveTooltip();
+      openCivicDictionaryModal(termData.id);
+    });
+  }
+
+  document.body.appendChild(popover);
+
+  // Posicionamiento inteligente relativo al boton activador
+  const rect = triggerBtn.getBoundingClientRect();
+  const popoverWidth = 290;
+  let left = rect.left + window.scrollX;
+  let top = rect.bottom + window.scrollY + 6;
+
+  // Ajuste si sobrepasa el borde derecho de la ventana
+  if (left + popoverWidth > window.innerWidth - 16) {
+    left = Math.max(16, window.innerWidth - popoverWidth - 16);
+  }
+
+  popover.style.left = `${left}px`;
+  popover.style.top = `${top}px`;
+
+  triggerBtn.setAttribute('aria-expanded', 'true');
+  triggerBtn.setAttribute('aria-describedby', 'civic-tooltip-bubble');
+
+  activeTooltipPopover = popover;
+  activeTooltipTrigger = triggerBtn;
+}
+
+function closeActiveTooltip() {
+  if (activeTooltipPopover) {
+    activeTooltipPopover.remove();
+    activeTooltipPopover = null;
+  }
+  if (activeTooltipTrigger) {
+    activeTooltipTrigger.setAttribute('aria-expanded', 'false');
+    activeTooltipTrigger.removeAttribute('aria-describedby');
+    activeTooltipTrigger.focus();
+    activeTooltipTrigger = null;
+  }
+}
+
+let civicModalEl = null;
+let lastFocusedBeforeModal = null;
+
+export function initCivicDictionaryModal() {
+  ensureCivicDictionaryModal();
+
+  // Escuchar botones globales que abren el diccionario
+  document.addEventListener('click', (e) => {
+    const openBtn = e.target.closest('[data-action="open-civic-dict"], #open-civic-dict-btn, .btn-open-civic-dict');
+    if (openBtn) {
+      e.preventDefault();
+      const termId = openBtn.dataset.termId || openBtn.dataset.dictTerm || null;
+      openCivicDictionaryModal(termId);
+    }
+  });
+}
+
+function ensureCivicDictionaryModal() {
+  if (document.getElementById('civic-dictionary-modal')) return;
+
+  const modal = document.createElement('div');
+  modal.id = 'civic-dictionary-modal';
+  modal.className = 'civic-modal-backdrop hidden';
+  modal.setAttribute('role', 'dialog');
+  modal.setAttribute('aria-modal', 'true');
+  modal.setAttribute('aria-labelledby', 'civic-dict-title');
+
+  modal.innerHTML = `
+    <div class="civic-modal-window" role="document">
+      <div class="civic-modal-header">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-secondary text-[22px]">menu_book</span>
+          <div>
+            <h2 id="civic-dict-title" class="font-serif font-bold text-base text-on-surface">Diccionario Cívico Popular</h2>
+            <p class="text-xs text-on-surface-variant">24 términos públicos explicados en fácil para Cajamarca</p>
+          </div>
+        </div>
+        <button id="civic-dict-close-btn" type="button" class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface cursor-pointer" aria-label="Cerrar diccionario cívico">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="civic-dict-search-wrapper">
+        <div class="relative">
+          <span class="material-symbols-outlined absolute left-2.5 top-2.5 text-on-surface-variant text-[18px]">search</span>
+          <input type="search" id="civic-dict-search-input" class="civic-dict-input" placeholder="Buscar por término, sigla (PIM, OCDS, HHI) o pregunta cotidiana..." aria-label="Buscar en el diccionario cívico">
+        </div>
+        <div class="civic-dict-categories" id="civic-dict-category-pills">
+          <button type="button" class="civic-cat-pill active" data-cat="all">Todos (24)</button>
+          <button type="button" class="civic-cat-pill" data-cat="presupuesto">Presupuesto</button>
+          <button type="button" class="civic-cat-pill" data-cat="contratos">Contratos</button>
+          <button type="button" class="civic-cat-pill" data-cat="alertas">Alertas</button>
+          <button type="button" class="civic-cat-pill" data-cat="instituciones">Instituciones</button>
+        </div>
+      </div>
+
+      <div class="civic-dict-body" id="civic-dict-cards-container">
+        <!-- Tarjetas dinámicas inyectadas -->
+      </div>
+
+      <div class="p-3 border-t border-slate-border bg-surface-container-low text-[11px] text-on-surface-variant flex items-center justify-between">
+        <span>Lenguaje Claro Cajamarca Qhaway · Ley Nº 27806 de Transparencia</span>
+        <span class="font-semibold text-secondary">Veeduría Comunitaria</span>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Cerrar al hacer clic en backdrop o botón cerrar
+  modal.querySelector('#civic-dict-close-btn').addEventListener('click', closeCivicDictionaryModal);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeCivicDictionaryModal();
+  });
+
+  // Filtrado reactivo en búsqueda
+  const searchInput = modal.querySelector('#civic-dict-search-input');
+  searchInput.addEventListener('input', () => {
+    filterCivicDictionary();
+  });
+
+  // Filtros de categoría
+  modal.querySelectorAll('#civic-dict-category-pills .civic-cat-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      modal.querySelectorAll('#civic-dict-category-pills .civic-cat-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      filterCivicDictionary();
+    });
+  });
+
+  // Trampa de foco y Escape
+  modal.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeCivicDictionaryModal();
+      return;
+    }
+
+    if (e.key === 'Tab') {
+      const focusables = modal.querySelectorAll('button, input, [tabindex="0"], a');
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+  civicModalEl = modal;
+  renderCivicDictionaryCards(CIVIC_DICTIONARY);
+}
+
+function renderCivicDictionaryCards(items) {
+  const container = document.getElementById('civic-dict-cards-container');
+  if (!container) return;
+
+  if (items.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-full py-8 text-center text-on-surface-variant">
+        <span class="material-symbols-outlined text-[36px] text-outline mb-2">search_off</span>
+        <p class="text-sm font-semibold">No se encontraron términos para tu búsqueda.</p>
+        <p class="text-xs text-outline mt-1">Prueba con siglas como PIM, Devengado, SEACE, OCDS o HHI.</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = items.map(item => `
+    <article class="civic-dict-card" id="civic-card-${item.id}" data-term-id="${item.id}" data-cat="${item.categoria}">
+      <div class="civic-card-header">
+        <div>
+          <div class="civic-card-term">${item.term}</div>
+          <span class="civic-card-alias">${item.alias_ciudadano}</span>
+        </div>
+        <span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant">${item.categoria}</span>
+      </div>
+      <p class="civic-card-def">${item.definicion_simple}</p>
+      <div class="civic-card-pocket">
+        <strong>En la vida diaria:</strong> ${item.ejemplo_cotidiano}
+      </div>
+      <div class="text-[11px] text-secondary font-medium">
+        ${item.pregunta_clave}
+      </div>
+      ${item.explore_url ? `
+        <div class="pt-1 mt-auto border-t border-slate-border text-right">
+          <a href="${item.explore_url}" class="text-[11px] font-semibold text-secondary hover:underline inline-flex items-center gap-1">
+            <span>Ver datos en la web</span>
+            <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+          </a>
+        </div>
+      ` : ''}
+    </article>
+  `).join('');
+}
+
+function filterCivicDictionary() {
+  const modal = document.getElementById('civic-dictionary-modal');
+  if (!modal) return;
+  const search = (modal.querySelector('#civic-dict-search-input').value || '').toLowerCase().trim();
+  const activePill = modal.querySelector('#civic-dict-category-pills .civic-cat-pill.active');
+  const cat = activePill ? activePill.dataset.cat : 'all';
+
+  const filtered = CIVIC_DICTIONARY.filter(item => {
+    const matchesCat = (cat === 'all') || (item.categoria === cat);
+    if (!matchesCat) return false;
+    if (!search) return true;
+
+    const termText = (item.term || '').toLowerCase();
+    const aliasText = (item.alias_ciudadano || '').toLowerCase();
+    const defText = (item.definicion_simple || '').toLowerCase();
+    const ejText = (item.ejemplo_cotidiano || '').toLowerCase();
+    const qText = (item.pregunta_clave || '').toLowerCase();
+
+    return termText.includes(search) ||
+           aliasText.includes(search) ||
+           defText.includes(search) ||
+           ejText.includes(search) ||
+           qText.includes(search);
+  });
+
+  renderCivicDictionaryCards(filtered);
+}
+
+export function openCivicDictionaryModal(termId = null) {
+  ensureCivicDictionaryModal();
+  const modal = document.getElementById('civic-dictionary-modal');
+  if (!modal) return;
+
+  lastFocusedBeforeModal = document.activeElement;
+  modal.classList.remove('hidden');
+
+  const searchInput = modal.querySelector('#civic-dict-search-input');
+  if (termId) {
+    const item = CIVIC_DICTIONARY_MAP.get(termId);
+    if (item && searchInput) {
+      searchInput.value = item.id;
+      filterCivicDictionary();
+      const card = document.getElementById(`civic-card-${item.id}`);
+      if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        card.classList.add('ring-2', 'ring-secondary');
+        setTimeout(() => card.classList.remove('ring-2', 'ring-secondary'), 2500);
+      }
+    }
+  } else {
+    if (searchInput) {
+      searchInput.value = '';
+      filterCivicDictionary();
+    }
+  }
+
+  if (searchInput) searchInput.focus();
+}
+
+export function closeCivicDictionaryModal() {
+  const modal = document.getElementById('civic-dictionary-modal');
+  if (!modal) return;
+  modal.classList.add('hidden');
+  if (lastFocusedBeforeModal && typeof lastFocusedBeforeModal.focus === 'function') {
+    lastFocusedBeforeModal.focus();
+    lastFocusedBeforeModal = null;
+  }
+}
+
+/**
  * Hidratacion integral de KPIs y Vistas Dinamicas
  */
 async function hydrateAllViews() {
@@ -399,6 +877,38 @@ function hydrateGlobalKPIElements(kpis) {
 
   const alEnt = document.getElementById('alertas-kpi-entidades');
   if (alEnt) alEnt.textContent = `3 / 14`;
+
+  // Equivalencia cotidiana y dinero de bolsillo pedagogico (Pilar 3)
+  const pocket = formatCitizenPocketMoney(kpis.executionRate);
+  document.querySelectorAll('[data-pocket="execution-rate"]').forEach(el => {
+    el.textContent = pocket.badge;
+  });
+
+  const heroPocket = document.getElementById('hero-pocket-badge');
+  if (heroPocket) {
+    heroPocket.textContent = pocket.badge;
+    heroPocket.className = `civic-pocket-badge ${pocket.statusClass}`;
+  }
+
+  const speedoPocket = document.getElementById('speedo-pocket-badge');
+  if (speedoPocket) {
+    speedoPocket.innerHTML = `
+      <span class="civic-status-badge ${pocket.statusClass}">
+        <span class="material-symbols-outlined text-[14px]">${pocket.statusIcon}</span>
+        <span>${pocket.badge} · ${pocket.statusLabel}</span>
+      </span>
+    `;
+  }
+
+  const kpiDevPocket = document.getElementById('kpi-devengado-pocket');
+  if (kpiDevPocket) {
+    kpiDevPocket.textContent = pocket.badge;
+  }
+
+  const kpiDevNarrative = document.getElementById('kpi-devengado-narrative');
+  if (kpiDevNarrative) {
+    kpiDevNarrative.textContent = pocket.narrative;
+  }
 }
 
 /**
@@ -732,9 +1242,21 @@ async function hydrateAlertasPage(kpis) {
   }
 }
 
+// Exponer funciones civicas globalmente
+window.initLanguageMode = initLanguageMode;
+window.applyLanguageMode = applyLanguageMode;
+window.toggleLanguageMode = toggleLanguageMode;
+window.initCivicTooltips = initCivicTooltips;
+window.initCivicDictionaryModal = initCivicDictionaryModal;
+window.openCivicDictionaryModal = openCivicDictionaryModal;
+window.closeCivicDictionaryModal = closeCivicDictionaryModal;
+window.formatCitizenPocketMoney = formatCitizenPocketMoney;
+window.formatCitizenPerCapita = formatCitizenPerCapita;
+
 // Iniciar al cargar
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initGlobalControls);
 } else {
   initGlobalControls();
 }
+
