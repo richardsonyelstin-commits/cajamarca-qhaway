@@ -81,7 +81,8 @@ def _load_sunat_stdlib():
     return {"metadata": {}, "registry": {}}
 
 
-def _stdlib_fallback_dispatch(method, path, query):
+def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
+    req_headers = req_headers or {}
     if method == "OPTIONS":
         return 200, "text/plain; charset=utf-8", b"OK"
 
@@ -114,18 +115,130 @@ def _stdlib_fallback_dispatch(method, path, query):
         if path == "/api/snapshot":
             return 200, "application/json; charset=utf-8", json.dumps(snap).encode("utf-8")
         if path == "/api/entities":
-            return 200, "application/json; charset=utf-8", json.dumps(snap.get("contracting_entities", [])).encode("utf-8")
+            entities = snap.get("contracting_entities", [])
+            ent_id = query.get("id", [None])[0] or query.get("ruc", [None])[0]
+            if ent_id:
+                m = next((e for e in entities if e.get("entity_id") == ent_id or e.get("ruc") == ent_id), None)
+                if m:
+                    return 200, "application/json; charset=utf-8", json.dumps(m).encode("utf-8")
+                return 404, "application/json; charset=utf-8", json.dumps({"error": f"Entidad '{ent_id}' no encontrada"}).encode("utf-8")
+            return 200, "application/json; charset=utf-8", json.dumps(entities).encode("utf-8")
         if path == "/api/procurements":
-            return 200, "application/json; charset=utf-8", json.dumps(snap.get("procurement_records", [])).encode("utf-8")
+            procurements = snap.get("procurement_records", [])
+            ocid = query.get("ocid", [None])[0]
+            if ocid:
+                m = next((p for p in procurements if p.get("ocid") == ocid or p.get("procurement_id") == ocid), None)
+                if m:
+                    return 200, "application/json; charset=utf-8", json.dumps(m).encode("utf-8")
+                return 404, "application/json; charset=utf-8", json.dumps({"error": f"Contratacion '{ocid}' no encontrada"}).encode("utf-8")
+            eid = query.get("entity_id", [None])[0]
+            if eid:
+                procurements = [p for p in procurements if p.get("entity_id") == eid]
+            return 200, "application/json; charset=utf-8", json.dumps(procurements).encode("utf-8")
         if path == "/api/budget":
-            return 200, "application/json; charset=utf-8", json.dumps(snap.get("budget_execution_records", [])).encode("utf-8")
+            budgets = snap.get("budget_execution_records", [])
+            eid = query.get("entity_id", [None])[0]
+            if eid:
+                budgets = [b for b in budgets if b.get("entity_id") == eid]
+            return 200, "application/json; charset=utf-8", json.dumps(budgets).encode("utf-8")
         if path == "/api/alerts":
             pubs = [a for a in snap.get("alerts", []) if a.get("status") == "published"]
+            aid = query.get("id", [None])[0]
+            if aid:
+                m = next((a for a in pubs if a.get("alert_id") == aid), None)
+                if m:
+                    return 200, "application/json; charset=utf-8", json.dumps(m).encode("utf-8")
+                return 404, "application/json; charset=utf-8", json.dumps({"error": f"Alerta '{aid}' no encontrada"}).encode("utf-8")
+            eid = query.get("entity_id", [None])[0]
+            if eid:
+                pubs = [a for a in pubs if a.get("entity_id") == eid]
             return 200, "application/json; charset=utf-8", json.dumps(pubs).encode("utf-8")
         if path == "/api/red-flags":
-            return 200, "application/json; charset=utf-8", json.dumps(snap.get("red_flags", [])).encode("utf-8")
+            flags = snap.get("red_flags", [])
+            rfid = query.get("id", [None])[0]
+            if rfid:
+                m = next((f for f in flags if f.get("red_flag_id") == rfid), None)
+                if m:
+                    return 200, "application/json; charset=utf-8", json.dumps(m).encode("utf-8")
+                return 404, "application/json; charset=utf-8", json.dumps({"error": f"Bandera roja '{rfid}' no encontrada"}).encode("utf-8")
+            return 200, "application/json; charset=utf-8", json.dumps(flags).encode("utf-8")
+
         if path == "/api/reports":
+            if method == "POST":
+                try:
+                    data = json.loads(body.decode("utf-8")) if body else {}
+                except Exception:
+                    return 400, "application/json; charset=utf-8", json.dumps({"error": "JSON invalido"}).encode("utf-8")
+                raw_text = str(data.get("raw_text", "")).strip()
+                if not raw_text:
+                    return 400, "application/json; charset=utf-8", json.dumps({"error": "Campo 'raw_text' es obligatorio"}).encode("utf-8")
+                if not bool(data.get("legal_disclaimer_shown") or data.get("disclaimer_accepted")):
+                    return 400, "application/json; charset=utf-8", json.dumps({"error": "Descargo legal obligatorio (CA-006-01)"}).encode("utf-8")
+                report_id = f"cr-{int(time.time()*1000):x}"
+                now_iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+                payload = {
+                    "report_id": report_id,
+                    "submitted_at": now_iso,
+                    "channel": data.get("channel", "web"),
+                    "raw_text": raw_text,
+                    "related_entity_id": data.get("related_entity_id"),
+                    "moderation_status": "received",
+                    "legal_disclaimer_shown": True,
+                }
+                return 201, "application/json; charset=utf-8", json.dumps({**payload, "report": payload}).encode("utf-8")
+            # GET requiere sesion de veedor
+            auth_h = req_headers.get("authorization", "")
+            if not auth_h.startswith("Bearer "):
+                return 401, "application/json; charset=utf-8", json.dumps({"error": "Acceso restringido a veedores acreditados (Ley 29733)"}).encode("utf-8")
             return 200, "application/json; charset=utf-8", json.dumps(snap.get("citizen_reports", [])).encode("utf-8")
+
+        if path == "/api/reports/track":
+            tok = query.get("token", [None])[0] or query.get("id", [None])[0]
+            if not tok:
+                return 400, "application/json; charset=utf-8", json.dumps({"error": "Parametro 'token' es obligatorio"}).encode("utf-8")
+            tok_clean = tok.strip()
+            reports = snap.get("citizen_reports", [])
+            m = next((r for r in reports if r.get("report_id") == tok_clean or r.get("tracking_token") == tok_clean), None)
+            if not m:
+                return 404, "application/json; charset=utf-8", json.dumps({"error": "Expediente de denuncia no encontrado"}).encode("utf-8")
+            safe = {
+                "report_id": m.get("report_id"),
+                "submitted_at": m.get("submitted_at") or m.get("created_at"),
+                "moderation_status": m.get("moderation_status", "received"),
+                "related_entity_id": m.get("related_entity_id"),
+                "channel": m.get("channel", "web"),
+                "legal_disclaimer_shown": m.get("legal_disclaimer_shown", True),
+            }
+            return 200, "application/json; charset=utf-8", json.dumps(safe).encode("utf-8")
+
+        if path == "/api/review" and method == "POST":
+            try:
+                data = json.loads(body.decode("utf-8")) if body else {}
+            except Exception:
+                return 400, "application/json; charset=utf-8", json.dumps({"error": "JSON invalido"}).encode("utf-8")
+            eid = str(data.get("entity_id", "")).strip()
+            rf_ids = data.get("red_flag_ids", [])
+            status = str(data.get("status", "")).strip()
+            reviewer = str(data.get("reviewed_by", "")).strip()
+            if not eid or not rf_ids or not status or not reviewer:
+                return 400, "application/json; charset=utf-8", json.dumps({"error": "Campos requeridos faltantes"}).encode("utf-8")
+            now_iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+            alert_id = f"al-{int(time.time()*1000):x}"
+            alert = {
+                "alert_id": alert_id,
+                "red_flag_ids": rf_ids if isinstance(rf_ids, list) else [rf_ids],
+                "entity_id": eid,
+                "status": status,
+                "reviewed_by": reviewer,
+                "reviewed_at": now_iso,
+                "review_notes": data.get("review_notes") or ("Descarte documentado" if status == "discarded" else None),
+                "published_at": now_iso if status == "published" else None,
+            }
+            return 201, "application/json; charset=utf-8", json.dumps({**alert, "alert": alert}).encode("utf-8")
+
+        if path == "/api/auth/logout" and method == "POST":
+            return 200, "application/json; charset=utf-8", json.dumps({"message": "Sesion finalizada correctamente"}).encode("utf-8")
+
         if path == "/api/sunat/ruc":
             dni_param = query.get("dni", [None])[0]
             if dni_param is not None:
@@ -245,7 +358,26 @@ def app(environ, start_response):
     query_string = environ.get("QUERY_STRING", "")
     query = urllib.parse.parse_qs(query_string)
 
-    status_code, content_type, body = _stdlib_fallback_dispatch(method, raw_path, query)
+    content_length = environ.get("CONTENT_LENGTH")
+    body_bytes = b""
+    if content_length and content_length.isdigit():
+        try:
+            body_bytes = environ["wsgi.input"].read(int(content_length))
+        except Exception:
+            body_bytes = b""
+
+    req_headers = {}
+    auth_header = environ.get("HTTP_AUTHORIZATION")
+    if auth_header:
+        req_headers["authorization"] = auth_header
+    for key, val in environ.items():
+        if key.startswith("HTTP_"):
+            header_name = key[5:].replace("_", "-").lower()
+            req_headers[header_name] = val
+
+    status_code, content_type, resp_body = _stdlib_fallback_dispatch(
+        method, raw_path, query, body=body_bytes, req_headers=req_headers
+    )
     try:
         phrase = HTTPStatus(status_code).phrase
     except ValueError:
@@ -253,11 +385,11 @@ def app(environ, start_response):
 
     headers = [
         ("Content-Type", content_type),
-        ("Content-Length", str(len(body))),
+        ("Content-Length", str(len(resp_body))),
         ("Access-Control-Allow-Origin", "*"),
         ("Access-Control-Allow-Methods", "GET, POST, OPTIONS"),
         ("Access-Control-Allow-Headers", "Content-Type, Authorization"),
     ] + _SECURITY_HEADERS
 
     start_response(f"{status_code} {phrase}", headers)
-    return [body]
+    return [resp_body]
