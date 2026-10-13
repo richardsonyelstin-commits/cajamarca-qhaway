@@ -3,7 +3,12 @@
  * Conecta con los datos oficiales de SEACE OCDS y MEF SIAF DataStore
  */
 
-import { CANONICAL_ENTITIES, CANONICAL_INDICATORS } from './config.js';
+import {
+  CANONICAL_ENTITIES,
+  CANONICAL_INDICATORS,
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+} from './config.js';
 
 class DataEngine {
   constructor() {
@@ -12,31 +17,91 @@ class DataEngine {
     this.loadPromise = null;
   }
 
+  async _fetchSupabaseLive() {
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return null;
+    const headers = {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      Accept: 'application/json'
+    };
+    const [entRes, procRes, budRes, alertRes] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/contracting_entities?select=*&order=official_name.asc`, { headers }),
+      fetch(`${SUPABASE_URL}/rest/v1/procurement_records?select=*&order=retrieved_at.desc`, { headers }),
+      fetch(`${SUPABASE_URL}/rest/v1/budget_execution_records?select=*&order=fiscal_year.desc`, { headers }),
+      fetch(`${SUPABASE_URL}/rest/v1/alerts?select=*&status=eq.published&order=published_at.desc`, { headers })
+    ]);
+    if (!entRes.ok || !procRes.ok || !budRes.ok || !alertRes.ok) return null;
+    const [entities, procurements, budgets, alerts] = await Promise.all([
+      entRes.json(),
+      procRes.json(),
+      budRes.json(),
+      alertRes.json()
+    ]);
+    if (!Array.isArray(entities) || entities.length === 0) return null;
+    return {
+      contracting_entities: entities,
+      procurement_records: procurements,
+      budget_execution_records: budgets,
+      alerts
+    };
+  }
+
   async load() {
     if (this.loaded && this.snapshot) return this.snapshot;
     if (this.loadPromise) return this.loadPromise;
 
     this.loadPromise = (async () => {
+      let baseSnapshot = null;
       try {
         const res = await fetch('/api/snapshot');
         if (res.ok) {
-          this.snapshot = await res.json();
-          this.loaded = true;
-          return this.snapshot;
+          baseSnapshot = await res.json();
         }
       } catch (err) {
         console.warn('No se pudo consultar /api/snapshot, recurriendo a archivo local:', err);
       }
 
+      if (!baseSnapshot) {
+        try {
+          const res2 = await fetch('/src/data/verified-snapshot.json');
+          if (res2.ok) {
+            baseSnapshot = await res2.json();
+          }
+        } catch (err2) {
+          console.warn('No se pudo leer verified-snapshot.json:', err2);
+        }
+      }
+
       try {
-        const res2 = await fetch('/src/data/verified-snapshot.json');
-        if (res2.ok) {
-          this.snapshot = await res2.json();
+        const liveData = await this._fetchSupabaseLive();
+        if (liveData) {
+          this.snapshot = {
+            ...(baseSnapshot || {}),
+            metadata: {
+              ...(baseSnapshot?.metadata || {}),
+              version: '1.0.0',
+              generated_at: new Date().toISOString(),
+              region: 'CAJAMARCA',
+              source_mode: 'supabase-live'
+            },
+            contracting_entities: liveData.contracting_entities,
+            procurement_records: liveData.procurement_records,
+            budget_execution_records: liveData.budget_execution_records,
+            alerts: liveData.alerts,
+            red_flags: baseSnapshot?.red_flags || [],
+            citizen_reports: baseSnapshot?.citizen_reports || []
+          };
           this.loaded = true;
           return this.snapshot;
         }
-      } catch (err2) {
-        console.warn('No se pudo leer verified-snapshot.json:', err2);
+      } catch (supaErr) {
+        console.warn('Supabase live no disponible, usando snapshot verificado:', supaErr);
+      }
+
+      if (baseSnapshot) {
+        this.snapshot = baseSnapshot;
+        this.loaded = true;
+        return this.snapshot;
       }
 
       // Respaldo de contingencia

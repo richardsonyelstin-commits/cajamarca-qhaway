@@ -23,7 +23,7 @@ Para salvaguardar la confianza pública y la rigurosidad técnica, la arquitectu
 
 2. **Arquitectura Híbrida Desacoplada (Vanilla JS ES6+ / PostgREST / Snapshot Local)**:
    - En concordancia con el **ADR 0001**, no se adoptan frameworks pesados de frontend (React, Angular, Next.js) que inflan bundles en redes lentas. Se utiliza HTML5 semántico, Bootstrap 5.3 (CSS utilitario y componentes accesibles) y JavaScript ES6 modular nativo (`type="module"`).
-   - Consumo directo de la API REST de Supabase (`https://tiythjlrjhvwkiqsnvwq.supabase.co`) bajo políticas de seguridad a nivel de fila (RLS).
+   - Consumo directo de la API REST de Supabase (`https://oglltrpvvifqvwmxmkjq.supabase.co`) bajo políticas de seguridad a nivel de fila (RLS).
    - Modo de contingencia sin degradación crítica: si la red falla, la plataforma conmuta automáticamente a una instantánea local verificada (`verified-snapshot.json`).
 
 ---
@@ -51,7 +51,7 @@ flowchart TD
     end
 
     subgraph BackendCloud["Capa Backend & Persistencia"]
-        SupaREST["Supabase PostgREST (tiythjlrjhvwkiqsnvwq)"]
+        SupaREST["Supabase PostgREST (oglltrpvvifqvwmxmkjq)"]
         SupaAuth["Supabase Auth / Google OAuth (ADR 0005)"]
         SupaDB[("PostgreSQL 15 (RLS en 6 Tablas)")]
     end
@@ -171,7 +171,7 @@ c:\ws\projects\cajamarca-qhaway\web\
 
 ### 4.2 Módulos JavaScript (`web/src/js/`)
 1. **`config.js`**:
-   - Centraliza el endpoint `https://tiythjlrjhvwkiqsnvwq.supabase.co`.
+   - Centraliza el endpoint `https://oglltrpvvifqvwmxmkjq.supabase.co`.
    - Clave pública anónima de Supabase.
    - Umbrales y límites de consulta (paginación de 25 registros por página).
 2. **`supabase-client.js`**:

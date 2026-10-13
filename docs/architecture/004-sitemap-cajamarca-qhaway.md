@@ -10,7 +10,7 @@ verified: false
 
 ## 1. Visión General y Propósito
 
-Este documento establece la arquitectura de información, rutas de navegación, estructura de componentes y compuertas de seguridad para la plataforma web de **Cajamarca Qhaway**. La plataforma opera como una Single-Page Application (SPA) estática optimizada para conectividad rural, sin enlaces rotos ni marcadores de posición (Regla R-24 de Antislop), consumiendo datos públicos verificados desde Supabase (`tiythjlrjhvwkiqsnvwq`) y respaldos JSON locales.
+Este documento establece la arquitectura de información, rutas de navegación, estructura de componentes y compuertas de seguridad para la plataforma web de **Cajamarca Qhaway**. La plataforma opera como una Single-Page Application (SPA) estática optimizada para conectividad rural, sin enlaces rotos ni marcadores de posición (Regla R-24 de Antislop), consumiendo datos públicos verificados desde Supabase (`oglltrpvvifqvwmxmkjq`) y respaldos JSON locales.
 
 El diseño web se rige estrictamente por la **Constitución Ética y Técnica del Proyecto**:
 - **Art. 10**: Fuentes verificables (OCDS SEACE `seace-ocds` y Portal de Datos Abiertos MEF CKAN DataStore `mef-datastore`, con veto estricto a Consulta Amigable `apps5.mineco.gob.pe`).

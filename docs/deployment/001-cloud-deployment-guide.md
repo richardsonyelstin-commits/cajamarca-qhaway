@@ -13,7 +13,7 @@ verified: false
 # Guía de Despliegue Cloud (GitHub, Supabase y Vercel)
 
 Manual operativo del Pilar 3 para desplegar y conectar Cajamarca Qhaway en GitHub,
-Supabase PostgreSQL (`tiythjlrjhvwkiqsnvwq`) y Vercel Serverless Python.
+Supabase PostgreSQL (`oglltrpvvifqvwmxmkjq`) y Vercel Serverless Python.
 Garantiza continuidad operativa online y modo de contingencia rural desconectado.
 
 ## 1. Arquitectura de Despliegue
@@ -24,7 +24,7 @@ flowchart LR
     GH -->|"CD: Deploy automatico"| VC["Vercel Platform (vercel.json)"]
     VC -->|"Archivos estaticos (/)"| WEB["Frontend SPA (web/)"]
     VC -->|"Rutas /api/*"| PY["Vercel Python Function (api/index.py)"]
-    WEB -->|"PostgREST + RLS + OAuth Google"| SB["Supabase (tiythjlrjhvwkiqsnvwq)"]
+    WEB -->|"PostgREST + RLS + OAuth Google"| SB["Supabase (oglltrpvvifqvwmxmkjq)"]
     PY -->|"SyncManager / Snapshot"| SB
 ```
 
@@ -38,8 +38,8 @@ flowchart LR
 
 ## 3. Base de Datos y Seguridad en Supabase
 
-- **Project ID**: `tiythjlrjhvwkiqsnvwq`
-- **Endpoint PostgREST**: `https://tiythjlrjhvwkiqsnvwq.supabase.co/rest/v1`
+- **Project ID**: `oglltrpvvifqvwmxmkjq`
+- **Endpoint PostgREST**: `https://oglltrpvvifqvwmxmkjq.supabase.co/rest/v1`
 - **Migraciones aplicadas (`migrations/0001` a `0004`)**:
   - `0001_initial_schema.sql`: Crea las 6 tablas canónicas (`contracting_entities`,
     `procurement_records`, `budget_execution_records`, `red_flags`, `alerts`,
@@ -58,7 +58,7 @@ flowchart LR
 Configure en el entorno de ejecución (nunca en el código fuente ni en `web/`):
 
 - `CAJAMARCA_QHAWAY_DB_URL`: Cadena PostgreSQL transaccional hacia Supabase.
-- `SUPABASE_URL`: `https://tiythjlrjhvwkiqsnvwq.supabase.co`
+- `SUPABASE_URL`: `https://oglltrpvvifqvwmxmkjq.supabase.co`
 - `SUPABASE_ANON_KEY`: Llave pública `anon` protegida por políticas RLS.
 
 ## 4. Despliegue en Vercel (`vercel.json` + `api/index.py`)

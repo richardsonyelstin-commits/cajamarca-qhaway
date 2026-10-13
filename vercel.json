@@ -1,6 +1,16 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "functions": {
+    "api/index.py": {
+      "includeFiles": "{web,src,data}/**"
+    }
+  },
   "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.py?__path=/api/$1"
+    },
     {
       "source": "/",
       "destination": "/web/index.html"
@@ -8,6 +18,70 @@
     {
       "source": "/index.html",
       "destination": "/web/index.html"
+    },
+    {
+      "source": "/entidades",
+      "destination": "/web/entidades.html"
+    },
+    {
+      "source": "/entidad",
+      "destination": "/web/entidad-detalle.html"
+    },
+    {
+      "source": "/alertas",
+      "destination": "/web/alertas.html"
+    },
+    {
+      "source": "/contrataciones",
+      "destination": "/web/contrataciones.html"
+    },
+    {
+      "source": "/contrato",
+      "destination": "/web/contrato-detalle.html"
+    },
+    {
+      "source": "/presupuesto",
+      "destination": "/web/presupuesto.html"
+    },
+    {
+      "source": "/proveedores",
+      "destination": "/web/proveedores.html"
+    },
+    {
+      "source": "/concentracion",
+      "destination": "/web/proveedores.html"
+    },
+    {
+      "source": "/denuncia",
+      "destination": "/web/denuncia.html"
+    },
+    {
+      "source": "/transparencia",
+      "destination": "/web/transparencia.html"
+    },
+    {
+      "source": "/acerca",
+      "destination": "/web/acerca.html"
+    },
+    {
+      "source": "/admin/revision",
+      "destination": "/web/admin-revision.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/web/login.html"
+    },
+    {
+      "source": "/acreditacion",
+      "destination": "/web/login.html"
+    },
+    {
+      "source": "/([a-z-]+).html",
+      "destination": "/web/$1.html"
+    },
+    {
+      "source": "/DESIGN.md",
+      "destination": "/web/DESIGN.md"
     },
     {
       "source": "/src/(.*)",
@@ -25,6 +99,10 @@
         {
           "key": "X-Content-Type-Options",
           "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
         },
         {
           "key": "Referrer-Policy",

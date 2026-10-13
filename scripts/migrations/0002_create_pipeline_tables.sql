@@ -92,3 +92,4 @@ CREATE TABLE IF NOT EXISTS citizen_reports (
 );
 
 CREATE INDEX IF NOT EXISTS idx_citizen_reports_status ON citizen_reports(moderation_status);
+CREATE INDEX IF NOT EXISTS idx_citizen_reports_related_entity_id ON citizen_reports(related_entity_id);

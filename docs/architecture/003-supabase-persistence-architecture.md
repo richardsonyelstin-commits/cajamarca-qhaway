@@ -1,7 +1,7 @@
 # ARQUITECTURA TÉCNICA INTEGRAL: PERSISTENCIA RELACIONAL EN SUPABASE (PILAR 2)
 **Documento Formal**: `docs/architecture/003-supabase-persistence-architecture.md`  
 **Proyecto**: Cajamarca Qhaway (`c:\ws\projects\cajamarca-qhaway`)  
-**Destino Supabase**: Proyecto `tiythjlrjhvwkiqsnvwq` (`us-east-1`, URL: `https://tiythjlrjhvwkiqsnvwq.supabase.co`)  
+**Destino Supabase**: Proyecto `oglltrpvvifqvwmxmkjq` (`us-east-1`, URL: `https://oglltrpvvifqvwmxmkjq.supabase.co`)  
 **Autor**: `sdd-architect`  
 **Fecha**: 2026-10-12  
 **Estado**: `APPROVED_DESIGN`  
@@ -159,7 +159,7 @@ sequenceDiagram
     participant HD as HarvesterDaemon
     participant SM as SyncManager
     participant SP as Local Spooler
-    participant DB as Supabase PostgreSQL (tiythjlrjhvwkiqsnvwq)
+    participant DB as Supabase PostgreSQL (oglltrpvvifqvwmxmkjq)
 
     HD->>SM: sync_procurements(records)
     activate SM

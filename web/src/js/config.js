@@ -7,9 +7,9 @@
  * - Seguridad RLS: Clave publica/anon de Supabase.
  */
 
-export const SUPABASE_URL = 'https://tiythjlrjhvwkiqsnvwq.supabase.co';
-export const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpeXRoamxyamh2d2tpcXNudndxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxMDA4NTgsImV4cCI6MjEwMjY3Njg1OH0.9XJYT7VNOwRAgAjjrqSmL_pOTwk9oH78HEeixoGqFDE';
-export const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_Oznams5bONH35-O7kim37Q_I6g6sKJz';
+export const SUPABASE_URL = 'https://oglltrpvvifqvwmxmkjq.supabase.co';
+export const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nbGx0cnB2dmlmcXZ3bXhta2pxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4MzIzNDgsImV4cCI6MjEwNzQwODM0OH0.8vs4-k85G4-4oXzxQchF9ypeyHrW_UKCbdRcZ35XcOQ';
+export const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_2YIkgbaokR38LkNcKbVnwQ_Jd_kjdt7';
 export const LOCAL_API_BASE = '/api';
 export const LOCAL_SNAPSHOT_URL = 'src/data/verified-snapshot.json';
 

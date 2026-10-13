@@ -1,4 +1,4 @@
-# Andean Civic Observatory — Design System Specification
+# Andean Civic Observatory: Design System Specification
 
 ## Brand & Style
 

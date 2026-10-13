@@ -1,31 +1,37 @@
 # Estado de projects/cajamarca-qhaway
 
-Actualizado el 2026-10-12.
+Generado automaticamente el 2026-10-13 00:29. No editar a mano: lo reescriben los hooks de memoria.
 
-- Rama: `agent/swarm/culminar-fase1` (sincronizada con `main` hacia GitHub `richardsonyelstin-commits/cajamarca-qhaway`)
-- Estado: Fase 1 culminada íntegramente en sus 3 Pilares:
-  - **Pilar 1**: Cosecha Continua de Datos en Vivo (`live_harvest` SEACE OCDS + MEF CKAN DataStore).
-  - **Pilar 2**: Base de Datos Operativa Conectada a Supabase (`persistence` PostgreSQL + RLS + Spool local).
-  - **Pilar 3**: Plataforma Web Integral (`web/`), Auditoría de Enjambre y Despliegue Cloud (GitHub + Supabase + Vercel).
-- Contratos canónicos: 6 modelos Pydantic v2 en `src/cajamarca_qhaway/models/` cumpliendo el Artículo 19.
-- Capacidades implementadas:
-  - 001 `entity-mapping`: universo dorado de 14 entidades en `data/entities/cajamarca-universe.yaml`.
-  - 002 `seace-ingestion`: parser e ingesta desacoplada de OCDS filtrada por Cajamarca.
-  - 003 `mef-ingestion`: ingesta de registros presupuestales MEF (CKAN datastore).
-  - 004 `red-flags-engine`: catálogo de 7 indicadores canónicos y motor de evaluación trazable.
-  - 005 `review-panel`: servicio de revisión humana mandatoria con descargos y notas de descarte.
-  - 006 `denuncia-intake`: recepción con descargo obligatorio (Ley 29733) y flujo de moderación.
-  - **Pilar 1 `live_harvest`**: `HarvesterDaemon`, `SeacePoller`, `MefPoller`, `WatermarkStore` y `CoverageGapLogger`.
-  - **Pilar 2 `persistence`**: `DatabaseConfig`, `DatabaseManager`, `LocalSpooler`, 6 repositorios tipados, `SyncManager` y 4 migraciones SQL activas en Supabase (`tiythjlrjhvwkiqsnvwq`) con las 6 tablas sembradas.
-  - **Pilar 3 `web/` y `cajamarca_qhaway.web`**:
-    - Mapa de sitio y arquitectura: `docs/architecture/004-sitemap-cajamarca-qhaway.md`, `docs/architecture/005-web-platform-architecture.md`, `docs/adr/0007-arquitectura-plataforma-web-hibrida.md` y `web/DESIGN.md`.
-    - Plataforma Frontend (`web/`): `web/index.html`, `web/src/css/` (`tokens.css`, `main.css`, `components.css`), `web/src/js/` (`config.js`, `supabase-client.js`, `state.js`, `router.js`, `views.js`, `explicabilidad.js`, `export-csv.js`, `denuncias.js`, `review-panel.js`, `app.js`), `web/media/` (`brand-mark.svg`, `cajamarca-map.svg` con 13 provincias, `architecture-flow.svg`), `web/src/data/verified-snapshot.json` y `web/tools/` (`sync_web_snapshot.py`, `validate_web_integrity.py`).
-    - Puente Python y Serverless (`src/cajamarca_qhaway/web/exporter.py`, `server.py`, `api/index.py`, `vercel.json` y `.github/workflows/ci.yml`).
-- Pipeline y CLI: `cajamarca-qhaway run`, `entities`, `catalog`, `harvest run|status|gaps`, `db status|seed|sync`, `web export-snapshot|audit|serve`.
-- Pruebas automatizadas: **104 pruebas pasando** (100% de éxito) vía `python -m pytest -q` y auditoría `cajamarca-qhaway web audit` en estado `CONFORME`.
+- Rama: `main`
+- HEAD: `50e30f8 style: update typography and navigation (52 minutes ago)`
+- Arbol de trabajo: 98 archivo(s) con cambios.
+    D  .aistudio/artifacts/brain/0a6e5a40-5e0f-4b08-a88a-9845b7afcc7c/implementation_plan.md
+    D  .aistudio/artifacts/brain/0a6e5a40-5e0f-4b08-a88a-9845b7afcc7c/implementation_plan.md.metadata.json
+    A  api/__init__.py
+    AM api/index.py
+     M context/snapshots/latest.md
+     M docs/INDEX.md
+     M docs/architecture/003-supabase-persistence-architecture.md
+     M docs/architecture/004-sitemap-cajamarca-qhaway.md
+     M docs/architecture/005-web-platform-architecture.md
+     M docs/deployment/001-cloud-deployment-guide.md
+    A  pyproject.toml
+    A  requirements.txt
+    ... y 86 mas
 
-## Auditorías del Enjambre Especializado (Pilar 3)
-- `plan-critic`: APROBADO (concordancia 100% con Constitución SDD Art. 1-19 y ADRs 0001-0007).
-- `code-reviewer`: APROBADO (cumplimiento de Antislop R-02, R-24, R-25, R-26, R-27, R-32, R-34 y WCAG 2.2 AA).
-- `security-reviewer`: SEGURO / APROBADO (cero exposición de llaves privadas en `web/`, prevención XSS con `escapeHtml`, cabeceras HTTP seguras, bloqueo de revisores genéricos y validación Ley 29733).
-- `doc-verifier`: APROBADO (tickets `TK-301` a `TK-306` completados en `tasks/done/`, `docs/INDEX.md`, `CHANGELOG.md`, `roadmap.md` y guía `docs/deployment/001-cloud-deployment-guide.md`).
+## Ultimos commits
+
+- `50e30f8 style: update typography and navigation`
+- `22a695a refactor: modernize visual identity and site structure`
+- `1c603f6 fix(vercel): apply vercel-deploy skill patterns for CDN static rewrites and resilient WSGI app`
+- `08d59e7 fix(vercel): add native WSGI app entrypoint and fix Python framework routing`
+- `503128a fix(vercel): remove deprecated public property from vercel.json and add README/requirements.txt`
+- `8906f26 feat(web): complete phase 1 pillar 3 web platform, swarm audit and cloud deployment`
+
+## Por donde entrar
+
+- `docs/INDEX.md` — mapa de la documentacion
+- `AGENTS.md` — reglas del proyecto
+- `PROJECT.yaml` — alcance y contexto
+
+## Pruebas: `.venv/Scripts/python -m pytest -q` o `npm test`

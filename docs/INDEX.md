@@ -27,7 +27,7 @@ ajustar la columna "Cargar cuando".
 | `architecture/003-supabase-persistence-architecture.md` | ¿Cómo opera la persistencia relacional en Supabase y el spool local (Pilar 2)? | Antes de tocar `persistence` o migraciones SQL | ~2400 |
 | `architecture/004-sitemap-cajamarca-qhaway.md` | ¿Cuál es el mapa de sitio, árbol de rutas SPA y cobertura de CU1-CU5 (Pilar 3)? | Antes de modificar rutas o vistas de `web/` | ~2000 |
 | `architecture/005-web-platform-architecture.md` | ¿Cómo está estructurada la plataforma web (`web/`, puente Python, Supabase RLS y Vercel)? | Antes de tocar `web/`, `cajamarca_qhaway.web` o `vercel.json` | ~2500 |
-| `deployment/001-cloud-deployment-guide.md` | ¿Cómo se despliega y conecta con GitHub, Supabase (`tiythjlrjhvwkiqsnvwq`) y Vercel? | Antes de tocar `.github/workflows/`, `vercel.json` o `api/index.py` | ~1200 |
+| `deployment/001-cloud-deployment-guide.md` | ¿Cómo se despliega y conecta con GitHub, Supabase (`oglltrpvvifqvwmxmkjq`) y Vercel? | Antes de tocar `.github/workflows/`, `vercel.json` o `api/index.py` | ~1200 |
 | `roadmap.md` | ¿Qué viene después? | Priorizar, planificar | ~600 |
 | `adr/` | ¿Por qué se decidió X? | Cuestionar una decisión existente | variable |
 | `glossary.md` | ¿Qué significa este término? | Aparece jerga del dominio | ~300 |
