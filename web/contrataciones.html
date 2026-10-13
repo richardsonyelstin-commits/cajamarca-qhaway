@@ -97,6 +97,26 @@
 
       <!-- 3. Acciones Derecha -->
       <div class="flex items-center gap-2 shrink-0">
+        <!-- Selector Modo Ciudadano / Modo Especialista (Pilar 1) -->
+        <button id="lang-mode-toggle"
+                data-action="toggle-lang-mode"
+                class="flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-semibold border transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                aria-pressed="true"
+                aria-checked="true"
+                title="Cambiar entre Lenguaje Ciudadano y Lenguaje Técnico">
+          <span class="material-symbols-outlined text-[17px] lang-mode-icon shrink-0">groups</span>
+          <span class="hidden sm:inline text-[11px] lang-mode-label">Modo Ciudadano</span>
+        </button>
+
+        <!-- Acceso Directo al Diccionario Cívico Popular (Pilar 4) -->
+        <button type="button"
+                data-action="open-civic-dict"
+                class="hidden md:inline-flex items-center gap-1 px-2.5 py-1.5 rounded text-xs font-semibold text-secondary hover:bg-secondary-container/20 border border-secondary/30 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                title="Abrir Diccionario Cívico Popular">
+          <span class="material-symbols-outlined text-[16px]">menu_book</span>
+          <span class="text-[11px]">Diccionario</span>
+        </button>
+
         <!-- Modo Rural Representativo (Antena / Barras 2G) -->
         <button id="rural-toggle" data-action="toggle-rural" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-medium text-on-surface-variant hover:text-on-surface border border-slate-border hover:bg-surface-container transition-all cursor-pointer" title="Modo Rural: Optimizado para 2G / bajo consumo de datos">
           <svg class="w-4 h-4 text-on-surface-variant rural-signal-icon shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -161,13 +181,25 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end pb-6 border-b border-slate-border">
           <div class="lg:col-span-8 space-y-2">
             <h1 class="font-headline-xl text-headline-xl text-on-surface font-bold tracking-tight">
-              Contratos Públicos SEACE
+              <span class="civic-text-swap"
+                    data-ciudadano="¿Quiénes construyen las obras? Registro de contratos públicos"
+                    data-especialista="Contratos Públicos SEACE (OCDS Standard v1.1)">
+                ¿Quiénes construyen las obras? Registro de contratos públicos
+              </span>
             </h1>
             <p class="font-body-lg text-body-lg text-on-surface-variant max-w-4xl leading-relaxed">
-              Registro normalizado de convocatorias, licitaciones y compras menores en los 14 pliegos de Cajamarca. Datos estructurados para auditoría ciudadana, detección de postor único y concentración de adjudicaciones.
+              <span class="civic-text-swap"
+                    data-ciudadano="Revisa aquí la lista de compras y licitaciones de obras en Cajamarca: cuánto costaron, qué empresa ganó y si compitieron varios postores o uno solo."
+                    data-especialista="Registro normalizado de convocatorias, licitaciones y compras menores en los 14 pliegos de Cajamarca. Datos estructurados para auditoría ciudadana, detección de postor único y concentración de adjudicaciones.">
+                Revisa aquí la lista de compras y licitaciones de obras en Cajamarca: cuánto costaron, qué empresa ganó y si compitieron varios postores o uno solo.
+              </span>
             </p>
           </div>
           <div class="lg:col-span-4 flex lg:justify-end gap-2 shrink-0">
+            <button type="button" data-action="open-civic-dict" class="inline-flex items-center gap-1.5 px-3 py-2.5 bg-secondary-container/20 text-secondary border border-secondary/30 rounded text-label-md font-label-md hover:bg-secondary-container/40 transition-colors cursor-pointer" title="Abrir Diccionario Cívico">
+              <span class="material-symbols-outlined text-[18px]">menu_book</span>
+              Glosario
+            </button>
             <button id="btn-export-csv" class="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-surface hover:bg-surface-container text-on-surface border border-slate-border rounded text-label-md font-label-md transition-colors cursor-pointer">
               <span class="material-symbols-outlined text-[18px]">download</span>
               <span>Exportar CSV</span>

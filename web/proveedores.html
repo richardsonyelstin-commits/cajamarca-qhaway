@@ -97,6 +97,20 @@
 
       <!-- 3. Acciones Derecha -->
       <div class="flex items-center gap-2 shrink-0">
+        <!-- Selector Modo Ciudadano / Modo Especialista -->
+        <div class="inline-flex items-center p-0.5 rounded-full border border-slate-border bg-surface-container text-xs" role="group" aria-label="Modo de lectura de lenguaje">
+          <button id="lang-mode-toggle" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full font-semibold transition-all cursor-pointer text-on-surface" type="button" aria-pressed="false" title="Cambiar entre lenguaje ciudadano cotidiano y términos técnicos de gestión pública">
+            <span class="material-symbols-outlined text-[15px] text-secondary">school</span>
+            <span id="lang-mode-label" class="text-[11px] font-bold">Modo Ciudadano</span>
+          </button>
+        </div>
+
+        <!-- Botón Diccionario Cívico Modal -->
+        <button type="button" data-action="open-civic-dict" class="flex items-center gap-1 px-2.5 py-1.5 rounded text-xs font-semibold text-secondary hover:text-on-surface border border-secondary/30 hover:border-secondary bg-secondary/5 hover:bg-secondary/15 transition-all cursor-pointer" title="Abrir Glosario Cívico">
+          <span class="material-symbols-outlined text-[15px]">menu_book</span>
+          <span class="hidden sm:inline text-[11px]">Glosario</span>
+        </button>
+
         <!-- Modo Rural Representativo (Antena / Barras 2G) -->
         <button id="rural-toggle" data-action="toggle-rural" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-medium text-on-surface-variant hover:text-on-surface border border-slate-border hover:bg-surface-container transition-all cursor-pointer" title="Modo Rural: Optimizado para 2G / bajo consumo de datos">
           <svg class="w-4 h-4 text-on-surface-variant rural-signal-icon shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -160,14 +174,22 @@
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end pb-6 border-b border-slate-border">
           <div class="lg:col-span-8 space-y-2">
-            <h1 class="font-headline-xl text-headline-xl font-bold text-on-surface tracking-tight">
-              Directorio de Proveedores y Concentración
+            <h1 class="font-headline-xl text-headline-xl font-bold text-on-surface tracking-tight civic-text-swap"
+                data-citizen="¿Siempre ganan los mismos? Directorio de contratistas"
+                data-specialist="Directorio de Proveedores y Concentración">
+              ¿Siempre ganan los mismos? Directorio de contratistas
             </h1>
-            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-4xl leading-relaxed">
-              Evaluación analítica y matemática de las cuotas de adjudicación entre contratistas del Estado en la Región Cajamarca. Monitoreo en tiempo real sobre el dataset oficial de SEACE y MEF para alertar sobre concentración excesiva, monopolios territoriales y proveedores recurrentes.
+            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-4xl leading-relaxed civic-text-swap"
+               data-citizen="Revisa qué empresas se llevan más contratos con el Estado en Cajamarca y si un grupo pequeño acapara el dinero público o si existe competencia abierta."
+               data-specialist="Evaluación analítica y matemática de las cuotas de adjudicación entre contratistas del Estado en la Región Cajamarca. Monitoreo en tiempo real sobre el dataset oficial de SEACE y MEF para alertar sobre concentración excesiva, monopolios territoriales y proveedores recurrentes.">
+              Revisa qué empresas se llevan más contratos con el Estado en Cajamarca y si un grupo pequeño acapara el dinero público o si existe competencia abierta.
             </p>
           </div>
           <div class="lg:col-span-4 flex lg:justify-end gap-2 shrink-0">
+            <button type="button" data-action="open-civic-dict" data-dict-term="hhi" class="inline-flex items-center gap-1.5 px-3 py-2 border border-secondary/30 bg-surface-container-low hover:bg-secondary/10 text-secondary rounded text-label-md font-semibold transition-colors cursor-pointer" title="Ver explicación del Índice HHI en lenguaje claro">
+              <span class="material-symbols-outlined text-[18px]">menu_book</span>
+              <span>¿Qué es HHI?</span>
+            </button>
             <button id="btn-export-hhi-csv" class="inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-on-primary rounded text-label-md font-label-md hover:bg-on-surface-variant transition-colors shadow-sm cursor-pointer">
               <span class="material-symbols-outlined text-[18px]">download</span>
               <span>Exportar Análisis HHI</span>
@@ -190,8 +212,11 @@
             <option value="">Consolidado Departamental (14 Entidades)</option>
           </select>
         </div>
-        <div class="text-caption font-label-sm text-on-surface-variant">
-          Fórmula Oficial: <code class="font-mono bg-surface px-1.5 py-0.5 rounded border border-slate-border">HHI = Σ (sᵢ)² × 10,000</code>
+        <div class="text-caption font-label-sm text-on-surface-variant flex items-center gap-1.5 flex-wrap">
+          <span>Fórmula Oficial:</span> <code class="font-mono bg-surface px-1.5 py-0.5 rounded border border-slate-border">HHI = Σ (sᵢ)² × 10,000</code>
+          <button type="button" class="civic-tooltip-btn" data-civic-term="hhi" aria-label="Explicación en lenguaje claro del Índice HHI">
+            <span class="material-symbols-outlined">help</span>
+          </button>
         </div>
       </div>
 
@@ -200,7 +225,14 @@
         <!-- Tarjeta de Score HHI -->
         <div class="p-6 bg-surface-container-low border border-slate-border rounded flex flex-col justify-between">
           <div>
-            <span class="text-caption font-label-sm text-on-surface-variant uppercase tracking-wider block mb-1">Índice HHI Calculado</span>
+            <div class="flex items-center gap-1 mb-1">
+              <span class="text-caption font-label-sm text-on-surface-variant uppercase tracking-wider block civic-text-swap"
+                    data-citizen="Nivel de concentración de contratos"
+                    data-specialist="Índice HHI Calculado">Nivel de concentración de contratos</span>
+              <button type="button" class="civic-tooltip-btn" data-civic-term="hhi" aria-label="¿Qué mide el índice de concentración HHI?">
+                <span class="material-symbols-outlined">help</span>
+              </button>
+            </div>
             <div class="flex items-baseline gap-3 my-2">
               <span class="font-mono text-4xl sm:text-5xl font-bold text-on-surface" id="hhi-score-num">---</span>
               <span class="text-body-sm font-label-sm text-outline">/ 10,000 pts</span>
@@ -217,7 +249,18 @@
 
         <!-- Escala de Clasificación HHI -->
         <div class="p-6 bg-surface-container-low border border-slate-border rounded lg:col-span-2">
-          <h2 class="font-headline-sm text-base font-semibold text-on-surface mb-3">Escala de Concentración de Mercado</h2>
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="font-headline-sm text-base font-semibold text-on-surface flex items-center gap-1.5">
+              <span class="civic-text-swap" data-citizen="Semáforo de concentración: ¿hay competencia o acaparamiento?" data-specialist="Escala de Concentración de Mercado">Semáforo de concentración: ¿hay competencia o acaparamiento?</span>
+              <button type="button" class="civic-tooltip-btn" data-civic-term="concentracion-mercado" aria-label="Explicación de concentración de mercado">
+                <span class="material-symbols-outlined">help</span>
+              </button>
+            </h2>
+            <button type="button" data-action="open-civic-dict" data-dict-term="concentracion-mercado" class="text-xs font-semibold text-secondary hover:underline flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">menu_book</span>
+              <span>Glosario</span>
+            </button>
+          </div>
           <div class="space-y-3 font-body-sm">
             <div class="flex items-start gap-3 p-3 rounded bg-surface border border-slate-border">
               <span class="w-3 h-3 rounded-full bg-civic-emerald mt-1 shrink-0"></span>
@@ -229,7 +272,7 @@
             <div class="flex items-start gap-3 p-3 rounded bg-surface border border-slate-border">
               <span class="w-3 h-3 rounded-full bg-alert-amber mt-1 shrink-0"></span>
               <div>
-                <strong class="font-semibold text-on-surface block">1,500 – 2,500 puntos: Concentración Moderada</strong>
+                <strong class="font-semibold text-on-surface block">1,500 a 2,500 puntos: Concentración Moderada</strong>
                 <p class="text-body-sm text-on-surface-variant">Un grupo reducido de empresas concentra cuotas relevantes del monto adjudicado.</p>
               </div>
             </div>
@@ -263,9 +306,25 @@
                 <th class="py-3 px-4">#</th>
                 <th class="py-3 px-4">Razón Social / Proveedor</th>
                 <th class="py-3 px-4">RUC</th>
-                <th class="py-3 px-4 text-right">Monto Adjudicado (PEN)</th>
-                <th class="py-3 px-4 text-right">Contratos</th>
-                <th class="py-3 px-4">Cuota de Mercado</th>
+                <th class="py-3 px-4 text-right">
+                  <span class="civic-text-swap" data-citizen="Dinero ganado (PEN)" data-specialist="Monto Adjudicado (PEN)">Dinero ganado (PEN)</span>
+                </th>
+                <th class="py-3 px-4 text-right">
+                  <div class="inline-flex items-center gap-1">
+                    <span>Contratos</span>
+                    <button type="button" class="civic-tooltip-btn" data-civic-term="buena-pro" aria-label="¿Qué contratos y buenas pro se consideran?">
+                      <span class="material-symbols-outlined">help</span>
+                    </button>
+                  </div>
+                </th>
+                <th class="py-3 px-4">
+                  <div class="inline-flex items-center gap-1">
+                    <span class="civic-text-swap" data-citizen="% del pastel" data-specialist="Cuota de Mercado">% del pastel</span>
+                    <button type="button" class="civic-tooltip-btn" data-civic-term="concentracion-mercado" aria-label="¿Qué es la cuota de mercado?">
+                      <span class="material-symbols-outlined">help</span>
+                    </button>
+                  </div>
+                </th>
               </tr>
             </thead>
             <tbody id="suppliers-table-body" class="divide-y divide-slate-border">

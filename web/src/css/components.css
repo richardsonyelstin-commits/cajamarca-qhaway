@@ -417,3 +417,539 @@
   align-items: center;
   gap: 0.5rem;
 }
+
+/* --------------------------------------------------------------------------
+   7. Pedagogia Civica, Lenguaje Claro y Accesibilidad Cognitiva (Pilar 1 - 5)
+   Politica Antislop R-02: Cero em-dashes. WCAG 2.2 AA.
+   -------------------------------------------------------------------------- */
+
+/* Selector de Modo Ciudadano vs Especialista */
+#lang-mode-toggle,
+.civic-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.625rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--color-slate-border, #cbd5e1);
+  background-color: var(--color-surface, #fcf8fa);
+  color: var(--color-on-surface-variant, #475569);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  min-height: 36px;
+}
+
+#lang-mode-toggle:hover,
+.civic-mode-toggle:hover {
+  background-color: var(--color-surface-container, #f0edef);
+  color: var(--color-on-surface, #0f172a);
+}
+
+#lang-mode-toggle:focus-visible,
+.civic-mode-toggle:focus-visible {
+  outline: 2px solid var(--color-secondary, #006a63) !important;
+  outline-offset: 2px !important;
+}
+
+/* Modo Ciudadano Activo */
+html[data-lang-mode="ciudadano"] #lang-mode-toggle,
+html[data-lang-mode="ciudadano"] .civic-mode-toggle {
+  border-color: var(--color-secondary, #006a63);
+  background-color: rgba(0, 106, 99, 0.12);
+  color: var(--color-secondary, #006a63);
+}
+
+.dark html[data-lang-mode="ciudadano"] #lang-mode-toggle,
+.dark html[data-lang-mode="ciudadano"] .civic-mode-toggle {
+  background-color: rgba(45, 212, 191, 0.15);
+  color: var(--color-secondary, #2dd4bf);
+  border-color: var(--color-secondary, #2dd4bf);
+}
+
+/* Micro-Tooltips Civicos Accesibles */
+.civic-tooltip-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  position: relative;
+  vertical-align: baseline;
+}
+
+.civic-tooltip-btn,
+.civic-tooltip-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.125rem !important;
+  height: 1.125rem !important;
+  min-width: 1.125rem !important;
+  min-height: 1.125rem !important;
+  border-radius: 9999px;
+  background-color: var(--color-secondary-container, #ccfbf1);
+  color: var(--color-on-secondary-container, #00504a);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  border: 1px solid rgba(0, 106, 99, 0.25);
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  transition: all 0.15s ease-in-out;
+  position: relative;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+/* Area de toque táctil mínima de 44x44px en móviles sin alterar apariencia */
+@media (pointer: coarse) {
+  .civic-tooltip-btn::after,
+  .civic-tooltip-trigger::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
+  }
+}
+
+.civic-tooltip-btn:hover,
+.civic-tooltip-trigger:hover {
+  background-color: var(--color-secondary, #006a63);
+  color: #ffffff;
+}
+
+.civic-tooltip-btn:focus-visible,
+.civic-tooltip-trigger:focus-visible {
+  outline: 2px solid var(--color-secondary, #006a63) !important;
+  outline-offset: 2px !important;
+}
+
+/* Burbuja Flotante del Micro-Tooltip */
+.civic-tooltip-popover {
+  position: absolute;
+  z-index: 9990;
+  width: 290px;
+  max-width: calc(100vw - 32px);
+  background-color: var(--color-surface-container-lowest, #ffffff);
+  color: var(--color-on-surface, #0f172a);
+  border: 1px solid var(--color-slate-border, #cbd5e1);
+  border-radius: 0.5rem;
+  padding: 0.875rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  transition: opacity 0.15s ease-in-out, transform 0.15s ease-in-out;
+}
+
+.civic-tooltip-popover.hidden {
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dark .civic-tooltip-popover {
+  background-color: var(--color-surface-container, #161e30);
+  border-color: var(--color-slate-border, #1e293b);
+  color: var(--color-on-surface, #f8fafc);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+.civic-tooltip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.375rem;
+  padding-bottom: 0.375rem;
+  border-bottom: 1px solid var(--color-slate-border, #e2e8f0);
+}
+
+.civic-tooltip-title {
+  font-weight: 700;
+  color: var(--color-secondary, #006a63);
+  font-size: 0.8125rem;
+}
+
+.dark .civic-tooltip-title {
+  color: var(--color-secondary, #2dd4bf);
+}
+
+.civic-tooltip-close {
+  background: none;
+  border: none;
+  color: var(--color-on-surface-variant, #64748b);
+  cursor: pointer;
+  padding: 0.125rem;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.civic-tooltip-close:hover {
+  color: var(--color-on-surface, #0f172a);
+}
+
+.civic-tooltip-pocket {
+  background-color: var(--color-surface-container-low, #f6f3f5);
+  border-left: 3px solid var(--color-secondary, #006a63);
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.25rem;
+  margin: 0.5rem 0;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--color-on-surface-variant, #334155);
+}
+
+.dark .civic-tooltip-pocket {
+  background-color: var(--color-surface-container-low, #111726);
+  border-left-color: var(--color-secondary, #2dd4bf);
+  color: var(--color-on-surface-variant, #94a3b8);
+}
+
+.civic-tooltip-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-secondary, #006a63);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  margin-top: 0.375rem;
+}
+
+.civic-tooltip-more-btn:hover {
+  text-decoration: underline;
+}
+
+.dark .civic-tooltip-more-btn {
+  color: var(--color-secondary, #2dd4bf);
+}
+
+/* Modal del Diccionario Civico */
+.civic-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(9, 13, 22, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 9995;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.civic-modal-backdrop.hidden {
+  display: none !important;
+}
+
+.civic-modal-window {
+  background-color: var(--color-surface-container-lowest, #ffffff);
+  border: 1px solid var(--color-slate-border, #cbd5e1);
+  border-radius: 0.75rem;
+  width: 100%;
+  max-width: 820px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: civicModalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .civic-modal-window {
+  background-color: var(--color-surface-container-lowest, #0c111d);
+  border-color: var(--color-slate-border, #1e293b);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+}
+
+@keyframes civicModalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.civic-modal-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--color-slate-border, #e2e8f0);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--color-surface-container-low, #f6f3f5);
+}
+
+.dark .civic-modal-header {
+  background-color: var(--color-surface-container-low, #111726);
+  border-bottom-color: var(--color-slate-border, #1e293b);
+}
+
+.civic-dict-search-wrapper {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--color-slate-border, #e2e8f0);
+  background-color: var(--color-surface, #fcf8fa);
+}
+
+.dark .civic-dict-search-wrapper {
+  border-bottom-color: var(--color-slate-border, #1e293b);
+  background-color: var(--color-surface, #090d16);
+}
+
+.civic-dict-input {
+  width: 100%;
+  padding: 0.625rem 1rem 0.625rem 2.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-slate-border, #cbd5e1);
+  background-color: var(--color-surface-container-lowest, #ffffff);
+  color: var(--color-on-surface, #0f172a);
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.civic-dict-input:focus {
+  border-color: var(--color-secondary, #006a63);
+  box-shadow: 0 0 0 3px rgba(0, 106, 99, 0.15);
+}
+
+.dark .civic-dict-input {
+  background-color: var(--color-surface-container, #161e30);
+  border-color: var(--color-slate-border, #1e293b);
+  color: var(--color-on-surface, #f8fafc);
+}
+
+.civic-dict-categories {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-top: 0.75rem;
+  scrollbar-width: none;
+}
+
+.civic-dict-categories::-webkit-scrollbar {
+  display: none;
+}
+
+.civic-cat-pill {
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--color-slate-border, #cbd5e1);
+  background-color: var(--color-surface-container-lowest, #ffffff);
+  color: var(--color-on-surface-variant, #475569);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease-in-out;
+}
+
+.civic-cat-pill.active {
+  background-color: var(--color-secondary, #006a63);
+  color: #ffffff;
+  border-color: var(--color-secondary, #006a63);
+}
+
+.dark .civic-cat-pill {
+  background-color: var(--color-surface-container, #161e30);
+  border-color: var(--color-slate-border, #1e293b);
+  color: var(--color-on-surface-variant, #94a3b8);
+}
+
+.dark .civic-cat-pill.active {
+  background-color: var(--color-secondary, #2dd4bf);
+  color: #042f2e;
+  border-color: var(--color-secondary, #2dd4bf);
+}
+
+.civic-dict-body {
+  padding: 1.25rem 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .civic-dict-body {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.civic-dict-card {
+  border: 1px solid var(--color-slate-border, #e2e8f0);
+  background-color: var(--color-surface-container-lowest, #ffffff);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.civic-dict-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+}
+
+.dark .civic-dict-card {
+  background-color: var(--color-surface-container, #161e30);
+  border-color: var(--color-slate-border, #1e293b);
+}
+
+.civic-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.civic-card-term {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--color-on-surface, #0f172a);
+}
+
+.dark .civic-card-term {
+  color: var(--color-on-surface, #f8fafc);
+}
+
+.civic-card-alias {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-secondary, #006a63);
+  background-color: var(--color-secondary-container, #ccfbf1);
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  margin-top: 0.125rem;
+}
+
+.dark .civic-card-alias {
+  color: var(--color-on-secondary-container, #99f6e4);
+  background-color: var(--color-secondary-container, #134e4a);
+}
+
+.civic-card-def {
+  font-size: 0.8125rem;
+  color: var(--color-on-surface-variant, #334155);
+  line-height: 1.45;
+}
+
+.dark .civic-card-def {
+  color: var(--color-on-surface-variant, #94a3b8);
+}
+
+.civic-card-pocket {
+  background-color: var(--color-surface-container-low, #f6f3f5);
+  border-left: 3px solid var(--color-secondary, #006a63);
+  padding: 0.5rem 0.625rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--color-on-surface-variant, #334155);
+}
+
+.dark .civic-card-pocket {
+  background-color: var(--color-surface-container-low, #111726);
+  border-left-color: var(--color-secondary, #2dd4bf);
+  color: var(--color-on-surface-variant, #94a3b8);
+}
+
+.civic-card-pocket strong {
+  color: var(--color-secondary, #006a63);
+  font-weight: 600;
+}
+
+.dark .civic-card-pocket strong {
+  color: var(--color-secondary, #2dd4bf);
+}
+
+.civic-card-question {
+  font-size: 0.75rem;
+  color: var(--color-outline, #64748b);
+  font-weight: 500;
+}
+
+/* Semáforos Multicanal y Dinero de Bolsillo */
+.civic-pocket-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-family: var(--font-mono, monospace);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  background-color: var(--color-surface-container-high, #eae7e9);
+  color: var(--color-on-surface, #0f172a);
+  border: 1px solid var(--color-slate-border, #cbd5e1);
+}
+
+.dark .civic-pocket-badge {
+  background-color: var(--color-surface-container-high, #1c253b);
+  color: var(--color-on-surface, #f8fafc);
+  border-color: var(--color-slate-border, #1e293b);
+}
+
+.civic-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.25rem;
+  line-height: 1.25;
+}
+
+.civic-status-good {
+  background-color: rgba(5, 150, 105, 0.12);
+  color: #059669;
+  border: 1px solid rgba(5, 150, 105, 0.3);
+}
+
+.civic-status-warning {
+  background-color: rgba(217, 119, 6, 0.12);
+  color: #d97706;
+  border: 1px solid rgba(217, 119, 6, 0.3);
+}
+
+.civic-status-critical {
+  background-color: rgba(225, 29, 72, 0.12);
+  color: #e11d48;
+  border: 1px solid rgba(225, 29, 72, 0.3);
+}
+
+.dark .civic-status-good {
+  background-color: rgba(52, 211, 153, 0.15);
+  color: #34d399;
+  border-color: rgba(52, 211, 153, 0.3);
+}
+
+.dark .civic-status-warning {
+  background-color: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+.dark .civic-status-critical {
+  background-color: rgba(251, 113, 133, 0.15);
+  color: #fb7185;
+  border-color: rgba(251, 113, 133, 0.3);
+}
+
+/* Transicion de texto swap */
+.civic-text-swap {
+  transition: opacity 0.15s ease-in-out;
+}
+

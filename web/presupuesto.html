@@ -97,6 +97,26 @@
 
       <!-- 3. Acciones Derecha -->
       <div class="flex items-center gap-2 shrink-0">
+        <!-- Selector Modo Ciudadano / Modo Especialista (Pilar 1) -->
+        <button id="lang-mode-toggle"
+                data-action="toggle-lang-mode"
+                class="flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-semibold border transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                aria-pressed="true"
+                aria-checked="true"
+                title="Cambiar entre Lenguaje Ciudadano y Lenguaje Técnico">
+          <span class="material-symbols-outlined text-[17px] lang-mode-icon shrink-0">groups</span>
+          <span class="hidden sm:inline text-[11px] lang-mode-label">Modo Ciudadano</span>
+        </button>
+
+        <!-- Acceso Directo al Diccionario Cívico Popular (Pilar 4) -->
+        <button type="button"
+                data-action="open-civic-dict"
+                class="hidden md:inline-flex items-center gap-1 px-2.5 py-1.5 rounded text-xs font-semibold text-secondary hover:bg-secondary-container/20 border border-secondary/30 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                title="Abrir Diccionario Cívico Popular">
+          <span class="material-symbols-outlined text-[16px]">menu_book</span>
+          <span class="text-[11px]">Diccionario</span>
+        </button>
+
         <!-- Modo Rural Representativo (Antena / Barras 2G) -->
         <button id="rural-toggle" data-action="toggle-rural" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-medium text-on-surface-variant hover:text-on-surface border border-slate-border hover:bg-surface-container transition-all cursor-pointer" title="Modo Rural: Optimizado para 2G / bajo consumo de datos">
           <svg class="w-4 h-4 text-on-surface-variant rural-signal-icon shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -161,13 +181,25 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end pb-6 border-b border-slate-border">
           <div class="lg:col-span-8 space-y-2">
             <h1 class="font-headline-xl text-headline-xl font-bold text-on-surface tracking-tight">
-              Monitor Presupuestal MEF SIAF
+              <span class="civic-text-swap"
+                    data-ciudadano="El dinero del pueblo: ¿Cuánto se gasta y cuánto falta?"
+                    data-especialista="Monitor Presupuestal MEF SIAF">
+                El dinero del pueblo: ¿Cuánto se gasta y cuánto falta?
+              </span>
             </h1>
             <p class="font-body-lg text-body-lg text-on-surface-variant max-w-4xl leading-relaxed">
-              Fiscalización del Presupuesto Institucional Modificado (PIM) y devengados oficiales en el GORE Cajamarca y los 13 gobiernos locales provinciales. Semáforo preventivo de subejecución y dependencia del canon minero.
+              <span class="civic-text-swap"
+                    data-ciudadano="Revisa cuánto presupuesto tiene el Gobierno Regional y las 13 provincias para obras, cuánto dinero ya se pagó y qué instituciones tienen retrasos críticos."
+                    data-especialista="Fiscalización del Presupuesto Institucional Modificado (PIM) y devengados oficiales en el GORE Cajamarca y los 13 gobiernos locales provinciales. Semáforo preventivo de subejecución y dependencia del canon minero.">
+                Revisa cuánto presupuesto tiene el Gobierno Regional y las 13 provincias para obras, cuánto dinero ya se pagó y qué instituciones tienen retrasos críticos.
+              </span>
             </p>
           </div>
           <div class="lg:col-span-4 flex lg:justify-end gap-2 shrink-0">
+            <button type="button" data-action="open-civic-dict" class="inline-flex items-center gap-1.5 px-3 py-2.5 bg-secondary-container/20 text-secondary border border-secondary/30 rounded text-label-md font-label-md hover:bg-secondary-container/40 transition-colors cursor-pointer" title="Abrir Diccionario Cívico">
+              <span class="material-symbols-outlined text-[18px]">menu_book</span>
+              Glosario
+            </button>
             <button id="btn-export-budget-csv" class="inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-on-primary rounded text-label-md font-label-md hover:bg-on-surface-variant transition-colors shadow-sm cursor-pointer">
               <span class="material-symbols-outlined text-[18px]">download</span>
               <span>Descargar Dataset SIAF</span>
@@ -179,7 +211,10 @@
         <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-6">
           <div class="p-4 bg-slate-surface rounded border border-slate-border flex flex-col justify-between">
             <div class="flex items-center justify-between mb-1">
-              <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">PIM Asignado</span>
+              <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
+                <span class="civic-text-swap" data-ciudadano="Presupuesto del Año" data-especialista="PIM Asignado">Presupuesto del Año</span>
+                <button type="button" class="civic-tooltip-btn" data-term="pim" aria-label="Qué significa PIM">?</button>
+              </span>
               <span class="material-symbols-outlined text-[18px] text-outline">account_balance</span>
             </div>
             <div class="font-headline-lg text-headline-lg text-on-surface font-bold" id="kpi-pim">S/ 4,820.5 M</div>
@@ -187,7 +222,10 @@
           </div>
           <div class="p-4 bg-slate-surface rounded border border-slate-border flex flex-col justify-between">
             <div class="flex items-center justify-between mb-1">
-              <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Gasto Devengado</span>
+              <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
+                <span class="civic-text-swap" data-ciudadano="Dinero Ya Pagado" data-especialista="Gasto Devengado">Dinero Ya Pagado</span>
+                <button type="button" class="civic-tooltip-btn" data-term="devengado" aria-label="Qué significa Devengado">?</button>
+              </span>
               <span class="material-symbols-outlined text-[18px] text-secondary">payments</span>
             </div>
             <div class="font-headline-lg text-headline-lg text-secondary font-bold" id="kpi-dev">S/ 1,368.8 M</div>
@@ -195,15 +233,24 @@
           </div>
           <div class="p-4 bg-slate-surface rounded border border-slate-border flex flex-col justify-between">
             <div class="flex items-center justify-between mb-1">
-              <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Tasa Media</span>
+              <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
+                <span class="civic-text-swap" data-ciudadano="Avance del Gasto" data-especialista="Tasa Media">Avance del Gasto</span>
+                <button type="button" class="civic-tooltip-btn" data-term="subejecucion" aria-label="Qué significa avance presupuestal">?</button>
+              </span>
               <span class="material-symbols-outlined text-[18px] text-alert-amber">speed</span>
             </div>
-            <div class="font-headline-lg text-headline-lg text-on-surface font-bold" id="kpi-exec-rate">28.4%</div>
+            <div class="flex items-baseline gap-2">
+              <div class="font-headline-lg text-headline-lg text-on-surface font-bold" id="kpi-exec-rate">28.4%</div>
+              <span data-pocket="execution-rate" class="civic-pocket-badge text-alert-amber">S/ 28 de cada S/ 100</span>
+            </div>
             <div class="mt-1 font-caption text-caption text-alert-amber font-semibold">Bajo meta (Meta: 35%)</div>
           </div>
           <div class="p-4 bg-slate-surface rounded border border-slate-border flex flex-col justify-between">
             <div class="flex items-center justify-between mb-1">
-              <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Pliegos Críticos</span>
+              <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
+                <span class="civic-text-swap" data-ciudadano="Instituciones con Retraso" data-especialista="Pliegos Críticos">Instituciones con Retraso</span>
+                <button type="button" class="civic-tooltip-btn" data-term="pliego-presupuestal" aria-label="Qué significa pliego presupuestal">?</button>
+              </span>
               <span class="material-symbols-outlined text-[18px] text-alert-rose">warning</span>
             </div>
             <div class="font-headline-lg text-headline-lg text-alert-rose font-bold" id="kpi-critical-count">4 de 14</div>

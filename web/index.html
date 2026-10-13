@@ -100,6 +100,26 @@
 
       <!-- 3. Acciones Derecha -->
       <div class="flex items-center gap-2 shrink-0">
+        <!-- Selector Modo Ciudadano / Modo Especialista (Pilar 1) -->
+        <button id="lang-mode-toggle"
+                data-action="toggle-lang-mode"
+                class="flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-semibold border transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                aria-pressed="true"
+                aria-checked="true"
+                title="Cambiar entre Lenguaje Ciudadano y Lenguaje Técnico">
+          <span class="material-symbols-outlined text-[17px] lang-mode-icon shrink-0">groups</span>
+          <span class="hidden sm:inline text-[11px] lang-mode-label">Modo Ciudadano</span>
+        </button>
+
+        <!-- Acceso Directo al Diccionario Cívico Popular (Pilar 4) -->
+        <button type="button"
+                data-action="open-civic-dict"
+                class="hidden md:inline-flex items-center gap-1 px-2.5 py-1.5 rounded text-xs font-semibold text-secondary hover:bg-secondary-container/20 border border-secondary/30 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                title="Abrir Diccionario Cívico Popular">
+          <span class="material-symbols-outlined text-[16px]">menu_book</span>
+          <span class="text-[11px]">Diccionario</span>
+        </button>
+
         <!-- Modo Rural Representativo (Antena / Barras 2G) -->
         <button id="rural-toggle" data-action="toggle-rural" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-medium text-on-surface-variant hover:text-on-surface border border-slate-border hover:bg-surface-container transition-all cursor-pointer" title="Modo Rural: Optimizado para 2G / bajo consumo de datos">
           <svg class="w-4 h-4 text-on-surface-variant rural-signal-icon shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -168,24 +188,44 @@
 
             <!-- Titular Editorial Principal -->
             <h1 class="font-headline-xl text-headline-xl text-on-surface font-bold tracking-tight mb-4">
-              Veeduría Algorítmica y Control Ciudadano de los Recursos Públicos
+              <span class="civic-text-swap"
+                    data-ciudadano="¿A dónde va el dinero de Cajamarca? Vigilancia comunitaria de obras y contratos"
+                    data-especialista="Veeduría Algorítmica y Control Ciudadano de los Recursos Públicos">
+                ¿A dónde va el dinero de Cajamarca? Vigilancia comunitaria de obras y contratos
+              </span>
             </h1>
 
             <!-- Párrafo Descriptivo -->
             <p class="text-body-lg text-on-surface-variant leading-relaxed max-w-2xl mb-6">
-              Supervisión continua sobre <strong id="hero-total-pim" class="text-on-surface font-semibold font-mono tabular-nums">S/ 4,820 Millones</strong> asignados al Gobierno Regional y las 13 Municipalidades Provinciales. Detección preventiva de banderas rojas en contrataciones OCDS y subejecución presupuestal del MEF.
+              <span class="civic-text-swap"
+                    data-ciudadano="Monitoreamos los S/ 4,820 Millones del Gobierno Regional y las 13 provincias de Cajamarca (aprox. S/ 3,100 por habitante). Te mostramos cuánto dinero se ha gastado realmente, qué empresas ganan los contratos y qué obras tienen alertas de retraso o sobrecostos."
+                    data-especialista="Supervisión continua sobre S/ 4,820 Millones asignados al Gobierno Regional y las 13 Municipalidades Provinciales. Detección preventiva de banderas rojas en contrataciones OCDS y subejecución presupuestal del MEF.">
+                Monitoreamos los <strong id="hero-total-pim" class="text-on-surface font-semibold font-mono tabular-nums">S/ 4,820 Millones</strong> del Gobierno Regional y las 13 provincias de Cajamarca (aprox. S/ 3,100 por habitante). Te mostramos cuánto dinero se ha gastado realmente, qué empresas ganan los contratos y qué obras tienen alertas de retraso o sobrecostos.
+              </span>
             </p>
 
-            <!-- Jerarquía de Acciones (1 Anchor Dominante + 1 Enlace Secundario) -->
+            <!-- Jerarquía de Acciones (1 Anchor Dominante + 1 Enlace Secundario + Botón Diccionario) -->
             <div class="flex flex-wrap items-center gap-3 mb-6">
               <a class="px-5 py-2.5 rounded bg-primary text-on-primary font-semibold text-sm hover:opacity-90 transition-opacity shadow-sm inline-flex items-center gap-2" href="/entidades">
-                <span>Explorar 14 Entidades Fiscalizadas</span>
+                <span class="civic-text-swap"
+                      data-ciudadano="Ver cómo gasta mi provincia y el Gobierno Regional"
+                      data-especialista="Explorar 14 Entidades Fiscalizadas">
+                  Ver cómo gasta mi provincia y el Gobierno Regional
+                </span>
                 <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
               </a>
               <a class="px-4 py-2.5 rounded border border-slate-border text-alert-rose hover:bg-surface-container font-semibold text-sm transition-colors inline-flex items-center gap-1.5" href="/alertas">
                 <span class="material-symbols-outlined text-[18px]">warning</span>
-                <span id="hero-alerts-btn">Ver Alertas Activas (22 Banderas)</span>
+                <span id="hero-alerts-btn" class="civic-text-swap"
+                      data-ciudadano="Ver alertas preventivas en obras públicas"
+                      data-especialista="Ver Alertas Activas (22 Banderas)">
+                  Ver alertas preventivas en obras públicas
+                </span>
               </a>
+              <button type="button" data-action="open-civic-dict" class="px-3 py-2.5 rounded bg-secondary-container/30 text-secondary hover:bg-secondary-container/50 font-semibold text-xs transition-colors inline-flex items-center gap-1.5 cursor-pointer border border-secondary/30" title="Abrir Diccionario Cívico">
+                <span class="material-symbols-outlined text-[16px]">menu_book</span>
+                <span>Diccionario Cívico</span>
+              </button>
               <a class="text-xs text-on-surface-variant hover:text-on-surface hover:underline inline-flex items-center gap-1 py-2 px-1 transition-colors" href="/transparencia#descarga-microdatos">
                 <span class="material-symbols-outlined text-[16px]">download</span>
                 <span>Descargar Microdatos OCDS (JSON/CSV)</span>
@@ -222,20 +262,37 @@
                 <text class="fill-current text-secondary text-[10px] font-semibold" text-anchor="middle" x="100" y="16">Meta Semestral: 45%</text>
                 <text class="fill-current text-outline text-[10px]" x="178" y="112">100%</text>
               </svg>
-              <span class="text-xs uppercase tracking-wider text-on-surface-variant font-medium mt-1">
-                Devengado Consolidado
-              </span>
+              <div class="flex items-center gap-1.5 mt-1">
+                <span class="text-xs uppercase tracking-wider text-on-surface-variant font-medium">
+                  <span class="civic-text-swap" data-ciudadano="Dinero gastado a la fecha" data-especialista="Devengado Consolidado">Dinero gastado a la fecha</span>
+                </span>
+                <button type="button" class="civic-tooltip-btn" data-term="devengado" aria-label="Qué significa devengado">?</button>
+              </div>
+              <div id="speedo-pocket-badge" class="mt-2 text-center">
+                <span class="civic-status-badge civic-status-critical">
+                  <span class="material-symbols-outlined text-[14px]">warning</span>
+                  <span>S/ 28 de cada S/ 100 · Atención requerida</span>
+                </span>
+              </div>
             </div>
 
             <!-- Métricas Clave en Lista Limpia -->
             <div class="space-y-2.5 pt-3 border-t border-slate-border text-xs">
               <div class="flex items-center justify-between">
-                <span class="text-on-surface-variant">Presupuesto en Riesgo:</span>
+                <span class="text-on-surface-variant flex items-center gap-1">
+                  <span>Presupuesto en Riesgo:</span>
+                  <button type="button" class="civic-tooltip-btn" data-term="reversion-tesoro" aria-label="Qué significa riesgo de reversión">?</button>
+                </span>
                 <span class="text-on-surface font-semibold font-mono tabular-nums">S/ 1,368.4 M</span>
               </div>
               <div class="flex items-center justify-between">
-                <span class="text-on-surface-variant">Índice Concentración:</span>
-                <span class="text-alert-amber font-semibold font-mono tabular-nums">0.42 HHI (Moderado)</span>
+                <span class="text-on-surface-variant flex items-center gap-1">
+                  <span class="civic-text-swap" data-ciudadano="Reparto de contratos:" data-especialista="Índice Concentración:">Reparto de contratos:</span>
+                  <button type="button" class="civic-tooltip-btn" data-term="hhi" aria-label="Qué significa HHI">?</button>
+                </span>
+                <span class="text-alert-amber font-semibold font-mono tabular-nums">
+                  <span class="civic-text-swap" data-ciudadano="Regular (pocas empresas)" data-especialista="0.42 HHI (Moderado)">Regular (pocas empresas)</span>
+                </span>
               </div>
               <div class="flex items-center justify-between">
                 <span class="text-on-surface-variant">Provincias en Alerta:</span>
@@ -261,15 +318,21 @@
           <div class="bg-surface-container-lowest p-5 rounded border border-slate-border shadow-sm flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between text-on-surface-variant mb-2">
-                <span class="text-xs uppercase tracking-wider font-medium">PIM Total Fiscalizado</span>
+                <span class="text-xs uppercase tracking-wider font-medium flex items-center gap-1">
+                  <span class="civic-text-swap" data-ciudadano="Presupuesto del Año" data-especialista="PIM Total Fiscalizado">Presupuesto del Año</span>
+                  <button type="button" class="civic-tooltip-btn" data-term="pim" aria-label="Qué significa PIM">?</button>
+                </span>
                 <span class="material-symbols-outlined text-[20px] text-secondary">account_balance</span>
               </div>
               <div id="kpi-pim-total" class="text-2xl font-bold font-serif text-on-surface font-mono tabular-nums mb-1">
                 S/ 4,820.5 M
               </div>
+              <div class="text-[11px] text-secondary font-medium">
+                aprox. S/ 3,100 por cada cajamarquino
+              </div>
             </div>
             <div class="pt-3 text-xs text-on-surface-variant border-t border-slate-border mt-3">
-              14 Pliegos (Sede Central GORE + 13 Provincias).
+              <span class="civic-text-swap" data-ciudadano="Gobierno Regional + 13 Municipalidades Provinciales." data-especialista="14 Pliegos (Sede Central GORE + 13 Provincias).">Gobierno Regional + 13 Municipalidades Provinciales.</span>
             </div>
           </div>
 
@@ -277,18 +340,24 @@
           <div class="bg-surface-container-lowest p-5 rounded border border-slate-border shadow-sm flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between text-on-surface-variant mb-2">
-                <span class="text-xs uppercase tracking-wider font-medium">Ejecución Presupuestal</span>
+                <span class="text-xs uppercase tracking-wider font-medium flex items-center gap-1">
+                  <span class="civic-text-swap" data-ciudadano="Avance del Gasto" data-especialista="Ejecución Presupuestal">Avance del Gasto</span>
+                  <button type="button" class="civic-tooltip-btn" data-term="devengado" aria-label="Qué significa Devengado">?</button>
+                </span>
                 <span class="material-symbols-outlined text-[20px] text-alert-rose">trending_down</span>
               </div>
               <div class="flex items-baseline gap-2 mb-1">
                 <span id="kpi-devengado-pct" class="text-2xl font-bold font-serif text-on-surface font-mono tabular-nums">28.4%</span>
-                <span class="text-xs font-semibold text-alert-rose">Crítico</span>
+                <span id="kpi-devengado-pocket" class="civic-pocket-badge text-alert-rose">S/ 28 de cada S/ 100</span>
               </div>
               <div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden mt-1 mb-2">
                 <div id="kpi-devengado-bar" class="bg-alert-rose h-full rounded-full" style="width: 28.4%"></div>
               </div>
+              <div id="kpi-devengado-narrative" class="text-[11px] text-on-surface-variant leading-snug">
+                De cada S/ 100 recibidos para obras, se han pagado S/ 28 y faltan S/ 72.
+              </div>
             </div>
-            <div class="pt-2 text-xs text-alert-rose font-medium border-t border-slate-border">
+            <div class="pt-2 text-xs text-alert-rose font-medium border-t border-slate-border mt-2">
               Meta Semestral: 45.0% · Brecha: -16.6 p.p.
             </div>
           </div>
@@ -297,7 +366,11 @@
           <div class="bg-surface-container-lowest p-5 rounded border border-slate-border shadow-sm flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between text-on-surface-variant mb-2">
-                <span class="text-xs uppercase tracking-wider font-medium">Contratos SEACE OCDS</span>
+                <span class="text-xs uppercase tracking-wider font-medium flex items-center gap-1">
+                  <span class="civic-text-swap" data-ciudadano="Contratos Públicos" data-especialista="Contratos SEACE OCDS">Contratos Públicos</span>
+                  <button type="button" class="civic-tooltip-btn" data-term="seace" aria-label="Qué significa SEACE">?</button>
+                  <button type="button" class="civic-tooltip-btn" data-term="ocds" aria-label="Qué significa OCDS">?</button>
+                </span>
                 <span class="material-symbols-outlined text-[20px] text-secondary">contract</span>
               </div>
               <div id="kpi-procurements-total" class="text-2xl font-bold font-serif text-on-surface font-mono tabular-nums mb-1">
@@ -305,7 +378,11 @@
               </div>
             </div>
             <div id="kpi-procurements-sub" class="pt-3 text-xs text-on-surface-variant border-t border-slate-border mt-3">
-              S/ 1,840 M adjudicados · <strong class="text-on-surface font-semibold font-mono">58%</strong> adjudicación directa.
+              <span class="civic-text-swap"
+                    data-ciudadano="S/ 1,840 M en obras. 6 de cada 10 contratos se dieron de forma directa."
+                    data-especialista="S/ 1,840 M adjudicados · 58% adjudicación directa.">
+                S/ 1,840 M en obras. 6 de cada 10 contratos se dieron de forma directa.
+              </span>
             </div>
           </div>
 
@@ -313,7 +390,10 @@
           <div class="bg-surface-container-lowest p-5 rounded border border-slate-border shadow-sm flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between text-on-surface-variant mb-2">
-                <span class="text-xs uppercase tracking-wider font-medium">Banderas Rojas Activas</span>
+                <span class="text-xs uppercase tracking-wider font-medium flex items-center gap-1">
+                  <span class="civic-text-swap" data-ciudadano="Alertas Preventivas" data-especialista="Banderas Rojas Activas">Alertas Preventivas</span>
+                  <button type="button" class="civic-tooltip-btn" data-term="bandera-roja" aria-label="Qué significa Bandera Roja">?</button>
+                </span>
                 <span class="material-symbols-outlined text-[20px] text-alert-amber">flag</span>
               </div>
               <div class="flex items-baseline gap-2 mb-1">
@@ -322,7 +402,11 @@
               </div>
             </div>
             <div class="pt-3 text-xs text-on-surface-variant border-t border-slate-border mt-3">
-              <span class="text-alert-rose font-semibold">6 Severidad Crítica</span> · 9 Riesgo en Canon.
+              <span class="civic-text-swap"
+                    data-ciudadano="6 alertas críticas · 9 obras con riesgo de no terminarse a tiempo."
+                    data-especialista="6 Severidad Crítica · 9 Riesgo en Canon.">
+                6 alertas críticas · 9 obras con riesgo de no terminarse a tiempo.
+              </span>
             </div>
           </div>
 
