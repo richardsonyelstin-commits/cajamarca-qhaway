@@ -1,170 +1,250 @@
 /* ==========================================================================
-   Cajamarca Qhaway: Design Tokens
-   Norma Antislop R-37 y R-34 (Alto contraste WCAG 2.2 AA)
-   Sin caracteres raya/em-dash (R-02)
+   Cajamarca Qhaway: Design Tokens (Andean Civic Observatory)
+   Tipografia: Newsreader (Editorial Serif) + Hanken Grotesk (Data/Prose Sans)
+   Paleta: Pizarra Andina, Verde Cívico, Esmeralda y Slate
    ========================================================================== */
 
 :root,
 [data-bs-theme="light"] {
-  /* Paleta Base: Piedra Sillar y Pizarra Andina */
-  --color-bg-canvas: #F8FAFC;
-  --color-bg-surface: #FFFFFF;
-  --color-bg-subtle: #F1F5F9;
-  --color-bg-elevated: #FFFFFF;
+  --color-surface: #fcf8fa;
+  --color-surface-dim: #dcd9db;
+  --color-surface-bright: #fcf8fa;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f6f3f5;
+  --color-surface-container: #f0edef;
+  --color-surface-container-high: #eae7e9;
+  --color-surface-container-highest: #e4e2e4;
+  --color-on-surface: #0f172a;
+  --color-on-surface-variant: #475569;
+  --color-outline: #64748b;
+  --color-outline-variant: #cbd5e1;
 
-  /* Tipografia y Jerarquia de Texto */
-  --color-text-primary: #0F172A;
-  --color-text-secondary: #334155;
-  --color-text-muted: #64748B;
-  --color-text-inverse: #F8FAFC;
+  --color-primary: #0f172a;
+  --color-on-primary: #ffffff;
+  --color-secondary: #006a63;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #ccfbf1;
+  --color-on-secondary-container: #00504a;
 
-  /* Bordes Sobrios */
-  --color-border-subtle: #E2E8F0;
-  --color-border-strong: #94A3B8;
-  --color-border-focus: #0F766E;
+  --color-civic-emerald: #059669;
+  --color-civic-teal: #0d9488;
+  --color-alert-amber: #d97706;
+  --color-alert-rose: #e11d48;
+  --color-slate-surface: #f8fafc;
+  --color-slate-border: #e2e8f0;
 
-  /* Identidad: Verde Pino Andino Institucional */
-  --color-brand-primary: #0F766E;
-  --color-brand-accent: #0D9488;
-  --color-brand-dark: #115E59;
-  --color-brand-light: #CCFBF1;
-
-  /* Severidad de Alertas: Terracota y Ocre Andino */
-  --color-alert-high: #B45309;
-  --color-alert-high-bg: #FEF3C7;
-  --color-alert-high-border: #F59E0B;
-
-  --color-alert-med: #C2410C;
-  --color-alert-med-bg: #FFEDD5;
-  --color-alert-med-border: #FB923C;
-
-  --color-alert-low: #0F766E;
-  --color-alert-low-bg: #E6FFFA;
-  --color-alert-low-border: #2DD4BF;
-
-  /* Estado Conforme y Verificado */
-  --color-success: #047857;
-  --color-success-bg: #D1FAE5;
-  --color-success-border: #10B981;
-
-  /* Estados de Error y Peligro Estructural */
-  --color-danger: #BE123C;
-  --color-danger-bg: #FFE4E6;
-  --color-danger-border: #F43F5E;
-
-  /* Informacion y Fuentes Oficiales */
-  --color-info: #0369A1;
-  --color-info-bg: #E0F2FE;
-  --color-info-border: #38BDF8;
-
-  /* Sombras Selectivas y Moderadas (R-12) */
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
-  --shadow-md: 0 2px 4px rgba(15, 23, 42, 0.08);
-  --shadow-lg: 0 4px 12px rgba(15, 23, 42, 0.12);
-
-  /* Sobrescritura de variables nativas de Bootstrap */
-  --bs-body-bg: var(--color-bg-canvas);
-  --bs-body-color: var(--color-text-primary);
-  --bs-primary: var(--color-brand-primary);
-  --bs-secondary: var(--color-text-secondary);
-  --bs-border-color: var(--color-border-subtle);
+  --font-serif: "Newsreader", Georgia, serif;
+  --font-sans: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
 }
 
+.dark,
 [data-bs-theme="dark"] {
-  /* Paleta Base: Pizarra Andina Profunda */
-  --color-bg-canvas: #0F172A;
-  --color-bg-surface: #1E293B;
-  --color-bg-subtle: #334155;
-  --color-bg-elevated: #243247;
+  --color-surface: #090d16;
+  --color-surface-dim: #0f1422;
+  --color-surface-bright: #151b2e;
+  --color-surface-container-lowest: #0c111d;
+  --color-surface-container-low: #111726;
+  --color-surface-container: #161e30;
+  --color-surface-container-high: #1c253b;
+  --color-surface-container-highest: #232e49;
+  --color-on-surface: #f8fafc;
+  --color-on-surface-variant: #94a3b8;
+  --color-outline: #64748b;
+  --color-outline-variant: #334155;
 
-  /* Tipografia y Jerarquia de Texto */
-  --color-text-primary: #F8FAFC;
-  --color-text-secondary: #CBD5E1;
-  --color-text-muted: #94A3B8;
-  --color-text-inverse: #0F172A;
+  --color-primary: #ffffff;
+  --color-on-primary: #090d16;
+  --color-secondary: #2dd4bf;
+  --color-on-secondary: #042f2e;
+  --color-secondary-container: #134e4a;
+  --color-on-secondary-container: #99f6e4;
 
-  /* Bordes Sobrios */
-  --color-border-subtle: #334155;
-  --color-border-strong: #64748B;
-  --color-border-focus: #2DD4BF;
-
-  /* Identidad: Esmeralda Claro de Alto Contraste */
-  --color-brand-primary: #2DD4BF;
-  --color-brand-accent: #14B8A6;
-  --color-brand-dark: #0F766E;
-  --color-brand-light: #134E4A;
-
-  /* Severidad de Alertas: Ambar y Ocre Nocturno */
-  --color-alert-high: #FBBF24;
-  --color-alert-high-bg: #451A03;
-  --color-alert-high-border: #D97706;
-
-  --color-alert-med: #FB923C;
-  --color-alert-med-bg: #431407;
-  --color-alert-med-border: #EA580C;
-
-  --color-alert-low: #2DD4BF;
-  --color-alert-low-bg: #042F2E;
-  --color-alert-low-border: #0D9488;
-
-  /* Estado Conforme y Verificado */
-  --color-success: #34D399;
-  --color-success-bg: #064E3B;
-  --color-success-border: #059669;
-
-  /* Estados de Error y Peligro Estructural */
-  --color-danger: #FB7185;
-  --color-danger-bg: #4C0519;
-  --color-danger-border: #E11D48;
-
-  /* Informacion y Fuentes Oficiales */
-  --color-info: #38BDF8;
-  --color-info-bg: #082F49;
-  --color-info-border: #0284C7;
-
-  /* Sombras Nocturnas Suaves */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 4px 14px rgba(0, 0, 0, 0.6);
-
-  /* Sobrescritura de variables nativas de Bootstrap */
-  --bs-body-bg: var(--color-bg-canvas);
-  --bs-body-color: var(--color-text-primary);
-  --bs-primary: var(--color-brand-primary);
-  --bs-secondary: var(--color-text-secondary);
-  --bs-border-color: var(--color-border-subtle);
+  --color-civic-emerald: #34d399;
+  --color-civic-teal: #2dd4bf;
+  --color-alert-amber: #fbbf24;
+  --color-alert-rose: #fb7185;
+  --color-slate-surface: #0d1322;
+  --color-slate-border: #1e293b;
 }
 
-:root {
-  /* Tipografia con Proposito (R-06) */
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+/* Modo Rural Ligero: Optimizado para conexiones 2G/3G y bajo consumo de datos */
+body.mode-rural-lite {
+  --color-surface: #ffffff !important;
+  --color-surface-container-low: #f8fafc !important;
+  --color-surface-container: #f1f5f9 !important;
+  --color-surface-container-lowest: #ffffff !important;
+  font-size: 0.9375rem !important;
+}
 
-  /* Escala de Espaciado Modular */
-  --space-2xs: 0.125rem; /* 2px */
-  --space-xs:  0.25rem;  /* 4px */
-  --space-sm:  0.5rem;   /* 8px */
-  --space-md:  1rem;     /* 16px */
-  --space-lg:  1.5rem;   /* 24px */
-  --space-xl:  2rem;     /* 32px */
-  --space-2xl: 3rem;     /* 48px */
+body.mode-rural-lite img:not([data-essential="true"]) {
+  display: none !important;
+}
 
-  /* Radios de Borde Segun R-11 (Prohibido rounded-full excesivo) */
-  --radius-xs: 2px;
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
+body.mode-rural-lite * {
+  animation: none !important;
+  transition: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
 
-  /* Foco Accesible WCAG 2.2 AA (R-32) */
-  --focus-ring-width: 3px;
-  --focus-ring-offset: 2px;
-  --focus-ring-color: var(--color-brand-primary);
+body.mode-rural-lite .rural-hide {
+  display: none !important;
+}
 
-  /* Transiciones Funcionales y Calmas (MOTION: 1) */
-  --transition-fast: 150ms ease-in-out;
-  --transition-normal: 200ms ease-in-out;
+/* Jerarquía Tipográfica Explícita */
+.font-headline-xl,
+.font-headline-lg,
+.font-headline-md,
+.font-headline-sm {
+  font-family: var(--font-serif) !important;
+}
 
-  /* Dimension Minima de Objetivo Tactil (R-03) */
-  --touch-target-min: 44px;
+.font-body-lg,
+.font-body-md,
+.font-body-sm,
+.font-label-md,
+.font-label-sm,
+.font-caption {
+  font-family: var(--font-sans) !important;
+}
+
+.font-mono {
+  font-family: var(--font-mono) !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.text-headline-xl {
+  font-size: clamp(2rem, 3.5vw, 2.75rem) !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.02em !important;
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+.text-headline-lg {
+  font-size: clamp(1.5rem, 2.5vw, 2rem) !important;
+  line-height: 1.25 !important;
+  letter-spacing: -0.015em !important;
+  font-weight: 600;
+  text-wrap: balance;
+}
+
+.text-headline-md {
+  font-size: 1.375rem !important;
+  line-height: 1.35 !important;
+  letter-spacing: -0.01em !important;
+  font-weight: 600;
+}
+
+.text-headline-sm {
+  font-size: 1.125rem !important;
+  line-height: 1.4 !important;
+  font-weight: 600;
+}
+
+.text-body-lg {
+  font-size: 1.125rem !important;
+  line-height: 1.65 !important;
+}
+
+.text-body-md {
+  font-size: 1rem !important;
+  line-height: 1.55 !important;
+}
+
+.text-body-sm {
+  font-size: 0.875rem !important;
+  line-height: 1.45 !important;
+}
+
+.text-label-md {
+  font-size: 0.875rem !important;
+  line-height: 1.25rem !important;
+  font-weight: 600 !important;
+}
+
+.text-label-sm {
+  font-size: 0.75rem !important;
+  line-height: 1rem !important;
+  font-weight: 600 !important;
+}
+
+.text-caption {
+  font-size: 0.6875rem !important;
+  line-height: 0.9375rem !important;
+}
+
+/* Mapeo Universal de Tokens de Color para Reactividad Total en Modo Oscuro */
+.bg-surface { background-color: var(--color-surface) !important; }
+.bg-surface-dim { background-color: var(--color-surface-dim) !important; }
+.bg-surface-container-lowest { background-color: var(--color-surface-container-lowest) !important; }
+.bg-surface-container-low { background-color: var(--color-surface-container-low) !important; }
+.bg-surface-container { background-color: var(--color-surface-container) !important; }
+.bg-surface-container-high { background-color: var(--color-surface-container-high) !important; }
+.bg-surface-container-highest { background-color: var(--color-surface-container-highest) !important; }
+
+.text-on-surface { color: var(--color-on-surface) !important; }
+.text-on-surface-variant { color: var(--color-on-surface-variant) !important; }
+.text-outline { color: var(--color-outline) !important; }
+.text-outline-variant { color: var(--color-outline-variant) !important; }
+
+.border-slate-border { border-color: var(--color-slate-border) !important; }
+.bg-slate-surface { background-color: var(--color-slate-surface) !important; }
+
+.bg-secondary { background-color: var(--color-secondary) !important; }
+.text-secondary { color: var(--color-secondary) !important; }
+.bg-secondary-container { background-color: var(--color-secondary-container) !important; }
+.text-on-secondary-container { color: var(--color-on-secondary-container) !important; }
+
+.text-civic-emerald { color: var(--color-civic-emerald) !important; }
+.text-civic-teal { color: var(--color-civic-teal) !important; }
+.text-alert-amber { color: var(--color-alert-amber) !important; }
+.text-alert-rose { color: var(--color-alert-rose) !important; }
+
+/* Contrato de Barra de Navegación Superior: Altura Fija y Cero Desbordamiento */
+.site-header {
+  height: 4rem;
+  border-bottom: 1px solid var(--color-slate-border);
+  background-color: var(--color-surface);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.site-nav-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.625rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-on-surface-variant);
+  text-decoration: none;
+  white-space: nowrap;
+  border-radius: 0.25rem;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.site-nav-link:hover {
+  color: var(--color-on-surface);
+  background-color: var(--color-surface-container);
+}
+
+.site-nav-link.active {
+  color: var(--color-on-surface);
+  font-weight: 600;
+  background-color: var(--color-surface-container-high);
+}
+
+/* Ocultar barra de scroll nativa conservando el desplazamiento */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
 }

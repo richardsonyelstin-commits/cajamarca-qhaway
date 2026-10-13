@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta name="description" content="Misión, metodología y principios del Observatorio Cívico Regional Cajamarca Qhaway."/>
+  <title>Acerca del Observatorio — Cajamarca Qhaway</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+
+  <!-- Tailwind CSS Engine -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface": "var(--color-surface)",
+            "surface-dim": "var(--color-surface-dim)",
+            "surface-bright": "var(--color-surface-bright)",
+            "surface-container-lowest": "var(--color-surface-container-lowest)",
+            "surface-container-low": "var(--color-surface-container-low)",
+            "surface-container": "var(--color-surface-container)",
+            "surface-container-high": "var(--color-surface-container-high)",
+            "surface-container-highest": "var(--color-surface-container-highest)",
+            "on-surface": "var(--color-on-surface)",
+            "on-surface-variant": "var(--color-on-surface-variant)",
+            "outline": "var(--color-outline)",
+            "outline-variant": "var(--color-outline-variant)",
+            "primary": "var(--color-primary)",
+            "on-primary": "var(--color-on-primary)",
+            "secondary": "var(--color-secondary)",
+            "on-secondary": "var(--color-on-secondary)",
+            "secondary-container": "var(--color-secondary-container)",
+            "on-secondary-container": "var(--color-on-secondary-container)",
+            "civic-emerald": "var(--color-civic-emerald)",
+            "civic-teal": "var(--color-civic-teal)",
+            "alert-amber": "var(--color-alert-amber)",
+            "alert-rose": "var(--color-alert-rose)",
+            "slate-surface": "var(--color-slate-surface)",
+            "slate-border": "var(--color-slate-border)"
+          },
+          fontSize: {
+            'headline-xl': ['clamp(2rem, 3.5vw, 2.75rem)', { lineHeight: '1.18', letterSpacing: '-0.02em', fontWeight: '700' }],
+            'headline-lg': ['clamp(1.5rem, 2.5vw, 2rem)', { lineHeight: '1.25', letterSpacing: '-0.015em', fontWeight: '600' }],
+            'headline-md': ['1.375rem', { lineHeight: '1.35', letterSpacing: '-0.01em', fontWeight: '600' }],
+            'headline-sm': ['1.125rem', { lineHeight: '1.4', fontWeight: '600' }],
+            'body-lg': ['1.125rem', { lineHeight: '1.65' }],
+            'body-md': ['1rem', { lineHeight: '1.55' }],
+            'body-sm': ['0.875rem', { lineHeight: '1.45' }],
+            'label-md': ['0.875rem', { lineHeight: '1.25rem', fontWeight: '600' }],
+            'label-sm': ['0.75rem', { lineHeight: '1rem', fontWeight: '600' }],
+            'caption': ['0.6875rem', { lineHeight: '0.9375rem' }]
+          },
+          fontFamily: {
+            serif: ["Newsreader", "Georgia", "serif"],
+            sans: ["Hanken Grotesk", "system-ui", "sans-serif"],
+            mono: ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="/src/css/tokens.css"/>
+</head>
+<body class="bg-surface font-sans text-on-surface antialiased min-h-screen flex flex-col">
+  <!-- Encabezado Unificado (Top Bar Contract: 1 Fila, 64px, Sin Colisiones) -->
+  <header class="w-full sticky top-0 z-50 bg-surface/95 backdrop-blur-md border-b border-slate-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <!-- 1. Marca Institucional -->
+      <a class="flex items-center gap-2.5 shrink-0 group focus:outline-none rounded" href="/" title="Inicio - Cajamarca Qhaway">
+        <img alt="Logotipo Cajamarca Qhaway" class="h-8 w-auto object-contain" src="/media/brand-symbol.svg"/>
+        <div class="flex flex-col">
+          <span class="font-serif text-lg font-bold text-on-surface leading-tight tracking-tight group-hover:text-secondary transition-colors">Cajamarca Qhaway</span>
+          <span class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Veeduría Ciudadana</span>
+        </div>
+      </a>
+
+      <!-- 2. Navegación Principal Unificada -->
+      <nav class="hidden lg:flex items-center gap-1 xl:gap-2">
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/entidades">Entidades</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/alertas">Alertas</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/contrataciones">Contrataciones</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/presupuesto">Presupuesto</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/proveedores">Proveedores</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-secondary hover:text-secondary-hover hover:bg-secondary-container/20 transition-colors flex items-center gap-1" href="/denuncia">
+          <span class="material-symbols-outlined text-[15px]">campaign</span>
+          <span>Denunciar</span>
+        </a>
+      </nav>
+
+      <!-- 3. Acciones Derecha -->
+      <div class="flex items-center gap-2 shrink-0">
+        <!-- Modo Rural Representativo (Antena / Barras 2G) -->
+        <button id="rural-toggle" data-action="toggle-rural" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-medium text-on-surface-variant hover:text-on-surface border border-slate-border hover:bg-surface-container transition-all cursor-pointer" title="Modo Rural: Optimizado para 2G / bajo consumo de datos">
+          <svg class="w-4 h-4 text-on-surface-variant rural-signal-icon shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 20h.01"/>
+            <path d="M7 20v-4"/>
+            <path d="M12 20v-8"/>
+            <path d="M17 20V4"/>
+          </svg>
+          <span class="hidden sm:inline text-[11px] font-semibold rural-label">Rural</span>
+          <span class="rural-badge hidden text-[9px] px-1 py-0.5 rounded bg-civic-emerald text-white font-bold leading-none">2G</span>
+        </button>
+
+        <!-- Tema Oscuro / Claro -->
+        <button id="theme-toggle" data-action="toggle-theme" class="p-2 rounded text-on-surface-variant hover:text-on-surface border border-slate-border hover:bg-surface-container transition-colors cursor-pointer" title="Cambiar tema">
+          <span class="material-symbols-outlined text-[18px]">dark_mode</span>
+        </button>
+
+        <!-- Acceso Veedor -->
+        <a id="header-veedor-btn" href="/login" class="px-3 py-1.5 rounded text-xs font-semibold bg-surface-container-high hover:bg-surface-container-highest text-on-surface border border-slate-border transition-colors flex items-center gap-1.5" title="Acceso seguro para veedores acreditados">
+          <span class="material-symbols-outlined text-[16px] text-secondary shrink-0">verified_user</span>
+          <span class="hidden md:inline">Veedores</span>
+        </a>
+
+        <!-- Botón Menú Móvil -->
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded text-on-surface-variant hover:text-on-surface border border-slate-border hover:bg-surface-container cursor-pointer" aria-label="Abrir menú">
+          <span class="material-symbols-outlined text-[20px]">menu</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Menú Desplegable Móvil -->
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-border bg-surface px-4 py-3 space-y-1">
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/">Inicio</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/entidades">14 Entidades Auditadas</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/alertas">Alertas y Banderas Rojas</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/contrataciones">Contrataciones SEACE</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/presupuesto">Presupuesto MEF SIAF</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/proveedores">Proveedores del Estado (HHI)</a>
+      <a class="block px-3 py-2 text-sm text-secondary font-semibold hover:bg-surface-container rounded" href="/denuncia">Canal de Denuncia Segura</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/transparencia">Transparencia y Microdatos</a>
+      <a class="block px-3 py-2 text-sm font-semibold text-secondary bg-secondary-container/20 rounded" href="/acerca">Acerca del Observatorio</a>
+      <div class="border-t border-slate-border pt-2 mt-2">
+        <a class="block px-3 py-2 text-sm text-alert-amber font-semibold hover:bg-surface-container rounded" href="/admin/revision">Panel Revisor CU5</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main class="w-full flex-1 bg-surface">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+      <!-- Encabezado Editorial -->
+      <div class="border-b border-slate-border pb-8">
+        <div class="flex items-center gap-2 text-body-sm font-label-sm text-secondary uppercase tracking-wider mb-2">
+          <span class="material-symbols-outlined text-[18px]">info</span>
+          <span>Principios y Gobernanza</span>
+          <span>·</span>
+          <span>Periodismo Institucional</span>
+        </div>
+        <h1 class="font-headline-xl text-3xl sm:text-4xl lg:text-5xl font-semibold text-on-surface tracking-tight">
+          Acerca de Cajamarca Qhaway
+        </h1>
+        <p class="font-body-lg text-on-surface-variant mt-4 leading-relaxed font-headline-sm">
+          “Qhaway” proviene de la raíz quechua andina que significa observar con esmero, velar por el bien común y custodiar. Somos un observatorio cívico independiente dedicado a iluminar el uso de los fondos públicos en el departamento de Cajamarca.
+        </p>
+      </div>
+
+      <!-- Declaración de Misión y Visión -->
+      <div class="my-10 space-y-8 leading-relaxed text-body-md text-on-surface">
+        <div class="p-6 bg-surface-container-low border border-slate-border rounded">
+          <h2 class="font-headline-sm text-2xl font-semibold text-on-surface mb-3">
+            Misión del Observatorio
+          </h2>
+          <p class="text-on-surface-variant leading-relaxed">
+            Convertir los datos abiertos oficiales del Estado peruano (SEACE OCDS, MEF SIAF, SUNAT) en herramientas útiles para que las organizaciones de la sociedad civil cajamarquina —como rondas campesinas, frentes de defensa, colegios profesionales y comités de vigilancia ciudadana— puedan ejercer un control social oportuno antes de que los recursos públicos sean desviados o las obras queden paralizadas.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="font-headline-sm text-2xl font-semibold text-on-surface mb-4">
+            Alianzas de la Sociedad Civil
+          </h2>
+          <p class="text-on-surface-variant leading-relaxed mb-4">
+            Cajamarca Qhaway no busca duplicar ni reemplazar a las organizaciones ciudadanas que cuentan con décadas de trayectoria en la defensa de los derechos colectivos en la región. El proyecto surge como una herramienta complementaria coordinada con:
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="p-4 bg-surface-container-low border border-slate-border rounded">
+              <strong class="font-headline-sm text-base text-on-surface block mb-1">Proética Cajamarca</strong>
+              <span class="text-caption text-on-surface-variant">Capítulo peruano de Transparency International. Veeduría electoral y contrataciones.</span>
+            </div>
+            <div class="p-4 bg-surface-container-low border border-slate-border rounded">
+              <strong class="font-headline-sm text-base text-on-surface block mb-1">Propuesta Ciudadana</strong>
+              <span class="text-caption text-on-surface-variant">Vigilancia de industrias extractivas, canon minero y descentralización fiscal.</span>
+            </div>
+            <div class="p-4 bg-surface-container-low border border-slate-border rounded">
+              <strong class="font-headline-sm text-base text-on-surface block mb-1">GRUFIDES</strong>
+              <span class="text-caption text-on-surface-variant">Defensa territorial, veeduría comunitaria y justicia ambiental en cuencas de Cajamarca.</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="font-headline-sm text-2xl font-semibold text-on-surface mb-4">
+            Los Cinco Invariantes Éticos del Proyecto
+          </h2>
+          <div class="space-y-4">
+            <div class="p-4 bg-surface border border-slate-border rounded">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-mono text-caption text-secondary font-bold">INVARIANTE 01</span>
+                <strong class="font-label-sm text-body-sm text-on-surface">Revisión Humana Preceptiva</strong>
+              </div>
+              <p class="text-body-sm text-on-surface-variant">Ninguna alerta se publica sin pasar por el Panel Revisor CU5. Los algoritmos priorizan candidatos de riesgo para el análisis, jamás publican automáticamente.</p>
+            </div>
+
+            <div class="p-4 bg-surface border border-slate-border rounded">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-mono text-caption text-secondary font-bold">INVARIANTE 02</span>
+                <strong class="font-label-sm text-body-sm text-on-surface">Trazabilidad Total de Pruebas</strong>
+              </div>
+              <p class="text-body-sm text-on-surface-variant">Cada alerta publicada expone: regla o indicador activado, dato numérico exacto, fuente oficial y fecha de extracción. Esto constituye la defensa legal y periodística de la plataforma.</p>
+            </div>
+
+            <div class="p-4 bg-surface border border-slate-border rounded">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-mono text-caption text-secondary font-bold">INVARIANTE 03</span>
+                <strong class="font-label-sm text-body-sm text-on-surface">Cero Scoring de Personas</strong>
+              </div>
+              <p class="text-body-sm text-on-surface-variant">Las alertas evalúan procesos contractuales y pliegos presupuestales. No generamos rankings, calificaciones morales ni perfiles reputacionales de personas individuales.</p>
+            </div>
+
+            <div class="p-4 bg-surface border border-slate-border rounded">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-mono text-caption text-secondary font-bold">INVARIANTE 04</span>
+                <strong class="font-label-sm text-body-sm text-on-surface">Uso Legal y Restringido de DJI</strong>
+              </div>
+              <p class="text-body-sm text-on-surface-variant">Las Declaraciones Juradas de Intereses se emplean estrictamente para relaciones formales declaradas (empresa-funcionario-familiar). No se cruza con patrimonio ni redes sociales.</p>
+            </div>
+
+            <div class="p-4 bg-surface border border-slate-border rounded">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-mono text-caption text-secondary font-bold">INVARIANTE 05</span>
+                <strong class="font-label-sm text-body-sm text-on-surface">Ámbito Geográfico Fijo: Región Cajamarca</strong>
+              </div>
+              <p class="text-body-sm text-on-surface-variant">La Fase 1 se concentra exclusivamente en las 13 provincias de Cajamarca para garantizar profundidad analítica y contextualización comunitaria.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Marco Legal -->
+        <div class="p-6 bg-surface-container-low border border-slate-border rounded text-body-sm text-on-surface-variant leading-relaxed">
+          <h3 class="font-headline-sm text-lg font-semibold text-on-surface mb-2">Marco Constitucional y Legal</h3>
+          <p>
+            Esta plataforma ejerce los derechos consagrados en el Artículo 2, numerales 4 y 5 de la Constitución Política del Perú, la Ley N° 27806 de Transparencia y Acceso a la Información Pública, el Decreto Supremo N° 021-2019-JUS y la Ley N° 29733 de Protección de Datos Personales.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Pie de Página Institucional Robusto y Homogéneo -->
+  <footer class="w-full bg-surface-container-low border-t border-slate-border mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+        <!-- Columna 1: Identidad y Alianzas de la Sociedad Civil -->
+        <div class="flex flex-col">
+          <div class="flex items-center gap-2 mb-3">
+            <img alt="Logotipo Cajamarca Qhaway" class="h-6 w-auto object-contain" src="/media/brand-symbol.svg"/>
+            <span class="font-serif text-lg font-bold text-on-surface">Cajamarca Qhaway</span>
+          </div>
+          <p class="text-xs text-on-surface-variant mb-4 leading-relaxed">
+            Observatorio Cívico Regional independiente dedicado a la auditoría ciudadana, fiscalización de contrataciones y seguimiento del gasto público en el Departamento de Cajamarca.
+          </p>
+          <div class="p-3 bg-surface border border-slate-border rounded text-body-sm text-on-surface-variant space-y-1">
+            <div class="flex items-center gap-2 text-on-surface font-semibold text-xs">
+              <span class="material-symbols-outlined text-secondary text-[16px]">verified</span>
+              <span>Control Social Articulado</span>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              En articulación de estándares cívicos con <strong>Proética</strong>, <strong>Propuesta Ciudadana</strong> y <strong>GRUFIDES</strong>. El panel revisor colegiado audita antes de publicar (Invariante 01).
+            </p>
+          </div>
+        </div>
+
+        <!-- Columna 2: Módulos de Auditoría -->
+        <div>
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-3 font-semibold">Módulos de Auditoría</span>
+          <ul class="space-y-2 text-xs text-on-surface-variant">
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/entidades"><span class="material-symbols-outlined text-[14px] text-secondary">account_balance</span> 14 Entidades Monitoreadas</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/alertas"><span class="material-symbols-outlined text-[14px] text-alert-rose">flag</span> Banderas Rojas y Riesgos</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/contrataciones"><span class="material-symbols-outlined text-[14px] text-civic-teal">description</span> Contratos OCDS SEACE</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/presupuesto"><span class="material-symbols-outlined text-[14px] text-civic-emerald">query_stats</span> Presupuesto y Devengado MEF</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/proveedores"><span class="material-symbols-outlined text-[14px] text-alert-amber">hub</span> Concentración Proveedores HHI</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/transparencia"><span class="material-symbols-outlined text-[14px] text-outline">database</span> Microdatos Descargables</a></li>
+          </ul>
+        </div>
+
+        <!-- Columna 3: Fuentes Oficiales -->
+        <div>
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-3 font-semibold">Fuentes Oficiales del Estado</span>
+          <ul class="space-y-2 text-xs text-on-surface-variant mb-4">
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://www.gob.pe/seace" rel="noopener noreferrer" target="_blank">SEACE API OCDS (OSCE) <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://apps5.mineco.gob.pe/transparencia/mensual/" rel="noopener noreferrer" target="_blank">MEF SIAF DataStore Mensual <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://e-consultaruc.sunat.gob.pe/" rel="noopener noreferrer" target="_blank">SUNAT Padrón RUC Proveedores <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://datosabiertos.gob.pe/" rel="noopener noreferrer" target="_blank">Portal Datos Abiertos Perú <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+          </ul>
+        </div>
+
+        <!-- Columna 4: Veeduría Ciudadana -->
+        <div>
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-3 font-semibold">Acceso y Veeduría</span>
+          <ul class="space-y-2 text-xs text-on-surface-variant">
+            <li><a class="hover:text-on-surface transition-colors font-medium text-secondary flex items-center gap-1" href="/denuncia"><span class="material-symbols-outlined text-[15px]">campaign</span> Canal Seguro de Denuncia</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1" href="/login"><span class="material-symbols-outlined text-[15px]">verified_user</span> Acreditación de Veedores</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1 text-alert-amber font-semibold" href="/admin/revision"><span class="material-symbols-outlined text-[15px]">gavel</span> Panel Revisor Colegiado</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Franja Legal, Constitucional y Técnica -->
+      <div class="border-t border-slate-border pt-6 space-y-4 text-xs text-on-surface-variant">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="leading-relaxed">
+            <strong class="font-semibold text-on-surface block mb-1">Fundamento Constitucional:</strong>
+            Artículos 2 (incisos 5 y 6) y 31 de la Constitución Política del Perú: derecho irrestricto al acceso a la información pública, la fiscalización ciudadana y la participación cívica.
+          </div>
+          <div class="leading-relaxed">
+            <strong class="font-semibold text-on-surface block mb-1">Metodología y Transparencia:</strong>
+            Conforme a las directrices de la Alianza para el Gobierno Abierto (OGP), estándares OCDS y principios rectores de vigilancia ciudadana anticorrupción.
+          </div>
+          <div class="leading-relaxed">
+            <strong class="font-semibold text-on-surface block mb-1">Principio de No Imputación Judicial:</strong>
+            Las investigaciones cívicas y banderas rojas son aportes a la probidad pública y rendición de cuentas, sin suplir la jurisdicción del Ministerio Público ni la CGR.
+          </div>
+        </div>
+
+        <div class="border-t border-slate-border pt-4 flex flex-col md:flex-row items-center justify-between gap-3 text-caption text-on-surface-variant">
+          <div>
+            © 2025–2026 Cajamarca Qhaway. Licencia Abierta ODC-By 1.0.
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="inline-flex items-center gap-1 text-civic-emerald font-semibold">
+              <span class="w-2 h-2 rounded-full bg-civic-emerald"></span>
+              Sincronización OCDS 1.1 / MEF SIAF 2025
+            </span>
+            <span>·</span>
+            <span>Región Cajamarca (13 Provincias)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/js/app.js"></script>
+</body>
+</html>

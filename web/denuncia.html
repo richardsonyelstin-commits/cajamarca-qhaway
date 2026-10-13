@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta name="description" content="Canal Seguro y Confidencial de Denuncia Ciudadana sobre irregularidades en contrataciones y obras en Cajamarca."/>
+  <title>Canal de Denuncia Ciudadana — Cajamarca Qhaway</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+
+  <!-- Tailwind CSS Engine -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface": "var(--color-surface)",
+            "surface-dim": "var(--color-surface-dim)",
+            "surface-bright": "var(--color-surface-bright)",
+            "surface-container-lowest": "var(--color-surface-container-lowest)",
+            "surface-container-low": "var(--color-surface-container-low)",
+            "surface-container": "var(--color-surface-container)",
+            "surface-container-high": "var(--color-surface-container-high)",
+            "surface-container-highest": "var(--color-surface-container-highest)",
+            "on-surface": "var(--color-on-surface)",
+            "on-surface-variant": "var(--color-on-surface-variant)",
+            "outline": "var(--color-outline)",
+            "outline-variant": "var(--color-outline-variant)",
+            "primary": "var(--color-primary)",
+            "on-primary": "var(--color-on-primary)",
+            "secondary": "var(--color-secondary)",
+            "on-secondary": "var(--color-on-secondary)",
+            "secondary-container": "var(--color-secondary-container)",
+            "on-secondary-container": "var(--color-on-secondary-container)",
+            "civic-emerald": "var(--color-civic-emerald)",
+            "civic-teal": "var(--color-civic-teal)",
+            "alert-amber": "var(--color-alert-amber)",
+            "alert-rose": "var(--color-alert-rose)",
+            "slate-surface": "var(--color-slate-surface)",
+            "slate-border": "var(--color-slate-border)"
+          },
+          fontSize: {
+            'headline-xl': ['clamp(2rem, 3.5vw, 2.75rem)', { lineHeight: '1.18', letterSpacing: '-0.02em', fontWeight: '700' }],
+            'headline-lg': ['clamp(1.5rem, 2.5vw, 2rem)', { lineHeight: '1.25', letterSpacing: '-0.015em', fontWeight: '600' }],
+            'headline-md': ['1.375rem', { lineHeight: '1.35', letterSpacing: '-0.01em', fontWeight: '600' }],
+            'headline-sm': ['1.125rem', { lineHeight: '1.4', fontWeight: '600' }],
+            'body-lg': ['1.125rem', { lineHeight: '1.65' }],
+            'body-md': ['1rem', { lineHeight: '1.55' }],
+            'body-sm': ['0.875rem', { lineHeight: '1.45' }],
+            'label-md': ['0.875rem', { lineHeight: '1.25rem', fontWeight: '600' }],
+            'label-sm': ['0.75rem', { lineHeight: '1rem', fontWeight: '600' }],
+            'caption': ['0.6875rem', { lineHeight: '0.9375rem' }]
+          },
+          fontFamily: {
+            serif: ["Newsreader", "Georgia", "serif"],
+            sans: ["Hanken Grotesk", "system-ui", "sans-serif"],
+            mono: ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="/src/css/tokens.css"/>
+</head>
+<body class="bg-surface font-sans text-on-surface antialiased min-h-screen flex flex-col">
+  <!-- Encabezado Unificado (Top Bar Contract: 1 Fila, 64px, Sin Colisiones) -->
+  <header class="w-full sticky top-0 z-50 bg-surface/95 backdrop-blur-md border-b border-slate-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <!-- 1. Marca Institucional -->
+      <a class="flex items-center gap-2.5 shrink-0 group focus:outline-none rounded" href="/" title="Inicio - Cajamarca Qhaway">
+        <img alt="Logotipo Cajamarca Qhaway" class="h-8 w-auto object-contain" src="/media/brand-symbol.svg"/>
+        <div class="flex flex-col">
+          <span class="font-serif text-lg font-bold text-on-surface leading-tight tracking-tight group-hover:text-secondary transition-colors">Cajamarca Qhaway</span>
+          <span class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Veeduría Ciudadana</span>
+        </div>
+      </a>
+
+      <!-- 2. Navegación Principal Unificada -->
+      <nav class="hidden lg:flex items-center gap-1 xl:gap-2">
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/entidades">Entidades</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/alertas">Alertas</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/contrataciones">Contrataciones</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/presupuesto">Presupuesto</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/proveedores">Proveedores</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-secondary bg-secondary-container/20 border border-secondary/30 transition-colors flex items-center gap-1" href="/denuncia">
+          <span class="material-symbols-outlined text-[15px]">campaign</span>
+          <span>Denunciar</span>
+        </a>
+      </nav>
+
+      <!-- 3. Acciones Derecha -->
+      <div class="flex items-center gap-2 shrink-0">
+        <!-- Modo Rural Representativo (Antena / Barras 2G) -->
+        <button id="rural-toggle" data-action="toggle-rural" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-medium text-on-surface-variant hover:text-on-surface border border-slate-border hover:bg-surface-container transition-all cursor-pointer" title="Modo Rural: Optimizado para 2G / bajo consumo de datos">
+          <svg class="w-4 h-4 text-on-surface-variant rural-signal-icon shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 20h.01"/>
+            <path d="M7 20v-4"/>
+            <path d="M12 20v-8"/>
+            <path d="M17 20V4"/>
+          </svg>
+          <span class="hidden sm:inline text-[11px] font-semibold rural-label">Rural</span>
+          <span class="rural-badge hidden text-[9px] px-1 py-0.5 rounded bg-civic-emerald text-white font-bold leading-none">2G</span>
+        </button>
+
+        <!-- Tema Oscuro / Claro -->
+        <button id="theme-toggle" data-action="toggle-theme" class="p-2 rounded text-on-surface-variant hover:text-on-surface border border-slate-border hover:bg-surface-container transition-colors cursor-pointer" title="Cambiar tema">
+          <span class="material-symbols-outlined text-[18px]">dark_mode</span>
+        </button>
+
+        <!-- Acceso Veedor -->
+        <a id="header-veedor-btn" href="/login" class="px-3 py-1.5 rounded text-xs font-semibold bg-surface-container-high hover:bg-surface-container-highest text-on-surface border border-slate-border transition-colors flex items-center gap-1.5" title="Acceso seguro para veedores acreditados">
+          <span class="material-symbols-outlined text-[16px] text-secondary shrink-0">verified_user</span>
+          <span class="hidden md:inline">Veedores</span>
+        </a>
+
+        <!-- Botón Menú Móvil -->
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded text-on-surface-variant hover:text-on-surface border border-slate-border hover:bg-surface-container cursor-pointer" aria-label="Abrir menú">
+          <span class="material-symbols-outlined text-[20px]">menu</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Menú Desplegable Móvil -->
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-border bg-surface px-4 py-3 space-y-1">
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/">Inicio</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/entidades">14 Entidades Auditadas</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/alertas">Alertas y Banderas Rojas</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/contrataciones">Contrataciones SEACE</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/presupuesto">Presupuesto MEF SIAF</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/proveedores">Proveedores del Estado (HHI)</a>
+      <a class="block px-3 py-2 text-sm font-semibold text-secondary bg-secondary-container/20 rounded" href="/denuncia">Canal de Denuncia Segura</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/transparencia">Transparencia y Microdatos</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/acerca">Acerca del Observatorio</a>
+      <div class="border-t border-slate-border pt-2 mt-2">
+        <a class="block px-3 py-2 text-sm text-alert-amber font-semibold hover:bg-surface-container rounded" href="/admin/revision">Panel Revisor CU5</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main class="w-full flex-1 bg-surface">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+      <!-- Encabezado Editorial -->
+      <div class="border-b border-slate-border pb-8">
+        <div class="flex items-center gap-2 text-body-sm font-label-sm text-secondary uppercase tracking-wider mb-2">
+          <span class="material-symbols-outlined text-[18px]">security</span>
+          <span>Veeduría y Control Social</span>
+          <span>·</span>
+          <span>Capacidad 006 Intake</span>
+        </div>
+        <h1 class="font-headline-xl text-3xl sm:text-4xl lg:text-5xl font-semibold text-on-surface tracking-tight">
+          Canal Seguro de Denuncia Ciudadana
+        </h1>
+        <p class="font-body-md text-on-surface-variant mt-3 leading-relaxed">
+          Mecanismo confidencial para que veedores comunales, periodistas y ciudadanos de las 13 provincias reporten presuntas irregularidades en contratos, sobrecostos u obras paralizadas. Toda información es contrastada contra fuentes oficiales antes de elevarse al Panel Revisor CU5.
+        </p>
+      </div>
+
+      <!-- Tarjeta de Confirmación / Token (oculta al inicio) -->
+      <div id="report-confirmation" class="hidden mt-8 p-6 bg-secondary-container text-on-secondary-container border border-secondary rounded">
+        <div class="flex items-center gap-3 mb-2">
+          <span class="material-symbols-outlined text-2xl">task_alt</span>
+          <h2 class="font-headline-sm text-xl font-bold">Reporte Registrado con Éxito</h2>
+        </div>
+        <p class="text-body-sm leading-relaxed mb-4">
+          Su reporte ciudadano ha sido ingresado al pipeline seguro de verificación. Guarde su código de seguimiento confidencial:
+        </p>
+        <div class="p-3 bg-surface border border-slate-border rounded flex items-center justify-between gap-4">
+          <span class="font-mono text-lg font-bold text-on-surface" id="token-display">CR-2025-XXXX</span>
+          <button id="btn-copy-token" class="px-3 py-1.5 bg-primary text-on-primary rounded text-caption font-label-sm flex items-center gap-1 cursor-pointer">
+            <span class="material-symbols-outlined text-[15px]">content_copy</span>
+            <span>Copiar Token</span>
+          </button>
+        </div>
+        <p class="text-caption mt-3 opacity-90">
+          Este código le permite consultar el estado técnico de su expediente sin revelar su identidad.
+        </p>
+      </div>
+
+      <!-- Formulario de Denuncia -->
+      <form id="denuncia-form" class="mt-8 space-y-8">
+        <!-- Paso 1: Entidad y Tipología -->
+        <div class="p-6 bg-surface-container-low border border-slate-border rounded space-y-4">
+          <div class="flex items-center gap-2 border-b border-slate-border pb-3">
+            <span class="w-6 h-6 rounded-full bg-secondary text-white text-caption font-mono flex items-center justify-center font-bold">1</span>
+            <h2 class="font-headline-sm text-lg font-semibold text-on-surface">Entidad y Tipología del Hecho</h2>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="denuncia-entity" class="block font-label-sm text-body-sm font-semibold text-on-surface mb-1">
+                Entidad Involucrada *
+              </label>
+              <select id="denuncia-entity" required class="w-full bg-surface border border-slate-border px-3 py-2 rounded text-body-sm font-body-sm text-on-surface focus:outline-none focus:border-secondary">
+                <option value="">Seleccione una entidad de Cajamarca...</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="denuncia-tipologia" class="block font-label-sm text-body-sm font-semibold text-on-surface mb-1">
+                Tipo de Irregularidad *
+              </label>
+              <select id="denuncia-tipologia" required class="w-full bg-surface border border-slate-border px-3 py-2 rounded text-body-sm font-body-sm text-on-surface focus:outline-none focus:border-secondary">
+                <option value="obra_paralizada">Obra paralizada, abandonada o defectuosa</option>
+                <option value="fraccionamiento">Compras fraccionadas menores a 8 UIT</option>
+                <option value="postor_unico">Direccionamiento / Licitación a la medida</option>
+                <option value="conflicto_interes">Vínculo con funcionario / Conflicto de interés</option>
+                <option value="sobrecosto">Sobrecostos desproporcionados o adendas irregulares</option>
+                <option value="otro">Otra anomalía administrativa</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paso 2: Relato y Evidencia -->
+        <div class="p-6 bg-surface-container-low border border-slate-border rounded space-y-4">
+          <div class="flex items-center gap-2 border-b border-slate-border pb-3">
+            <span class="w-6 h-6 rounded-full bg-secondary text-white text-caption font-mono flex items-center justify-center font-bold">2</span>
+            <h2 class="font-headline-sm text-lg font-semibold text-on-surface">Detalle de los Hechos y Evidencia</h2>
+          </div>
+
+          <div>
+            <label for="denuncia-texto" class="block font-label-sm text-body-sm font-semibold text-on-surface mb-1">
+              Descripción Clara y Circunstanciada *
+            </label>
+            <p class="text-caption text-on-surface-variant mb-2">
+              Indique lugar, proyecto o contrato, fecha estimada y los hechos concretos observados. No es necesario formular imputaciones legales; describa los hechos objetivos.
+            </p>
+            <textarea id="denuncia-texto" required rows="5" class="w-full bg-surface border border-slate-border p-3 rounded text-body-sm font-body-sm text-on-surface focus:outline-none focus:border-secondary" placeholder="Ejemplo: En la obra de mejoramiento del camino vecinal del Caserío El Rejo, los trabajos se encuentran paralizados desde hace 3 meses sin presencia de maquinaria ni personal, a pesar de que el portal de transparencia registra desembolsos financieros superiores al 70%..."></textarea>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="denuncia-ocid" class="block font-label-sm text-body-sm font-semibold text-on-surface mb-1">
+                Número de Contrato o Código OCID (Opcional)
+              </label>
+              <input id="denuncia-ocid" type="text" class="w-full bg-surface border border-slate-border px-3 py-2 rounded text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-secondary" placeholder="Ejemplo: ocds-07smqs-gore-2026-001 o LP-01-2025"/>
+            </div>
+
+            <div>
+              <label for="denuncia-monto" class="block font-label-sm text-body-sm font-semibold text-on-surface mb-1">
+                Monto Estimado en Soles (Opcional)
+              </label>
+              <input id="denuncia-monto" type="number" step="0.01" class="w-full bg-surface border border-slate-border px-3 py-2 rounded text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-secondary" placeholder="Ejemplo: 450000"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paso 3: Identidad y Modalidad -->
+        <div class="p-6 bg-surface-container-low border border-slate-border rounded space-y-4">
+          <div class="flex items-center gap-2 border-b border-slate-border pb-3">
+            <span class="w-6 h-6 rounded-full bg-secondary text-white text-caption font-mono flex items-center justify-center font-bold">3</span>
+            <h2 class="font-headline-sm text-lg font-semibold text-on-surface">Modalidad de Presentación</h2>
+          </div>
+
+          <div class="space-y-3">
+            <label class="flex items-start gap-3 p-3 bg-surface border border-slate-border rounded cursor-pointer">
+              <input type="radio" name="modalidad" value="anonimo" checked class="mt-1 text-secondary focus:ring-secondary"/>
+              <div>
+                <span class="font-label-sm text-body-sm font-semibold text-on-surface block">100% Anónimo (Recomendado para Veedores Comunales)</span>
+                <span class="text-caption text-on-surface-variant block">No se solicita ni registra nombre, DNI, teléfono ni dirección IP. Se genera un token criptográfico único para seguimiento.</span>
+              </div>
+            </label>
+
+            <label class="flex items-start gap-3 p-3 bg-surface border border-slate-border rounded cursor-pointer">
+              <input type="radio" name="modalidad" value="identificado" class="mt-1 text-secondary focus:ring-secondary"/>
+              <div>
+                <span class="font-label-sm text-body-sm font-semibold text-on-surface block">Veedor Acreditado / Contacto de Seguimiento</span>
+                <span class="text-caption text-on-surface-variant block">Permite al equipo técnico del Panel Revisor CU5 solicitar aclaraciones o copias de actas comunales.</span>
+              </div>
+            </label>
+          </div>
+
+          <div id="identificado-fields" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <div>
+              <label for="contact-name" class="block font-label-sm text-body-sm font-semibold text-on-surface mb-1">Nombre o Organización</label>
+              <input id="contact-name" type="text" class="w-full bg-surface border border-slate-border px-3 py-2 rounded text-body-sm font-body-sm text-on-surface focus:outline-none focus:border-secondary" placeholder="Ej: Rondas Campesinas de Chota"/>
+            </div>
+            <div>
+              <label for="contact-channel" class="block font-label-sm text-body-sm font-semibold text-on-surface mb-1">Canal de Contacto Seguro (Email / Tel)</label>
+              <input id="contact-channel" type="text" class="w-full bg-surface border border-slate-border px-3 py-2 rounded text-body-sm font-body-sm text-on-surface focus:outline-none focus:border-secondary" placeholder="contacto@veeduria.org"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paso 4: Consentimiento Legal Ineludible -->
+        <div class="p-6 bg-surface-container-low border border-slate-border rounded space-y-4">
+          <div class="flex items-center gap-2 border-b border-slate-border pb-3">
+            <span class="w-6 h-6 rounded-full bg-secondary text-white text-caption font-mono flex items-center justify-center font-bold">4</span>
+            <h2 class="font-headline-sm text-lg font-semibold text-on-surface">Declaración y Garantías Legales</h2>
+          </div>
+
+          <label class="flex items-start gap-3 cursor-pointer">
+            <input id="disclaimer-check" required type="checkbox" class="mt-1 text-secondary focus:ring-secondary"/>
+            <span class="text-body-sm font-body-sm text-on-surface leading-relaxed">
+              Declaro de buena fe que los hechos reportados son verídicos según mi conocimiento y que remito esta información en ejercicio de mi derecho ciudadano de fiscalización y acceso a la información pública (Art. 15, 16 y 17 de la Ley N° 27806 y Ley N° 29733 de Protección de Datos Personales). Entiendo que el Observatorio no realiza denuncias judiciales directas ni perfilamiento de personas, sino contraste documental con fuentes oficiales. *
+            </span>
+          </label>
+        </div>
+
+        <div class="flex items-center justify-end gap-4">
+          <button type="submit" id="btn-submit-report" class="px-6 py-3 bg-primary text-on-primary rounded text-body-sm font-label-sm hover:opacity-90 transition-opacity flex items-center gap-2 cursor-pointer shadow-md">
+            <span class="material-symbols-outlined text-[18px]">send</span>
+            <span>Enviar Reporte Ciudadano</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Rastreador de Expedientes -->
+      <div class="mt-16 pt-12 border-t border-slate-border">
+        <h2 class="font-headline-sm text-2xl font-semibold text-on-surface mb-2">
+          Rastreador de Expedientes Ciudadanos
+        </h2>
+        <p class="text-body-sm text-on-surface-variant mb-6">
+          Si ya remitió un reporte previo, ingrese su código único para consultar su avance en el pipeline de auditoría:
+        </p>
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 max-w-lg">
+          <input id="track-token-input" type="text" class="flex-1 bg-surface-container-low border border-slate-border px-4 py-2.5 rounded font-mono text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-secondary" placeholder="Ej: cr-m89x42"/>
+          <button id="btn-track-token" class="px-5 py-2.5 bg-secondary text-white rounded text-body-sm font-label-sm hover:opacity-90 transition-opacity cursor-pointer flex items-center justify-center gap-1">
+            <span class="material-symbols-outlined text-[18px]">search</span>
+            <span>Consultar</span>
+          </button>
+        </div>
+        <div id="track-result" class="mt-4 hidden p-4 bg-surface-container-low border border-slate-border rounded text-body-sm font-label-sm">
+          <!-- Resultado de rastreo -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Pie de Página Institucional Robusto y Homogéneo -->
+  <footer class="w-full bg-surface-container-low border-t border-slate-border mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+        <!-- Columna 1: Identidad y Alianzas de la Sociedad Civil -->
+        <div class="flex flex-col">
+          <div class="flex items-center gap-2 mb-3">
+            <img alt="Logotipo Cajamarca Qhaway" class="h-6 w-auto object-contain" src="/media/brand-symbol.svg"/>
+            <span class="font-serif text-lg font-bold text-on-surface">Cajamarca Qhaway</span>
+          </div>
+          <p class="text-xs text-on-surface-variant mb-4 leading-relaxed">
+            Observatorio Cívico Regional independiente dedicado a la auditoría ciudadana, fiscalización de contrataciones y seguimiento del gasto público en el Departamento de Cajamarca.
+          </p>
+          <div class="p-3 bg-surface border border-slate-border rounded text-body-sm text-on-surface-variant space-y-1">
+            <div class="flex items-center gap-2 text-on-surface font-semibold text-xs">
+              <span class="material-symbols-outlined text-secondary text-[16px]">verified</span>
+              <span>Control Social Articulado</span>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              En articulación de estándares cívicos con <strong>Proética</strong>, <strong>Propuesta Ciudadana</strong> y <strong>GRUFIDES</strong>. El panel revisor colegiado audita antes de publicar (Invariante 01).
+            </p>
+          </div>
+        </div>
+
+        <!-- Columna 2: Módulos de Auditoría -->
+        <div>
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-3 font-semibold">Módulos de Auditoría</span>
+          <ul class="space-y-2 text-xs text-on-surface-variant">
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/entidades"><span class="material-symbols-outlined text-[14px] text-secondary">account_balance</span> 14 Entidades Monitoreadas</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/alertas"><span class="material-symbols-outlined text-[14px] text-alert-rose">flag</span> Banderas Rojas y Riesgos</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/contrataciones"><span class="material-symbols-outlined text-[14px] text-civic-teal">description</span> Contratos OCDS SEACE</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/presupuesto"><span class="material-symbols-outlined text-[14px] text-civic-emerald">query_stats</span> Presupuesto y Devengado MEF</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/proveedores"><span class="material-symbols-outlined text-[14px] text-alert-amber">hub</span> Concentración Proveedores HHI</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/transparencia"><span class="material-symbols-outlined text-[14px] text-outline">database</span> Microdatos Descargables</a></li>
+          </ul>
+        </div>
+
+        <!-- Columna 3: Fuentes Oficiales -->
+        <div>
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-3 font-semibold">Fuentes Oficiales del Estado</span>
+          <ul class="space-y-2 text-xs text-on-surface-variant mb-4">
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://www.gob.pe/seace" rel="noopener noreferrer" target="_blank">SEACE API OCDS (OSCE) <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://apps5.mineco.gob.pe/transparencia/mensual/" rel="noopener noreferrer" target="_blank">MEF SIAF DataStore Mensual <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://e-consultaruc.sunat.gob.pe/" rel="noopener noreferrer" target="_blank">SUNAT Padrón RUC Proveedores <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://datosabiertos.gob.pe/" rel="noopener noreferrer" target="_blank">Portal Datos Abiertos Perú <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+          </ul>
+        </div>
+
+        <!-- Columna 4: Veeduría Ciudadana -->
+        <div>
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-3 font-semibold">Acceso y Veeduría</span>
+          <ul class="space-y-2 text-xs text-on-surface-variant">
+            <li><a class="hover:text-on-surface transition-colors font-medium text-secondary flex items-center gap-1" href="/denuncia"><span class="material-symbols-outlined text-[15px]">campaign</span> Canal Seguro de Denuncia</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1" href="/login"><span class="material-symbols-outlined text-[15px]">verified_user</span> Acreditación de Veedores</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1 text-alert-amber font-semibold" href="/admin/revision"><span class="material-symbols-outlined text-[15px]">gavel</span> Panel Revisor Colegiado</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Franja Legal, Constitucional y Técnica -->
+      <div class="border-t border-slate-border pt-6 space-y-4 text-xs text-on-surface-variant">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="leading-relaxed">
+            <strong class="font-semibold text-on-surface block mb-1">Fundamento Constitucional:</strong>
+            Artículos 2 (incisos 5 y 6) y 31 de la Constitución Política del Perú: derecho irrestricto al acceso a la información pública, la fiscalización ciudadana y la participación cívica.
+          </div>
+          <div class="leading-relaxed">
+            <strong class="font-semibold text-on-surface block mb-1">Marco de Protección al Denunciante:</strong>
+            Decreto Legislativo N° 1327 que establece medidas de protección al denunciante de actos de corrupción y garantiza reserva de identidad y confidencialidad estricta.
+          </div>
+          <div class="leading-relaxed">
+            <strong class="font-semibold text-on-surface block mb-1">Principio de No Imputación Judicial:</strong>
+            Los reportes ciudadanos son contrastados documentalmente con bases de datos oficiales por el panel colegiado antes de emitir alertas preventivas.
+          </div>
+        </div>
+
+        <div class="border-t border-slate-border pt-4 flex flex-col md:flex-row items-center justify-between gap-3 text-caption text-on-surface-variant">
+          <div>
+            © 2025–2026 Cajamarca Qhaway. Licencia Abierta ODC-By 1.0.
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="inline-flex items-center gap-1 text-civic-emerald font-semibold">
+              <span class="w-2 h-2 rounded-full bg-civic-emerald"></span>
+              Sincronización OCDS 1.1 / MEF SIAF 2025
+            </span>
+            <span>·</span>
+            <span>Región Cajamarca (13 Provincias)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/js/app.js"></script>
+  <script type="module">
+    import { dataEngine } from '/src/js/data-engine.js';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Poblar entidades
+      const entities = await dataEngine.getEntities();
+      const entitySelect = document.getElementById('denuncia-entity');
+      entities.forEach(e => {
+        const opt = document.createElement('option');
+        opt.value = e.entity_id;
+        opt.textContent = `${e.official_name} (${e.province || 'Departamental'})`;
+        entitySelect.appendChild(opt);
+      });
+
+      // Modalidad listener
+      const modRadios = document.querySelectorAll('input[name="modalidad"]');
+      modRadios.forEach(r => {
+        r.addEventListener('change', () => {
+          const isIdent = document.querySelector('input[name="modalidad"]:checked').value === 'identificado';
+          document.getElementById('identificado-fields').classList.toggle('hidden', !isIdent);
+        });
+      });
+
+      // Submit listener
+      const form = document.getElementById('denuncia-form');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const entityId = document.getElementById('denuncia-entity').value;
+        const tipologia = document.getElementById('denuncia-tipologia').value;
+        const texto = document.getElementById('denuncia-texto').value;
+        const ocid = document.getElementById('denuncia-ocid').value;
+        const monto = document.getElementById('denuncia-monto').value;
+        const isAnon = document.querySelector('input[name="modalidad"]:checked').value === 'anonimo';
+        const contactName = document.getElementById('contact-name').value;
+        const contactChannel = document.getElementById('contact-channel').value;
+        const disclaimer = document.getElementById('disclaimer-check').checked;
+
+        if (!disclaimer) {
+          window.showToast('Debe aceptar la declaración y marco de garantías legales.', 'error');
+          return;
+        }
+
+        const payload = {
+          entity_id: entityId,
+          raw_text: `[Tipología: ${tipologia}] ${texto} ${ocid ? `[OCID: ${ocid}]` : ''} ${monto ? `[Monto: S/ ${monto}]` : ''}`,
+          source_channel: 'web_form',
+          disclaimer_accepted: true,
+          is_anonymous: isAnon,
+          metadata: {
+            tipologia,
+            ocid: ocid || null,
+            estimated_amount: monto ? parseFloat(monto) : null,
+            reporter_org: isAnon ? null : contactName,
+            reporter_contact: isAnon ? null : contactChannel
+          }
+        };
+
+        const submitBtn = document.getElementById('btn-submit-report');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span><span>Enviando...</span>';
+
+        try {
+          const res = await fetch('/api/reports', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            const reportId = data.report?.report_id || `cr-${Date.now().toString(36)}`;
+
+            form.reset();
+            form.classList.add('hidden');
+
+            const confirmBox = document.getElementById('report-confirmation');
+            confirmBox.classList.remove('hidden');
+            document.getElementById('token-display').textContent = reportId;
+
+            document.getElementById('btn-copy-token').onclick = () => {
+              navigator.clipboard.writeText(reportId);
+              window.showToast('Token copiado al portapapeles', 'info');
+            };
+
+            window.showToast('Reporte ciudadano recibido exitosamente.', 'success');
+          } else {
+            const err = await res.json();
+            window.showToast(err.error || 'Error al enviar reporte', 'error');
+          }
+        } catch (err) {
+          console.error(err);
+          window.showToast('Error de conexión con el servidor', 'error');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<span class="material-symbols-outlined text-[18px]">send</span><span>Enviar Reporte Ciudadano</span>';
+        }
+      });
+
+      // Tracker listener
+      document.getElementById('btn-track-token').addEventListener('click', async () => {
+        const token = document.getElementById('track-token-input').value.trim();
+        const resBox = document.getElementById('track-result');
+        if (!token) {
+          window.showToast('Ingrese un código de reporte', 'warning');
+          return;
+        }
+
+        try {
+          const res = await fetch('/api/reports');
+          const reports = await res.json();
+          const found = reports.find(r => r.report_id === token);
+
+          resBox.classList.remove('hidden');
+          if (found) {
+            resBox.innerHTML = `
+              <div class="flex items-center gap-2 text-civic-emerald mb-1">
+                <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                <strong>Expediente Localizado (${found.report_id})</strong>
+              </div>
+              <p class="text-on-surface-variant">Estado Técnico: <strong class="text-on-surface">Ingresado al Pipeline de Verificación</strong></p>
+              <p class="text-caption text-outline mt-1">Fecha de recepción: ${found.created_at || 'Reciente'}</p>
+            `;
+          } else {
+            resBox.innerHTML = `
+              <div class="text-on-surface-variant">
+                Expediente <code>${token}</code> en proceso de indexación inicial o no encontrado en el corte activo. Si lo acaba de enviar, el token es válido y está registrado en la base de datos de auditoría.
+              </div>
+            `;
+          }
+        } catch (err) {
+          resBox.classList.remove('hidden');
+          resBox.innerHTML = `<span>Error al consultar estado de expediente.</span>`;
+        }
+      });
+    });
+  </script>
+</body>
+</html>

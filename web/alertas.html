@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta name="description" content="Monitor de Alertas y Banderas Rojas Activas en Contrataciones Públicas de Cajamarca: OCDS SEACE y MEF SIAF."/>
+  <title>Alertas Publicadas y Banderas Rojas — Cajamarca Qhaway</title>
+
+  <!-- Google Fonts: Newsreader & Hanken Grotesk & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+
+  <!-- Tailwind CSS Engine -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface": "var(--color-surface)",
+            "surface-dim": "var(--color-surface-dim)",
+            "surface-bright": "var(--color-surface-bright)",
+            "surface-container-lowest": "var(--color-surface-container-lowest)",
+            "surface-container-low": "var(--color-surface-container-low)",
+            "surface-container": "var(--color-surface-container)",
+            "surface-container-high": "var(--color-surface-container-high)",
+            "surface-container-highest": "var(--color-surface-container-highest)",
+            "on-surface": "var(--color-on-surface)",
+            "on-surface-variant": "var(--color-on-surface-variant)",
+            "outline": "var(--color-outline)",
+            "outline-variant": "var(--color-outline-variant)",
+            "primary": "var(--color-primary)",
+            "on-primary": "var(--color-on-primary)",
+            "secondary": "var(--color-secondary)",
+            "on-secondary": "var(--color-on-secondary)",
+            "secondary-container": "var(--color-secondary-container)",
+            "on-secondary-container": "var(--color-on-secondary-container)",
+            "civic-emerald": "var(--color-civic-emerald)",
+            "civic-teal": "var(--color-civic-teal)",
+            "alert-amber": "var(--color-alert-amber)",
+            "alert-rose": "var(--color-alert-rose)",
+            "slate-surface": "var(--color-slate-surface)",
+            "slate-border": "var(--color-slate-border)"
+          },
+          fontSize: {
+            'headline-xl': ['clamp(2rem, 3.5vw, 2.75rem)', { lineHeight: '1.18', letterSpacing: '-0.02em', fontWeight: '700' }],
+            'headline-lg': ['clamp(1.5rem, 2.5vw, 2rem)', { lineHeight: '1.25', letterSpacing: '-0.015em', fontWeight: '600' }],
+            'headline-md': ['1.375rem', { lineHeight: '1.35', letterSpacing: '-0.01em', fontWeight: '600' }],
+            'headline-sm': ['1.125rem', { lineHeight: '1.4', fontWeight: '600' }],
+            'body-lg': ['1.125rem', { lineHeight: '1.65' }],
+            'body-md': ['1rem', { lineHeight: '1.55' }],
+            'body-sm': ['0.875rem', { lineHeight: '1.45' }],
+            'label-md': ['0.875rem', { lineHeight: '1.25rem', fontWeight: '600' }],
+            'label-sm': ['0.75rem', { lineHeight: '1rem', fontWeight: '600' }],
+            'caption': ['0.6875rem', { lineHeight: '0.9375rem' }]
+          },
+          fontFamily: {
+            serif: ["Newsreader", "Georgia", "serif"],
+            sans: ["Hanken Grotesk", "system-ui", "sans-serif"],
+            mono: ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="/src/css/tokens.css"/>
+</head>
+<body class="bg-surface font-sans text-on-surface antialiased min-h-screen flex flex-col">
+  <!-- Encabezado Unificado (Top Bar Contract: 1 Fila, 64px, Sin Colisiones) -->
+  <header class="w-full sticky top-0 z-50 bg-surface/95 backdrop-blur-md border-b border-slate-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <!-- 1. Marca Institucional -->
+      <a class="flex items-center gap-2.5 shrink-0 group focus:outline-none rounded" href="/" title="Inicio - Cajamarca Qhaway">
+        <img alt="Logotipo Cajamarca Qhaway" class="h-8 w-auto object-contain" src="/media/brand-symbol.svg"/>
+        <div class="flex flex-col">
+          <span class="font-serif text-lg font-bold text-on-surface leading-tight tracking-tight group-hover:text-secondary transition-colors">Cajamarca Qhaway</span>
+          <span class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Veeduría Ciudadana</span>
+        </div>
+      </a>
+
+      <!-- 2. Navegación Principal Unificada -->
+      <nav class="hidden lg:flex items-center gap-1 xl:gap-2">
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/entidades">Entidades</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-secondary bg-secondary-container/20 border border-secondary/30 transition-colors" href="/alertas">Alertas</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/contrataciones">Contrataciones</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/presupuesto">Presupuesto</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/proveedores">Proveedores</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-secondary hover:text-secondary-hover hover:bg-secondary-container/20 transition-colors flex items-center gap-1" href="/denuncia">
+          <span class="material-symbols-outlined text-[15px]">campaign</span>
+          <span>Denunciar</span>
+        </a>
+      </nav>
+
+      <!-- 3. Acciones Derecha -->
+      <div class="flex items-center gap-2 shrink-0">
+        <!-- Modo Rural Representativo (Antena / Barras 2G) -->
+        <button id="rural-toggle" data-action="toggle-rural" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-medium text-on-surface-variant hover:text-on-surface border border-slate-border hover:bg-surface-container transition-all cursor-pointer" title="Modo Rural: Optimizado para 2G / bajo consumo de datos">
+          <svg class="w-4 h-4 text-on-surface-variant rural-signal-icon shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 20h.01"/>
+            <path d="M7 20v-4"/>
+            <path d="M12 20v-8"/>
+            <path d="M17 20V4"/>
+          </svg>
+          <span class="hidden sm:inline text-[11px] font-semibold rural-label">Rural</span>
+          <span class="rural-badge hidden text-[9px] px-1 py-0.5 rounded bg-civic-emerald text-white font-bold leading-none">2G</span>
+        </button>
+
+        <!-- Tema Oscuro / Claro -->
+        <button id="theme-toggle" data-action="toggle-theme" class="p-2 rounded text-on-surface-variant hover:text-on-surface border border-slate-border hover:bg-surface-container transition-colors cursor-pointer" title="Cambiar tema">
+          <span class="material-symbols-outlined text-[18px]">dark_mode</span>
+        </button>
+
+        <!-- Acceso Veedor -->
+        <a id="header-veedor-btn" href="/login" class="px-3 py-1.5 rounded text-xs font-semibold bg-surface-container-high hover:bg-surface-container-highest text-on-surface border border-slate-border transition-colors flex items-center gap-1.5" title="Acceso seguro para veedores acreditados">
+          <span class="material-symbols-outlined text-[16px] text-secondary shrink-0">verified_user</span>
+          <span class="hidden md:inline">Veedores</span>
+        </a>
+
+        <!-- Botón Menú Móvil -->
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded text-on-surface-variant hover:text-on-surface border border-slate-border hover:bg-surface-container cursor-pointer" aria-label="Abrir menú">
+          <span class="material-symbols-outlined text-[20px]">menu</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Menú Desplegable Móvil -->
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-border bg-surface px-4 py-3 space-y-1">
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/">Inicio</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/entidades">14 Entidades Auditadas</a>
+      <a class="block px-3 py-2 text-sm font-semibold text-secondary bg-secondary-container/20 rounded" href="/alertas">Alertas y Banderas Rojas</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/contrataciones">Contrataciones SEACE</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/presupuesto">Presupuesto MEF SIAF</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/proveedores">Proveedores del Estado (HHI)</a>
+      <a class="block px-3 py-2 text-sm text-secondary font-semibold hover:bg-surface-container rounded" href="/denuncia">Canal de Denuncia Segura</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/transparencia">Transparencia y Microdatos</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/acerca">Acerca del Observatorio</a>
+      <div class="border-t border-slate-border pt-2 mt-2">
+        <a class="block px-3 py-2 text-sm text-alert-amber font-semibold hover:bg-surface-container rounded" href="/admin/revision">Panel Revisor CU5</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenido: Monitor de Alertas -->
+  <main class="w-full flex-1 bg-surface">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col gap-10">
+      <!-- Encabezado Editorial -->
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center gap-2 text-label-sm font-label-sm text-on-surface-variant">
+          <a class="hover:text-on-surface transition-colors" href="/">Inicio</a>
+          <span class="text-outline-variant">/</span>
+          <span class="text-on-surface font-semibold">Alertas Publicadas</span>
+          <span class="text-outline-variant">/</span>
+          <span class="text-secondary font-mono">Fase 1 (14 Entidades)</span>
+        </div>
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 border-b border-slate-border pb-6">
+          <div class="max-w-3xl flex flex-col gap-1">
+            <div class="inline-flex items-center gap-2 text-caption font-label-sm uppercase tracking-widest text-secondary font-semibold">
+              <span class="material-symbols-outlined text-[16px]">radar</span>
+              Fiscalización Algorítmica Preventiva
+            </div>
+            <h1 class="font-headline-xl text-headline-xl text-on-surface font-normal tracking-tight">
+              Monitor de Alertas y Banderas Rojas Activas
+            </h1>
+            <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+              Detección algorítmica preventiva de anomalías en contrataciones públicas (OCDS SEACE) y ejecución de gasto público (MEF SIAF) en el departamento de Cajamarca sobre las 14 entidades prioritarias bajo observación directa.
+            </p>
+          </div>
+          <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0">
+            <a class="px-4 py-2.5 rounded bg-surface-container-lowest text-on-surface font-label-sm text-label-sm shadow-sm hover:bg-surface-container transition-all flex items-center gap-2 border border-slate-border font-semibold" href="/transparencia#descarga-microdatos">
+              <span class="material-symbols-outlined text-[18px]">download</span>
+              Descargar Reporte (JSON/CSV)
+            </a>
+            <a class="px-4 py-2.5 rounded bg-primary text-on-primary font-label-sm text-label-sm shadow-sm hover:bg-primary-container transition-all flex items-center gap-2 font-semibold" href="/denuncia">
+              <span class="material-symbols-outlined text-[18px]">shield</span>
+              Nueva Alerta Ciudadana
+            </a>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-body-sm font-body-sm text-on-surface-variant">
+          <span class="material-symbols-outlined text-secondary text-[16px]">gavel</span>
+          <span>Marco Normativo: Art. 15, Ley N° 27806 de Transparencia y Veeduría Ciudadana. No constituye imputación judicial directa.</span>
+          <a class="text-secondary underline font-label-sm text-label-sm ml-1 font-semibold" href="#marco-algoritmico">Ver Metodología</a>
+        </div>
+      </div>
+
+      <!-- 4 High Impact Metric Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-surface-container-lowest p-4 rounded border border-slate-border shadow-sm flex flex-col justify-between">
+          <div class="flex items-start justify-between">
+            <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Banderas Activas</span>
+            <span class="p-1.5 rounded bg-error-container text-on-error-container">
+              <span class="material-symbols-outlined text-[20px]">flag</span>
+            </span>
+          </div>
+          <div class="my-3">
+            <div class="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight">22</div>
+            <div class="font-body-sm text-body-sm text-on-surface-variant">Anomalías vigentes</div>
+          </div>
+          <div class="flex items-center gap-1.5 flex-wrap pt-2 border-t border-slate-border text-caption font-label-sm">
+            <span class="px-2 py-0.5 rounded bg-error-container text-on-error-container font-semibold">6 Críticas</span>
+            <span class="px-2 py-0.5 rounded bg-surface-container-highest text-alert-amber font-semibold">9 Altas</span>
+            <span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant">7 Medias</span>
+          </div>
+        </div>
+
+        <div class="bg-surface-container-lowest p-4 rounded border border-slate-border shadow-sm flex flex-col justify-between">
+          <div class="flex items-start justify-between">
+            <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Monto Observado</span>
+            <span class="p-1.5 rounded bg-surface-container-highest text-alert-amber">
+              <span class="material-symbols-outlined text-[20px]">payments</span>
+            </span>
+          </div>
+          <div class="my-3">
+            <div class="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight">S/ 1,368.4 M</div>
+            <div class="font-body-sm text-body-sm text-on-surface-variant">En riesgo o brecha</div>
+          </div>
+          <div class="flex items-center gap-1 text-caption font-label-sm text-on-surface-variant pt-2 border-t border-slate-border">
+            <span class="material-symbols-outlined text-alert-amber text-[16px]">trending_up</span>
+            <span>74% corresponde a canon y obras</span>
+          </div>
+        </div>
+
+        <div class="bg-surface-container-lowest p-4 rounded border border-slate-border shadow-sm flex flex-col justify-between">
+          <div class="flex items-start justify-between">
+            <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Entidades Comprometidas</span>
+            <span class="p-1.5 rounded bg-surface-container-highest text-on-surface">
+              <span class="material-symbols-outlined text-[20px]">account_balance</span>
+            </span>
+          </div>
+          <div class="my-3">
+            <div class="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight">8 / 14</div>
+            <div class="font-body-sm text-body-sm text-on-surface-variant">Pliegos auditados</div>
+          </div>
+          <div class="flex items-center gap-1 text-caption font-label-sm text-on-surface-variant pt-2 border-t border-slate-border">
+            <span class="w-2 h-2 rounded-full bg-alert-rose"></span>
+            <span>Foco en GORE y Hualgayoc</span>
+          </div>
+        </div>
+
+        <div class="bg-surface-container-lowest p-4 rounded border border-slate-border shadow-sm flex flex-col justify-between">
+          <div class="flex items-start justify-between">
+            <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Explicabilidad Algorítmica</span>
+            <span class="p-1.5 rounded bg-secondary-container text-on-secondary-container">
+              <span class="material-symbols-outlined text-[20px]">lock_open</span>
+            </span>
+          </div>
+          <div class="my-3">
+            <div class="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight">100%</div>
+            <div class="font-body-sm text-body-sm text-on-surface-variant">Fórmulas OCDS públicas</div>
+          </div>
+          <div class="flex items-center gap-1 text-caption font-label-sm text-civic-emerald pt-2 border-t border-slate-border font-semibold">
+            <span class="material-symbols-outlined text-[16px]">check_circle</span>
+            <span>Sin cajas negras ni sesgo</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtros de Alertas -->
+      <div class="bg-surface-container-lowest p-4 rounded border border-slate-border shadow-sm flex flex-col gap-4">
+        <div class="relative w-full">
+          <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
+          <input class="w-full bg-surface-container-low pl-11 pr-4 py-2.5 rounded text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container border border-slate-border transition-all" id="alert-search-input" oninput="filterAlertCards()" placeholder="Buscar por código de alerta (ej: OCDS-RED-084), entidad, RUC o palabra clave..." type="text"/>
+        </div>
+
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0">
+            <button class="alert-sev-btn px-3 py-1.5 rounded bg-primary text-on-primary font-label-sm text-label-sm whitespace-nowrap shadow-sm cursor-pointer" onclick="filterBySeverity('all', this)" type="button">
+              Todas (22)
+            </button>
+            <button class="alert-sev-btn px-3 py-1.5 rounded bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap border border-slate-border hover:bg-error-container hover:text-on-error-container transition-colors flex items-center gap-1.5 cursor-pointer" onclick="filterBySeverity('critica', this)" type="button">
+              <span class="w-2 h-2 rounded-full bg-alert-rose"></span>
+              Crítica (6)
+            </button>
+            <button class="alert-sev-btn px-3 py-1.5 rounded bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap border border-slate-border hover:bg-surface-container-highest transition-colors flex items-center gap-1.5 cursor-pointer" onclick="filterBySeverity('alta', this)" type="button">
+              <span class="w-2 h-2 rounded-full bg-alert-amber"></span>
+              Alta (9)
+            </button>
+            <button class="alert-sev-btn px-3 py-1.5 rounded bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap border border-slate-border hover:bg-surface-container-highest transition-colors flex items-center gap-1.5 cursor-pointer" onclick="filterBySeverity('media', this)" type="button">
+              <span class="w-2 h-2 rounded-full bg-civic-teal"></span>
+              Media (7)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feed de Alertas Documentadas -->
+      <div class="flex flex-col gap-6" id="alerts-list">
+        <!-- Alerta 1 -->
+        <article class="alert-card bg-surface-container-lowest rounded border border-slate-border shadow-sm p-6 flex flex-col gap-4" data-severity="critica" data-text="subejecucion critica canon minero gobierno regional cajamarca ocds-red-084">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-border pb-3">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="px-2.5 py-1 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-bold flex items-center gap-1.5 shadow-sm">
+                <span class="material-symbols-outlined text-[16px]">error</span>
+                SEVERIDAD CRÍTICA
+              </span>
+              <span class="font-mono text-label-sm font-bold text-on-surface px-2 py-0.5 rounded bg-surface-container-highest">
+                OCDS-RED-084
+              </span>
+              <span class="text-caption font-label-sm uppercase tracking-wide text-on-surface-variant flex items-center gap-1 font-semibold">
+                <span class="material-symbols-outlined text-[15px]">apartment</span>
+                Gobierno Regional de Cajamarca
+              </span>
+            </div>
+            <div class="text-caption font-label-sm text-civic-emerald font-semibold flex items-center gap-1">
+              <span class="material-symbols-outlined text-[15px]">verified</span> Confianza: 99.4%
+            </div>
+          </div>
+          <div>
+            <h2 class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight hover:text-secondary cursor-pointer transition-colors">
+              Subejecución Crítica del Canon Minero en Inversiones Productivas y Agropecuarias
+            </h2>
+            <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed mt-1">
+              Brecha detectada de <span class="text-on-surface font-semibold">S/ 720.5 Millones</span> sin devengar ni comprometer en la partida de Recursos Determinados (Canon y Regalías), a falta de 45 días para el cierre del primer semestre. El ritmo actual (0.14% diario) anticipa una reversión histórica al Tesoro Público si no se activan licitaciones públicas de infraestructura hídrica y vial.
+            </p>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 py-2 bg-surface-container-low px-4 rounded border border-slate-border">
+            <div class="flex flex-col">
+              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Monto en Riesgo</span>
+              <span class="font-headline-sm text-headline-sm font-bold text-error">S/ 720.5 M</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Pliego</span>
+              <span class="font-body-sm text-body-sm font-semibold text-on-surface">Pliego 445: GORE</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Regla Algorítmica</span>
+              <span class="font-body-sm text-body-sm font-mono text-secondary">R-CANON-02</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Condición</span>
+              <span class="font-body-sm text-body-sm text-on-surface">Devengado &lt; 20% vs Cronograma</span>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-border">
+            <button class="px-3.5 py-1.5 rounded bg-primary text-on-primary font-label-sm text-label-sm hover:bg-primary-container transition-colors flex items-center gap-1.5 shadow-sm font-semibold cursor-pointer" onclick="window.location.href='/entidad?id=ce-f5f5d8fc32518855#banderas-rojas'">
+              <span class="material-symbols-outlined text-[16px]">visibility</span>
+              Ver Desglose y Explicabilidad
+            </button>
+            <a class="inline-flex items-center gap-1 text-label-sm font-label-sm text-secondary hover:underline font-semibold" href="/entidad?id=ce-f5f5d8fc32518855">
+              Inspeccionar Ficha de Entidad <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Alerta 2 -->
+        <article class="alert-card bg-surface-container-lowest rounded border border-slate-border shadow-sm p-6 flex flex-col gap-4" data-severity="alta" data-text="concentracion atipica hualgayoc bambamarca ocds-conc-019">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-border pb-3">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="px-2.5 py-1 rounded bg-surface-container-highest text-alert-amber font-label-sm text-label-sm font-bold flex items-center gap-1.5 shadow-sm">
+                <span class="material-symbols-outlined text-[16px]">warning</span>
+                SEVERIDAD ALTA
+              </span>
+              <span class="font-mono text-label-sm font-bold text-on-surface px-2 py-0.5 rounded bg-surface-container-highest">
+                OCDS-CONC-019
+              </span>
+              <span class="text-caption font-label-sm uppercase tracking-wide text-on-surface-variant flex items-center gap-1 font-semibold">
+                <span class="material-symbols-outlined text-[15px]">apartment</span>
+                M. P. de Hualgayoc - Bambamarca
+              </span>
+            </div>
+            <div class="text-caption font-label-sm text-civic-emerald font-semibold flex items-center gap-1">
+              <span class="material-symbols-outlined text-[15px]">verified</span> Confianza: 98.1%
+            </div>
+          </div>
+          <div>
+            <h2 class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight hover:text-secondary cursor-pointer transition-colors">
+              Concentración Atípica y Presunto Fraccionamiento en Adjudicaciones Menores a 8 UIT
+            </h2>
+            <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed mt-1">
+              El <span class="text-on-surface font-semibold">73% de las contrataciones directas</span> en el rubro de alquiler de maquinaria pesada han sido otorgadas a dos empresas con vínculos de dirección fiscal compartida, totalizando <span class="text-on-surface font-semibold">S/ 14.8M</span> mediante 48 órdenes de servicio emitidas en lapsos inferiores a 15 días, eludiendo licitación pública abierta.
+            </p>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 py-2 bg-surface-container-low px-4 rounded border border-slate-border">
+            <div class="flex flex-col">
+              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Monto Comprometido</span>
+              <span class="font-headline-sm text-headline-sm font-bold text-alert-amber">S/ 14.8 M</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Índice HHI</span>
+              <span class="font-body-sm text-body-sm font-semibold text-alert-amber">0.68 (Extremo)</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Órdenes Menores</span>
+              <span class="font-body-sm text-body-sm font-mono text-on-surface">48 órdenes (&lt;8 UIT)</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Regla Algorítmica</span>
+              <span class="font-body-sm text-body-sm font-mono text-secondary">R-FRAC-08</span>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-border">
+            <button class="px-3.5 py-1.5 rounded bg-primary text-on-primary font-label-sm text-label-sm hover:bg-primary-container transition-colors flex items-center gap-1.5 shadow-sm font-semibold cursor-pointer" onclick="window.location.href='/concentracion'">
+              <span class="material-symbols-outlined text-[16px]">visibility</span>
+              Ver Tablero de Concentración HHI
+            </button>
+            <a class="inline-flex items-center gap-1 text-label-sm font-label-sm text-secondary hover:underline font-semibold" href="/entidad?id=ce-dfd10c914365bbe3">
+              Inspeccionar Ficha de Hualgayoc <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Alerta 3 -->
+        <article class="alert-card bg-surface-container-lowest rounded border border-slate-border shadow-sm p-6 flex flex-col gap-4" data-severity="alta" data-text="adendas recurrentes hospital san ignacio ocds-obra-042">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-border pb-3">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="px-2.5 py-1 rounded bg-surface-container-highest text-alert-amber font-label-sm text-label-sm font-bold flex items-center gap-1.5 shadow-sm">
+                <span class="material-symbols-outlined text-[16px]">warning</span>
+                SEVERIDAD ALTA
+              </span>
+              <span class="font-mono text-label-sm font-bold text-on-surface px-2 py-0.5 rounded bg-surface-container-highest">
+                OCDS-OBRA-042
+              </span>
+              <span class="text-caption font-label-sm uppercase tracking-wide text-on-surface-variant flex items-center gap-1 font-semibold">
+                <span class="material-symbols-outlined text-[15px]">apartment</span>
+                M. P. de San Ignacio
+              </span>
+            </div>
+            <div class="text-caption font-label-sm text-civic-emerald font-semibold flex items-center gap-1">
+              <span class="material-symbols-outlined text-[15px]">verified</span> Confianza: 97.6%
+            </div>
+          </div>
+          <div>
+            <h2 class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight hover:text-secondary cursor-pointer transition-colors">
+              Adendas Recurrentes y Dilación de Plazos sin Penalidad en Hospital de Frontera
+            </h2>
+            <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed mt-1">
+              La obra estratégica del <span class="text-on-surface font-semibold">Hospital de Frontera San Ignacio</span> acumula 18 meses de prórroga contractual mediante 6 adendas consecutivas sin registro de cobro de penalidades ni apercibimientos en SEACE. El sobrecosto adicional estimado supera el 24.8% del valor referencial original (S/ 35.3M adicionales).
+            </p>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 py-2 bg-surface-container-low px-4 rounded border border-slate-border">
+            <div class="flex flex-col">
+              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Monto Adicional</span>
+              <span class="font-headline-sm text-headline-sm font-bold text-alert-amber">S/ 35.3 M</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Código CUI MEF</span>
+              <span class="font-body-sm text-body-sm font-mono text-on-surface font-semibold">CUI 2315890</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Desviación Temporal</span>
+              <span class="font-body-sm text-body-sm font-bold text-error">+210% plazo</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-caption font-label-sm uppercase text-on-surface-variant">Regla Algorítmica</span>
+              <span class="font-body-sm text-body-sm font-mono text-secondary">R-ADEN-04</span>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-border">
+            <button class="px-3.5 py-1.5 rounded bg-primary text-on-primary font-label-sm text-label-sm hover:bg-primary-container transition-colors flex items-center gap-1.5 shadow-sm font-semibold cursor-pointer" onclick="window.location.href='/contrato-detalle.html?id=LP-SM-1-2024-GR.CAJ'">
+              <span class="material-symbols-outlined text-[16px]">visibility</span>
+              Ver Dossier del Contrato
+            </button>
+            <a class="inline-flex items-center gap-1 text-label-sm font-label-sm text-secondary hover:underline font-semibold" href="/entidad?id=ce-697eb5a0a1b4e6c6">
+              Inspeccionar Ficha San Ignacio <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+            </a>
+          </div>
+        </article>
+      </div>
+
+      <!-- Explicabilidad Algorítmica (Art. 15 Ley 27806) -->
+      <section class="bg-surface-container-low p-8 rounded border border-slate-border flex flex-col gap-6" id="marco-algoritmico">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-border pb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded bg-secondary text-on-secondary flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-[24px]">balance</span>
+            </div>
+            <div>
+              <h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">
+                Explicabilidad Algorítmica y Descargo Cívico
+              </h3>
+              <span class="text-caption font-label-sm uppercase text-secondary font-semibold">
+                Garantía de Transparencia y Art. 15 - 16 Ley N° 27806
+              </span>
+            </div>
+          </div>
+          <a class="px-4 py-2 rounded bg-surface-container-lowest text-on-surface font-label-sm text-label-sm shadow-sm hover:bg-surface-container transition-colors border border-slate-border inline-flex items-center gap-1.5 font-semibold" href="/transparencia#metodologia-algoritmica">
+            <span class="material-symbols-outlined text-[16px]">terminal</span>
+            Ver Código Abierto y Fórmulas
+          </a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+          <div class="flex flex-col gap-2 bg-surface-container-lowest p-4 rounded border border-slate-border">
+            <span class="font-label-sm text-label-sm text-on-surface font-semibold flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-secondary text-[18px]">functions</span>
+              Fórmulas Determinísticas
+            </span>
+            <p>
+              Cada alerta se genera mediante fórmulas estadísticas verificables sobre releases oficiales del estándar OCDS y datos estructurados MEF SIAF. Sin 'IA de caja negra' opaca.
+            </p>
+          </div>
+          <div class="flex flex-col gap-2 bg-surface-container-lowest p-4 rounded border border-slate-border">
+            <span class="font-label-sm text-label-sm text-on-surface font-semibold flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-secondary text-[18px]">format_image_left</span>
+              Sin Perfilamiento Personal (Art. 16)
+            </span>
+            <p>
+              El sistema evalúa patrones de procesos administrativos, calendarios y transacciones numéricas, jamás personas naturales ni reputaciones individuales. Se preserva el principio de inocencia y neutralidad técnica.
+            </p>
+          </div>
+          <div class="flex flex-col gap-2 bg-surface-container-lowest p-4 rounded border border-slate-border">
+            <span class="font-label-sm text-label-sm text-on-surface font-semibold flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-secondary text-[18px]">sync_alt</span>
+              Derecho a Réplica y Actualización
+            </span>
+            <p>
+              Cualquier entidad fiscalizada que subsane o acredite la regularización de un hito en SEACE / MEF verá reflejada la desactivación o reclasificación de la bandera roja en el siguiente ciclo automático de ingesta.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Pie de Página Institucional (Andean Civic Observatory) -->
+  <footer class="w-full bg-surface-container-low border-t border-slate-border mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+        <!-- Columna 1: Identidad Institucional y Misión -->
+        <div class="lg:col-span-2 flex flex-col pr-0 lg:pr-8">
+          <div class="flex items-center gap-2.5 mb-3">
+            <img alt="Emblema Cajamarca Qhaway" class="h-8 w-auto object-contain" src="/media/brand-symbol.svg"/>
+            <div class="flex flex-col">
+              <span class="font-serif text-lg font-bold text-on-surface leading-tight">Cajamarca Qhaway</span>
+              <span class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Observatorio Cívico Regional</span>
+            </div>
+          </div>
+          <p class="text-body-sm text-on-surface-variant mb-4 leading-relaxed">
+            Plataforma cívica independiente de auditoría algorítmica y control social de las contrataciones públicas (SEACE OCDS) y ejecución presupuestal (MEF SIAF) en el departamento de Cajamarca, Perú. Diseñada como herramienta de fiscalización para organizaciones de la sociedad civil, veedurías comunales y periodismo de investigación.
+          </p>
+          <div class="p-3.5 bg-surface border border-slate-border rounded text-body-sm text-on-surface-variant space-y-1.5">
+            <div class="flex items-center gap-2 text-on-surface font-semibold text-xs">
+              <span class="material-symbols-outlined text-secondary text-[16px]">verified</span>
+              <span>Iniciativa de Control Social Articulada</span>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              En articulación de estándares cívicos con <strong>Proética Cajamarca</strong>, <strong>Grupo Propuesta Ciudadana</strong> y <strong>GRUFIDES</strong>. El motor algorítmico prioriza candidatos de riesgo que un panel humano colegiado revisa antes de su publicación (Invariante 01).
+            </p>
+          </div>
+        </div>
+
+        <!-- Columna 2: Ámbito de Cobertura (14 Pliegos Fase 1) -->
+        <div>
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-3 font-semibold">14 Entidades Monitoreadas</span>
+          <p class="text-caption text-on-surface-variant mb-2">Gobierno Regional y 13 Provincias:</p>
+          <ul class="space-y-1.5 text-xs text-on-surface-variant">
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=gore-cajamarca">GORE Cajamarca (Pliego 445)</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-cajamarca">M. P. de Cajamarca</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-jaen">M. P. de Jaén</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-chota">M. P. de Chota</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-cutervo">M. P. de Cutervo</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-celendin">M. P. de Celendín</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-hualgayoc">M. P. de Hualgayoc-Bambamarca</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-san-ignacio">M. P. de San Ignacio</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidades" class="text-secondary font-medium">+ 6 Provincias y SEDACAJ →</a></li>
+          </ul>
+        </div>
+
+        <!-- Columna 3: Exploración y Datos Abiertos -->
+        <div>
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-3 font-semibold">Módulos de Auditoría</span>
+          <ul class="space-y-2 text-xs text-on-surface-variant">
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/entidades"><span class="material-symbols-outlined text-[14px] text-secondary">account_balance</span> Directoria de 14 Entidades</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5 text-alert-rose font-semibold" href="/alertas"><span class="material-symbols-outlined text-[14px]">flag</span> Banderas Rojas y Riesgos</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/contrataciones"><span class="material-symbols-outlined text-[14px] text-civic-teal">description</span> Contratos Públicos SEACE</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/presupuesto"><span class="material-symbols-outlined text-[14px] text-civic-emerald">query_stats</span> Presupuesto y Devengado MEF</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/proveedores"><span class="material-symbols-outlined text-[14px] text-alert-amber">hub</span> Concentración Proveedores HHI</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/transparencia"><span class="material-symbols-outlined text-[14px] text-outline">database</span> Descarga Microdatos OCDS</a></li>
+          </ul>
+        </div>
+
+        <!-- Columna 4: Fuentes Oficiales y Veeduría -->
+        <div>
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-3 font-semibold">Fuentes Oficiales del Estado</span>
+          <ul class="space-y-2 text-xs text-on-surface-variant mb-4">
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://www.gob.pe/seace" rel="noopener noreferrer" target="_blank">SEACE API OCDS (OSCE) <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://apps5.mineco.gob.pe/transparencia/mensual/" rel="noopener noreferrer" target="_blank">MEF SIAF DataStore Mensual <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://e-consultaruc.sunat.gob.pe/" rel="noopener noreferrer" target="_blank">SUNAT Padrón RUC Proveedores <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://datosabiertos.gob.pe/" rel="noopener noreferrer" target="_blank">Portal Datos Abiertos Perú <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+          </ul>
+
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-2 font-semibold">Acceso y Veeduría</span>
+          <ul class="space-y-1.5 text-xs text-on-surface-variant">
+            <li><a class="hover:text-on-surface transition-colors font-medium text-secondary" href="/denuncia">Canal Seguro de Denuncia</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/login">Acreditación de Veedores</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/admin/revision">Panel Revisor Colegiado CU5</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Franja Legal, Constitucional y Técnica -->
+      <div class="border-t border-slate-border pt-8 space-y-4 text-xs text-on-surface-variant">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="leading-relaxed">
+            <strong class="font-semibold text-on-surface block mb-1">Fundamento Constitucional:</strong>
+            Amparado en los Artículos 2 (incisos 5 y 6) y 31 de la Constitución Política del Perú, que consagran el derecho fundamental al acceso a la información pública, la fiscalización ciudadana y la participación en los asuntos públicos de la región.
+          </div>
+          <div class="leading-relaxed">
+            <strong class="font-semibold text-on-surface block mb-1">Marco Legal de Transparencia:</strong>
+            Cumplimiento de la Ley N° 27806 (Transparencia y Acceso a la Información Pública), Ley N° 30225 (Contrataciones del Estado) y Ley N° 29733 (Protección de Datos Personales). Fuentes 100% de acceso público oficial.
+          </div>
+          <div class="leading-relaxed">
+            <strong class="font-semibold text-on-surface block mb-1">Principio de No Imputación Judicial:</strong>
+            Las alertas de riesgo son indicadores matemáticos y analíticos preventivos basados en datos oficiales. No constituyen sentencia judicial, imputación penal ni scoring de personas naturales (Invariante 03).
+          </div>
+        </div>
+
+        <div class="border-t border-slate-border pt-4 flex flex-col md:flex-row items-center justify-between gap-3 text-caption text-on-surface-variant">
+          <div>
+            © 2025–2026 Cajamarca Qhaway. Licencia Abierta ODC-By 1.0 (Open Data Commons Attribution License).
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="inline-flex items-center gap-1 text-civic-emerald font-semibold">
+              <span class="w-2 h-2 rounded-full bg-civic-emerald"></span>
+              Sincronización OCDS 1.1 / MEF SIAF 2025
+            </span>
+            <span>·</span>
+            <span>Región Cajamarca (13 Provincias)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/js/app.js"></script>
+  <script>
+    let currentSeverity = 'all';
+
+    function filterBySeverity(sev, btn) {
+      currentSeverity = sev;
+      document.querySelectorAll('.alert-sev-btn').forEach(b => {
+        b.className = 'alert-sev-btn px-3 py-1.5 rounded bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap border border-slate-border hover:bg-surface-container-highest transition-colors flex items-center gap-1.5 cursor-pointer';
+      });
+      btn.className = 'alert-sev-btn px-3 py-1.5 rounded bg-primary text-on-primary font-label-sm text-label-sm whitespace-nowrap shadow-sm cursor-pointer';
+      filterAlertCards();
+    }
+
+    function filterAlertCards() {
+      const q = document.getElementById('alert-search-input').value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.alert-card');
+
+      cards.forEach(card => {
+        const text = (card.dataset.text || card.innerText).toLowerCase();
+        const sev = card.dataset.severity;
+        const matchesQuery = !q || text.includes(q);
+        const matchesSev = currentSeverity === 'all' || sev === currentSeverity;
+
+        if (matchesQuery && matchesSev) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

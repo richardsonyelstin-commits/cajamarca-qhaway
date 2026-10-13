@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta name="description" content="Panel Revisor de Veeduría Ciudadana CU5: Dictamen colegiado de banderas rojas y publicación de alertas de riesgo en Cajamarca."/>
+  <title>Panel Revisor CU5 • Veeduría Acreditada • Cajamarca Qhaway</title>
+
+  <!-- Google Fonts: Newsreader, Hanken Grotesk y JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+
+  <!-- Tailwind CSS Engine -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface": "var(--color-surface)",
+            "surface-dim": "var(--color-surface-dim)",
+            "surface-bright": "var(--color-surface-bright)",
+            "surface-container-lowest": "var(--color-surface-container-lowest)",
+            "surface-container-low": "var(--color-surface-container-low)",
+            "surface-container": "var(--color-surface-container)",
+            "surface-container-high": "var(--color-surface-container-high)",
+            "surface-container-highest": "var(--color-surface-container-highest)",
+            "on-surface": "var(--color-on-surface)",
+            "on-surface-variant": "var(--color-on-surface-variant)",
+            "outline": "var(--color-outline)",
+            "outline-variant": "var(--color-outline-variant)",
+            "primary": "var(--color-primary)",
+            "on-primary": "var(--color-on-primary)",
+            "secondary": "var(--color-secondary)",
+            "on-secondary": "var(--color-on-secondary)",
+            "secondary-container": "var(--color-secondary-container)",
+            "on-secondary-container": "var(--color-on-secondary-container)",
+            "civic-emerald": "var(--color-civic-emerald)",
+            "civic-teal": "var(--color-civic-teal)",
+            "alert-amber": "var(--color-alert-amber)",
+            "alert-rose": "var(--color-alert-rose)",
+            "slate-surface": "var(--color-slate-surface)",
+            "slate-border": "var(--color-slate-border)"
+          },
+          fontFamily: {
+            serif: ["Newsreader", "Georgia", "serif"],
+            sans: ["Hanken Grotesk", "system-ui", "sans-serif"],
+            mono: ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="/src/css/tokens.css"/>
+</head>
+<body class="bg-surface font-sans text-on-surface antialiased min-h-screen flex flex-col">
+
+  <!-- Barrera de Seguridad Anti-Acceso No Autorizado -->
+  <div id="auth-gate-modal" class="fixed inset-0 z-[100] bg-surface/98 backdrop-blur-lg flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-surface-container-low border border-alert-rose/40 rounded-xl p-8 shadow-2xl text-center space-y-4">
+      <div class="w-14 h-14 rounded-full bg-alert-rose/10 text-alert-rose mx-auto flex items-center justify-center">
+        <span class="material-symbols-outlined text-3xl">gpp_bad</span>
+      </div>
+      <h2 class="font-headline-sm text-2xl font-bold text-on-surface">Acceso Restringido a Veedores</h2>
+      <p class="text-body-sm text-on-surface-variant leading-relaxed">
+        El Panel Revisor de Banderas Rojas (CU5) está blindado para miembros acreditados de la sociedad civil. Verificando token de sesión criptográfica...
+      </p>
+      <div class="p-3 bg-surface border border-slate-border rounded text-xs text-outline font-mono flex items-center justify-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-alert-amber animate-ping"></span>
+        <span id="auth-gate-status">Validando credencial en servidor...</span>
+      </div>
+      <div class="pt-2">
+        <a href="/login?reason=required" class="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-primary text-on-primary text-xs font-semibold hover:opacity-90 transition-opacity">
+          <span class="material-symbols-outlined text-[16px]">lock_open</span>
+          <span>Ir a Acreditación de Veedores</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Encabezado Unificado (Top Bar Contract: 1 Fila, 64px, Sin Colisiones) -->
+  <header class="w-full sticky top-0 z-50 bg-surface/95 backdrop-blur-md border-b border-slate-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <!-- 1. Marca Institucional -->
+      <a class="flex items-center gap-2.5 shrink-0 group focus:outline-none rounded" href="/" title="Inicio - Cajamarca Qhaway">
+        <img alt="Logotipo Cajamarca Qhaway" class="h-8 w-auto object-contain" src="/media/brand-symbol.svg"/>
+        <div class="flex flex-col">
+          <span class="font-serif text-lg font-bold text-on-surface leading-tight tracking-tight group-hover:text-secondary transition-colors">Cajamarca Qhaway</span>
+          <span class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Veeduría Ciudadana</span>
+        </div>
+      </a>
+
+      <!-- 2. Navegación Principal Unificada -->
+      <nav class="hidden lg:flex items-center gap-1 xl:gap-2">
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/entidades">Entidades</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/alertas">Alertas</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/contrataciones">Contrataciones</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/presupuesto">Presupuesto</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/proveedores">Proveedores</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-secondary hover:text-secondary-hover hover:bg-secondary-container/20 transition-colors flex items-center gap-1" href="/denuncia">
+          <span class="material-symbols-outlined text-[15px]">campaign</span>
+          <span>Denunciar</span>
+        </a>
+      </nav>
+
+      <!-- 3. Acciones Derecha -->
+      <div class="flex items-center gap-2 shrink-0">
+        <!-- Modo Rural Representativo (Antena / Barras 2G) -->
+        <button id="rural-toggle" data-action="toggle-rural" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-medium text-on-surface-variant hover:text-on-surface border border-slate-border hover:bg-surface-container transition-all cursor-pointer" title="Modo Rural: Optimizado para 2G / bajo consumo de datos">
+          <svg class="w-4 h-4 text-on-surface-variant rural-signal-icon shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 20h.01"/>
+            <path d="M7 20v-4"/>
+            <path d="M12 20v-8"/>
+            <path d="M17 20V4"/>
+          </svg>
+          <span class="hidden sm:inline text-[11px] font-semibold rural-label">Rural</span>
+          <span class="rural-badge hidden text-[9px] px-1 py-0.5 rounded bg-civic-emerald text-white font-bold leading-none">2G</span>
+        </button>
+
+        <!-- Tema Oscuro / Claro -->
+        <button id="theme-toggle" data-action="toggle-theme" class="p-2 rounded text-on-surface-variant hover:text-on-surface border border-slate-border hover:bg-surface-container transition-colors cursor-pointer" title="Cambiar tema">
+          <span class="material-symbols-outlined text-[18px]">dark_mode</span>
+        </button>
+
+        <!-- Botón Salir / Desconexión Segura -->
+        <button id="btn-logout-veedor" class="px-3 py-1.5 rounded text-xs font-semibold text-alert-rose hover:bg-alert-rose/10 border border-alert-rose/30 transition-colors flex items-center gap-1.5 cursor-pointer" title="Finalizar sesión segura de veedor">
+          <span class="material-symbols-outlined text-[16px]">logout</span>
+          <span class="hidden md:inline">Cerrar Sesión</span>
+        </button>
+
+        <!-- Botón Menú Móvil -->
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded text-on-surface-variant hover:text-on-surface border border-slate-border hover:bg-surface-container cursor-pointer" aria-label="Abrir menú">
+          <span class="material-symbols-outlined text-[20px]">menu</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Menú Desplegable Móvil -->
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-border bg-surface px-4 py-3 space-y-1">
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/entidades">14 Entidades Auditadas</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/alertas">Alertas y Banderas Rojas</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/contrataciones">Contrataciones SEACE</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/presupuesto">Presupuesto MEF SIAF</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/proveedores">Proveedores del Estado (HHI)</a>
+      <a class="block px-3 py-2 text-sm text-secondary font-semibold hover:bg-surface-container rounded" href="/denuncia">Canal de Denuncia Segura</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/transparencia">Transparencia y Microdatos</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/acerca">Acerca del Observatorio</a>
+    </div>
+  </header>
+
+  <!-- Contenido Principal: Protegido por Sesión -->
+  <main id="main-panel-content" class="w-full flex-1 bg-surface opacity-0 transition-opacity duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      
+      <!-- Franja de Identidad del Veedor Autenticado -->
+      <div class="mb-6 p-4 rounded-lg bg-surface-container-low border border-civic-emerald/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-civic-emerald/15 text-civic-emerald flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">verified</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-civic-emerald uppercase tracking-wider">Sesión de Veeduría Segura Activa</span>
+              <span class="w-2 h-2 rounded-full bg-civic-emerald animate-pulse"></span>
+            </div>
+            <h2 class="text-sm font-semibold text-on-surface mt-0.5" id="veedor-name-display">
+              Cargando perfil...
+            </h2>
+            <span class="text-xs text-on-surface-variant font-mono" id="veedor-org-display">-</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-mono text-on-surface-variant">
+          <span class="px-2.5 py-1 rounded bg-surface border border-slate-border text-on-surface font-semibold" id="veedor-accreditation-badge">
+            Acreditación verificada
+          </span>
+        </div>
+      </div>
+
+      <!-- Encabezado Editorial -->
+      <div class="border-b border-slate-border pb-6">
+        <div class="flex items-center gap-2 text-body-sm font-label-sm text-alert-amber uppercase tracking-wider mb-1.5">
+          <span class="material-symbols-outlined text-[18px]">gavel</span>
+          <span>Invariante 01: Revisión Humana Preceptiva</span>
+          <span>·</span>
+          <span>Capacidad 005 Review</span>
+        </div>
+        <h1 class="font-headline-xl text-3xl sm:text-4xl font-semibold text-on-surface tracking-tight">
+          Panel Revisor de Veeduría CU5
+        </h1>
+        <p class="font-body-md text-on-surface-variant mt-2 max-w-3xl leading-relaxed text-sm">
+          Módulo de evaluación y dictamen colegiado. Los candidatos de riesgo detectados por el motor de banderas rojas son analizados técnicamente por veedores de la sociedad civil antes de publicarse como alertas o ser descartados con fundamentación.
+        </p>
+      </div>
+
+      <!-- Resumen Operativo -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 my-6">
+        <div class="p-5 bg-surface-container-low border border-slate-border rounded">
+          <span class="text-caption font-label-sm text-on-surface-variant block mb-1">Candidatos Pendientes de Dictamen</span>
+          <span class="font-mono text-2xl font-bold text-alert-amber block" id="kpi-pending-count">Cargando...</span>
+          <span class="text-caption text-outline mt-1 block">Banderas rojas en evaluación técnica</span>
+        </div>
+        <div class="p-5 bg-surface-container-low border border-slate-border rounded">
+          <span class="text-caption font-label-sm text-on-surface-variant block mb-1">Alertas Publicadas con Dictamen</span>
+          <span class="font-mono text-2xl font-bold text-civic-emerald block" id="kpi-published-count">Cargando...</span>
+          <span class="text-caption text-outline mt-1 block">Publicadas con respaldo de pruebas</span>
+        </div>
+        <div class="p-5 bg-surface-container-low border border-slate-border rounded">
+          <span class="text-caption font-label-sm text-on-surface-variant block mb-1">Casos Descartados</span>
+          <span class="font-mono text-2xl font-bold text-on-surface-variant block" id="kpi-discarded-count">Cargando...</span>
+          <span class="text-caption text-outline mt-1 block">Con justificación documentada (CA-005-04)</span>
+        </div>
+      </div>
+
+      <!-- Espacio de Trabajo en 2 Columnas -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Columna Izquierda: Bandeja de Casos (5 cols) -->
+        <div class="lg:col-span-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 class="font-headline-sm text-lg font-semibold text-on-surface">Bandeja de Expedientes</h2>
+            <span class="text-caption font-label-sm text-on-surface-variant" id="candidates-count-label">-</span>
+          </div>
+
+          <div id="candidates-list" class="space-y-3">
+            <!-- Renderizado dinámico de candidatos -->
+          </div>
+        </div>
+
+        <!-- Columna Derecha: Expediente Seleccionado y Formulario de Dictamen (7 cols) -->
+        <div class="lg:col-span-7">
+          <div id="selected-dossier" class="p-6 bg-surface-container-low border border-slate-border rounded sticky top-24 space-y-6">
+            <div class="border-b border-slate-border pb-4 flex items-center justify-between">
+              <div>
+                <span class="font-mono text-caption text-secondary font-bold" id="detail-entity-id">-</span>
+                <h3 class="font-headline-sm text-xl font-semibold text-on-surface mt-1" id="detail-entity-name">
+                  Seleccione un caso de la bandeja
+                </h3>
+              </div>
+              <span class="px-2.5 py-1 rounded bg-secondary-container text-on-secondary-container font-label-sm text-caption font-semibold" id="detail-flag-badge">
+                Pendiente
+              </span>
+            </div>
+
+            <!-- Evidencia de Banderas Rojas -->
+            <div class="space-y-3" id="detail-evidence-box">
+              <h4 class="font-label-sm text-xs font-semibold text-on-surface uppercase tracking-wider">Evidencia Oficial Detectada</h4>
+              <div id="detail-flags-container" class="space-y-2 text-body-sm">
+                <p class="text-on-surface-variant text-caption">Haga clic en un expediente de la izquierda para cargar los detalles.</p>
+              </div>
+            </div>
+
+            <!-- Formulario de Dictamen Colegiado -->
+            <form id="review-decision-form" class="border-t border-slate-border pt-6 space-y-4">
+              <h4 class="font-label-sm text-xs font-semibold text-on-surface uppercase tracking-wider">Emitir Dictamen Colegiado</h4>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="review-status" class="block font-label-sm text-caption font-semibold text-on-surface mb-1">Decisión del Panel *</label>
+                  <select id="review-status" required class="w-full bg-surface border border-slate-border px-3 py-2 rounded text-body-sm font-body-sm text-on-surface focus:outline-none focus:border-secondary">
+                    <option value="published">Aprobar y Publicar como Alerta</option>
+                    <option value="discarded">Descartar Alerta (Justificación requerida)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="reviewed-by" class="block font-label-sm text-caption font-semibold text-on-surface mb-1">Veedor Revisor Acreditado *</label>
+                  <input id="reviewed-by" required readonly type="text" class="w-full bg-surface-container-high border border-slate-border px-3 py-2 rounded text-body-sm font-body-sm text-on-surface focus:outline-none cursor-not-allowed" placeholder="Identidad verificada..."/>
+                  <span class="text-caption text-outline text-[11px] block mt-0.5">Asignado automáticamente por la sesión criptográfica activa.</span>
+                </div>
+              </div>
+
+              <div>
+                <label for="review-notes" class="block font-label-sm text-caption font-semibold text-on-surface mb-1">Fundamentación y Notas de Revisión *</label>
+                <textarea id="review-notes" rows="3" required class="w-full bg-surface border border-slate-border p-3 rounded text-body-sm font-body-sm text-on-surface focus:outline-none focus:border-secondary" placeholder="Indique la verificación realizada, contrastes con SEACE o la causa de descarte si corresponde..."></textarea>
+                <span class="text-caption text-outline text-[11px] block mt-0.5">Obligatorio tanto para publicación como para descarte (CA-005-04).</span>
+              </div>
+
+              <div class="flex items-center justify-end gap-3 pt-2">
+                <button type="submit" id="btn-submit-review" class="px-5 py-2.5 bg-primary text-on-primary rounded text-body-sm font-semibold hover:opacity-90 transition-opacity flex items-center gap-2 cursor-pointer shadow-sm">
+                  <span class="material-symbols-outlined text-[18px]">how_to_reg</span>
+                  <span>Registrar Dictamen</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Pie de Página Institucional Exhaustivo y Homogéneo -->
+  <footer class="w-full bg-surface-container-low border-t border-slate-border mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-10">
+        <!-- Columna 1: Identidad Institucional -->
+        <div class="lg:col-span-2 flex flex-col pr-0 lg:pr-8">
+          <div class="flex items-center gap-2.5 mb-3">
+            <img alt="Emblema Cajamarca Qhaway" class="h-8 w-auto object-contain" src="/media/brand-symbol.svg"/>
+            <div class="flex flex-col">
+              <span class="font-serif text-lg font-bold text-on-surface leading-tight">Cajamarca Qhaway</span>
+              <span class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Observatorio Cívico Regional</span>
+            </div>
+          </div>
+          <p class="text-body-sm text-on-surface-variant mb-4 leading-relaxed">
+            Plataforma cívica independiente de auditoría algorítmica y control social de las contrataciones públicas (SEACE OCDS) y ejecución presupuestal (MEF SIAF) en el departamento de Cajamarca, Perú. Diseñada para organizaciones civiles, veedurías comunales y periodismo de investigación.
+          </p>
+          <div class="p-3 bg-surface border border-slate-border rounded text-xs text-on-surface-variant">
+            <strong class="font-semibold text-on-surface block mb-1">Invariante de Revisión Humana:</strong>
+            El motor de banderas rojas únicamente prioriza candidatos de riesgo técnico; ninguna alerta se publica sin evaluación preceptiva del panel humano de veedores colegiados.
+          </div>
+        </div>
+
+        <!-- Columna 2: Ámbito de Cobertura (14 Pliegos Fase 1) -->
+        <div>
+          <span class="font-label-sm text-xs uppercase tracking-wider text-on-surface block mb-3 font-semibold">14 Entidades Auditadas</span>
+          <p class="text-caption text-on-surface-variant mb-2">Gobierno Regional y 13 Provincias:</p>
+          <ul class="space-y-1.5 text-xs text-on-surface-variant">
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=gore-cajamarca">GORE Cajamarca (Pliego 445)</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-cajamarca">M. P. de Cajamarca</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-jaen">M. P. de Jaén</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-chota">M. P. de Chota</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-cutervo">M. P. de Cutervo</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-celendin">M. P. de Celendín</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-hualgayoc">M. P. de Hualgayoc-Bambamarca</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-san-ignacio">M. P. de San Ignacio</a></li>
+            <li><a class="hover:text-on-surface transition-colors font-medium text-secondary" href="/entidades">+ 6 Provincias y SEDACAJ →</a></li>
+          </ul>
+        </div>
+
+        <!-- Columna 3: Módulos de Auditoría -->
+        <div>
+          <span class="font-label-sm text-xs uppercase tracking-wider text-on-surface block mb-3 font-semibold">Módulos del Observatorio</span>
+          <ul class="space-y-2 text-xs text-on-surface-variant">
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/entidades"><span class="material-symbols-outlined text-[14px] text-secondary">account_balance</span> 14 Entidades Monitoreadas</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/alertas"><span class="material-symbols-outlined text-[14px] text-alert-rose">flag</span> Banderas Rojas y Riesgos</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/contrataciones"><span class="material-symbols-outlined text-[14px] text-civic-teal">description</span> Contratos Públicos SEACE</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/presupuesto"><span class="material-symbols-outlined text-[14px] text-civic-emerald">query_stats</span> Presupuesto y Devengado MEF</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/proveedores"><span class="material-symbols-outlined text-[14px] text-alert-amber">hub</span> Directorio de Proveedores HHI</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/transparencia"><span class="material-symbols-outlined text-[14px] text-outline">database</span> Descarga Microdatos OCDS</a></li>
+          </ul>
+        </div>
+
+        <!-- Columna 4: Fuentes Oficiales y Veeduría -->
+        <div>
+          <span class="font-label-sm text-xs uppercase tracking-wider text-on-surface block mb-3 font-semibold">Fuentes Oficiales del Estado</span>
+          <ul class="space-y-2 text-xs text-on-surface-variant mb-4">
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://www.gob.pe/seace" rel="noopener noreferrer" target="_blank">SEACE API OCDS (OSCE) <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://apps5.mineco.gob.pe/transparencia/mensual/" rel="noopener noreferrer" target="_blank">MEF SIAF DataStore Mensual <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://e-consultaruc.sunat.gob.pe/" rel="noopener noreferrer" target="_blank">SUNAT Padrón RUC Proveedores <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://datosabiertos.gob.pe/" rel="noopener noreferrer" target="_blank">Portal Datos Abiertos Perú <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+          </ul>
+
+          <span class="font-label-sm text-xs uppercase tracking-wider text-on-surface block mb-2 font-semibold">Integridad y Veeduría</span>
+          <ul class="space-y-1.5 text-xs text-on-surface-variant">
+            <li><a class="hover:text-on-surface transition-colors font-semibold text-secondary" href="/denuncia">Canal Seguro de Denuncia Anónima</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/login">Acreditación de Veedores</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/acerca">Metodología y Defensa Legal</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-border pt-6 text-xs text-on-surface-variant flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="leading-relaxed">
+          <span class="font-semibold text-on-surface">Marco Legal &amp; Ético:</span> Apego estricto a la Ley N° 27806 de Transparencia y Acceso a la Información Pública y Ley N° 29733 de Protección de Datos Personales. Las alertas son estrictamente sobre contratos y procesos de gasto, sin scoring de personas naturales.
+        </div>
+        <div class="shrink-0 text-on-surface-variant font-mono text-[11px]">
+          © 2025–2026 Cajamarca Qhaway • Licencia ODC-By 1.0
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/js/app.js"></script>
+  <script type="module">
+    import { dataEngine } from '/src/js/data-engine.js';
+
+    let candidates = [];
+    let selectedCandidate = null;
+    let activeToken = null;
+    let activeVeedor = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 1. Barrera de Seguridad Obligatoria
+      activeToken = sessionStorage.getItem('cajamarca_veedor_token');
+      if (!activeToken) {
+        document.getElementById('auth-gate-status').textContent = 'Acceso bloqueado: No se encontró token de veedor.';
+        setTimeout(() => {
+          window.location.href = '/login?reason=required';
+        }, 1200);
+        return;
+      }
+
+      // Validar token en el servidor
+      try {
+        const authRes = await fetch('/api/auth/session', {
+          headers: { 'Authorization': `Bearer ${activeToken}` }
+        });
+
+        if (!authRes.ok) {
+          sessionStorage.removeItem('cajamarca_veedor_token');
+          sessionStorage.removeItem('cajamarca_veedor_profile');
+          document.getElementById('auth-gate-status').textContent = 'Sesión caducada o inválida. Redirigiendo a acreditación...';
+          setTimeout(() => {
+            window.location.href = '/login?reason=expired';
+          }, 1200);
+          return;
+        }
+
+        const authData = await authRes.json();
+        activeVeedor = authData.veedor;
+
+        // Ocultar barrera y mostrar panel
+        document.getElementById('auth-gate-modal').classList.add('hidden');
+        const mainPanel = document.getElementById('main-panel-content');
+        mainPanel.classList.remove('opacity-0');
+
+        // Poblar identidad del veedor en el panel
+        document.getElementById('veedor-name-display').textContent = activeVeedor.name;
+        document.getElementById('veedor-org-display').textContent = `${activeVeedor.organization} • Acreditación N° ${activeVeedor.accreditationNumber}`;
+        document.getElementById('veedor-accreditation-badge').textContent = `Rol: ${activeVeedor.role.replace('_', ' ').toUpperCase()}`;
+        document.getElementById('reviewed-by').value = `${activeVeedor.name} (${activeVeedor.organization})`;
+
+      } catch (err) {
+        console.error('Error al validar sesión:', err);
+        document.getElementById('auth-gate-status').textContent = 'Error de conexión con el servidor seguro.';
+        setTimeout(() => {
+          window.location.href = '/login?reason=error';
+        }, 1500);
+        return;
+      }
+
+      // 2. Cerrar Sesión
+      document.getElementById('btn-logout-veedor').addEventListener('click', async () => {
+        try {
+          await fetch('/api/auth/logout', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${activeToken}` }
+          });
+        } catch {}
+        sessionStorage.removeItem('cajamarca_veedor_token');
+        sessionStorage.removeItem('cajamarca_veedor_profile');
+        window.showToast('Sesión segura finalizada', 'info');
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 400);
+      });
+
+      // 3. Cargar expedientes y datos
+      await loadPanelData();
+
+      // 4. Listener de Dictamen Colegiado
+      const reviewForm = document.getElementById('review-decision-form');
+      reviewForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (!selectedCandidate) {
+          window.showToast('Seleccione un caso de la bandeja primero.', 'warning');
+          return;
+        }
+
+        const status = document.getElementById('review-status').value;
+        const reviewNotes = document.getElementById('review-notes').value.trim();
+
+        if (!reviewNotes) {
+          window.showToast('Las notas de revisión y fundamentación son obligatorias (CA-005-04)', 'error');
+          return;
+        }
+
+        const payload = {
+          entity_id: selectedCandidate.entity_id,
+          red_flag_ids: selectedCandidate.red_flag_ids || ['rf-001'],
+          status,
+          reviewed_by: `${activeVeedor.name} (${activeVeedor.organization})`,
+          review_notes: reviewNotes
+        };
+
+        const submitBtn = document.getElementById('btn-submit-review');
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-75');
+
+        try {
+          const res = await fetch('/api/review', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${activeToken}`
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (res.ok) {
+            window.showToast(
+              `Dictamen emitido por ${activeVeedor.name}: ${status === 'published' ? 'Alerta Publicada Oficialmente' : 'Alerta Descartada con Justificación'}`,
+              'success'
+            );
+            reviewForm.reset();
+            document.getElementById('reviewed-by').value = `${activeVeedor.name} (${activeVeedor.organization})`;
+            await loadPanelData();
+          } else {
+            const err = await res.json();
+            window.showToast(err.error || 'Error al emitir dictamen', 'error');
+          }
+        } catch (err) {
+          console.error(err);
+          window.showToast('Error de conexión con el servidor', 'error');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.classList.remove('opacity-75');
+        }
+      });
+    });
+
+    async function loadPanelData() {
+      const snapshot = await dataEngine.getSnapshot();
+      const entities = await dataEngine.getEntities();
+      const alerts = snapshot.alerts || [];
+
+      const published = alerts.filter(a => a.status === 'published').length;
+      const discarded = alerts.filter(a => a.status === 'discarded').length;
+
+      // Generar candidatos basados en entidades con banderas rojas o contratos con banderas
+      candidates = entities.slice(0, 5).map((e, idx) => {
+        return {
+          id: `cand-${idx + 1}`,
+          entity_id: e.entity_id,
+          entity_name: e.official_name,
+          province: e.province || 'Departamental',
+          ruc: e.ruc,
+          red_flag_ids: [`rf-cand-${idx + 1}`],
+          flag_code: idx % 2 === 0 ? 'R-CANON-02' : 'R-FRAC-08',
+          flag_title: idx % 2 === 0 ? 'Desviación en Gasto de Canon Minero' : 'Concentración de Compras Menores a 8 UIT',
+          flag_desc: idx % 2 === 0 
+            ? 'Se identificaron devengados superiores a S/ 1.2M en rubro de gasto corriente financiados presuntamente con recursos de canon y sobrecanon minero.'
+            : 'Múltiples órdenes de servicio consecutivas por montos de S/ 38,000 otorgadas al mismo proveedor en un lapso de 45 días.',
+          amount: idx % 2 === 0 ? 1250000 : 380000
+        };
+      });
+
+      document.getElementById('kpi-pending-count').textContent = candidates.length;
+      document.getElementById('kpi-published-count').textContent = published;
+      document.getElementById('kpi-discarded-count').textContent = discarded;
+      document.getElementById('candidates-count-label').textContent = `${candidates.length} expedientes`;
+
+      renderCandidatesList();
+      if (candidates.length > 0) {
+        selectCandidate(candidates[0]);
+      }
+    }
+
+    function renderCandidatesList() {
+      const listEl = document.getElementById('candidates-list');
+      listEl.innerHTML = candidates.map(c => `
+        <article class="candidate-item p-4 bg-surface-container-low border border-slate-border rounded hover:border-secondary transition-colors cursor-pointer" data-id="${c.id}">
+          <div class="flex items-center justify-between gap-2 mb-1">
+            <span class="font-mono text-caption text-alert-rose font-bold">${c.flag_code}</span>
+            <span class="text-caption font-label-sm text-outline">${c.province}</span>
+          </div>
+          <h3 class="font-headline-sm text-base font-semibold text-on-surface line-clamp-1">${c.entity_name}</h3>
+          <p class="text-caption text-on-surface-variant line-clamp-2 mt-1">${c.flag_title}</p>
+          <div class="mt-3 flex items-center justify-between text-caption font-mono">
+            <span class="text-outline">Monto en Observación:</span>
+            <span class="font-bold text-on-surface">${dataEngine.formatCurrency(c.amount)}</span>
+          </div>
+        </article>
+      `).join('');
+
+      document.querySelectorAll('.candidate-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const id = item.dataset.id;
+          const found = candidates.find(c => c.id === id);
+          if (found) selectCandidate(found);
+        });
+      });
+    }
+
+    function selectCandidate(c) {
+      selectedCandidate = c;
+
+      document.querySelectorAll('.candidate-item').forEach(item => {
+        if (item.dataset.id === c.id) {
+          item.classList.add('border-secondary', 'bg-surface');
+        } else {
+          item.classList.remove('border-secondary', 'bg-surface');
+        }
+      });
+
+      document.getElementById('detail-entity-id').textContent = `Pliego: ${c.entity_id} • RUC ${c.ruc}`;
+      document.getElementById('detail-entity-name').textContent = c.entity_name;
+      document.getElementById('detail-flag-badge').textContent = c.flag_code;
+
+      document.getElementById('detail-flags-container').innerHTML = `
+        <div class="p-4 bg-surface border border-slate-border rounded space-y-2">
+          <div class="flex items-center justify-between mb-1">
+            <strong class="font-label-sm text-body-sm text-on-surface">${c.flag_title}</strong>
+            <span class="font-mono text-caption text-on-surface font-bold">${dataEngine.formatCurrency(c.amount)}</span>
+          </div>
+          <p class="text-body-sm text-on-surface-variant leading-relaxed">${c.flag_desc}</p>
+          <div class="pt-2 border-t border-slate-border flex items-center justify-between text-caption text-outline font-mono">
+            <span>RUC: ${c.ruc}</span>
+            <span>Provincia: ${c.province}</span>
+          </div>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

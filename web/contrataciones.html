@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta name="description" content="Explorador de Contratos Públicos SEACE OCDS en la Región Cajamarca: Estándar Open Contracting Data Standard v1.1."/>
+  <title>Contratos SEACE OCDS — Cajamarca Qhaway</title>
+
+  <!-- Google Fonts: Newsreader & Hanken Grotesk & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+
+  <!-- Tailwind CSS Engine -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface": "var(--color-surface)",
+            "surface-dim": "var(--color-surface-dim)",
+            "surface-bright": "var(--color-surface-bright)",
+            "surface-container-lowest": "var(--color-surface-container-lowest)",
+            "surface-container-low": "var(--color-surface-container-low)",
+            "surface-container": "var(--color-surface-container)",
+            "surface-container-high": "var(--color-surface-container-high)",
+            "surface-container-highest": "var(--color-surface-container-highest)",
+            "on-surface": "var(--color-on-surface)",
+            "on-surface-variant": "var(--color-on-surface-variant)",
+            "outline": "var(--color-outline)",
+            "outline-variant": "var(--color-outline-variant)",
+            "primary": "var(--color-primary)",
+            "on-primary": "var(--color-on-primary)",
+            "secondary": "var(--color-secondary)",
+            "on-secondary": "var(--color-on-secondary)",
+            "secondary-container": "var(--color-secondary-container)",
+            "on-secondary-container": "var(--color-on-secondary-container)",
+            "civic-emerald": "var(--color-civic-emerald)",
+            "civic-teal": "var(--color-civic-teal)",
+            "alert-amber": "var(--color-alert-amber)",
+            "alert-rose": "var(--color-alert-rose)",
+            "slate-surface": "var(--color-slate-surface)",
+            "slate-border": "var(--color-slate-border)"
+          },
+          fontSize: {
+            'headline-xl': ['clamp(2rem, 3.5vw, 2.75rem)', { lineHeight: '1.18', letterSpacing: '-0.02em', fontWeight: '700' }],
+            'headline-lg': ['clamp(1.5rem, 2.5vw, 2rem)', { lineHeight: '1.25', letterSpacing: '-0.015em', fontWeight: '600' }],
+            'headline-md': ['1.375rem', { lineHeight: '1.35', letterSpacing: '-0.01em', fontWeight: '600' }],
+            'headline-sm': ['1.125rem', { lineHeight: '1.4', fontWeight: '600' }],
+            'body-lg': ['1.125rem', { lineHeight: '1.65' }],
+            'body-md': ['1rem', { lineHeight: '1.55' }],
+            'body-sm': ['0.875rem', { lineHeight: '1.45' }],
+            'label-md': ['0.875rem', { lineHeight: '1.25rem', fontWeight: '600' }],
+            'label-sm': ['0.75rem', { lineHeight: '1rem', fontWeight: '600' }],
+            'caption': ['0.6875rem', { lineHeight: '0.9375rem' }]
+          },
+          fontFamily: {
+            serif: ["Newsreader", "Georgia", "serif"],
+            sans: ["Hanken Grotesk", "system-ui", "sans-serif"],
+            mono: ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="/src/css/tokens.css"/>
+</head>
+<body class="bg-surface font-sans text-on-surface antialiased min-h-screen flex flex-col">
+  <!-- Encabezado Unificado (Top Bar Contract: 1 Fila, 64px, Sin Colisiones) -->
+  <header class="w-full sticky top-0 z-50 bg-surface/95 backdrop-blur-md border-b border-slate-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <!-- 1. Marca Institucional -->
+      <a class="flex items-center gap-2.5 shrink-0 group focus:outline-none rounded" href="/" title="Inicio - Cajamarca Qhaway">
+        <img alt="Logotipo Cajamarca Qhaway" class="h-8 w-auto object-contain" src="/media/brand-symbol.svg"/>
+        <div class="flex flex-col">
+          <span class="font-serif text-lg font-bold text-on-surface leading-tight tracking-tight group-hover:text-secondary transition-colors">Cajamarca Qhaway</span>
+          <span class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Veeduría Ciudadana</span>
+        </div>
+      </a>
+
+      <!-- 2. Navegación Principal Unificada -->
+      <nav class="hidden lg:flex items-center gap-1 xl:gap-2">
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/entidades">Entidades</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/alertas">Alertas</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-secondary bg-secondary-container/20 border border-secondary/30 transition-colors" href="/contrataciones">Contrataciones</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/presupuesto">Presupuesto</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/proveedores">Proveedores</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-secondary hover:text-secondary-hover hover:bg-secondary-container/20 transition-colors flex items-center gap-1" href="/denuncia">
+          <span class="material-symbols-outlined text-[15px]">campaign</span>
+          <span>Denunciar</span>
+        </a>
+      </nav>
+
+      <!-- 3. Acciones Derecha -->
+      <div class="flex items-center gap-2 shrink-0">
+        <!-- Modo Rural Representativo (Antena / Barras 2G) -->
+        <button id="rural-toggle" data-action="toggle-rural" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-medium text-on-surface-variant hover:text-on-surface border border-slate-border hover:bg-surface-container transition-all cursor-pointer" title="Modo Rural: Optimizado para 2G / bajo consumo de datos">
+          <svg class="w-4 h-4 text-on-surface-variant rural-signal-icon shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 20h.01"/>
+            <path d="M7 20v-4"/>
+            <path d="M12 20v-8"/>
+            <path d="M17 20V4"/>
+          </svg>
+          <span class="hidden sm:inline text-[11px] font-semibold rural-label">Rural</span>
+          <span class="rural-badge hidden text-[9px] px-1 py-0.5 rounded bg-civic-emerald text-white font-bold leading-none">2G</span>
+        </button>
+
+        <!-- Tema Oscuro / Claro -->
+        <button id="theme-toggle" data-action="toggle-theme" class="p-2 rounded text-on-surface-variant hover:text-on-surface border border-slate-border hover:bg-surface-container transition-colors cursor-pointer" title="Cambiar tema">
+          <span class="material-symbols-outlined text-[18px]">dark_mode</span>
+        </button>
+
+        <!-- Acceso Veedor -->
+        <a id="header-veedor-btn" href="/login" class="px-3 py-1.5 rounded text-xs font-semibold bg-surface-container-high hover:bg-surface-container-highest text-on-surface border border-slate-border transition-colors flex items-center gap-1.5" title="Acceso seguro para veedores acreditados">
+          <span class="material-symbols-outlined text-[16px] text-secondary shrink-0">verified_user</span>
+          <span class="hidden md:inline">Veedores</span>
+        </a>
+
+        <!-- Botón Menú Móvil -->
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded text-on-surface-variant hover:text-on-surface border border-slate-border hover:bg-surface-container cursor-pointer" aria-label="Abrir menú">
+          <span class="material-symbols-outlined text-[20px]">menu</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Menú Desplegable Móvil -->
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-border bg-surface px-4 py-3 space-y-1">
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/">Inicio</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/entidades">14 Entidades Auditadas</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/alertas">Alertas y Banderas Rojas</a>
+      <a class="block px-3 py-2 text-sm font-semibold text-secondary bg-secondary-container/20 rounded" href="/contrataciones">Contrataciones SEACE</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/presupuesto">Presupuesto MEF SIAF</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/proveedores">Proveedores del Estado (HHI)</a>
+      <a class="block px-3 py-2 text-sm text-secondary font-semibold hover:bg-surface-container rounded" href="/denuncia">Canal de Denuncia Segura</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/transparencia">Transparencia y Microdatos</a>
+      <a class="block px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded" href="/acerca">Acerca del Observatorio</a>
+      <div class="border-t border-slate-border pt-2 mt-2">
+        <a class="block px-3 py-2 text-sm text-alert-amber font-semibold hover:bg-surface-container rounded" href="/admin/revision">Panel Revisor CU5</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main class="w-full flex-1 bg-surface">
+    <!-- Encabezado de Sección -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 border-b border-slate-border pb-8">
+        <div>
+          <div class="flex items-center gap-2 text-body-sm font-label-sm text-secondary uppercase tracking-wider mb-2">
+            <span class="material-symbols-outlined text-[18px]">verified</span>
+            <span>Módulo de Contrataciones Abiertas</span>
+            <span>·</span>
+            <span>OCDS Standard v1.1</span>
+          </div>
+          <h1 class="font-headline-xl text-3xl sm:text-4xl lg:text-5xl font-semibold text-on-surface tracking-tight">
+            Contratos Públicos SEACE
+          </h1>
+          <p class="font-body-md text-on-surface-variant mt-3 max-w-3xl leading-relaxed">
+            Registro normalizado de convocatorias, licitaciones y compras menores en los 14 pliegos de Cajamarca. Datos estructurados para auditoría ciudadana, detección de postor único y concentración de adjudicaciones.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+          <button id="btn-export-csv" class="inline-flex items-center gap-2 px-4 py-2 bg-surface-container-low hover:bg-surface-container text-on-surface border border-slate-border rounded text-body-sm font-label-sm transition-colors cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">download</span>
+            <span>Exportar CSV</span>
+          </button>
+          <button id="btn-view-ocds-meta" class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded text-body-sm font-label-sm hover:opacity-90 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">data_object</span>
+            <span>Inspeccionar OCDS JSON</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Stepper OCDS del Ciclo de Vida -->
+      <div class="mt-8 p-5 bg-surface-container-low border border-slate-border rounded">
+        <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant block mb-3 font-semibold">
+          Ciclo de Vida de Contrataciones Públicas (Open Contracting Partnership)
+        </span>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 text-center">
+          <div class="p-3 bg-surface border border-slate-border rounded flex flex-col items-center">
+            <span class="w-7 h-7 rounded-full bg-secondary-container text-on-secondary-container font-mono text-caption flex items-center justify-center font-bold mb-1">01</span>
+            <span class="font-label-sm text-body-sm font-semibold text-on-surface">Planificación</span>
+            <span class="text-caption text-on-surface-variant">PAC Anual &amp; Metas</span>
+          </div>
+          <div class="p-3 bg-surface border border-slate-border rounded flex flex-col items-center">
+            <span class="w-7 h-7 rounded-full bg-secondary-container text-on-secondary-container font-mono text-caption flex items-center justify-center font-bold mb-1">02</span>
+            <span class="font-label-sm text-body-sm font-semibold text-on-surface">Convocatoria</span>
+            <span class="text-caption text-on-surface-variant">Bases y Cronograma</span>
+          </div>
+          <div class="p-3 bg-surface border border-slate-border rounded flex flex-col items-center">
+            <span class="w-7 h-7 rounded-full bg-secondary text-white font-mono text-caption flex items-center justify-center font-bold mb-1">03</span>
+            <span class="font-label-sm text-body-sm font-semibold text-on-surface">Adjudicación</span>
+            <span class="text-caption text-on-surface-variant">Postores &amp; Buena Pro</span>
+          </div>
+          <div class="p-3 bg-surface border border-slate-border rounded flex flex-col items-center">
+            <span class="w-7 h-7 rounded-full bg-surface-container-highest text-on-surface font-mono text-caption flex items-center justify-center font-bold mb-1">04</span>
+            <span class="font-label-sm text-body-sm font-semibold text-on-surface">Contrato</span>
+            <span class="text-caption text-on-surface-variant">Firma &amp; Garantías</span>
+          </div>
+          <div class="p-3 bg-surface border border-slate-border rounded flex flex-col items-center col-span-2 sm:col-span-1">
+            <span class="w-7 h-7 rounded-full bg-surface-container-highest text-on-surface font-mono text-caption flex items-center justify-center font-bold mb-1">05</span>
+            <span class="font-label-sm text-body-sm font-semibold text-on-surface">Implementación</span>
+            <span class="text-caption text-on-surface-variant">Devengados SIAF &amp; Obras</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cinta de Filtros y Búsqueda -->
+      <div class="mt-8 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 p-4 bg-surface-container-low border border-slate-border rounded">
+        <div class="flex-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <div class="relative flex-1">
+            <span class="material-symbols-outlined absolute left-3 top-2.5 text-outline text-[18px]">search</span>
+            <input id="filter-search" class="w-full bg-surface border border-slate-border pl-9 pr-3 py-2 rounded text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-secondary" placeholder="Buscar por objeto, proveedor o RUC..." type="text"/>
+          </div>
+          <div class="w-full sm:w-64">
+            <select id="filter-entity" class="w-full bg-surface border border-slate-border px-3 py-2 rounded text-body-sm font-body-sm text-on-surface focus:outline-none focus:border-secondary">
+              <option value="">Todas las 14 Entidades</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+          <button data-filter-risk="all" class="risk-btn px-3 py-1.5 rounded bg-primary text-on-primary text-label-sm font-label-sm whitespace-nowrap cursor-pointer">
+            Todos
+          </button>
+          <button data-filter-risk="single_bidder" class="risk-btn px-3 py-1.5 rounded bg-surface border border-slate-border text-on-surface-variant hover:text-on-surface text-label-sm font-label-sm whitespace-nowrap cursor-pointer flex items-center gap-1">
+            <span class="material-symbols-outlined text-[15px] text-alert-amber">warning</span>
+            <span>Postor Único</span>
+          </button>
+          <button data-filter-risk="flagged" class="risk-btn px-3 py-1.5 rounded bg-surface border border-slate-border text-on-surface-variant hover:text-on-surface text-label-sm font-label-sm whitespace-nowrap cursor-pointer flex items-center gap-1">
+            <span class="material-symbols-outlined text-[15px] text-alert-rose">flag</span>
+            <span>Con Banderas Rojas</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Resumen Estadístico Rápido -->
+      <div class="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between text-body-sm text-on-surface-variant font-label-sm">
+        <span id="procurements-count">Cargando contratos verificados...</span>
+        <span class="text-caption text-outline">Fuente: API SEACE OCDS v1.1 • Actualización continua</span>
+      </div>
+
+      <!-- Listado de Contratos -->
+      <div id="procurements-list" class="mt-6 space-y-4">
+        <!-- Renderizado dinámico -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal OCDS Release Inspector -->
+  <div id="ocds-modal" class="fixed inset-0 z-50 bg-black/60 hidden items-center justify-center p-4">
+    <div class="bg-surface border border-slate-border rounded-lg max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl">
+      <div class="p-4 border-b border-slate-border flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-secondary">data_object</span>
+          <h3 class="font-headline-sm text-lg font-semibold text-on-surface">Visor de Release OCDS JSON</h3>
+        </div>
+        <button id="btn-close-modal" class="text-on-surface-variant hover:text-on-surface cursor-pointer">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="p-4 overflow-y-auto flex-1 font-mono text-caption bg-surface-container-lowest">
+        <pre id="ocds-modal-json" class="whitespace-pre-wrap text-on-surface"></pre>
+      </div>
+      <div class="p-4 border-t border-slate-border flex items-center justify-end gap-3 bg-surface-container-low">
+        <button id="btn-copy-json" class="px-4 py-2 rounded bg-surface border border-slate-border hover:bg-surface-container text-body-sm font-label-sm flex items-center gap-1 cursor-pointer">
+          <span class="material-symbols-outlined text-[16px]">content_copy</span>
+          <span>Copiar JSON</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pie de Página Institucional -->
+  <footer class="w-full bg-surface-container-low border-t border-slate-border mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
+        <div class="lg:col-span-2 flex flex-col pr-0 lg:pr-8">
+          <div class="flex items-center gap-2 mb-3">
+            <img alt="Logotipo Cajamarca Qhaway" class="h-7 w-auto object-contain" src="/media/brand-mark.svg"/>
+            <span class="font-headline-sm text-headline-sm font-semibold text-on-surface">Cajamarca Qhaway</span>
+          </div>
+          <p class="font-body-sm text-body-sm text-on-surface-variant mb-4 leading-relaxed">
+            Observatorio Cívico Regional independiente dedicado a la auditoría ciudadana, fiscalización de contrataciones y seguimiento de la ejecución presupuestal en las 13 provincias de la Región Cajamarca.
+          </p>
+          <div class="p-3 bg-surface border border-slate-border rounded text-body-sm text-on-surface-variant">
+            <span class="font-label-sm text-label-sm text-on-surface block mb-1 font-semibold">Alcance Operativo Fase 1</span>
+            Monitoreo continuo de 14 entidades prioritarias: Gobiernos locales provinciales, GORE Cajamarca y empresas de saneamiento.
+          </div>
+        </div>
+
+        <div>
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-4 font-semibold">Explorar Datos</span>
+          <ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant">
+            <li><a class="hover:text-on-surface transition-colors" href="/entidades">14 Entidades Auditadas</a></li>
+            <li><a class="hover:text-on-surface transition-colors text-secondary font-semibold" href="/contrataciones">Contrataciones OCDS</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/presupuesto">Presupuesto MEF</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/alertas">Alertas y Banderas Rojas</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/proveedores">Concentración de Proveedores</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-4 font-semibold">Participación Cívica</span>
+          <ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant">
+            <li><a class="hover:text-on-surface transition-colors" href="/denuncia">Canal de Alerta Ciudadana</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/transparencia">Descarga de Microdatos</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/acerca">Metodología y Principios</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/admin/revision">Panel Revisor CU5</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/login">Acreditación de Veedores</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-4 font-semibold">Fuentes Oficiales</span>
+          <ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant">
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://www.gob.pe/seace" rel="noopener noreferrer" target="_blank">SEACE API OCDS <span class="material-symbols-outlined text-[14px]">open_in_new</span></a></li>
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://apps5.mineco.gob.pe/transparencia/mensual/" rel="noopener noreferrer" target="_blank">MEF SIAF DataStore <span class="material-symbols-outlined text-[14px]">open_in_new</span></a></li>
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://e-consultaruc.sunat.gob.pe/" rel="noopener noreferrer" target="_blank">SUNAT Padrón RUC <span class="material-symbols-outlined text-[14px]">open_in_new</span></a></li>
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://datosabiertos.gob.pe/" rel="noopener noreferrer" target="_blank">Portal Datos Abiertos <span class="material-symbols-outlined text-[14px]">open_in_new</span></a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-border pt-6 text-body-sm font-body-sm text-on-surface-variant flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="leading-relaxed">
+          <span class="font-label-sm text-on-surface font-semibold">Marco Constitucional &amp; Legal:</span> Plataforma cívica desarrollada en apego estricto a los Artículos 15, 16, 17 y 18 del Título Preliminar de la Ley N° 27806 de Transparencia y Acceso a la Información Pública y Ley N° 29733 de Protección de Datos Personales.
+        </div>
+        <div class="shrink-0 font-label-sm text-label-sm text-on-surface-variant">
+          © 2025–2026 Cajamarca Qhaway. Licencia Abierta ODC-By 1.0.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/js/app.js"></script>
+  <script type="module">
+    import { dataEngine } from '/src/js/data-engine.js';
+
+    let allProcurements = [];
+    let entitiesMap = new Map();
+    let currentRiskFilter = 'all';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Cargar entidades y poblar select
+      const entities = await dataEngine.getEntities();
+      const entitySelect = document.getElementById('filter-entity');
+      entities.forEach(e => {
+        entitiesMap.set(e.entity_id, e);
+        const opt = document.createElement('option');
+        opt.value = e.entity_id;
+        opt.textContent = e.official_name;
+        entitySelect.appendChild(opt);
+      });
+
+      // Cargar contratos
+      allProcurements = await dataEngine.getProcurements();
+      renderProcurements();
+
+      // Listeners
+      document.getElementById('filter-search').addEventListener('input', renderProcurements);
+      document.getElementById('global-procurement-search').addEventListener('input', (e) => {
+        document.getElementById('filter-search').value = e.target.value;
+        renderProcurements();
+      });
+      document.getElementById('filter-entity').addEventListener('change', renderProcurements);
+
+      document.querySelectorAll('.risk-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.risk-btn').forEach(b => {
+            b.className = 'risk-btn px-3 py-1.5 rounded bg-surface border border-slate-border text-on-surface-variant hover:text-on-surface text-label-sm font-label-sm whitespace-nowrap cursor-pointer';
+          });
+          btn.className = 'risk-btn px-3 py-1.5 rounded bg-primary text-on-primary text-label-sm font-label-sm whitespace-nowrap cursor-pointer';
+          currentRiskFilter = btn.dataset.filterRisk;
+          renderProcurements();
+        });
+      });
+
+      // Export CSV
+      document.getElementById('btn-export-csv').addEventListener('click', () => {
+        exportToCSV();
+      });
+
+      // Modal OCDS
+      const modal = document.getElementById('ocds-modal');
+      document.getElementById('btn-close-modal').addEventListener('click', () => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      });
+      document.getElementById('btn-view-ocds-meta').addEventListener('click', () => {
+        showOcdsJson(allProcurements.slice(0, 3));
+      });
+      document.getElementById('btn-copy-json').addEventListener('click', () => {
+        const text = document.getElementById('ocds-modal-json').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          window.showToast('JSON copiado al portapapeles', 'success');
+        });
+      });
+    });
+
+    function renderProcurements() {
+      const q = document.getElementById('filter-search').value.toLowerCase().trim();
+      const entityId = document.getElementById('filter-entity').value;
+      const listContainer = document.getElementById('procurements-list');
+
+      const filtered = allProcurements.filter(p => {
+        const entity = entitiesMap.get(p.entity_id);
+        const entityName = entity ? entity.official_name.toLowerCase() : '';
+        const title = (p.title || '').toLowerCase();
+        const ocid = (p.ocid || '').toLowerCase();
+        const supName = (p.supplier_name || '').toLowerCase();
+        const supRuc = (p.supplier_ruc || '');
+
+        const matchesQ = !q || title.includes(q) || ocid.includes(q) || supName.includes(q) || supRuc.includes(q) || entityName.includes(q);
+        const matchesEntity = !entityId || p.entity_id === entityId;
+
+        let matchesRisk = true;
+        if (currentRiskFilter === 'single_bidder') {
+          matchesRisk = Number(p.number_of_bidders) === 1;
+        } else if (currentRiskFilter === 'flagged') {
+          matchesRisk = Number(p.number_of_bidders) === 1 || (p.awarded_amount > 2000000);
+        }
+
+        return matchesQ && matchesEntity && matchesRisk;
+      });
+
+      document.getElementById('procurements-count').textContent = `Mostrando ${filtered.length} de ${allProcurements.length} procesos contractuales normalizados`;
+
+      if (filtered.length === 0) {
+        listContainer.innerHTML = `
+          <div class="p-12 text-center bg-surface-container-low border border-slate-border rounded">
+            <span class="material-symbols-outlined text-4xl text-outline mb-2">find_in_page</span>
+            <p class="font-headline-sm text-lg text-on-surface">No se encontraron contratos con los criterios especificados</p>
+            <p class="text-body-sm text-on-surface-variant mt-1">Pruebe a limpiar el término de búsqueda o seleccionar otra entidad.</p>
+          </div>
+        `;
+        return;
+      }
+
+      listContainer.innerHTML = filtered.map(p => {
+        const entity = entitiesMap.get(p.entity_id);
+        const entityName = entity ? entity.official_name : 'Entidad Municipal de Cajamarca';
+        const isSingleBidder = Number(p.number_of_bidders) === 1;
+        const amountStr = dataEngine.formatCurrency(p.awarded_amount || p.executed_amount || 0);
+
+        return `
+          <article class="p-5 bg-surface-container-low border border-slate-border rounded hover:border-outline-variant transition-colors">
+            <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+              <div class="flex-1">
+                <div class="flex flex-wrap items-center gap-2 text-caption text-on-surface-variant font-label-sm mb-2">
+                  <span class="font-mono text-secondary font-semibold">${p.ocid || 'OCDS-SEACE'}</span>
+                  <span aria-hidden="true">·</span>
+                  <span class="text-on-surface font-semibold">${entityName}</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Método: ${p.procurement_method === 'open' ? 'Licitación Pública' : 'Adjudicación Simplificada'}</span>
+                </div>
+
+                <h2 class="font-headline-sm text-lg sm:text-xl font-semibold text-on-surface leading-snug">
+                  <a href="/contrato?id=${encodeURIComponent(p.ocid || p.procurement_id)}" class="hover:text-secondary transition-colors">
+                    ${p.title || 'Proceso de contratación pública'}
+                  </a>
+                </h2>
+
+                <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-body-sm font-label-sm text-on-surface-variant">
+                  <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px] text-outline">business</span>
+                    <span>Proveedor: <strong class="text-on-surface">${p.supplier_name || 'En evaluación de ofertas'}</strong></span>
+                    ${p.supplier_ruc ? `<span class="font-mono text-caption text-outline">(${p.supplier_ruc})</span>` : ''}
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px] text-outline">group</span>
+                    <span>Postores: <strong class="text-on-surface font-mono">${p.number_of_bidders || 1}</strong></span>
+                  </div>
+                </div>
+
+                ${isSingleBidder ? `
+                  <div class="mt-3 inline-flex items-center gap-1.5 text-caption font-label-sm text-alert-amber">
+                    <span class="material-symbols-outlined text-[15px]">warning</span>
+                    <span>Alerta SEACE: Proceso adjudicado con postor único (Riesgo de colusión o direccionamiento)</span>
+                  </div>
+                ` : ''}
+              </div>
+
+              <div class="flex lg:flex-col items-center lg:items-end justify-between gap-3 border-t lg:border-t-0 border-slate-border pt-3 lg:pt-0 shrink-0">
+                <div class="text-left lg:text-right">
+                  <span class="text-caption text-on-surface-variant font-label-sm block">Monto Adjudicado</span>
+                  <span class="font-mono text-lg sm:text-xl font-bold text-on-surface">${amountStr}</span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <button type="button" class="btn-inspect-json px-3 py-1.5 bg-surface border border-slate-border hover:bg-surface-container rounded text-caption font-label-sm text-on-surface flex items-center gap-1 cursor-pointer" data-ocid="${p.ocid || p.procurement_id}">
+                    <span class="material-symbols-outlined text-[15px]">code</span>
+                    <span>JSON</span>
+                  </button>
+                  <a href="/contrato?id=${encodeURIComponent(p.ocid || p.procurement_id)}" class="px-3 py-1.5 bg-secondary text-white hover:bg-opacity-90 rounded text-caption font-label-sm flex items-center gap-1 no-underline transition-colors">
+                    <span>Expediente</span>
+                    <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      // Attach inspect JSON handlers
+      document.querySelectorAll('.btn-inspect-json').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const ocid = btn.dataset.ocid;
+          const found = allProcurements.find(p => p.ocid === ocid || p.procurement_id === ocid);
+          if (found) {
+            showOcdsJson(found.raw_payload || found);
+          }
+        });
+      });
+    }
+
+    function showOcdsJson(data) {
+      const modal = document.getElementById('ocds-modal');
+      document.getElementById('ocds-modal-json').textContent = JSON.stringify(data, null, 2);
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function exportToCSV() {
+      const headers = ['ocid', 'entity_id', 'title', 'procurement_method', 'awarded_amount', 'supplier_name', 'supplier_ruc', 'number_of_bidders'];
+      const rows = allProcurements.map(p => [
+        `"${p.ocid || ''}"`,
+        `"${p.entity_id || ''}"`,
+        `"${(p.title || '').replace(/"/g, '""')}"`,
+        `"${p.procurement_method || ''}"`,
+        p.awarded_amount || 0,
+        `"${(p.supplier_name || '').replace(/"/g, '""')}"`,
+        `"${p.supplier_ruc || ''}"`,
+        p.number_of_bidders || 1
+      ]);
+      const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `contratos_seace_cajamarca_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.showToast('Dataset CSV de contratos generado con éxito', 'success');
+    }
+  </script>
+</body>
+</html>

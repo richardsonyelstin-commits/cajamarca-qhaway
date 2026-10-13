@@ -1,16 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
-  "functions": {
-    "api/index.py": {
-      "includeFiles": "{web,src,data}/**"
-    }
-  },
   "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/index.py?__path=/api/$1"
-    },
     {
       "source": "/",
       "destination": "/web/index.html"
@@ -18,10 +8,6 @@
     {
       "source": "/index.html",
       "destination": "/web/index.html"
-    },
-    {
-      "source": "/DESIGN.md",
-      "destination": "/web/DESIGN.md"
     },
     {
       "source": "/src/(.*)",
@@ -39,10 +25,6 @@
         {
           "key": "X-Content-Type-Options",
           "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
         },
         {
           "key": "Referrer-Policy",

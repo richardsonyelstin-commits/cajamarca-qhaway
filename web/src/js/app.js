@@ -1,197 +1,237 @@
 /**
- * app.js: Inicializador principal de Cajamarca Qhaway
- * Punto de entrada del modulo ES6 (<script type="module" src="src/js/app.js">)
- *
- * Restricciones:
- * - Antislop R-02: Cero rayas em-dash en todo el archivo.
- * - Antislop R-26: Todo control interactivo funcional.
- * - Antislop R-27: Tres estados obligatorios.
+ * app.js: Controlador global de la plataforma Cajamarca Qhaway (Andean Civic Observatory)
+ * Gestiona navegación uniforme, tema oscuro, modo rural ligero con icono representativo,
+ * estado de sesión de veedores acreditados, toasts y accesibilidad.
  */
 
-import { supabaseClient } from './supabase-client.js';
-import { store } from './state.js';
-import { Router } from './router.js';
+const STORAGE_KEYS = {
+  THEME: 'cajamarca_qhaway_theme',
+  RURAL: 'cajamarca_qhaway_rural_lite',
+  TOKEN: 'cajamarca_veedor_token',
+  PROFILE: 'cajamarca_veedor_profile'
+};
 
-/**
- * Actualiza el indicador visual de conexion en la barra superior
- */
-function updateConnectionBadge(sourceMode) {
-  const badgeText = document.getElementById('connection-status-text');
-  const badgeContainer = document.getElementById('connection-status-badge');
-
-  if (!badgeText || !badgeContainer) return;
-
-  if (sourceMode === 'online') {
-    badgeText.textContent = 'Conectado a Red Oficial Supabase';
-    badgeContainer.className = 'badge-connection badge-connection-online';
-  } else if (sourceMode === 'snapshot') {
-    badgeText.textContent = 'Modo Respaldo: Instantanea Verificada';
-    badgeContainer.className = 'badge-connection badge-connection-snapshot';
-  } else {
-    badgeText.textContent = 'Modo Contingencia: Semilla Canónica Local';
-    badgeContainer.className = 'badge-connection badge-connection-local';
-  }
-}
-
-/**
- * Sincroniza el estado del boton de tema claro/oscuro
- */
-function syncThemeButton() {
-  const label = document.getElementById('theme-toggle-label');
-  const currentTheme = store.getState().theme;
-  document.documentElement.setAttribute('data-bs-theme', currentTheme);
-
-  if (label) {
-    label.textContent = currentTheme === 'dark' ? 'Tema Claro' : 'Tema Oscuro';
-  }
-}
-
-/**
- * Configura los controles interactivos globales de la aplicacion
- */
-function setupGlobalControls() {
-  // 1. Conmutador de Tema Claro / Oscuro (R-34)
-  const btnThemeToggle = document.getElementById('btn-theme-toggle');
-  if (btnThemeToggle) {
-    btnThemeToggle.addEventListener('click', () => {
-      store.toggleTheme();
-      syncThemeButton();
-    });
+// Notificación no bloqueante tipo toast para entornos con iFrame
+window.showToast = function(message, type = 'warning') {
+  let container = document.getElementById('app-toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'app-toast-container';
+    container.className = 'fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm';
+    document.body.appendChild(container);
   }
 
-  // 2. Conmutador de Modo Rural Ligero (CU2)
-  const btnRuralMode = document.getElementById('btn-rural-mode');
-  if (btnRuralMode) {
-    // Sincronizar estado inicial
-    const isRural = store.getState().ruralLiteMode;
-    btnRuralMode.setAttribute('aria-pressed', String(isRural));
-    if (isRural) {
-      document.body.classList.add('mode-rural-lite');
-      btnRuralMode.classList.add('active');
+  const toastEl = document.createElement('div');
+  const bgColors = {
+    error: 'bg-alert-rose text-white',
+    warning: 'bg-alert-amber text-white',
+    success: 'bg-civic-emerald text-white',
+    info: 'bg-primary text-white'
+  };
+  const colorClass = bgColors[type] || 'bg-on-surface text-on-primary';
+
+  toastEl.className = `p-3.5 rounded shadow-xl text-body-sm font-label-sm ${colorClass} flex items-center justify-between gap-3 transition-all duration-300 transform translate-y-0`;
+  toastEl.setAttribute('role', 'alert');
+  toastEl.innerHTML = `
+    <div class="flex items-center gap-2.5">
+      <span class="material-symbols-outlined text-[20px] shrink-0">${type === 'success' ? 'check_circle' : type === 'error' ? 'report' : 'info'}</span>
+      <span class="leading-snug">${message}</span>
+    </div>
+    <button type="button" class="text-white/80 hover:text-white transition-opacity shrink-0 ml-2 cursor-pointer" aria-label="Cerrar">
+      <span class="material-symbols-outlined text-[16px]">close</span>
+    </button>
+  `;
+
+  const closeBtn = toastEl.querySelector('button');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => toastEl.remove());
+  }
+
+  container.appendChild(toastEl);
+  setTimeout(() => {
+    if (toastEl.parentNode) {
+      toastEl.classList.add('opacity-0', 'translate-y-2');
+      setTimeout(() => toastEl.remove(), 300);
     }
+  }, 4500);
+};
 
-    btnRuralMode.addEventListener('click', () => {
-      store.toggleRuralLiteMode();
-      const current = store.getState().ruralLiteMode;
-      btnRuralMode.setAttribute('aria-pressed', String(current));
-      if (current) {
-        btnRuralMode.classList.add('active');
-      } else {
-        btnRuralMode.classList.remove('active');
-      }
+// Reemplazo seguro de window.alert para no colgar el iFrame
+window.alert = function(msg) {
+  window.showToast(msg, 'warning');
+};
+
+export function initGlobalControls() {
+  // 1. Tema Claro / Oscuro
+  const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) || 'light';
+  applyTheme(savedTheme);
+
+  const themeToggleBtns = document.querySelectorAll('[data-action="toggle-theme"], #theme-toggle, #btn-theme-toggle');
+  themeToggleBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const current = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+      const nextTheme = current === 'dark' ? 'light' : 'dark';
+      applyTheme(nextTheme);
+      localStorage.setItem(STORAGE_KEYS.THEME, nextTheme);
     });
-  }
+  });
 
-  // 3. Buscador Global Rapido (buscar por RUC, nombre de entidad o contrato)
-  const searchForm = document.getElementById('global-search-form');
-  const searchInput = document.getElementById('global-search-input');
-  if (searchForm && searchInput) {
-    searchForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const query = searchInput.value.trim().toLowerCase();
-      if (!query) return;
+  // 2. Modo Rural Ligero (Ahorro de datos / 2G / Sin animaciones)
+  const savedRural = localStorage.getItem(STORAGE_KEYS.RURAL) === 'true';
+  applyRuralMode(savedRural, false);
 
-      const { entities, procurements } = store.getState();
-
-      // Buscar coincidencia en entidades (por RUC o nombre)
-      const foundEntity = entities.find(ent =>
-        ent.ruc.includes(query) || ent.official_name.toLowerCase().includes(query)
-      );
-
-      if (foundEntity) {
-        window.location.hash = `#/entidad?id=${foundEntity.entity_id}`;
-        return;
-      }
-
-      // Buscar coincidencia en contratos (por OCID o titulo)
-      const foundProc = procurements.find(p =>
-        p.ocid.toLowerCase().includes(query) || p.title.toLowerCase().includes(query)
-      );
-
-      if (foundProc) {
-        window.location.hash = `#/contrato?id=${encodeURIComponent(foundProc.ocid)}`;
-        return;
-      }
-
-      // Si no es exacto, ir a directorio con busqueda
-      window.location.hash = `#/entidades?q=${encodeURIComponent(query)}`;
+  const ruralBtns = document.querySelectorAll('[data-action="toggle-rural"], #rural-toggle, #btn-rural-mode');
+  ruralBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const isRural = document.body.classList.contains('mode-rural-lite');
+      const nextRural = !isRural;
+      applyRuralMode(nextRural, true);
+      localStorage.setItem(STORAGE_KEYS.RURAL, String(nextRural));
     });
-  }
+  });
 
-  // 4. Boton para copiar payload JSON en modal accesible (Art. 10)
-  const btnCopyPayload = document.getElementById('btn-copy-payload');
-  if (btnCopyPayload) {
-    btnCopyPayload.addEventListener('click', async () => {
-      const payloadData = store.getState().rawPayloadModalData;
-      if (!payloadData) return;
-
-      try {
-        await navigator.clipboard.writeText(payloadData);
-        const originalText = btnCopyPayload.textContent;
-        btnCopyPayload.textContent = 'JSON Copiado!';
-        setTimeout(() => {
-          btnCopyPayload.textContent = originalText;
-        }, 2000);
-      } catch (err) {
-        prompt('Copie manualmente el contenido JSON:', payloadData);
-      }
-    });
-  }
-
-  // 5. Cierre accesible con tecla Escape para modales
+  // 3. Atajo global Cmd+K / Ctrl+K para buscar
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      const openModals = document.querySelectorAll('.modal.show');
-      openModals.forEach(modalEl => {
-        if (window.bootstrap && window.bootstrap.Modal) {
-          const instance = window.bootstrap.Modal.getInstance(modalEl);
-          if (instance) instance.hide();
-        }
-      });
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      const searchInput = document.querySelector('header input[type="text"], #entity-search');
+      if (searchInput) searchInput.focus();
     }
+  });
+
+  // 4. Menú Móvil Desplegable Unificado
+  const mobileBtn = document.getElementById('mobile-menu-btn') || document.getElementById('btn-mobile-nav');
+  const mobileMenu = document.getElementById('mobile-menu') || document.getElementById('mobile-nav-drawer');
+  if (mobileBtn && mobileMenu) {
+    mobileBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = !mobileMenu.classList.contains('hidden');
+      if (isOpen) {
+        mobileMenu.classList.add('hidden');
+        mobileBtn.setAttribute('aria-expanded', 'false');
+      } else {
+        mobileMenu.classList.remove('hidden');
+        mobileBtn.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!mobileMenu.contains(e.target) && !mobileBtn.contains(e.target)) {
+        mobileMenu.classList.add('hidden');
+        mobileBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  // 5. Estado de Veedor Acreditado en el Encabezado
+  updateVeedorHeaderStatus();
+}
+
+function applyTheme(theme) {
+  const isDark = theme === 'dark';
+  if (isDark) {
+    document.documentElement.classList.add('dark');
+    document.documentElement.setAttribute('data-bs-theme', 'dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+    document.documentElement.setAttribute('data-bs-theme', 'light');
+  }
+
+  const themeIcons = document.querySelectorAll('#theme-toggle .material-symbols-outlined, [data-action="toggle-theme"] .material-symbols-outlined');
+  themeIcons.forEach(icon => {
+    icon.textContent = isDark ? 'light_mode' : 'dark_mode';
+  });
+
+  const themeBtns = document.querySelectorAll('#theme-toggle, [data-action="toggle-theme"]');
+  themeBtns.forEach(btn => {
+    btn.title = isDark ? 'Cambiar a Tema Claro' : 'Cambiar a Tema Oscuro';
   });
 }
 
-/**
- * Inicializacion de la aplicacion
- */
-async function initializeApp() {
-  syncThemeButton();
-  setupGlobalControls();
+function applyRuralMode(isRural, notify = false) {
+  if (isRural) {
+    document.body.classList.add('mode-rural-lite');
+  } else {
+    document.body.classList.remove('mode-rural-lite');
+  }
 
-  const router = new Router('app-view-container');
-  router.init();
+  const ruralBtns = document.querySelectorAll('[data-action="toggle-rural"], #rural-toggle, #btn-rural-mode');
+  ruralBtns.forEach(btn => {
+    btn.setAttribute('aria-pressed', String(isRural));
+    const badge = btn.querySelector('.rural-badge');
+    const label = btn.querySelector('.rural-label');
+    const icon = btn.querySelector('.rural-signal-icon');
 
-  try {
-    // Carga de datos con fallback resiliente
-    const dataset = await supabaseClient.fetchInitialDataset();
+    if (isRural) {
+      btn.classList.add('border-civic-emerald', 'bg-civic-emerald/10', 'text-civic-emerald');
+      btn.classList.remove('border-slate-border', 'text-on-surface-variant');
+      btn.title = 'Modo Rural Activo: Optimizado para baja cobertura 2G (clic para desactivar)';
+      if (badge) badge.classList.remove('hidden');
+      if (label) label.textContent = 'Rural (2G)';
+      if (icon) {
+        icon.classList.add('text-civic-emerald');
+        icon.classList.remove('text-on-surface-variant');
+      }
+    } else {
+      btn.classList.remove('border-civic-emerald', 'bg-civic-emerald/10', 'text-civic-emerald');
+      btn.classList.add('border-slate-border', 'text-on-surface-variant');
+      btn.title = 'Modo Rural: Optimizado para baja cobertura (2G/3G), ahorra datos y elimina animaciones';
+      if (badge) badge.classList.add('hidden');
+      if (label) label.textContent = 'Rural';
+      if (icon) {
+        icon.classList.remove('text-civic-emerald');
+        icon.classList.add('text-on-surface-variant');
+      }
+    }
+  });
 
-    store.setState({
-      entities: dataset.entities,
-      procurements: dataset.procurements,
-      budgetExecutions: dataset.budgetExecutions,
-      alerts: dataset.alerts,
-      redFlags: dataset.redFlags,
-      citizenReports: dataset.citizenReports,
-      sourceMode: dataset.sourceMode,
-      isLoading: false,
-      loadError: null
-    });
-
-    updateConnectionBadge(dataset.sourceMode);
-  } catch (err) {
-    console.error('Error critico en la inicializacion de datos:', err);
-    store.setState({
-      isLoading: false,
-      loadError: `Fallo de inicializacion: ${err.message}. Verifique la conectividad de red.`
-    });
-    updateConnectionBadge('local-fallback');
+  if (notify) {
+    window.showToast(
+      isRural
+        ? 'Modo Rural activado: Conectividad 2G / Consumo mínimo de datos sin animaciones pesadas.'
+        : 'Modo Rural desactivado: Experiencia visual completa restaurada.',
+      'info'
+    );
   }
 }
 
-// Iniciar al cargar el DOM
+export function updateVeedorHeaderStatus() {
+  const token = sessionStorage.getItem(STORAGE_KEYS.TOKEN);
+  const profileRaw = sessionStorage.getItem(STORAGE_KEYS.PROFILE);
+  const veedorBtn = document.getElementById('header-veedor-btn');
+
+  if (!veedorBtn) return;
+
+  if (token && profileRaw) {
+    try {
+      const profile = JSON.parse(profileRaw);
+      veedorBtn.href = '/admin/revision';
+      veedorBtn.classList.add('border-civic-emerald/50', 'text-civic-emerald', 'bg-civic-emerald/10');
+      veedorBtn.classList.remove('bg-surface-container-high', 'text-on-surface');
+      veedorBtn.title = `Veedor Acreditado: ${profile.name} (${profile.organization})`;
+      veedorBtn.innerHTML = `
+        <span class="w-2 h-2 rounded-full bg-civic-emerald animate-pulse shrink-0"></span>
+        <span class="hidden md:inline font-semibold">Panel Revisor</span>
+        <span class="md:hidden font-semibold">Revisión</span>
+      `;
+    } catch {
+      // Ignorar error de parsing
+    }
+  } else {
+    veedorBtn.href = '/login';
+    veedorBtn.classList.remove('border-civic-emerald/50', 'text-civic-emerald', 'bg-civic-emerald/10');
+    veedorBtn.classList.add('bg-surface-container-high', 'text-on-surface');
+    veedorBtn.title = 'Acceso seguro para veedores acreditados';
+    veedorBtn.innerHTML = `
+      <span class="material-symbols-outlined text-[16px] text-secondary shrink-0">verified_user</span>
+      <span class="hidden md:inline">Veedores</span>
+    `;
+  }
+}
+
+// Iniciar al cargar
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeApp);
+  document.addEventListener('DOMContentLoaded', initGlobalControls);
 } else {
-  initializeApp();
+  initGlobalControls();
 }
