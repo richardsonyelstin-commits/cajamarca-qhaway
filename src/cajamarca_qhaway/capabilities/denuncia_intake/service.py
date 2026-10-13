@@ -25,6 +25,7 @@ class DenunciaIntakeService:
         channel: ChannelType = "web",
         related_entity_id: str | None = None,
         submitted_at: datetime | None = None,
+        tracking_token_hash: str | None = None,
     ) -> CitizenReport:
         """Registra una nueva denuncia ciudadana.
 
@@ -50,6 +51,7 @@ class DenunciaIntakeService:
             moderated_by=None,
             moderated_at=None,
             legal_disclaimer_shown=True,
+            tracking_token_hash=tracking_token_hash,
         )
         self._reports[report.report_id] = report
         return report
@@ -85,6 +87,7 @@ class DenunciaIntakeService:
             moderated_by=moderator_id,
             moderated_at=now,
             legal_disclaimer_shown=True,
+            tracking_token_hash=existing.tracking_token_hash,
         )
         self._reports[report_id] = updated
         return updated

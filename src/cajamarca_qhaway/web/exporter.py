@@ -708,7 +708,14 @@ def build_verified_web_snapshot(now: datetime | None = None) -> dict[str, Any]:
     for s in geospatial_divergences:
         PhysicalFinancialDivergenceSignal.model_validate(s)
 
-    # Estructura del snapshot canonico
+    public_flag_ids = {
+        flag_id
+        for alert in all_alerts
+        if alert.status == "published"
+        for flag_id in alert.red_flag_ids
+    }
+
+    # Estructura del snapshot canonico publico: nunca contiene candidatos sin revisar ni denuncias.
     snapshot_data: dict[str, Any] = {
         "metadata": {
             "version": "1.0.0",
@@ -728,9 +735,12 @@ def build_verified_web_snapshot(now: datetime | None = None) -> dict[str, Any]:
         "contracting_entities": [e.model_dump(mode="json") for e in entities],
         "procurement_records": [p.model_dump(mode="json") for p in compacted_procurements],
         "budget_execution_records": [ex.model_dump(mode="json") for ex in executions],
-        "red_flags": [f.model_dump(mode="json") for f in candidate_flags],
-        "alerts": [a.model_dump(mode="json") for a in all_alerts],
-        "citizen_reports": [r.model_dump(mode="json") for r in all_reports],
+        "red_flags": [
+            f.model_dump(mode="json") for f in candidate_flags
+            if f.red_flag_id in public_flag_ids
+        ],
+        "alerts": [a.model_dump(mode="json") for a in all_alerts if a.status == "published"],
+        "citizen_reports": [],
         "geospatial_works": [w.model_dump(mode="json") for w in CAJAMARCA_PUBLIC_WORKS_CATALOG],
         "geospatial_signals": [s.model_dump(mode="json") for s in geospatial_divergences],
     }

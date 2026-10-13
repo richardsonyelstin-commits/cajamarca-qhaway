@@ -47,14 +47,17 @@ try:
     from cajamarca_qhaway.persistence.repositories import (
         AlertRepository,
         CitizenReportRepository,
+        RedFlagRepository,
     )
     _db_manager = DatabaseManager()
     _alert_repo = AlertRepository(_db_manager)
     _report_repo = CitizenReportRepository(_db_manager)
+    _red_flag_repo = RedFlagRepository(_db_manager)
 except Exception:
     _db_manager = None
     _alert_repo = None
     _report_repo = None
+    _red_flag_repo = None
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
@@ -82,6 +85,7 @@ CLEAN_PAGE_ROUTES: dict[str, str] = {
     "transparencia": "transparencia.html",
     "acerca": "acerca.html",
     "metodologia": "metodologia.html",
+    "admin": "admin-revision.html",
     "admin/revision": "admin-revision.html",
     "login": "login.html",
     "acreditacion": "login.html",
@@ -421,7 +425,23 @@ class WebApiHandler(BaseHTTPRequestHandler):
             })
 
         if path == "/api/snapshot":
-            return cls._json_bytes(snapshot)
+            public_snapshot = dict(snapshot)
+            public_snapshot["citizen_reports"] = []
+            public_snapshot["alerts"] = [
+                alert for alert in public_snapshot.get("alerts", [])
+                if alert.get("status") == "published"
+            ]
+            published_ids = {
+                flag_id
+                for alert in public_snapshot.get("alerts", [])
+                if alert.get("status") == "published"
+                for flag_id in alert.get("red_flag_ids", [])
+            }
+            public_snapshot["red_flags"] = [
+                flag for flag in public_snapshot.get("red_flags", [])
+                if flag.get("red_flag_id") in published_ids
+            ]
+            return cls._json_bytes(public_snapshot)
 
         if path == "/api/entities":
             entities = snapshot.get("contracting_entities", [])
@@ -475,7 +495,16 @@ class WebApiHandler(BaseHTTPRequestHandler):
             return cls._json_bytes(published_only)
 
         if path == "/api/red-flags":
-            flags = snapshot.get("red_flags", [])
+            published_flag_ids = {
+                flag_id
+                for alert in snapshot.get("alerts", [])
+                if alert.get("status") == "published"
+                for flag_id in alert.get("red_flag_ids", [])
+            }
+            flags = [
+                flag for flag in snapshot.get("red_flags", [])
+                if flag.get("red_flag_id") in published_flag_ids
+            ]
             flag_id = query.get("id", [None])[0]
             if flag_id:
                 matched = next((f for f in flags if f.get("red_flag_id") == flag_id), None)
@@ -507,14 +536,15 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 return cls._error_bytes("Parametro 'token' es obligatorio", 400)
             token_clean = token.strip()
             reports = snapshot.get("citizen_reports", [])
+            token_hash = hashlib.sha256(token_clean.encode("utf-8")).hexdigest()
             matched = next(
-                (r for r in reports if r.get("report_id") == token_clean or r.get("tracking_token") == token_clean),
+                (r for r in reports if r.get("tracking_token_hash") == token_hash),
                 None,
             )
             # Si no esta en snapshot en memoria, consultar repositorio de base de datos
             if not matched and _report_repo is not None:
                 try:
-                    db_report = _report_repo.get_by_id(token_clean)
+                    db_report = _report_repo.get_by_tracking_token_hash(token_hash)
                     if db_report:
                         matched = db_report.model_dump(mode="json")
                 except Exception:
@@ -705,24 +735,37 @@ class WebApiHandler(BaseHTTPRequestHandler):
             )
 
         try:
+            tracking_token = secrets.token_urlsafe(32)
+            tracking_token_hash = hashlib.sha256(tracking_token.encode("utf-8")).hexdigest()
             report = cls.denuncia_service.submit_report(
                 raw_text=raw_text,
                 legal_disclaimer_shown=True,
                 channel=channel,
                 related_entity_id=entity_id,
+                tracking_token_hash=tracking_token_hash,
             )
-            snapshot = cls.get_snapshot()
             payload = report.model_dump(mode="json")
-            snapshot.setdefault("citizen_reports", []).append(payload)
 
             # Persistencia en base de datos operativa (Pilar 2)
             if _report_repo is not None:
                 try:
                     _report_repo.save(report)
-                except Exception:
-                    pass
+                except Exception as exc:
+                    logger.exception("No se pudo persistir la denuncia antes de confirmar su recepcion")
+                    return cls._error_bytes(
+                        f"No se pudo guardar la denuncia: {type(exc).__name__}", 503
+                    )
 
-            return cls._json_bytes({**payload, "report": payload}, status_code=201)
+            snapshot = cls.get_snapshot()
+            snapshot.setdefault("citizen_reports", []).append(payload)
+
+            public_payload = {
+                key: value for key, value in payload.items() if key != "tracking_token_hash"
+            }
+            return cls._json_bytes(
+                {**public_payload, "tracking_token": tracking_token, "report": public_payload},
+                status_code=201,
+            )
         except Exception as exc:
             return cls._error_bytes(f"Error al procesar denuncia: {str(exc)}", 400)
 
@@ -837,13 +880,13 @@ class WebApiHandler(BaseHTTPRequestHandler):
         review_notes = str(data.get("review_notes", "")).strip() or None
 
         auth_header = req_headers.get("authorization", "")
-        if auth_header.startswith("Bearer "):
-            session = _verify_veedor_token(auth_header[7:].strip())
-            if session:
-                veedor = session["veedor"]
-                reviewed_by = f"{veedor['name']} ({veedor['organization']})"
-            else:
-                return cls._json_bytes({"error": "Sesion de veedor invalida o expirada"}, status_code=401)
+        if not auth_header.startswith("Bearer "):
+            return cls._json_bytes({"error": "Sesion de veedor requerida"}, status_code=401)
+        session = _verify_veedor_token(auth_header[7:].strip())
+        if not session:
+            return cls._json_bytes({"error": "Sesion de veedor invalida o expirada"}, status_code=401)
+        veedor = session["veedor"]
+        reviewed_by = f"{veedor['name']} ({veedor['organization']})"
 
         if not entity_id or not red_flag_ids or not status or not reviewed_by:
             return cls._error_bytes(
@@ -856,27 +899,37 @@ class WebApiHandler(BaseHTTPRequestHandler):
         if cleaned_reviewer in GENERIC_REVIEWERS or not cleaned_reviewer:
             return cls._error_bytes(f"reviewed_by no puede ser generico o vacio: '{reviewed_by}'", 400)
 
-        # CA-005-04: review_notes obligatorio si status == 'discarded'
-        if status == "discarded" and not review_notes:
+        # Toda decision humana debe dejar una razon verificable.
+        if not review_notes:
             return cls._error_bytes(
-                "review_notes es obligatorio cuando el estado es 'discarded' (CA-005-04)",
+                "review_notes es obligatorio para toda decision de revision",
                 400,
             )
 
         try:
             if status == "published":
+                if _red_flag_repo is None:
+                    return cls._error_bytes("Repositorio de evidencia no disponible", 503)
+                complete_flags = [_red_flag_repo.get_by_id(flag_id) for flag_id in red_flag_ids]
+                if any(flag is None for flag in complete_flags):
+                    return cls._error_bytes("No se puede publicar sin evidencia completa de cada RedFlag", 409)
                 alert = cls.review_service.publish_alert(
                     entity_id=entity_id,
-                    red_flags=red_flag_ids,
+                    red_flags=[flag for flag in complete_flags if flag is not None],
                     reviewer_id=reviewed_by,
                     review_notes=review_notes,
                 )
             elif status == "discarded":
+                if _red_flag_repo is None:
+                    return cls._error_bytes("Repositorio de evidencia no disponible", 503)
+                complete_flags = [_red_flag_repo.get_by_id(flag_id) for flag_id in red_flag_ids]
+                if any(flag is None for flag in complete_flags):
+                    return cls._error_bytes("No se puede registrar la decision sin evidencia completa", 409)
                 alert = cls.review_service.discard_alert(
                     entity_id=entity_id,
-                    red_flags=red_flag_ids,
+                    red_flags=[flag for flag in complete_flags if flag is not None],
                     reviewer_id=reviewed_by,
-                    review_notes=review_notes or "Descarte documentado",
+                    review_notes=review_notes,
                 )
             else:
                 return cls._error_bytes(
@@ -892,8 +945,8 @@ class WebApiHandler(BaseHTTPRequestHandler):
             if _alert_repo is not None:
                 try:
                     _alert_repo.save(alert)
-                except Exception:
-                    pass
+                except Exception as exc:
+                    return cls._error_bytes(f"No se pudo persistir la alerta: {exc}", 503)
 
             return cls._json_bytes({**payload, "alert": payload}, status_code=201)
         except Exception as exc:

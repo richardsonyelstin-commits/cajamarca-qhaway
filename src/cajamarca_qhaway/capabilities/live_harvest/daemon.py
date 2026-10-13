@@ -113,6 +113,10 @@ class HarvesterDaemon:
             new_executions = await self.mef_poller.poll_cycle()
 
         self._persist_records(new_procurements, new_executions)
+        if "seace" in sources:
+            self.seace_poller.acknowledge_persisted()
+        if "mef" in sources:
+            self.mef_poller.acknowledge_persisted()
         return new_procurements, new_executions
 
     async def harvest_historical_and_recent(
@@ -134,6 +138,10 @@ class HarvesterDaemon:
             new_executions = await self.mef_poller.harvest_historical_and_recent(years=years)
 
         self._persist_records(new_procurements, new_executions)
+        if "seace" in sources:
+            self.seace_poller.acknowledge_persisted()
+        if "mef" in sources:
+            self.mef_poller.acknowledge_persisted()
         return new_procurements, new_executions
 
     async def _seace_loop(self) -> None:
@@ -141,8 +149,8 @@ class HarvesterDaemon:
         while not self.stop_event.is_set():
             try:
                 records = await self.seace_poller.poll_cycle()
-                if records:
-                    self._persist_records(records, [])
+                self._persist_records(records, [])
+                self.seace_poller.acknowledge_persisted()
             except Exception as e:
                 logger.error("Error en ciclo de SEACE: %s", e)
 
@@ -156,8 +164,8 @@ class HarvesterDaemon:
         while not self.stop_event.is_set():
             try:
                 records = await self.mef_poller.poll_cycle()
-                if records:
-                    self._persist_records([], records)
+                self._persist_records([], records)
+                self.mef_poller.acknowledge_persisted()
             except Exception as e:
                 logger.error("Error en ciclo de MEF: %s", e)
 

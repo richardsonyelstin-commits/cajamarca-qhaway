@@ -1,5 +1,5 @@
 ---
-title: Plan 004 — red-flags-engine
+title: Plan 004 - red-flags-engine
 spec: "004"
 capability: red-flags-engine
 status: draft
@@ -12,7 +12,7 @@ confidence: low
 verified: false
 ---
 
-# Plan 004 — red-flags-engine
+# Plan 004 - red-flags-engine
 
 Diseño técnico parcial. El catálogo final de indicadores (AC-004-01) es la ambigüedad más
 bloqueante del proyecto en esta ronda: sin datos reales de `002`/`003` no hay umbral que
@@ -25,11 +25,11 @@ motor (cómo se declara y evalúa un indicador), no su contenido final.
 - Un **registro de indicadores**, análogo en espíritu al `registry.py` de adaptadores de
   `source-federation` en `scientific-literature-pipeline`: cada indicador se declara con
   `indicator_code`, la función que lo evalúa, su fórmula en texto y su umbral, todo en un único
-  lugar auditable — nunca umbrales dispersos en el código de negocio.
+  lugar auditable - nunca umbrales dispersos en el código de negocio.
 - Un **evaluador** que recibe `ProcurementRecord`/`BudgetExecutionRecord` y aplica el catálogo
   completo, produciendo cero o más `RedFlag` por registro de entrada.
 - Ningún **agregador de score**: deliberadamente no existe un módulo que combine `RedFlag` en un
-  número — esa ausencia es el diseño, no un olvido (RN-004-03).
+  número - esa ausencia es el diseño, no un olvido (RN-004-03).
 
 ## Forma de un indicador (contrato interno, no canónico)
 
@@ -41,7 +41,7 @@ applies_to: "procurement" | "procurement+execution"
 evaluate(record, threshold) -> RedFlag | None
 ```
 
-`evaluate()` es puro: mismo registro y mismo umbral producen siempre el mismo resultado —
+`evaluate()` es puro: mismo registro y mismo umbral producen siempre el mismo resultado -
 necesario para que dos ejecuciones del motor sobre el mismo dato sean auditablemente idénticas,
 mismo principio que el Artículo 10 de la constitución exige a nivel de proyecto.
 
@@ -77,11 +77,11 @@ se tome, porque la forma del "registro de indicadores" de arriba cambiaría seg�
 
 ## Orden de implementación
 
-1. Forma del registro de indicadores y del evaluador puro — no bloqueado.
-2. Catálogo final calibrado — **bloqueado por AC-004-01**, que a su vez depende de que `002` y
+1. Forma del registro de indicadores y del evaluador puro - no bloqueado.
+2. Catálogo final calibrado - **bloqueado por AC-004-01**, que a su vez depende de que `002` y
    `003` produzcan datos reales.
-3. Mecanismo de recálculo ante actualización — **bloqueado por AC-002-03 de `002`**.
-4. Persistencia — depende de `specs/pending-adrs.md`.
+3. Mecanismo de recálculo ante actualización - **bloqueado por AC-002-03 de `002`**.
+4. Persistencia - depende de `specs/pending-adrs.md`.
 
 No se escribe estrategia de prueba con casos concretos todavía: los casos de prueba de un
 indicador son, literalmente, el corpus dorado que falta calibrar en el paso 2.

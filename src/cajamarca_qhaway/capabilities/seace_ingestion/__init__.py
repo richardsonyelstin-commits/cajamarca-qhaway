@@ -1,4 +1,4 @@
-"""Capacidad 002-seace-ingestion — Ingesta de contrataciones publicas SEACE/OCDS."""
+"""Capacidad 002-seace-ingestion - Ingesta de contrataciones publicas SEACE/OCDS."""
 
 from __future__ import annotations
 

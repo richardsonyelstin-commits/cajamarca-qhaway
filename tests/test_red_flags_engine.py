@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 import pytest
 
-from cajamarca_qhaway.capabilities.red_flags_engine import ACTIVE_INDICATORS, RedFlagsEngine
+from cajamarca_qhaway.capabilities.red_flags_engine import ACTIVE_INDICATORS, RedFlagsEngine, uit_value
 from cajamarca_qhaway.models import BudgetExecutionRecord, ProcurementRecord, RedFlag
 
 NOW_UTC = datetime.now(timezone.utc)
@@ -27,7 +27,8 @@ def test_catalogo_entre_5_y_10_indicadores():
         "contract-splitting-orders",
     }
     assert expected.issubset(set(ACTIVE_INDICATORS.keys()))
-    assert len(ACTIVE_INDICATORS) == 7
+    assert len(ACTIVE_INDICATORS) == 10
+    assert {"mef-underspending", "recurrent-direct-award", "hhi-concentration"}.issubset(ACTIVE_INDICATORS)
 
 
 @pytest.mark.contract
@@ -159,7 +160,7 @@ def test_deteccion_contract_splitting_orders():
             procurement_id=f"pr-split-{i}",
             ocid=f"ocds-split-{i}",
             entity_id="ce-test-1",
-            title=f"Servicio de consultoria tecnica parte {i}",
+            title=f"Orden de servicio de consultoria tecnica parte {i}",
             awarded_amount=25000.0,
             supplier_ruc="20999888777",
             raw_payload={},
@@ -173,3 +174,73 @@ def test_deteccion_contract_splitting_orders():
     flag = split_flags[0]
     assert flag.observed_value == 3
     assert len(flag.procurement_ids) == 3
+
+
+@pytest.mark.parametrize("year,expected", [(2024, 5150), (2025, 5350), (2026, 5500)])
+def test_uit_se_resuelve_por_ejercicio_fiscal(year: int, expected: int) -> None:
+    assert uit_value(year) == expected
+
+
+def test_uit_rechaza_ejercicio_sin_valor_verificado() -> None:
+    with pytest.raises(ValueError, match="No hay valor de UIT verificado"):
+        uit_value(2027)
+
+
+def test_mef_underspending_solo_en_ejercicio_cerrado_y_sin_division_por_cero() -> None:
+    engine = RedFlagsEngine()
+    records = [
+        BudgetExecutionRecord(
+            execution_record_id=f"me-close-{idx}", entity_id="ce-test-1", fiscal_year=2025,
+            budgeted_amount=pim, executed_amount=spent, budget_category="Obras",
+            raw_payload={"PIM": pim, "DEVENGADO": spent}, retrieved_at=NOW_UTC,
+        )
+        for idx, pim, spent in ((1, 1000, 200), (2, 0, 0))
+    ]
+    current = engine.evaluate([], records, now=datetime(2026, 6, 1, tzinfo=timezone.utc))
+    flags = [flag for flag in current if flag.indicator_code == "mef-underspending"]
+    assert len(flags) == 1
+    assert flags[0].observed_value == 0.8
+    assert flags[0].threshold_value == 0.5
+    assert set(flags[0].execution_record_ids) == {"me-close-1", "me-close-2"}
+    open_year = engine.evaluate([], records, now=datetime(2025, 12, 31, tzinfo=timezone.utc))
+    assert not [flag for flag in open_year if flag.indicator_code == "mef-underspending"]
+
+
+def test_recurrent_direct_award_requires_confirmed_method_date_and_ruc() -> None:
+    engine = RedFlagsEngine()
+    records = [
+        ProcurementRecord(
+            procurement_id=f"pr-rec-{idx}", ocid=f"ocds-rec-{idx}", entity_id="ce-test-1",
+            title="Servicio directo", procurement_method="contratación directa",
+            awarded_amount=1000, supplier_ruc="20111111111",
+            raw_payload={"awards": [{"date": f"2025-0{idx}-10T00:00:00Z"}]},
+            retrieved_at=NOW_UTC,
+        ) for idx in range(1, 4)
+    ]
+    result = engine.evaluate(records, now=NOW_UTC)
+    flags = [flag for flag in result if flag.indicator_code == "recurrent-direct-award"]
+    assert len(flags) == 1
+    assert flags[0].observed_value == 3
+    assert len(flags[0].procurement_ids) == 3
+
+    no_ruc = records[0].model_copy(update={"procurement_id": "pr-no-ruc", "supplier_ruc": None})
+    assert not [flag for flag in engine.evaluate([*records[:2], no_ruc], now=NOW_UTC) if flag.indicator_code == "recurrent-direct-award"]
+
+
+def test_hhi_usa_escala_cero_a_diez_mil_y_omite_cero_y_cobertura_incompleta() -> None:
+    engine = RedFlagsEngine()
+    awards = [
+        ProcurementRecord(
+            procurement_id=f"pr-hhi-{idx}", ocid=f"ocds-hhi-{idx}", entity_id="ce-test-1",
+            title="Adjudicacion", procurement_method="open", awarded_amount=amount,
+            supplier_ruc=ruc, raw_payload={"awards": [{"date": "2025-06-10T00:00:00Z"}]},
+            retrieved_at=NOW_UTC,
+        ) for idx, amount, ruc in ((1, 60, "20111111111"), (2, 20, "20222222222"), (3, 20, "20333333333"))
+    ]
+    result = engine.evaluate(awards, now=NOW_UTC)
+    flags = [flag for flag in result if flag.indicator_code == "hhi-concentration"]
+    assert len(flags) == 1
+    assert flags[0].observed_value == 4400
+    assert flags[0].threshold_value == 2500
+    incomplete = [*awards, awards[0].model_copy(update={"procurement_id": "pr-unknown", "awarded_amount": 10, "supplier_ruc": None})]
+    assert not [flag for flag in engine.evaluate(incomplete, now=NOW_UTC) if flag.indicator_code == "hhi-concentration"]

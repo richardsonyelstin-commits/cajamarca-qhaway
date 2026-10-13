@@ -48,9 +48,20 @@ class MefPoller:
         self.entities_by_ruc = entities_by_ruc
         self.entities_by_id = entities_by_id
         self._http_client = http_client
+        self._pending_offset: int | None = None
+        self._pending_timestamp: datetime | None = None
+        self._pending_records: dict[str, BudgetExecutionRecord] = {}
 
         # CA-003-01: Validacion inquebrantable de prohibicion a Consulta Amigable
         self._assert_valid_endpoint(config.base_url)
+
+    def acknowledge_persisted(self) -> None:
+        """Advance the CKAN offset only after records are durable."""
+        if self._pending_offset is not None and self._pending_timestamp is not None:
+            self.watermark_store.update_mef_cursor(self._pending_timestamp, self._pending_offset)
+            self._pending_offset = None
+            self._pending_timestamp = None
+            self._pending_records.clear()
 
     @staticmethod
     def _assert_valid_endpoint(url: str) -> None:
@@ -143,11 +154,11 @@ class MefPoller:
                 status="FAILED",
                 notes="Respuesta invalida o fallo en datastore_search",
             )
-            return []
+            return list(self._pending_records.values())
 
         records_data = response_payload.get("result", {}).get("records", [])
         total_received = len(records_data)
-        harvested_records: list[BudgetExecutionRecord] = []
+        harvested_records: list[BudgetExecutionRecord] = list(self._pending_records.values())
         retrieval_timestamp = datetime.now(timezone.utc)
 
         for row in records_data:
@@ -161,9 +172,11 @@ class MefPoller:
             )
             if rec:
                 harvested_records.append(rec)
+                self._pending_records[rec.execution_record_id] = rec
 
         new_offset = current_offset + total_received
-        self.watermark_store.update_mef_cursor(retrieval_timestamp, new_offset)
+        self._pending_offset = max(new_offset, self._pending_offset or 0)
+        self._pending_timestamp = retrieval_timestamp
 
         self.coverage_logger.log_window(
             source="mef-datastore",

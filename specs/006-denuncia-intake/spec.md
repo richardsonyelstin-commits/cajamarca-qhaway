@@ -1,5 +1,5 @@
 ---
-title: Spec 006 — denuncia-intake
+title: Spec 006 - denuncia-intake
 spec: "006"
 capability: denuncia-intake
 status: draft
@@ -15,7 +15,7 @@ confidence: low
 verified: false
 ---
 
-# Spec 006 — denuncia-intake
+# Spec 006 - denuncia-intake
 
 Recibe una denuncia ciudadana curada, la modera antes de convertirla en candidato de
 investigación, y muestra el aviso obligatorio de que la plataforma no ofrece protección legal
@@ -29,7 +29,7 @@ El estado del arte (`brain/70-inbox/2026-08-20-estado-del-arte-ia-anticorrupcion
 documenta que el modelo que funciona a escala (DoZorro, Ucrania) exige una comunidad de
 verificadores capacitados, no un buzón anónimo abierto. El diseño de producto ya descartó
 explícitamente el crowdsourcing sin curaduría como el patrón de mayor riesgo de abuso. El problema
-de esta capacidad no es "cómo recibir texto de un ciudadano" —eso es trivial— sino cómo moderar
+de esta capacidad no es "cómo recibir texto de un ciudadano" -eso es trivial- sino cómo moderar
 antes de que una denuncia se convierta en algo accionable, sin prometer al denunciante una
 protección que la plataforma no puede dar, y sin que el propio canal se convierta en vector de
 denuncias falsas con fines políticos en una región con conflicto social activo
@@ -56,10 +56,10 @@ denuncias falsas con fines políticos en una región con conflicto social activo
 ## Salidas
 
 Un `CitizenReport` (contrato canónico, Artículo 19) por cada envío aceptado por el formulario
-(antes de moderación) — el estado `moderation_status` distingue lo recién llegado de lo ya
+(antes de moderación) - el estado `moderation_status` distingue lo recién llegado de lo ya
 revisado.
 
-**Ubicación.** `[NECESITA ACLARACIÓN: depende del stack — ver specs/pending-adrs.md]`
+**Ubicación.** `[NECESITA ACLARACIÓN: depende del stack - ver specs/pending-adrs.md]`
 
 ## Reglas de negocio
 
@@ -68,17 +68,17 @@ después.**
 `legal_disclaimer_shown` debe ser `true` en el momento de la creación del `CitizenReport`; un
 envío sin esa confirmación previa no se acepta. El texto declara explícitamente que la plataforma
 no es una entidad gubernamental y no ofrece la protección del SINAD (identidad del denunciante,
-protección laboral) — ver Ambigüedades abiertas para el texto exacto.
+protección laboral) - ver Ambigüedades abiertas para el texto exacto.
 
 **RN-006-02. Toda denuncia entra en `moderation_status: pending`, sin excepción.**
 Ninguna denuncia se convierte en candidato de investigación (no se cruza con `004-red-flags-engine`
-ni se muestra en ningún panel de trabajo activo) sin pasar por moderación humana explícita —
+ni se muestra en ningún panel de trabajo activo) sin pasar por moderación humana explícita -
 mismo principio del Artículo 14 de la constitución, aplicado a un tipo de entrada distinto
 (denuncia, no dato estructurado).
 
 **RN-006-03. Moderar es una decisión de tres estados, no dos.**
 `accepted_as_lead` (se convierte en insumo de investigación), `rejected` (se descarta, con
-motivo) — nunca un estado binario de "válida/inválida" que fuerce al moderador a decidir sin
+motivo) - nunca un estado binario de "válida/inválida" que fuerce al moderador a decidir sin
 espacio para "necesita más información antes de decidir", que en este caso se representa dejando
 el reporte en `pending` más tiempo, no inventando un tercer estado adicional no declarado en el
 contrato canónico.
@@ -89,7 +89,7 @@ Mismo principio, misma razón: defensibilidad y trazabilidad.
 
 **RN-006-05. Una denuncia aceptada como candidato (`accepted_as_lead`) no se convierte
 automáticamente en `RedFlag` ni en `Alert`.**
-Entra como insumo de investigación humana — puede orientar dónde mirar en `002`/`003`, pero no
+Entra como insumo de investigación humana - puede orientar dónde mirar en `002`/`003`, pero no
 genera por sí sola un indicador automatizado (una denuncia de texto libre no tiene fórmula ni
 umbral, así que no encaja en el contrato `RedFlag`). El mecanismo exacto de cómo una denuncia
 aceptada se convierte en trabajo de investigación queda fuera del alcance técnico de esta spec.
@@ -98,12 +98,12 @@ aceptada se convierte en trabajo de investigación queda fuera del alcance técn
 técnicamente.**
 En el canal `web`, no se pide nombre, documento de identidad ni contacto salvo que la persona lo
 incluya voluntariamente dentro de `raw_text`. Pedir un correo "para dar seguimiento" es una
-decisión de producto que aumenta el riesgo de identificación y no está decidida aquí —
+decisión de producto que aumenta el riesgo de identificación y no está decidida aquí -
 `[NECESITA ACLARACIÓN]` si se necesita algún canal de respuesta al denunciante.
 
 **RN-006-07. Ninguna denuncia se publica en el dashboard público directamente.**
 Una denuncia moderada como `accepted_as_lead` puede, en el futuro, alimentar un `RedFlag` si la
-investigación humana produce datos que sí encajan en ese contrato — pero eso pasa por `004` y
+investigación humana produce datos que sí encajan en ese contrato - pero eso pasa por `004` y
 `005` como cualquier otro candidato, nunca por una vía directa de "denuncia → alerta pública".
 
 ## Criterios de aceptación
@@ -116,7 +116,7 @@ Dado cualquier `CitizenReport` recién creado, `moderation_status == "pending"`.
 
 **CA-006-03** · RN-006-03
 Dado el conjunto de valores posibles de `moderation_status`, son exactamente `pending`,
-`accepted_as_lead` y `rejected` — ningún otro valor es válido.
+`accepted_as_lead` y `rejected` - ningún otro valor es válido.
 
 **CA-006-04** · RN-006-04
 Dado cualquier `CitizenReport` con `moderation_status != "pending"`, `moderated_by` no está vacío
@@ -132,34 +132,34 @@ identidad o contacto.
 
 ## Casos límite
 
-**CL-006-01** — Una denuncia con lenguaje que identifica claramente y por nombre a un
+**CL-006-01** - Una denuncia con lenguaje que identifica claramente y por nombre a un
 funcionario, acusándolo de forma directa.
 `[NECESITA ACLARACIÓN: si el moderador debe redactar/anonimizar antes de aceptar como candidato,
-dado que el Artículo 16 prohíbe cualquier salida que puntúe o exponga a una persona por nombre —
+dado que el Artículo 16 prohíbe cualquier salida que puntúe o exponga a una persona por nombre -
 una denuncia de texto libre no es un RedFlag, pero si se usa como insumo visible de trabajo,
 podría rozar el mismo riesgo]`
 
-**CL-006-02** — Una oleada de denuncias coordinadas, con texto muy similar, en un periodo corto
+**CL-006-02** - Una oleada de denuncias coordinadas, con texto muy similar, en un periodo corto
 (indicio de campaña política contra una entidad o persona).
-`[NECESITA ACLARACIÓN: mecanismo de detección de abuso coordinado — no cubierto por esta spec,
+`[NECESITA ACLARACIÓN: mecanismo de detección de abuso coordinado - no cubierto por esta spec,
 podría requerir su propia regla de negocio en una revisión futura]`
 
-**CL-006-03** — Una denuncia llega por SMS/WhatsApp antes de que `009-sms-whatsapp-notify`
+**CL-006-03** - Una denuncia llega por SMS/WhatsApp antes de que `009-sms-whatsapp-notify`
 exista.
 No es un caso posible en Fase 1 actual: el canal `web` es el único disponible hasta que `009` se
 especifique e implemente. El campo `channel` del contrato ya admite los tres valores para no
 tener que romper el contrato canónico después.
 
-**CL-006-04** — Un denunciante pide explícitamente que se elimine su denuncia después de
+**CL-006-04** - Un denunciante pide explícitamente que se elimine su denuncia después de
 enviarla.
-`[NECESITA ACLARACIÓN: mecanismo de retiro de una denuncia ya enviada — no cubierto, y con
+`[NECESITA ACLARACIÓN: mecanismo de retiro de una denuncia ya enviada - no cubierto, y con
 implicación de protección de datos bajo Ley 29733 si la denuncia incluyó datos personales del
 propio denunciante en el texto libre]`
 
 ## Evidencia y manifiesto
 
 Cada `CitizenReport` guarda `submitted_at`, `channel` y, tras moderación, `moderated_by` y
-`moderated_at` — es la traza mínima para que una decisión de moderación sea auditable, aunque el
+`moderated_at` - es la traza mínima para que una decisión de moderación sea auditable, aunque el
 contenido de la denuncia en sí no tenga "fuente" en el sentido de `002`/`003` (la fuente es la
 propia persona).
 
@@ -167,7 +167,7 @@ propia persona).
 
 - Cualquier mecanismo de protección de identidad más allá de no recolectar datos innecesarios
   (RN-006-06): no se construye un sistema de anonimización criptográfica ni de intermediación
-  legal en Fase 1 — el aviso (RN-006-01) es la mitigación primaria, no una promesa de protección
+  legal en Fase 1 - el aviso (RN-006-01) es la mitigación primaria, no una promesa de protección
   técnica que la plataforma no puede cumplir.
 - Canales `sms`/`whatsapp`: dependen de `009-sms-whatsapp-notify`, no construida.
 - Conversión automática de una denuncia en `RedFlag` o `Alert` (RN-006-05, RN-006-07).
@@ -189,13 +189,13 @@ humana con criterio legal.
 concreto (RN-006-05).**
 No decido el mecanismo operativo: ¿la ve el mismo panel de `005-review-panel`? ¿un flujo de
 trabajo distinto, más cercano a las ONG aliadas? Depende de la coordinación previa con Proética,
-Propuesta Ciudadana y GRUFIDES que ya bloquea el roadmap — con esas organizaciones probablemente
+Propuesta Ciudadana y GRUFIDES que ya bloquea el roadmap - con esas organizaciones probablemente
 se defina quién investiga qué.
-`[NECESITA ACLARACIÓN: flujo operativo de investigación de denuncias aceptadas — depende de la
+`[NECESITA ACLARACIÓN: flujo operativo de investigación de denuncias aceptadas - depende de la
 coordinación con actores externos, bloqueante del roadmap general]`
 
 **AC-006-03. Redacción/anonimización de denuncias que nombran a una persona (CL-006-01).**
-`[NECESITA ACLARACIÓN: política de moderación ante nombres propios — tensiona con Artículo 16]`
+`[NECESITA ACLARACIÓN: política de moderación ante nombres propios - tensiona con Artículo 16]`
 
 **AC-006-04. Detección de abuso coordinado (CL-006-02).**
 `[NECESITA ACLARACIÓN: si se necesita en Fase 1 o se acepta el riesgo con un panel pequeño que
@@ -203,11 +203,11 @@ revisa todo manualmente]`
 
 **AC-006-05. Mecanismo de retiro de una denuncia ya enviada (CL-006-04).**
 `[NECESITA ACLARACIÓN: implicación de Ley 29733 sobre datos personales que el propio denunciante
-incluyó — posiblemente requiere el mismo tipo de evaluación legal que DJI, aunque por un motivo
+incluyó - posiblemente requiere el mismo tipo de evaluación legal que DJI, aunque por un motivo
 distinto]`
 
 **AC-006-06. Si se ofrece algún canal de respuesta al denunciante (RN-006-06).**
-`[NECESITA ACLARACIÓN: decisión de producto, no de esta spec — trade-off explícito entre dar
+`[NECESITA ACLARACIÓN: decisión de producto, no de esta spec - trade-off explícito entre dar
 seguimiento y minimizar dato personal recolectado]`
 
 ## Ambigüedades resueltas

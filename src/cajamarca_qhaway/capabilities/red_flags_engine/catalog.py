@@ -56,9 +56,9 @@ ACTIVE_INDICATORS: dict[str, IndicatorDefinition] = {
     "direct-award-threshold": IndicatorDefinition(
         code="direct-award-threshold",
         name="Adjudicacion directa en umbral critico",
-        formula_description="Contratacion directa cuyo monto roza sospechosamente el umbral limite de exoneracion legal",
-        default_threshold=40000.0,
-        unit="PEN",
+        formula_description="Proceso de modalidad directa con monto entre 85% y 100% de 8 UIT, senal informativa sin presumir infraccion ni fraccionamiento",
+        default_threshold=8.0,
+        unit="UIT",
     ),
     "direct-administration-equipment-rent": IndicatorDefinition(
         code="direct-administration-equipment-rent",
@@ -70,11 +70,46 @@ ACTIVE_INDICATORS: dict[str, IndicatorDefinition] = {
     "contract-splitting-orders": IndicatorDefinition(
         code="contract-splitting-orders",
         name="Fraccionamiento en ordenes consecutivas menores a 8 UIT",
-        formula_description="Emision de 3 o mas ordenes de compra o servicio menores a 8 UIT al mismo proveedor en menos de 30 dias",
+        formula_description="Tres o mas ordenes menores a 8 UIT al mismo proveedor dentro de una ventana de 30 dias",
         default_threshold=3,
         unit="ordenes",
     ),
+    "mef-underspending": IndicatorDefinition(
+        code="mef-underspending",
+        name="Baja ejecucion presupuestal al cierre",
+        formula_description="(PIM - devengado) / PIM para entidad, categoria y ejercicio cerrado; se activa desde 0.50",
+        default_threshold=0.50,
+        unit="ratio",
+    ),
+    "recurrent-direct-award": IndicatorDefinition(
+        code="recurrent-direct-award",
+        name="Contrataciones directas recurrentes al mismo proveedor",
+        formula_description="Tres o mas procesos de contratacion directa de la misma entidad al mismo RUC proveedor en 365 dias",
+        default_threshold=3,
+        unit="procesos/365 dias",
+    ),
+    "hhi-concentration": IndicatorDefinition(
+        code="hhi-concentration",
+        name="Concentracion anual de adjudicaciones (HHI)",
+        formula_description="Suma de la participacion cuadratica por RUC en adjudicaciones de la entidad durante el ejercicio, escala 0-10000",
+        default_threshold=2500,
+        unit="puntos HHI (0-10000)",
+    ),
 }
+
+UIT_BY_FISCAL_YEAR: dict[int, int] = {
+    2024: 5150,
+    2025: 5350,
+    2026: 5500,
+}
+
+
+def uit_value(fiscal_year: int) -> int:
+    """Resuelve el valor legal publicado de la UIT para los ejercicios soportados."""
+    try:
+        return UIT_BY_FISCAL_YEAR[fiscal_year]
+    except KeyError as exc:
+        raise ValueError(f"No hay valor de UIT verificado para el ejercicio {fiscal_year}") from exc
 
 if not (5 <= len(ACTIVE_INDICATORS) <= 10):
     raise ValueError(

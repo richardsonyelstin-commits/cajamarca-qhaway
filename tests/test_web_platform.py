@@ -32,7 +32,7 @@ from cajamarca_qhaway.models import (
 )
 from cajamarca_qhaway.models.alert import GENERIC_REVIEWERS, STANDARD_ALERT_DISCLAIMER
 from cajamarca_qhaway.web.exporter import build_verified_web_snapshot, export_verified_snapshot
-from cajamarca_qhaway.web.server import WebApiHandler, run_server
+from cajamarca_qhaway.web.server import CLEAN_PAGE_ROUTES, WebApiHandler, run_server
 import importlib.util
 
 _tool_path = Path("web/tools/validate_web_integrity.py").resolve()
@@ -75,6 +75,14 @@ def test_02_zero_em_dash_antislop_rule():
     assert not errors, f"Violacion de regla Antislop R-02 (em-dash detectado): {errors}"
 
 
+def test_clean_page_routes_match_vercel_rewrites():
+    vercel = json.loads(Path("vercel.json").read_text(encoding="utf-8"))
+    rewrites = {item["source"]: item["destination"] for item in vercel["rewrites"]}
+    for route, filename in CLEAN_PAGE_ROUTES.items():
+        source = "/index.html" if route == "index" else ("/" if route == "" else f"/{route}")
+        assert rewrites.get(source) == f"/web/{filename}", f"Ruta desincronizada: {source}"
+
+
 def test_03_snapshot_models_validation(web_snapshot):
     """Verifica que todos los registros en verified-snapshot.json validen contra Pydantic v2."""
     # 1. ContractingEntity
@@ -98,8 +106,7 @@ def test_03_snapshot_models_validation(web_snapshot):
     assert len(alerts) >= 3, "Debe haber alertas procesadas por el panel humano"
 
     # 6. CitizenReport
-    reports = [CitizenReport.model_validate(r) for r in web_snapshot["citizen_reports"]]
-    assert len(reports) >= 2, "Debe haber denuncias ciudadanas de prueba"
+    assert web_snapshot["citizen_reports"] == [], "Los reportes privados no deben salir en el snapshot publico"
 
 
 def test_04_article_14_human_review_invariants(web_snapshot):
@@ -131,10 +138,8 @@ def test_05_article_15_explainability_and_disclaimer(web_snapshot):
 
 
 def test_06_ca_006_01_legal_disclaimer_mandatory_on_reports(web_snapshot):
-    """Verifica que los reportes ciudadanos registrados incluyan la aceptacion legal."""
-    for raw in web_snapshot["citizen_reports"]:
-        report = CitizenReport.model_validate(raw)
-        assert report.legal_disclaimer_shown is True
+    """Verifica que el snapshot publico no exponga reportes ciudadanos."""
+    assert web_snapshot["citizen_reports"] == []
 
 
 def test_07_api_health_endpoint(local_web_server):
@@ -246,11 +251,14 @@ def test_13_api_post_review_rejects_generic_reviewers(local_web_server):
     )
     with pytest.raises(urllib.error.HTTPError) as exc_info:
         urllib.request.urlopen(req)
-    assert exc_info.value.code == 400
+    assert exc_info.value.code == 401
 
 
 def test_14_api_post_review_requires_notes_for_discarded(local_web_server):
     """Verifica que POST /api/review requiera review_notes si status == 'discarded' (CA-005-04)."""
+    from cajamarca_qhaway.web.server import ACCREDITED_VEEDORES, _issue_veedor_token
+
+    token, _ = _issue_veedor_token(ACCREDITED_VEEDORES[0])
     url = f"{local_web_server}/api/review"
     payload = {
         "entity_id": "ce-f5f5d8fc32518855",
@@ -262,7 +270,7 @@ def test_14_api_post_review_requires_notes_for_discarded(local_web_server):
     req = urllib.request.Request(
         url,
         data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json"},
+        headers={"Content-Type": "application/json", "Authorization": f"Bearer {token}"},
         method="POST",
     )
     with pytest.raises(urllib.error.HTTPError) as exc_info:
@@ -457,9 +465,10 @@ def test_20_api_reports_privacy_and_tracking(local_web_server):
         assert resp.status == 201
         created_report = json.loads(resp.read().decode("utf-8"))
         test_rep_id = created_report["report_id"]
+        tracking_token = created_report["tracking_token"]
 
     # 5. GET /api/reports/track?token=<id> retorna metadatos publicos sanitizados
-    track_req = urllib.request.Request(f"{local_web_server}/api/reports/track?token={test_rep_id}", method="GET")
+    track_req = urllib.request.Request(f"{local_web_server}/api/reports/track?token={tracking_token}", method="GET")
     with urllib.request.urlopen(track_req) as resp:
         assert resp.status == 200
         meta = json.loads(resp.read().decode("utf-8"))
@@ -527,7 +536,11 @@ def test_21_vercel_wsgi_security_and_tracking():
     from api.index import _stdlib_fallback_dispatch
     s_code, _, s_body = _stdlib_fallback_dispatch("GET", "/api/reports", {}, req_headers={})
     assert s_code == 401
-    s_code_ok, _, s_body_ok = _stdlib_fallback_dispatch("GET", "/api/reports", {}, req_headers={"authorization": "Bearer valid"})
+    from api.index import _ACCREDITED_VEEDORES_STDLIB, _issue_veedor_token_stdlib
+    stdlib_token, _ = _issue_veedor_token_stdlib(_ACCREDITED_VEEDORES_STDLIB[0])
+    s_code_ok, _, s_body_ok = _stdlib_fallback_dispatch(
+        "GET", "/api/reports", {}, req_headers={"authorization": f"Bearer {stdlib_token}"}
+    )
     assert s_code_ok == 200
 
 
@@ -600,6 +613,7 @@ def test_23_reports_moderation_api_sync(local_web_server):
     with urllib.request.urlopen(post_req) as resp:
         created = json.loads(resp.read().decode("utf-8"))
         test_rep_id = created["report_id"]
+        tracking_token = created["tracking_token"]
 
     # 2. Moderar sin token debe retornar 401
     mod_unauth = urllib.request.Request(
@@ -668,7 +682,7 @@ def test_23_reports_moderation_api_sync(local_web_server):
         assert "Carlos Arana" in res_data["moderated_by"] or "Proetica" in res_data["moderated_by"]
 
     # 6. Consultar estado en /api/reports/track refleja el nuevo estado
-    track_req = urllib.request.Request(f"{local_web_server}/api/reports/track?token={test_rep_id}", method="GET")
+    track_req = urllib.request.Request(f"{local_web_server}/api/reports/track?token={tracking_token}", method="GET")
     with urllib.request.urlopen(track_req) as resp:
         assert resp.status == 200
         meta = json.loads(resp.read().decode("utf-8"))

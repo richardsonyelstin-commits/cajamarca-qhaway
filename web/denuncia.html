@@ -425,7 +425,7 @@
 
         <div class="border-t border-slate-border pt-4 flex flex-col md:flex-row items-center justify-between gap-3 text-caption text-on-surface-variant">
           <div>
-            © 2025–2026 Cajamarca Qhaway. Licencia Abierta ODC-By 1.0.
+            © 2025-2026 Cajamarca Qhaway. Licencia Abierta ODC-By 1.0.
           </div>
           <div class="flex items-center gap-4">
             <span class="inline-flex items-center gap-1 text-civic-emerald font-semibold">
@@ -512,7 +512,8 @@
 
           if (res.ok) {
             const data = await res.json();
-            const reportId = data.report?.report_id || `cr-${Date.now().toString(36)}`;
+            const reportId = data.tracking_token;
+            if (!reportId) throw new Error('El servidor no devolvió el token seguro de seguimiento.');
 
             form.reset();
             form.classList.add('hidden');
@@ -557,20 +558,16 @@
             const statusLabel = found.moderation_status === 'validated'
               ? 'Verificado por el Equipo Técnico'
               : (found.moderation_status === 'dismissed' ? 'Desestimado con Fundamentación' : 'Ingresado al Pipeline de Verificación');
-            resBox.innerHTML = `
-              <div class="flex items-center gap-2 text-civic-emerald mb-1">
-                <span class="material-symbols-outlined text-[18px]">check_circle</span>
-                <strong>Expediente Localizado (${found.report_id})</strong>
-              </div>
-              <p class="text-on-surface-variant">Estado Técnico: <strong class="text-on-surface">${statusLabel}</strong></p>
-              <p class="text-caption text-outline mt-1">Fecha de recepción: ${found.submitted_at || 'Reciente'}</p>
-            `;
+            resBox.replaceChildren();
+            const heading = document.createElement('strong');
+            heading.textContent = `Expediente localizado (${found.report_id})`;
+            const status = document.createElement('p');
+            status.textContent = `Estado técnico: ${statusLabel}`;
+            const date = document.createElement('p');
+            date.textContent = `Fecha de recepción: ${found.submitted_at || 'Reciente'}`;
+            resBox.append(heading, status, date);
           } else {
-            resBox.innerHTML = `
-              <div class="text-on-surface-variant">
-                Expediente <code>${token}</code> en proceso de indexación inicial o no encontrado en el corte activo. Si lo acaba de enviar, el token es válido y está registrado en la base de datos de auditoría.
-              </div>
-            `;
+            resBox.textContent = `Expediente ${token} en proceso de indexación inicial o no encontrado en el corte activo.`;
           }
         } catch (err) {
           resBox.classList.remove('hidden');

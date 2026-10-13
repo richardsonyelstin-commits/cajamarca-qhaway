@@ -41,11 +41,11 @@ class RedFlagRepository:
 
         sql = """
         INSERT INTO red_flags
-            (red_flag_id, indicator_code, formula_description, threshold, observed_value,
+            (red_flag_id, indicator_code, formula_description, threshold, threshold_value, observed_value,
              procurement_ids, execution_record_ids, evidence_source, evidence_retrieved_at,
-             generated_at)
+             retrieved_at, generated_at)
         VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT (red_flag_id) DO NOTHING
         """
 
@@ -55,11 +55,13 @@ class RedFlagRepository:
                 f.indicator_code,
                 f.formula_description,
                 f.threshold,
+                str(f.threshold_value),
                 f.observed_value,
                 json.dumps(list(f.procurement_ids)),
                 json.dumps(list(f.execution_record_ids)),
                 f.evidence_source,
                 f.evidence_retrieved_at.isoformat(),
+                f.retrieved_at.isoformat(),
                 f.generated_at.isoformat(),
             )
             for f in flags
@@ -87,11 +89,11 @@ class RedFlagRepository:
             except json.JSONDecodeError:
                 execution_record_ids = ()
 
-        evidence_retrieved_at = row["evidence_retrieved_at"]
-        if isinstance(evidence_retrieved_at, str):
-            evidence_retrieved_at = datetime.fromisoformat(evidence_retrieved_at)
-        if evidence_retrieved_at.tzinfo is None:
-            evidence_retrieved_at = evidence_retrieved_at.replace(tzinfo=timezone.utc)
+        retrieved_at = row["retrieved_at"]
+        if isinstance(retrieved_at, str):
+            retrieved_at = datetime.fromisoformat(retrieved_at)
+        if retrieved_at.tzinfo is None:
+            retrieved_at = retrieved_at.replace(tzinfo=timezone.utc)
 
         generated_at = row["generated_at"]
         if isinstance(generated_at, str):
@@ -103,11 +105,11 @@ class RedFlagRepository:
             red_flag_id=row["red_flag_id"],
             indicator_code=row["indicator_code"],
             formula_description=row["formula_description"],
-            threshold=row["threshold"],
+            threshold_value=row["threshold_value"],
             observed_value=row["observed_value"],
             procurement_ids=procurement_ids,
             execution_record_ids=execution_record_ids,
             evidence_source=row["evidence_source"],
-            evidence_retrieved_at=evidence_retrieved_at,
+            retrieved_at=retrieved_at,
             generated_at=generated_at,
         )

@@ -1,5 +1,5 @@
 ---
-title: Spec 002 — seace-ingestion
+title: Spec 002 - seace-ingestion
 spec: "002"
 capability: seace-ingestion
 status: draft
@@ -15,12 +15,12 @@ confidence: medium
 verified: false
 ---
 
-# Spec 002 — seace-ingestion
+# Spec 002 - seace-ingestion
 
 Ingiere contrataciones públicas desde la API OCDS del Portal de Contrataciones Abiertas (OECE,
 ex-OSCE/SEACE), filtradas al universo de `001-entity-mapping`, con el payload original íntegro y
 metadatos de fuente y fecha. Fundamentada en lo verificado realmente en
-`docs/research/2026-08-20-verificacion-tecnica-fuentes.md` §1 — no en la suposición original del
+`docs/research/2026-08-20-verificacion-tecnica-fuentes.md` §1 - no en la suposición original del
 diseño de producto de que existiría un filtro de región del lado del servidor.
 
 ## Problema
@@ -53,7 +53,7 @@ una IP privada no enrutable), así que no se puede asumir como alternativa sin v
 |---|---|---|
 | Universo de entidades | `001-entity-mapping` (`ContractingEntity`, `ruc`/`consucode_id`) | sí |
 | Endpoint de la API | `https://contratacionesabiertas.oece.gob.pe/api/v1/releases`, confirmado 2026-08-20 | sí |
-| Ventana temporal de cosecha | No confirmada — ver Ambigüedades abiertas | sí, pero sin valor fijado |
+| Ventana temporal de cosecha | No confirmada - ver Ambigüedades abiertas | sí, pero sin valor fijado |
 
 No hay clave de API: el endpoint verificado responde sin autenticación.
 
@@ -67,7 +67,7 @@ Cada registro conserva el `release` OCDS completo en `raw_payload`, sin transfor
 lo necesario para extraer `entity_id`, `ocid` y los campos declarados en el contrato canónico.
 
 **Ubicación.** `[NECESITA ACLARACIÓN: se resuelve en plan.md una vez fijado el stack de
-persistencia — ver specs/pending-adrs.md]`
+persistencia - ver specs/pending-adrs.md]`
 
 ## Reglas de negocio
 
@@ -82,7 +82,7 @@ Un `release` entra al corpus de Cajamarca solo si (a) algún `party` con rol
 `consucode_id` coincide con una `ContractingEntity` activa del universo de `001`. El criterio
 (a) solo no basta: un `department` mal declarado en origen (dato sucio) podría colar una entidad
 fuera del universo verificado; el criterio (b) solo tampoco basta si el universo de `001` aún no
-cubre alguna distrital relevante — la discrepancia entre ambos criterios se registra, no se
+cubre alguna distrital relevante - la discrepancia entre ambos criterios se registra, no se
 descarta en silencio.
 
 **RN-002-03. `raw_payload` no se transforma.**
@@ -96,7 +96,7 @@ Un `ProcurementRecord` se identifica por `ocid`. Reingerir el mismo `release` no
 registro duplicado; si el `release` trae una versión más nueva del mismo `ocid` (OCDS es un
 formato de eventos acumulativos), se conserva la más reciente y se declara que hubo actualización,
 nunca se sobrescribe en silencio sin dejar rastro de que existía una versión anterior.
-`[NECESITA ACLARACIÓN: cómo se versiona un release actualizado — ver Ambigüedades abiertas]`
+`[NECESITA ACLARACIÓN: cómo se versiona un release actualizado - ver Ambigüedades abiertas]`
 
 **RN-002-05. `retrieved_at` y `source` son obligatorios en todo registro.**
 `source` es siempre `"seace-ocds"`; `retrieved_at` es el instante exacto de la petición HTTP que
@@ -114,14 +114,14 @@ deseada. Prometer cobertura histórica sin haberla verificado es el mismo error 
 
 **RN-002-07. Fallo del endpoint no se sustituye en silencio.**
 Si `GET /api/v1/releases` no responde con un `release package` válido (cuerpo JSON con
-`releases[]`), la corrida de esa ejecución falla y se registra — no se intenta adivinar contra
+`releases[]`), la corrida de esa ejecución falla y se registra - no se intenta adivinar contra
 `/downloads` u otro endpoint no confirmado sin que sea una decisión explícita de la ejecución.
 
 **RN-002-08. Nomenclatura del campo `region` de OCDS.**
 En el payload real, `parties[].address.region` contiene la **provincia**, no el departamento
 (confirmado en la verificación técnica: `"CELENDIN"` para una entidad de esa provincia). Ningún
 código ni documento de este proyecto usa "región" para referirse al campo OCDS `region` sin
-aclarar que es la provincia — evita el error de leer `region` como sinónimo de "Cajamarca".
+aclarar que es la provincia - evita el error de leer `region` como sinónimo de "Cajamarca".
 
 ## Criterios de aceptación
 
@@ -153,44 +153,44 @@ falla explícitamente y no produce `ProcurementRecord` parciales sin declararlo.
 
 ## Casos límite
 
-**CL-002-01** — Un `release` sin ningún `party` con rol `buyer`/`procuringEntity`.
+**CL-002-01** - Un `release` sin ningún `party` con rol `buyer`/`procuringEntity`.
 No entra al corpus; se registra como descartado por falta de comprador identificable.
 
-**CL-002-02** — Un `release` con dos `parties` con rol `buyer` de departamentos distintos
+**CL-002-02** - Un `release` con dos `parties` con rol `buyer` de departamentos distintos
 (consorcio interregional, poco común pero posible).
 `[NECESITA ACLARACIÓN: si basta con que uno sea de Cajamarca o deben serlo todos]`
 
-**CL-002-03** — El feed devuelve menos de 20 `releases` en una consulta (el tamaño observado en
+**CL-002-03** - El feed devuelve menos de 20 `releases` en una consulta (el tamaño observado en
 la verificación fue de ~20 por respuesta, sin parámetro de tamaño confirmado).
 Se acepta lo que el feed entregue; no se asume un tamaño de página fijo.
 
-**CL-002-04** — Una entidad de Cajamarca no aparece en ninguna consulta durante semanas.
+**CL-002-04** - Una entidad de Cajamarca no aparece en ninguna consulta durante semanas.
 No es necesariamente un fallo de la ingesta: puede ser que esa entidad no publicó nada en ese
 periodo. La corrida no lo trata como error, pero el hueco de cobertura se puede hacer visible en
 el informe si se detecta un patrón (competencia de una capacidad de monitoreo, no de esta spec).
 
-**CL-002-05** — `parties[].address.department` viene vacío o con un valor no estandarizado
+**CL-002-05** - `parties[].address.department` viene vacío o con un valor no estandarizado
 (p. ej. `"Cajamarca"` en minúsculas, o con tilde distinta).
 La comparación contra `"CAJAMARCA"` se hace normalizando mayúsculas/acentos, no con
-correspondencia exacta byte a byte — de lo contrario un dato sucio de origen excluiría entidades
+correspondencia exacta byte a byte - de lo contrario un dato sucio de origen excluiría entidades
 legítimas en silencio.
 
 ## Evidencia y manifiesto
 
 Por cada `ProcurementRecord`, el registro de procedencia incluye: `source`, `retrieved_at`, y el
-`raw_payload` íntegro, que juntos permiten reconstruir exactamente qué se vio y cuándo — es la
+`raw_payload` íntegro, que juntos permiten reconstruir exactamente qué se vio y cuándo - es la
 base de la capa de explicabilidad exigida por el Artículo 15 de la constitución para cualquier
 `RedFlag` que después se derive de este dato.
 `[NECESITA ACLARACIÓN: si existe un concepto de "corrida"/manifiesto propio de este proyecto,
 análogo al `RunManifest` de scientific-literature-pipeline, o si el registro vive solo a nivel de
-cada `ProcurementRecord` — ver specs/pending-adrs.md]`
+cada `ProcurementRecord` - ver specs/pending-adrs.md]`
 
 ## Fuera de alcance
 
 - Normalizar, deduplicar contra otras fuentes o calcular cualquier indicador de riesgo: eso es
   `004-red-flags-engine`.
 - Cruzar con ejecución presupuestal: eso es responsabilidad de `004`, usando la salida de `002` y
-  `003` juntas — esta capacidad no llama a `003`.
+  `003` juntas - esta capacidad no llama a `003`.
 - Descargar o interpretar el `/downloads` en bloque de OECE mientras no se reverifique que
   resuelve desde una red externa.
 - Cubrir procesos de contratación anteriores a la fecha en que esta capacidad empieza a
@@ -202,9 +202,9 @@ cada `ProcurementRecord` — ver specs/pending-adrs.md]`
 La verificación técnica no encontró un parámetro de fecha, cursor o página con efecto observable
 en `/api/v1/releases`. No lo cierro yo: hace falta seguir probando el endpoint (con más tiempo del
 que tuvo esta ronda) o contactar a OECE/OSCE para confirmar si existe una forma documentada de
-paginar más allá del feed rotativo — sin eso, cualquier estrategia de cosecha "diaria" o "por
+paginar más allá del feed rotativo - sin eso, cualquier estrategia de cosecha "diaria" o "por
 ventana" que se especifique sería una suposición.
-`[NECESITA ACLARACIÓN: mecanismo real de paginación/ventana — requiere más verificación técnica
+`[NECESITA ACLARACIÓN: mecanismo real de paginación/ventana - requiere más verificación técnica
 o contacto con OECE]`
 
 **AC-002-02. Frecuencia de ejecución de la ingesta.**
@@ -231,7 +231,7 @@ Ver la nota en Evidencia y manifiesto. No decido si este proyecto necesita un ar
 `RunManifest` (como en `scientific-literature-pipeline`) o si basta con que cada
 `ProcurementRecord` lleve su propia procedencia. La respuesta depende del stack elegido y del
 volumen real, y pertenece a `specs/pending-adrs.md`, no a esta spec.
-`[NECESITA ACLARACIÓN: modelo de ejecución/corrida — ver specs/pending-adrs.md]`
+`[NECESITA ACLARACIÓN: modelo de ejecución/corrida - ver specs/pending-adrs.md]`
 
 ## Ambigüedades resueltas
 

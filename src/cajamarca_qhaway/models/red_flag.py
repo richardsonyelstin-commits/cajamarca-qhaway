@@ -1,4 +1,4 @@
-"""`RedFlag` — contrato canonico definido en `docs/sdd/constitution.md`, Articulo 19.
+"""`RedFlag` - contrato canonico definido en `docs/sdd/constitution.md`, Articulo 19.
 
 Representa un indicador de riesgo activado sobre contrataciones o ejecucion presupuestal.
 Nunca es un score compuesto ni evalua personas individuales (Articulo 16).
@@ -8,10 +8,10 @@ Nunca posee campo status ni admite 'published' (CA-004-06).
 from __future__ import annotations
 
 import hashlib
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, model_validator
 
 
 def compute_red_flag_id(indicator_code: str, target_ref: str, timestamp_str: str) -> str:
@@ -38,12 +38,14 @@ class RedFlag(BaseModel):
     red_flag_id: str
     indicator_code: str
     formula_description: str
-    threshold: Any
+    threshold_value: Any = Field(validation_alias=AliasChoices("threshold_value", "threshold"))
     observed_value: Any
     procurement_ids: list[str] = Field(default_factory=list)
     execution_record_ids: list[str] = Field(default_factory=list)
     evidence_source: str
-    evidence_retrieved_at: datetime
+    retrieved_at: datetime = Field(
+        validation_alias=AliasChoices("retrieved_at", "evidence_retrieved_at")
+    )
     generated_at: datetime
 
     @model_validator(mode="after")
@@ -56,8 +58,19 @@ class RedFlag(BaseModel):
             raise ValueError("formula_description no puede ser vacio (Articulo 15)")
         if not self.procurement_ids and not self.execution_record_ids:
             raise ValueError("Debe incluir al menos un procurement_id o execution_record_id como evidencia")
-        if self.evidence_retrieved_at.tzinfo is None:
-            raise ValueError("evidence_retrieved_at debe incluir informacion de zona horaria (UTC)")
+        offset = self.retrieved_at.utcoffset()
+        if offset is None or offset != timedelta(0):
+            raise ValueError("retrieved_at debe estar expresado en UTC")
         if self.generated_at.tzinfo is None:
             raise ValueError("generated_at debe incluir informacion de zona horaria (UTC)")
         return self
+
+    @property
+    def threshold(self) -> Any:
+        """Compatibilidad de lectura transitoria con el contrato anterior."""
+        return self.threshold_value
+
+    @property
+    def evidence_retrieved_at(self) -> datetime:
+        """Compatibilidad de lectura transitoria con el contrato anterior."""
+        return self.retrieved_at

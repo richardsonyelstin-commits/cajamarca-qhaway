@@ -243,6 +243,7 @@ def test_seace_poller_harvests_cajamarca_release(
         assert records[0].raw_payload["ocid"] == "ocds-dgv273-2026-CAJ-001"
 
         # CA-002-04: Deduplicacion en segunda corrida
+        poller.acknowledge_persisted()
         second_run = await poller.poll_cycle()
         assert len(second_run) == 0, "No debe duplicar registros ya vistos"
 
@@ -373,6 +374,8 @@ def test_mef_poller_harvests_budget_execution(
         assert records[0].raw_payload["pliego_nombre"] == "MUNICIPALIDAD PROVINCIAL DE CAJAMARCA"
 
         # Verificar avance de offset
+        assert watermark_store.state.last_mef_offset == 0
+        poller.acknowledge_persisted()
         assert watermark_store.state.last_mef_offset == 1
 
         await poller.aclose()

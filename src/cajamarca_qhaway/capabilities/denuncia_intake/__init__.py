@@ -1,4 +1,4 @@
-"""Capacidad 006-denuncia-intake — Intake y moderacion de denuncias ciudadanas."""
+"""Capacidad 006-denuncia-intake - Intake y moderacion de denuncias ciudadanas."""
 
 from __future__ import annotations
 

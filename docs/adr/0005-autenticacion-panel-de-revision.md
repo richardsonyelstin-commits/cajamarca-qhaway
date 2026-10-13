@@ -31,13 +31,13 @@ contraseñas.
 ## Contexto y planteamiento del problema
 
 `specs/005-review-panel/spec.md` (RN-005-02) y `specs/006-denuncia-intake/spec.md` (RN-006-04)
-exigen, sin excepción, que `reviewed_by`/`moderated_by` identifiquen a una persona concreta —
+exigen, sin excepción, que `reviewed_by`/`moderated_by` identifiquen a una persona concreta -
 nunca un rol genérico ni un valor compartido tipo `"admin"`. Ninguna spec de esta ronda evaluó
 opciones de autenticación (`specs/pending-adrs.md`, fila 6): la ambigüedad quedó abierta porque
 dependía del lenguaje/runtime (ADR 0001) y de quién compone el panel, decisión de producto todavía
 pendiente (`AC-005-01`, `docs/research/2026-08-20-diseno-cajamarca-qhaway-fase1.md`, §6, punto 5).
 
-El perfil de usuario que sí está documentado —aunque la composición exacta no lo esté— es
+El perfil de usuario que sí está documentado -aunque la composición exacta no lo esté- es
 consistente: "voluntarios de las ONG aliadas o el propio equipo" (§2, CU5 del diseño de producto),
 un panel explícitamente reducido, no una organización con cientos de empleados ni necesidad de
 integración con un directorio corporativo. Diseñar un sistema de autenticación pensado para un
@@ -59,13 +59,13 @@ panel grande sería sobre-ingeniería para el tamaño real de usuarios que las s
 
 ## Opciones consideradas
 
-### Opción 1 — OAuth con un proveedor existente (Google)
+### Opción 1 - OAuth con un proveedor existente (Google)
 
 Inicio de sesión delegado a Google; el proyecto no almacena contraseñas, solo asocia el correo
 verificado por Google a un registro interno de revisor autorizado.
 
-- A favor: elimina por completo la responsabilidad de almacenar y proteger contraseñas —una
-  superficie de riesgo real para un proyecto cuyo contenido puede ser blanco de manipulación— sin
+- A favor: elimina por completo la responsabilidad de almacenar y proteger contraseñas -una
+  superficie de riesgo real para un proyecto cuyo contenido puede ser blanco de manipulación- sin
   que el equipo tenga que operar esa infraestructura de seguridad.
 - A favor: prácticamente cualquier persona en el perfil de usuario esperado (voluntario de ONG,
   equipo técnico) ya tiene una cuenta Google, lo que reduce la fricción de incorporación a "añadir
@@ -76,16 +76,16 @@ verificado por Google a un registro interno de revisor autorizado.
   a una persona concreta, nunca un rol compartido.
 - En contra: introduce una dependencia externa (Google) para el acceso a una herramienta cuya
   independencia institucional importa por diseño (el proyecto evita deliberadamente parecer
-  vinculado a un organismo oficial) — riesgo de percepción menor, no de funcionamiento.
+  vinculado a un organismo oficial) - riesgo de percepción menor, no de funcionamiento.
 - En contra: un reclutador o voluntario sin cuenta Google (poco común, pero posible, p. ej. alguien
   que solo usa correo institucional de otro proveedor) queda fuera sin una vía alterna definida en
   este ADR.
-- En contra: requiere conectividad a internet para autenticar contra Google — aceptable dado que
+- En contra: requiere conectividad a internet para autenticar contra Google - aceptable dado que
   el perfil de usuario del panel (voluntarios de ONG, equipo técnico) es de contexto urbano/de
   oficina, distinto del ciudadano rural que consume el dashboard público, pero no verificado con
   certeza.
 
-### Opción 2 — Cuentas propias con usuario y contraseña
+### Opción 2 - Cuentas propias con usuario y contraseña
 
 Sistema de registro y autenticación operado enteramente por el proyecto: hash de contraseñas,
 flujo de recuperación, límites de intentos.
@@ -95,7 +95,7 @@ flujo de recuperación, límites de intentos.
 - A favor: no genera ninguna pregunta de percepción sobre dependencia de una empresa externa.
 - En contra: el equipo asume la responsabilidad completa de una superficie de seguridad real
   (almacenamiento seguro de contraseñas, flujo de recuperación, protección contra fuerza bruta)
-  para un panel de pocos usuarios — desproporcionado frente al tamaño real del problema que hay
+  para un panel de pocos usuarios - desproporcionado frente al tamaño real del problema que hay
   que resolver, y exactamente el tipo de sobre-diseño que este ADR busca evitar.
 - En contra: cada incidente de seguridad (contraseña débil, reutilizada, filtrada en otro sitio)
   se convierte en un riesgo propio del proyecto, no de un proveedor con equipo de seguridad
@@ -103,20 +103,20 @@ flujo de recuperación, límites de intentos.
 - En contra: mayor fricción de incorporación: hay que diseñar y mantener un flujo de registro,
   activación y recuperación desde cero.
 
-### Opción 3 — Enlace firmado por correo (magic link), sin contraseña
+### Opción 3 - Enlace firmado por correo (magic link), sin contraseña
 
 El revisor recibe por correo un enlace de un solo uso, con expiración, que autentica la sesión sin
 contraseña.
 
-- A favor: más simple que un sistema de contraseñas completo — sin almacenamiento de credenciales.
+- A favor: más simple que un sistema de contraseñas completo - sin almacenamiento de credenciales.
 - A favor: no depende de un proveedor OAuth externo; funciona con cualquier correo.
 - En contra: el equipo debe construir y mantener por su cuenta la generación, firma, expiración e
-  invalidación segura de los enlaces — una pieza de seguridad propia, con menos escrutinio
+  invalidación segura de los enlaces - una pieza de seguridad propia, con menos escrutinio
   comunitario que una librería OAuth madura, para un requisito (RN-005-02) que es defensa legal
   del proyecto y no admite un bug sutil.
 - En contra: la fortaleza real de esta opción depende igual de la seguridad de la cuenta de correo
   del revisor (el mismo supuesto de fondo que OAuth), pero sin el hardening de sesión/token que
-  una librería OAuth ya resuelve — es "reinventar" la mitad de lo que OAuth ya ofrece, con más
+  una librería OAuth ya resuelve - es "reinventar" la mitad de lo que OAuth ya ofrece, con más
   riesgo de implementación propia.
 
 ## Decisión
@@ -126,8 +126,8 @@ contraseña.
 Gana sobre cuentas propias y sobre enlaces firmados porque minimiza lo que un equipo pequeño, sin
 operación de seguridad dedicada, tiene que construir y mantener para cumplir un requisito no
 negociable (RN-005-02/RN-006-04) en un sistema cuyo contenido es un blanco plausible de
-manipulación. El perfil de usuario documentado —panel reducido de voluntarios de ONG y equipo
-técnico— hace razonable asumir disponibilidad amplia de cuentas Google sin necesitar un sistema de
+manipulación. El perfil de usuario documentado -panel reducido de voluntarios de ONG y equipo
+técnico- hace razonable asumir disponibilidad amplia de cuentas Google sin necesitar un sistema de
 identidad propio. Esta decisión no sobre-diseña para un panel grande: es la opción de menor
 esfuerzo de construcción y menor superficie de riesgo propio para el tamaño real de usuarios que
 las specs describen.
@@ -151,7 +151,7 @@ debe revisitarse con uno nuevo, no editarse.
 ### Negativas
 
 - Dependencia externa de disponibilidad y políticas de Google para el acceso al panel de un
-  proyecto cuya independencia institucional importa por diseño — riesgo de percepción, no
+  proyecto cuya independencia institucional importa por diseño - riesgo de percepción, no
   únicamente técnico.
 - Un revisor sin cuenta Google (o que no quiera usarla) queda fuera del flujo definido aquí; este
   ADR no define una vía alterna, y su necesidad depende de una decisión de producto todavía
@@ -159,7 +159,7 @@ debe revisitarse con uno nuevo, no editarse.
 - Requiere conectividad para autenticar, lo cual es razonable para el perfil de usuario del panel
   pero no está verificado con certeza para cada miembro real.
 - Si la composición del panel cambia hacia personas sin cuentas Google fácilmente disponibles, esta
-  decisión debe revisitarse — es un riesgo de acoplamiento a un supuesto sobre el perfil de
+  decisión debe revisitarse - es un riesgo de acoplamiento a un supuesto sobre el perfil de
   usuario, no verificado con el panel real todavía inexistente.
 
 ### Qué se vuelve difícil de revertir
@@ -174,13 +174,13 @@ registros originales no se pueden reescribir.
 
 - `specs/pending-adrs.md`, fila 6.
 - `specs/005-review-panel/spec.md`, RN-005-02, RN-005-06.
-- `specs/005-review-panel/plan.md`, sección "Contrato interno de la operación de revisión" —
+- `specs/005-review-panel/plan.md`, sección "Contrato interno de la operación de revisión" -
   declara que `reviewed_by` debe venir de "un sistema que exista fuera de esta capacidad", que este
   ADR resuelve.
 - `specs/006-denuncia-intake/spec.md`, RN-006-04.
 - `docs/research/2026-08-20-diseno-cajamarca-qhaway-fase1.md`, §2 (perfil "analista de ONG") y §6,
   punto 5 (composición del panel, todavía pendiente).
-- [ADR 0001](0001-lenguaje-y-runtime-python.md) — decisión de la que este ADR depende: fija el
+- [ADR 0001](0001-lenguaje-y-runtime-python.md) - decisión de la que este ADR depende: fija el
   stack (Python) sobre el que se integra la librería OAuth.
 
 ---

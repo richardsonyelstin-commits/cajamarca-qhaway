@@ -1,4 +1,4 @@
-"""`ContractingEntity` — contrato canonico definido en `docs/sdd/constitution.md`, Articulo 19.
+"""`ContractingEntity` - contrato canonico definido en `docs/sdd/constitution.md`, Articulo 19.
 
 Este modulo implementa **exactamente** los campos que el Articulo 19 declara para
 `ContractingEntity`, ni uno mas: el Articulo 6 de la constitucion prohibe que una

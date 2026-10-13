@@ -79,16 +79,18 @@ def evaluate_physical_financial_divergence(
             if obs.cloud_cover_pct <= 50.0:
                 valid_indices.append(obs.structural_activity_index)
 
-    # Evaluacion de degradacion climatica
+    # Sin observacion util no hay base para inferir actividad cero.
     if not valid_indices:
-        if observations and all(obs.is_optical and obs.cloud_cover_pct > 50.0 for obs in observations):
-            weather_degraded = True
+        weather_degraded = True
         observed_physical_index = 0.0
     else:
         observed_physical_index = sum(valid_indices) / len(valid_indices)
 
     # Calculo determinista de divergencia
-    divergence_score = round(financial_devengado_ratio - observed_physical_index, 4)
+    divergence_score = (
+        0.0 if weather_degraded
+        else round(abs(financial_devengado_ratio - observed_physical_index), 4)
+    )
 
     # Determinacion de severidad
     if weather_degraded:
@@ -104,7 +106,8 @@ def evaluate_physical_financial_divergence(
 
     # Generacion de identificador determinista
     cui_or_ocid = work_site.cui or work_site.ocid or work_site.site_id
-    raw_key = f"{work_site.site_id}:{financial_devengado_ratio:.2f}:{observed_physical_index:.2f}:{eval_dt.isoformat()}"
+    observation_ids = ",".join(sorted(obs.observation_id for obs in observations))
+    raw_key = f"{work_site.site_id}:{financial_devengado_ratio:.4f}:{observed_physical_index:.4f}:{observation_ids}"
     digest = hashlib.sha256(raw_key.encode("utf-8")).hexdigest()[:12]
     signal_id = f"sig-geo-{digest}"
 

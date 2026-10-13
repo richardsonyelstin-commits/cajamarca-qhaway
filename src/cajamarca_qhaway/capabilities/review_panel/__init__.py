@@ -1,4 +1,4 @@
-"""Capacidad 005-review-panel — Panel de revision y moderacion humana."""
+"""Capacidad 005-review-panel - Panel de revision y moderacion humana."""
 
 from __future__ import annotations
 

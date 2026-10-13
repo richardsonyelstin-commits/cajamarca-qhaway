@@ -1,5 +1,5 @@
 ---
-title: Roadmap — cajamarca-qhaway
+title: Roadmap - cajamarca-qhaway
 status: active
 created: 2026-08-20
 updated: 2026-10-12
@@ -10,13 +10,13 @@ confidence: high
 verified: false
 ---
 
-# Roadmap — cajamarca-qhaway
+# Roadmap - cajamarca-qhaway
 
 Organizado por **horizontes**, no por fechas. Un roadmap con fechas concretas a más de un
 trimestre es ficción, y la ficción se convierte en deuda de credibilidad.
 Se revisa el primer lunes de cada mes.
 
-## Now — en curso
+## Now - en curso
 
 | Qué | Por qué (resultado esperado) | Tamaño | Tarea |
 |---|---|---|---|
@@ -30,20 +30,20 @@ Se revisa el primer lunes de cada mes.
 
 <!-- Solo este horizonte enlaza a tareas concretas. -->
 
-## Next — siguiente ciclo
+## Next - siguiente ciclo
 
 | Qué | Por qué | Tamaño |
 |---|---|---|
 | Validación operativa en campo con aliados regionales (Proética Cajamarca, Propuesta Ciudadana, GRUFIDES) sobre la plataforma web desplegada | Confirma ahorro de trabajo real en investigación y moderación | M |
 
-## Later — comprometido, sin fecha
+## Later - comprometido, sin fecha
 
 | Qué | Por qué |
 |---|---|
-| Evaluación legal formal de uso de DJI bajo Ley 29733, luego ingesta de DJI limitada a relaciones declaradas | Dominio legalmente más sensible — requiere sign-off explícito antes de construir |
+| Evaluación legal formal de uso de DJI bajo Ley 29733, luego ingesta de DJI limitada a relaciones declaradas | Dominio legalmente más sensible - requiere sign-off explícito antes de construir |
 | Canal SMS/WhatsApp piloto automatizado con un grupo reducido | Cubre el vacío de conectividad rural documentado en el diseño de Fase 1 |
 
-## Someday — no comprometido
+## Someday - no comprometido
 
 <!-- Ideas vivas. Que algo esté aquí no promete nada a nadie. -->
 

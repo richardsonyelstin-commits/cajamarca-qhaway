@@ -201,6 +201,12 @@ def main() -> int:
             from cajamarca_qhaway.persistence.sync import SyncManager
 
             sources = [s.strip().lower() for s in args.source.split(",") if s.strip()]
+            invalid_sources = sorted(set(sources) - {"seace", "mef"})
+            if not sources or invalid_sources:
+                parser.error(
+                    "--source debe incluir solo 'seace', 'mef' o ambos; "
+                    f"valores inválidos: {invalid_sources or 'vacío'}"
+                )
             sync_mgr = SyncManager()
             daemon = HarvesterDaemon(config=cfg, sync_manager=sync_mgr)
 

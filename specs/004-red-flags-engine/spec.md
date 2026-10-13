@@ -1,5 +1,5 @@
 ---
-title: Spec 004 — red-flags-engine
+title: Spec 004 - red-flags-engine
 spec: "004"
 capability: red-flags-engine
 status: draft
@@ -15,7 +15,7 @@ confidence: medium
 verified: false
 ---
 
-# Spec 004 — red-flags-engine
+# Spec 004 - red-flags-engine
 
 Aplica un subconjunto priorizado de indicadores de riesgo tipo Cardinal/OCP sobre los datos de
 `002-seace-ingestion` y `003-mef-ingestion`, y produce candidatos de `RedFlag` con fórmula y
@@ -47,7 +47,7 @@ Cajamarca y explicables a un usuario no técnico" (CU3, CU4 del diseño de produ
 | Campo | Origen | Obligatorio |
 |---|---|---|
 | `ProcurementRecord` | `002-seace-ingestion` | sí |
-| `BudgetExecutionRecord` | `003-mef-ingestion` | no — algunos indicadores no lo requieren |
+| `BudgetExecutionRecord` | `003-mef-ingestion` | no - algunos indicadores no lo requieren |
 | Catálogo de indicadores activos, con fórmula y umbral | Ver Reglas de negocio | sí |
 
 ## Salidas
@@ -55,7 +55,7 @@ Cajamarca y explicables a un usuario no técnico" (CU3, CU4 del diseño de produ
 Un conjunto de `RedFlag` (contrato canónico, Artículo 19), cada uno trazable a uno o más
 `ProcurementRecord`/`BudgetExecutionRecord` concretos, listo para que `005-review-panel` decida.
 
-**Ubicación.** `[NECESITA ACLARACIÓN: depende del stack — ver specs/pending-adrs.md]`
+**Ubicación.** `[NECESITA ACLARACIÓN: depende del stack - ver specs/pending-adrs.md]`
 
 ## Reglas de negocio
 
@@ -65,18 +65,18 @@ Priorización basada en el diseño de producto (§3.4) y en los patrones ya señ
 para Cajamarca (obras públicas, canon minero): proveedor único, plazos de licitación anormalmente
 cortos, ejecución financiera fuera de rango del monto adjudicado, proveedor de reciente creación.
 El catálogo exacto (los 5-10 indicadores con su fórmula final) es una ambigüedad abierta de esta
-spec — ver más abajo — porque calibrar el umbral de cada uno exige ver datos reales de
+spec - ver más abajo - porque calibrar el umbral de cada uno exige ver datos reales de
 `002`/`003`, que todavía no existen.
 
 **RN-004-02. Cada indicador declara su fórmula en lenguaje simple y su umbral, de forma pública
 y estable.**
 Un indicador sin fórmula legible por un no técnico (CU4) o sin umbral numérico explícito no es un
-indicador válido de esta capacidad — es la traducción operativa del principio "nunca un score
+indicador válido de esta capacidad - es la traducción operativa del principio "nunca un score
 compuesto de caja negra" del diseño de producto (§3.4).
 
 **RN-004-03. Ningún indicador combina múltiples señales en un solo número compuesto.**
 Cada `RedFlag` corresponde a un único `indicator_code`. Si dos indicadores se activan sobre el
-mismo `ProcurementRecord`, se producen dos `RedFlag` distintos — nunca se suman en un score
+mismo `ProcurementRecord`, se producen dos `RedFlag` distintos - nunca se suman en un score
 único. La agrupación de varios `RedFlag` en una sola `Alert` ocurre en `005-review-panel`, por
 decisión humana, no aquí.
 
@@ -86,11 +86,11 @@ Todo indicador se calcula sobre `ProcurementRecord`/`BudgetExecutionRecord` (pro
 contratos) o sobre `entity_id` (una entidad contratante, no una persona). Un indicador que
 naturalmente produciría "funcionario con más contratos de riesgo" o similar no se implementa: se
 marca `[NECESITA ACLARACIÓN: tienta a puntuar personas]` y se escala (Artículo 16 de la
-constitución) — esta spec no resuelve esa tentación por su cuenta, ni siquiera reformulándola.
+constitución) - esta spec no resuelve esa tentación por su cuenta, ni siquiera reformulándola.
 
 **RN-004-05. Cada `RedFlag` referencia el dato exacto que lo disparó, no un resumen.**
 `observed_value` es el valor real medido (p. ej. "1 postor", no "postores insuficientes");
-`threshold` es el umbral exacto cruzado; `procurement_ids`/`execution_record_ids` apuntan a los
+`threshold_value` es el umbral exacto cruzado; `procurement_ids`/`execution_record_ids` apuntan a los
 registros concretos. Esto es lo que permite que `review-panel` (y después, cualquier `Alert`)
 cumpla el Artículo 15 de la constitución.
 
@@ -110,9 +110,26 @@ versionado]`
 
 **RN-004-08. `red-flags-engine` no publica nada.**
 Produce candidatos exclusivamente. El paso de `RedFlag` a `Alert` ocurre única y exclusivamente
-en `005-review-panel` (Artículo 14 de la constitución) — esta regla es la aplicación directa de
+en `005-review-panel` (Artículo 14 de la constitución) - esta regla es la aplicación directa de
 ese artículo a esta capacidad concreta, y se repite aquí para que no se pueda alegar que
 "la spec de red-flags-engine no lo prohibía explícitamente".
+
+**RN-004-09. `mef-underspending` solo evalua ejercicios cerrados con PIM mayor que cero.**
+Para entidad, categoria presupuestal y ejercicio fiscal, calcula `(PIM - devengado) / PIM`; se
+activa cuando el resultado es al menos `0.50`. Los registros con PIM cero no generan division ni
+señal. La regla queda aprobada por ADR 0010.
+
+**RN-004-10. `recurrent-direct-award` cuenta procesos de modalidad directa por entidad y RUC.**
+Se activa con tres o mas adjudicaciones de modalidad confirmada al mismo RUC en una ventana
+movil inclusiva de 365 dias. Excluye registros sin RUC, modalidad confirmada o fecha explicita
+de adjudicacion. La unidad nunca es una persona natural. La regla queda aprobada por ADR 0010.
+
+**RN-004-11. `hhi-concentration` calcula el indice por entidad y ejercicio fiscal en escala
+0-10,000.**
+La formula es `sum((monto_adjudicado_RUC / monto_total) ** 2) * 10000`; se activa desde 2,500.
+Exige montos adjudicados positivos, fecha de adjudicacion y RUC en todas las adjudicaciones del
+universo anual. Si falta un RUC, no se produce una señal que pudiera sobreestimar concentracion.
+La regla queda aprobada por ADR 0010.
 
 ## Criterios de aceptación
 
@@ -132,26 +149,38 @@ Dado cualquier indicador del catálogo, su unidad de análisis (`procurement_ids
 `execution_record_ids`) nunca es una lista de nombres de persona.
 
 **CA-004-05** · RN-004-05
-Dado cualquier `RedFlag`, `observed_value`, `threshold`, `evidence_source` y
-`evidence_retrieved_at` están presentes y no son valores por defecto o placeholder.
+Dado cualquier `RedFlag`, `formula_description`, `observed_value`, `threshold_value`, `evidence_source` y
+`retrieved_at` están presentes y no son valores por defecto o placeholder.
 
 **CA-004-06** · RN-004-08
-Dado el conjunto completo de salidas de esta capacidad, ninguna tiene `status == "published"` —
+Dado el conjunto completo de salidas de esta capacidad, ninguna tiene `status == "published"` -
 ese campo pertenece exclusivamente a `Alert`, que esta capacidad no produce.
+
+**CA-004-07** · RN-004-09
+El motor calcula baja ejecucion solo con ejercicio cerrado y PIM positivo, agrupa partidas de
+igual entidad/categoria/ejercicio y deja sin señal ratios inferiores a 0.50.
+
+**CA-004-08** · RN-004-10
+El motor solo agrupa adjudicaciones directas con fecha explicita y RUC, y activa al llegar a 3
+procesos dentro de 365 dias.
+
+**CA-004-09** · RN-004-11
+El motor usa escala HHI 0-10,000, activa desde 2,500 y omite universos con total cero o RUC
+faltante.
 
 ## Casos límite
 
-**CL-004-01** — Un `ProcurementRecord` sin `BudgetExecutionRecord` cruzado todavía (la ingesta de
+**CL-004-01** - Un `ProcurementRecord` sin `BudgetExecutionRecord` cruzado todavía (la ingesta de
 `003` no ha llegado a esa entidad/periodo).
 Los indicadores que dependen solo de `002` se calculan igual; los que necesitan el cruce con `003`
 simplemente no se evalúan para ese registro, y no se genera un `RedFlag` falso por dato faltante.
 
-**CL-004-02** — Un indicador de "proveedor de reciente creación" sin fecha de constitución de la
+**CL-004-02** - Un indicador de "proveedor de reciente creación" sin fecha de constitución de la
 empresa disponible en ningún dato ingerido.
-`[NECESITA ACLARACIÓN: fuente del dato de antigüedad del proveedor — no está en el alcance
+`[NECESITA ACLARACIÓN: fuente del dato de antigüedad del proveedor - no está en el alcance
 confirmado de 002 ni 003, podría requerir una fuente adicional no contemplada en Fase 1]`
 
-**CL-004-03** — Dos `ProcurementRecord` del mismo `ocid` en distintas versiones (ver AC-002-03 de
+**CL-004-03** - Dos `ProcurementRecord` del mismo `ocid` en distintas versiones (ver AC-002-03 de
 `002`, abierta), ambos activando el mismo indicador con valores distintos.
 No se genera un `RedFlag` por cada versión: se recalcula sobre la versión vigente (RN-004-07),
 pero el mecanismo exacto queda bloqueado por la misma ambigüedad de `002`.
@@ -159,9 +188,9 @@ pero el mecanismo exacto queda bloqueado por la misma ambigüedad de `002`.
 ## Evidencia y manifiesto
 
 Cada `RedFlag` es en sí mismo el registro de evidencia mínimo: no hace falta un ledger aparte
-mientras el propio contrato canónico obligue a `evidence_source` y `evidence_retrieved_at`.
+mientras el propio contrato canónico obligue a `evidence_source` y `retrieved_at`.
 `[NECESITA ACLARACIÓN: si además se necesita un registro de auditoría de "qué corrida del motor
-generó este RedFlag y cuándo" — depende de si el proyecto adopta un concepto de corrida, ver
+generó este RedFlag y cuándo" - depende de si el proyecto adopta un concepto de corrida, ver
 specs/pending-adrs.md]`
 
 ## Fuera de alcance
@@ -181,12 +210,12 @@ No lo cierro yo: calibrar un umbral (p. ej. "cuántos días es un plazo de licit
 corto para Cajamarca") exige ver datos reales de `002`, que todavía no existen porque esa
 capacidad sigue bloqueada por sus propias ambigüedades de paginación y frecuencia. Proponer un
 número aquí sin esa evidencia produciría umbrales que o bien no activan nunca, o activan
-constantemente — en ambos casos, inútiles y potencialmente engañosos.
+constantemente - en ambos casos, inútiles y potencialmente engañosos.
 `[NECESITA ACLARACIÓN: catálogo final calibrado contra datos reales de 002/003]`
 
 **AC-004-02. Si se reutiliza la librería Cardinal (OCP) o se implementa el catálogo desde cero.**
 Es una decisión de arquitectura, no de negocio, y por tanto pertenece a `specs/pending-adrs.md`,
-no a esta spec — pero la spec sí necesita declarar que la decisión está pendiente porque afecta
+no a esta spec - pero la spec sí necesita declarar que la decisión está pendiente porque afecta
 directamente cómo se formula RN-004-01 en producción.
 `[NECESITA ACLARACIÓN: ver specs/pending-adrs.md, fila "motor de red flags"]`
 

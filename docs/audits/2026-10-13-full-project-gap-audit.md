@@ -1,5 +1,7 @@
 # Auditoria Tecnica Integral y de Brechas: Cajamarca Qhaway
 
+> Estado actualizado: los resultados de estado de esta auditoría fueron reevaluados en la revisión final del 2026-10-13. La auditoría vigente de accesibilidad está en `docs/a11y/2026-10-13-wcag-2.1-aa-audit.md`; los checks finales automatizados se ejecutan desde CI. Las descripciones de comportamiento previo que siguen en este informe son evidencia histórica, no una declaración del estado actual.
+
 - Fecha: 2026-10-13
 - Auditor: comprehensive-auditor (Auditor Tecnico Implacable)
 - Rama: agent/comprehensive-auditor/full-project-audit

@@ -1,5 +1,5 @@
 ---
-title: Spec 001 — entity-mapping
+title: Spec 001 - entity-mapping
 spec: "001"
 capability: entity-mapping
 status: draft
@@ -15,12 +15,12 @@ confidence: medium
 verified: false
 ---
 
-# Spec 001 — entity-mapping
+# Spec 001 - entity-mapping
 
 Construye y mantiene el universo verificado de entidades contratantes de la región Cajamarca:
 Gobierno Regional, las 13 municipalidades provinciales y un subconjunto priorizado de
 municipalidades distritales. Produce `ContractingEntity`, el contrato que filtra toda ingesta
-posterior — `002-seace-ingestion` y `003-mef-ingestion` no consultan nada que no esté aquí.
+posterior - `002-seace-ingestion` y `003-mef-ingestion` no consultan nada que no esté aquí.
 
 ## Problema
 
@@ -52,8 +52,8 @@ puede mantener con calidad.
 
 | Campo | Origen | Obligatorio |
 |---|---|---|
-| Lista de las 13 provincias de Cajamarca | Fija, del propio Perú (Cajamarca, Cajabamba, Celendín, Chota, Contumazá, Cutervo, Hualgayoc, Jaén, San Ignacio, San Marcos, San Miguel, San Pablo, Santa Cruz) — enumerada en `docs/research/2026-08-20-diseno-cajamarca-qhaway-fase1.md`, §0 | sí |
-| Criterio de priorización de distritales | Ver Ambigüedades abiertas — no fijado en esta spec | sí, para completar el universo |
+| Lista de las 13 provincias de Cajamarca | Fija, del propio Perú (Cajamarca, Cajabamba, Celendín, Chota, Contumazá, Cutervo, Hualgayoc, Jaén, San Ignacio, San Marcos, San Miguel, San Pablo, Santa Cruz) - enumerada en `docs/research/2026-08-20-diseno-cajamarca-qhaway-fase1.md`, §0 | sí |
+| Criterio de priorización de distritales | Ver Ambigüedades abiertas - no fijado en esta spec | sí, para completar el universo |
 | Fuente oficial de RUC/razón social por entidad | SUNAT (padrón de entidades públicas) o el propio feed OCDS de OECE, con verificación cruzada | sí |
 | Fuente oficial de `consucode_id` | El propio feed OCDS de OECE (`parties[].identifier`, `scheme: PE-CONSUCODE`) | sí |
 
@@ -70,7 +70,7 @@ datos de ejecución), porque cambia poco y cada cambio debe poder auditarse como
 Resuelto por [ADR 0006](../../docs/adr/0006-persistencia-universo-contracting-entity.md): dataset
 declarativo en `data/entities/cajamarca-universe.yaml` (YAML, un mapeo con la clave `entities`),
 versionado en el propio repo, sembrado a la tabla `contracting_entities` de PostgreSQL por
-`scripts/seed_contracting_entities.py` — ver AC-001-02 en "Ambigüedades resueltas".
+`scripts/seed_contracting_entities.py` - ver AC-001-02 en "Ambigüedades resueltas".
 
 ## Reglas de negocio
 
@@ -101,14 +101,14 @@ válido aunque la entidad ya no sea sujeto de ingesta activa.
 **RN-001-06. El universo se revisa por evento, no en tiempo real.**
 No hay obligación de sincronía inmediata con creaciones o fusiones de municipalidades: se
 revisa cuando cambia la fuente oficial (SUNAT/OECE) o por ciclo declarado.
-`[NECESITA ACLARACIÓN: periodicidad exacta de revisión — ver Ambigüedades abiertas]`
+`[NECESITA ACLARACIÓN: periodicidad exacta de revisión - ver Ambigüedades abiertas]`
 
 **RN-001-07. `department` es siempre `"CAJAMARCA"` en Fase 1.**
 Ninguna entidad de otro departamento entra en este universo, aunque aparezca en resultados de
 búsqueda por nombre parecido (Artículo 18 de la constitución).
 
 **RN-001-08. `province` es `null` únicamente para el Gobierno Regional.**
-Toda municipalidad, provincial o distrital, declara su provincia explícita — nunca se infiere del
+Toda municipalidad, provincial o distrital, declara su provincia explícita - nunca se infiere del
 nombre por texto libre; se toma de la fuente oficial.
 
 **RN-001-09. Cero scoring o clasificación de riesgo de una entidad en esta capacidad.**
@@ -146,29 +146,29 @@ distinta de "aparece en el feed", registrada junto a la entidad.
 
 ## Casos límite
 
-**CL-001-01** — Una municipalidad distrital cambia de nombre oficial sin cambiar de RUC.
+**CL-001-01** - Una municipalidad distrital cambia de nombre oficial sin cambiar de RUC.
 El `entity_id` no cambia (RN-001-04); `official_name` se actualiza y el cambio anterior queda en
 el historial del artefacto, no se pierde silenciosamente.
 
-**CL-001-02** — Dos entidades con RUC distinto pero nombre casi idéntico (típico en
+**CL-001-02** - Dos entidades con RUC distinto pero nombre casi idéntico (típico en
 municipalidades distritales con nombres compuestos).
 Se tratan como entidades distintas; no hay deduplicación por similitud de nombre en esta
 capacidad.
 
-**CL-001-03** — Una entidad aparece en el feed OCDS con `consucode_id` pero SUNAT no tiene el
+**CL-001-03** - Una entidad aparece en el feed OCDS con `consucode_id` pero SUNAT no tiene el
 RUC correspondiente indexado con el mismo nombre exacto.
-La entidad no se acepta sin verificación cruzada manual — RN-001-03 es estricta; no se adivina.
+La entidad no se acepta sin verificación cruzada manual - RN-001-03 es estricta; no se adivina.
 
-**CL-001-04** — El Gobierno Regional de Cajamarca tiene unidades ejecutoras propias (p. ej. UGEL
+**CL-001-04** - El Gobierno Regional de Cajamarca tiene unidades ejecutoras propias (p. ej. UGEL
 Celendín, observada en la verificación técnica) que aparecen como `buyer` independiente en OCDS,
 con su propio `consucode_id` y a veces su propio RUC.
 `[NECESITA ACLARACIÓN: si una unidad ejecutora del Gobierno Regional es una `ContractingEntity`
-propia o se agrupa bajo la entidad matriz — ver Ambigüedades abiertas]`
+propia o se agrupa bajo la entidad matriz - ver Ambigüedades abiertas]`
 
 ## Evidencia y manifiesto
 
 Esta capacidad no participa del `evidence-ledger` de una corrida de ingesta (no hay corridas
-todavía en el vocabulario de este proyecto — ese concepto, si se necesita, es una ambigüedad
+todavía en el vocabulario de este proyecto - ese concepto, si se necesita, es una ambigüedad
 para `002`). Lo que sí registra, por entidad: la fuente exacta consultada para verificar el RUC,
 la fecha de verificación (`verified_at`) y, si aplica, el criterio de priorización que justificó
 incluir una distrital.
@@ -184,14 +184,14 @@ incluir una distrital.
 
 ## Ambigüedades abiertas
 
-Quedan tres de las cuatro originales — AC-001-02 se movió a "Ambigüedades resueltas".
+Quedan tres de las cuatro originales - AC-001-02 se movió a "Ambigüedades resueltas".
 
 **AC-001-01. Criterio de priorización de municipalidades distritales.**
 No lo cierro yo: exige una decisión de producto sobre cuántas distritales puede sostener el
 equipo con calidad, cruzada con el criterio de "sectores priorizados por evidencia de riesgo"
 que ya señala el diseño de Fase 1 (obras públicas y canon minero). Fijar un número o una lista
 aquí, sin ese cruce, produciría una priorización arbitraria que después habría que deshacer.
-`[NECESITA ACLARACIÓN: número y criterio de selección de distritales priorizadas — requiere
+`[NECESITA ACLARACIÓN: número y criterio de selección de distritales priorizadas - requiere
 decisión de producto, posiblemente informada por la coordinación con Proética/Propuesta
 Ciudadana/GRUFIDES que ya bloquea el roadmap]`
 
@@ -201,7 +201,7 @@ Ver CL-001-04. Requiere mirar más muestras del feed OCDS para saber si el patr�
 red flags debe tratarlas como una sola entidad regional o como entidades separadas (afecta
 directamente los indicadores de `004-red-flags-engine`, p. ej. "proveedor recurrente por
 entidad").
-`[NECESITA ACLARACIÓN: agrupación de unidades ejecutoras — necesita más muestras del feed OCDS
+`[NECESITA ACLARACIÓN: agrupación de unidades ejecutoras - necesita más muestras del feed OCDS
 antes de decidir]`
 
 **AC-001-04. Periodicidad de revisión del universo (RN-001-06).**
@@ -215,8 +215,8 @@ sin base.
 
 **AC-001-02. Formato y ubicación del artefacto del universo.** Resuelto por
 [ADR 0006](../../docs/adr/0006-persistencia-universo-contracting-entity.md) (`accepted`,
-2026-08-20): el universo vive como dataset declarativo versionado en el propio repo — formato
-YAML, un mapeo con la clave `entities` en la raíz, ruta `data/entities/cajamarca-universe.yaml` —
+2026-08-20): el universo vive como dataset declarativo versionado en el propio repo - formato
+YAML, un mapeo con la clave `entities` en la raíz, ruta `data/entities/cajamarca-universe.yaml` -
 y se siembra a la tabla `contracting_entities` de PostgreSQL (ADR 0002/0003) mediante
 `scripts/seed_contracting_entities.py`. El ADR no fija el formato concreto de fichero (YAML vs.
 JSON); esa elección puntual la hizo la implementación de esta ronda (`specs/001-entity-mapping/plan.md`,
@@ -224,7 +224,7 @@ JSON); esa elección puntual la hizo la implementación de esta ronda (`specs/00
 pedía esta sección; el paso de siembra falla ruidosamente si la tabla y el fichero divergen tras
 el commit, en vez de servir datos desactualizados sin avisar.
 
-Las otras tres ambigüedades (AC-001-01, AC-001-03, AC-001-04) siguen abiertas — ninguna se toca
+Las otras tres ambigüedades (AC-001-01, AC-001-03, AC-001-04) siguen abiertas - ninguna se toca
 en esta ronda.
 
 ## Historial

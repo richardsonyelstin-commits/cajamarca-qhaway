@@ -163,6 +163,8 @@ def test_alert_compuerta_humana_y_validaciones() -> None:
             status="published",
             reviewed_by="admin",
             reviewed_at=NOW_UTC,
+            review_notes="Prueba de revisor inválido.",
+            evidence=[{"red_flag_id": "rf-123", "formula_description": "f", "observed_value": 1, "threshold_value": 1, "retrieved_at": NOW_UTC, "evidence_source": "seace"}],
             published_at=NOW_UTC,
         )
 
@@ -175,11 +177,13 @@ def test_alert_compuerta_humana_y_validaciones() -> None:
             status="published",
             reviewed_by="maria.rodriguez@ong-aliada.pe",
             reviewed_at=NOW_UTC,
+            review_notes="Decision registrada y sustentada por el expediente del proceso.",
+            evidence=[{"red_flag_id": "rf-123", "formula_description": "f", "observed_value": 1, "threshold_value": 1, "retrieved_at": NOW_UTC, "evidence_source": "seace"}],
             published_at=None,
         )
 
     # Estado descartado exige review_notes (CA-005-04)
-    with pytest.raises(ValidationError, match="review_notes es obligatorio"):
+    with pytest.raises(ValidationError, match="review_notes"):
         Alert(
             alert_id=alert_id,
             red_flag_ids=["rf-123"],
@@ -199,6 +203,7 @@ def test_alert_compuerta_humana_y_validaciones() -> None:
         reviewed_by="carlos.mendoza@ong-aliada.pe",
         reviewed_at=NOW_UTC,
         review_notes="Falso positivo: hubo proceso de emergencia previo con 3 postores",
+        evidence=[{"red_flag_id": "rf-123", "formula_description": "f", "observed_value": 1, "threshold_value": 1, "retrieved_at": NOW_UTC, "evidence_source": "seace"}],
     )
     assert alert_discarded.status == "discarded"
     assert alert_discarded.published_at is None
@@ -211,6 +216,8 @@ def test_alert_compuerta_humana_y_validaciones() -> None:
         status="published",
         reviewed_by="maria.rodriguez@ong-aliada.pe",
         reviewed_at=NOW_UTC,
+        review_notes="Proceso verificado contra la evidencia de la convocatoria.",
+        evidence=[{"red_flag_id": "rf-123", "formula_description": "f", "observed_value": 1, "threshold_value": 1, "retrieved_at": NOW_UTC, "evidence_source": "seace"}],
         published_at=NOW_UTC,
     )
     assert alert_published.status == "published"

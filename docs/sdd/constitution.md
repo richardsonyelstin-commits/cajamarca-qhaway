@@ -1,5 +1,5 @@
 ---
-title: Constitución del método — cajamarca-qhaway
+title: Constitución del método - cajamarca-qhaway
 status: active
 created: 2026-08-20
 updated: 2026-08-20
@@ -11,11 +11,11 @@ confidence: medium
 verified: false
 ---
 
-# Constitución del método — cajamarca-qhaway
+# Constitución del método - cajamarca-qhaway
 
 Diecinueve artículos que gobiernan cómo se escribe, se aprueba y se deriva una especificación en
 este proyecto. Adaptada del método de `scientific-literature-pipeline`
-(`docs/sdd/constitution.md` de ese proyecto) — misma forma, mismo rigor falsable, vocabulario
+(`docs/sdd/constitution.md` de ese proyecto) - misma forma, mismo rigor falsable, vocabulario
 propio de este dominio. Los artículos 14-18 no tienen equivalente allá: encapsulan los
 invariantes de `CLAUDE.md` de este proyecto, que en un sistema que produce señales de posible
 corrupción no son negociables ni discutibles spec por spec.
@@ -123,7 +123,7 @@ en `status: proposed` antes de tocar el texto.
 Toda capacidad que produce o transforma un `RedFlag` o una `Alert` declara explícitamente, en su
 spec, de qué fuente exacta, con qué fecha de extracción y con qué payload original respalda cada
 salida. Una capacidad cuyo resultado no se pueda reconstruir hasta el dato de origen está
-incompleta, aunque funcione — es una reformulación del Artículo 15 aplicada a nivel de
+incompleta, aunque funcione - es una reformulación del Artículo 15 aplicada a nivel de
 implementación, y se repite aquí porque es la defensa legal y periodística de todo el proyecto
 (ver `CLAUDE.md`, invariantes).
 
@@ -145,7 +145,7 @@ alcance" está mal escrita, salvo que `PROJECT.yaml` haya cambiado antes.
   `docs/research/2026-08-20-verificacion-tecnica-fuentes.md` o los marca `[sin verificar]`.
 - No toca `src/`, `tests/`, `docs/adr/` ni specs que no le hayan asignado.
 - No hace `commit` ni `push` salvo petición explícita.
-- No cita como autoridad una nota con `verified: false`, ni siquiera propia — incluidos
+- No cita como autoridad una nota con `verified: false`, ni siquiera propia - incluidos
   `docs/research/2026-08-20-diseno-cajamarca-qhaway-fase1.md` y
   `brain/70-inbox/2026-08-20-estado-del-arte-ia-anticorrupcion.md`, que se usan como punto de
   partida, no como hecho establecido.
@@ -165,7 +165,7 @@ candidatos; solo una decisión humana explícita, registrada con `reviewed_by` y
 
 **Comprobación:** una spec cuyo flujo permita que un `RedFlag` se convierta en `Alert` sin pasar
 por `005-review-panel` es un defecto bloqueante de máxima severidad, no una optimización a
-discutir. Ningún ADR puede levantar esta regla — solo un cambio a esta constitución, por un
+discutir. Ningún ADR puede levantar esta regla - solo un cambio a esta constitución, por un
 humano (Artículo 13).
 
 ## Artículo 15. Explicabilidad completa como criterio de aceptación, no como nota al margen
@@ -185,8 +185,8 @@ Ninguna spec asigna un puntaje, ranking o nivel de riesgo a una persona identifi
 Las alertas son sobre procesos y contratos (`ProcurementRecord`, `BudgetExecutionRecord`), nunca
 sobre funcionarios, proveedores o denunciantes como individuos puntuados.
 
-Si una capacidad, al especificarse, revela una tentación de hacerlo — por ejemplo, un indicador
-que naturalmente produce "funcionarios con más contratos de riesgo"— **no se decide en la spec**.
+Si una capacidad, al especificarse, revela una tentación de hacerlo - por ejemplo, un indicador
+que naturalmente produce "funcionarios con más contratos de riesgo"- **no se decide en la spec**.
 Se marca `[NECESITA ACLARACIÓN: esta capacidad tienta a puntuar personas, escalar antes de
 implementar]` y se detiene ahí. No es una decisión de diseño que un agente pueda tomar en
 silencio ni resolver reformulando el indicador por su cuenta.
@@ -200,7 +200,7 @@ defecto bloqueante.
 Cualquier spec que involucre datos de Declaraciones Juradas de Intereses (DJI) se limita a
 mapear relaciones **declaradas** funcionario-empresa-familiar. Ninguna spec cruza DJI con gasto
 observable, propiedades, redes sociales o cualquier fuente de terceros para inferir patrimonio no
-declarado — ese análisis (*lifestyle audit*) está fuera de alcance de Fase 1 por decisión de
+declarado - ese análisis (*lifestyle audit*) está fuera de alcance de Fase 1 por decisión de
 `PROJECT.yaml` y por el riesgo legal bajo la Ley 29733 que señala
 `brain/70-inbox/2026-08-20-estado-del-arte-ia-anticorrupcion.md` (sección 6, `verified: false`,
 pero suficiente para justificar cautela).
@@ -228,7 +228,7 @@ descripciones de obra) permanece en el idioma de origen (español).
 
 ### `ContractingEntity`
 
-La entidad contratante verificada — producida por `001-entity-mapping`, consumida por todas las
+La entidad contratante verificada - producida por `001-entity-mapping`, consumida por todas las
 demás.
 
 | Campo | Tipo | Nota |
@@ -237,9 +237,9 @@ demás.
 | `official_name` | string | Razón social/denominación oficial, tal como la publica la fuente |
 | `entity_level` | enum | `regional` \| `provincial_municipality` \| `district_municipality` |
 | `province` | string \| null | Una de las 13 provincias de Cajamarca, o `null` si es el Gobierno Regional |
-| `ruc` | string | RUC de 11 dígitos — `scheme: PE-RUC` en OCDS |
-| `consucode_id` | string \| null | Identificador `PE-CONSUCODE` usado como `buyer.id`/`procuringEntity.id` en la API OCDS de OECE — ver `docs/research/2026-08-20-verificacion-tecnica-fuentes.md` §1.2 |
-| `department` | string | Fijo: `"CAJAMARCA"` en Fase 1 — el mismo valor que `parties[].address.department` en OCDS |
+| `ruc` | string | RUC de 11 dígitos - `scheme: PE-RUC` en OCDS |
+| `consucode_id` | string \| null | Identificador `PE-CONSUCODE` usado como `buyer.id`/`procuringEntity.id` en la API OCDS de OECE - ver `docs/research/2026-08-20-verificacion-tecnica-fuentes.md` §1.2 |
+| `department` | string | Fijo: `"CAJAMARCA"` en Fase 1 - el mismo valor que `parties[].address.department` en OCDS |
 | `verified_at` | ISO 8601 UTC | Cuándo se confirmó este registro contra la fuente oficial |
 | `active` | boolean | Si sigue vigente como sujeto de ingesta |
 
@@ -277,8 +277,8 @@ confirmar por completo (ver ambigüedades abiertas de esa spec). Forma prelimina
 | `execution_record_id` | string | Determinista, derivado de `entity_id` + periodo + fuente |
 | `entity_id` | string | FK a `ContractingEntity` |
 | `fiscal_year` | integer | Año fiscal |
-| `budgeted_amount` | number | Presupuesto institucional modificado (PIM) u homólogo — `[NECESITA ACLARACIÓN: campo exacto, spec 003]` |
-| `executed_amount` | number | Monto devengado o ejecutado — `[NECESITA ACLARACIÓN: campo exacto, spec 003]` |
+| `budgeted_amount` | number | Presupuesto institucional modificado (PIM) u homólogo - `[NECESITA ACLARACIÓN: campo exacto, spec 003]` |
+| `executed_amount` | number | Monto devengado o ejecutado - `[NECESITA ACLARACIÓN: campo exacto, spec 003]` |
 | `budget_category` | string \| null | Genérica de gasto o categoría presupuestal, si el dataset la expone |
 | `raw_payload` | objeto | El registro tal como lo devuelve la API del MEF, sin transformar |
 | `source` | string | Fijo: `"mef-datastore"` |
@@ -294,12 +294,12 @@ Nunca un score compuesto: siempre trazable a una fórmula pública y un umbral d
 | `red_flag_id` | string | Determinista |
 | `indicator_code` | string | Identificador estable del indicador (p. ej. `single-bidder`, `execution-overrun`) |
 | `formula_description` | string | La fórmula en lenguaje simple, tal como la vería un usuario final |
-| `threshold` | valor | El umbral exacto que se cruzó |
+| `threshold_value` | valor | El umbral exacto que se cruzó |
 | `observed_value` | valor | El valor real observado que cruzó el umbral |
 | `procurement_ids` | lista de string | Uno o más `ProcurementRecord.procurement_id` que sustentan el indicador |
 | `execution_record_ids` | lista de string | Idem para `BudgetExecutionRecord`, si aplica |
 | `evidence_source` | string | De qué ingesta viene el dato que disparó la regla |
-| `evidence_retrieved_at` | ISO 8601 UTC | Fecha de extracción del dato de origen |
+| `retrieved_at` | ISO 8601 UTC | Fecha de extracción del dato de origen |
 | `generated_at` | ISO 8601 UTC | Cuándo el motor produjo este candidato |
 
 ### `Alert`
@@ -313,10 +313,11 @@ decisión humana.
 | `red_flag_ids` | lista de string | Uno o más `RedFlag` agrupados bajo esta alerta |
 | `entity_id` | string | La `ContractingEntity` afectada |
 | `status` | enum | `published` \| `discarded` |
-| `reviewed_by` | string | Identificador del revisor humano — nunca vacío |
+| `reviewed_by` | string | Identificador del revisor humano - nunca vacío |
 | `reviewed_at` | ISO 8601 UTC | Cuándo se decidió |
-| `review_notes` | string \| null | Motivo de la decisión, obligatorio si `status == discarded` |
-| `disclaimer` | string | Texto fijo: indicador automatizado, no prueba de corrupción |
+| `review_notes` | string | Motivo no vacío de toda decisión humana |
+| `legal_disclaimer` | string | Texto fijo: indicador automatizado, no prueba de corrupción |
+| `evidence` | lista de evidencia | Fórmula, dato observado, umbral, fuente y extracción de cada `RedFlag` |
 | `published_at` | ISO 8601 UTC \| null | Solo si `status == published` |
 
 ### `CitizenReport`
@@ -327,13 +328,13 @@ Una denuncia ciudadana entrante, antes de moderación.
 |---|---|---|
 | `report_id` | string | Generado al recibir la denuncia |
 | `submitted_at` | ISO 8601 UTC | |
-| `channel` | enum | `web` \| `sms` \| `whatsapp` — los dos últimos dependen de `009`, no construida aún |
+| `channel` | enum | `web` \| `sms` \| `whatsapp` - los dos últimos dependen de `009`, no construida aún |
 | `raw_text` | string | Tal como la escribió la persona, sin tocar |
 | `related_entity_id` | string \| null | Si la persona señaló una entidad conocida |
 | `moderation_status` | enum | `pending` \| `accepted_as_lead` \| `rejected` |
 | `moderated_by` | string \| null | Obligatorio si `moderation_status != pending` |
 | `moderated_at` | ISO 8601 UTC \| null | |
-| `legal_disclaimer_shown` | boolean | Debe ser `true` antes de aceptar el envío — ver `006-denuncia-intake` |
+| `legal_disclaimer_shown` | boolean | Debe ser `true` antes de aceptar el envío - ver `006-denuncia-intake` |
 
 Estos seis contratos son la base; una spec que necesite un campo adicional lo marca
 `[NECESITA ACLARACIÓN]` y propone el ADR correspondiente (Artículo 6).

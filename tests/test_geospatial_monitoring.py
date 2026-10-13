@@ -6,7 +6,7 @@ constructores de URLs satelitales (NASA GIBS / CMR) y el evaluador de divergenci
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from pydantic import ValidationError
@@ -287,6 +287,34 @@ def test_weather_degradation_without_sar() -> None:
     assert sig.weather_degraded is True
     assert sig.severity == DivergenceSeverity.INFO
     assert sig.radar_backup_used is False
+
+
+def test_no_satellite_observations_do_not_become_zero_activity_or_false_critical() -> None:
+    work_site = CAJAMARCA_PUBLIC_WORKS_CATALOG[0]
+    sig = evaluate_physical_financial_divergence(
+        work_site=work_site,
+        financial_devengado_ratio=0.95,
+        observations=[],
+        evaluation_time=NOW_UTC,
+    )
+    assert sig.weather_degraded is True
+    assert sig.severity == DivergenceSeverity.INFO
+    assert sig.divergence_score == 0.0
+
+
+def test_geospatial_signal_id_is_stable_for_same_evidence_at_different_run_times() -> None:
+    work_site = CAJAMARCA_PUBLIC_WORKS_CATALOG[0]
+    obs = SatelliteObservation(
+        observation_id="obs-stable", site_id=work_site.site_id,
+        sensor=SatelliteSensor.SENTINEL_2_L2A, observation_time=NOW_UTC,
+        cloud_cover_pct=10, tile_wmts_url="https://tile.url", resolution_meters=10,
+        structural_activity_index=0.6,
+    )
+    first = evaluate_physical_financial_divergence(work_site, 0.8, [obs], evaluation_time=NOW_UTC)
+    second = evaluate_physical_financial_divergence(
+        work_site, 0.8, [obs], evaluation_time=NOW_UTC - timedelta(days=1)
+    )
+    assert first.signal_id == second.signal_id
 
 
 def test_radar_sar_cloud_penetration_rescue() -> None:

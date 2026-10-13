@@ -645,7 +645,7 @@ export class SupabaseClient {
 
   /**
    * Registra una decision humana de revision sobre una bandera roja (005-review-panel)
-   * Exige reviewed_by nominal humano y review_notes si status === 'discarded'
+   * Exige identidad de sesion y notas para toda decision humana
    * @param {object} decisionPayload
    * @returns {Promise<object>}
    */
@@ -665,8 +665,8 @@ export class SupabaseClient {
       throw new Error('Estado de decision invalido: debe ser "published" o "discarded".');
     }
 
-    if (status === 'discarded' && (!review_notes || !review_notes.trim())) {
-      throw new Error('Es obligatorio redactar una nota de justificacion al descartar un candidato (CA-005-04).');
+    if (!review_notes || !review_notes.trim()) {
+      throw new Error('Es obligatorio redactar una nota para toda decision humana.');
     }
 
     const nowIso = new Date().toISOString();
@@ -679,8 +679,8 @@ export class SupabaseClient {
       status,
       reviewed_by: reviewed_by.trim(),
       reviewed_at: nowIso,
-      review_notes: review_notes ? review_notes.trim() : null,
-      disclaimer: STANDARD_ALERT_DISCLAIMER,
+      review_notes: review_notes.trim(),
+      legal_disclaimer: STANDARD_ALERT_DISCLAIMER,
       published_at: status === 'published' ? nowIso : null
     };
 

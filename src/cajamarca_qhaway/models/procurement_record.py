@@ -1,4 +1,4 @@
-"""`ProcurementRecord` — contrato canonico definido en `docs/sdd/constitution.md`, Articulo 19.
+"""`ProcurementRecord` - contrato canonico definido en `docs/sdd/constitution.md`, Articulo 19.
 
 Representa un proceso o contrato de contratacion publica, alineado a OCDS.
 Conserva el payload original integro en `raw_payload` (Articulo 10 de la constitucion).

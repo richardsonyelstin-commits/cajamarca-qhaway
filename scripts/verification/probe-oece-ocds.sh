@@ -21,10 +21,10 @@ for q in "department=CAJAMARCA" "region=CAJAMARCA" "buyer=CAJAMARCA" "supplierOr
     -w "  $q -> HTTP:%{http_code} SIZE:%{size_download}\n"
 done
 
-echo "== 3. Downloads (bulk CSV/XLSX/JSON) — probar si resuelve fuera del proxy interno =="
+echo "== 3. Downloads (bulk CSV/XLSX/JSON) - probar si resuelve fuera del proxy interno =="
 curl -s -o /dev/null -w "HTTP:%{http_code} redirige a %{redirect_url}\n" --max-time 15 "$BASE/downloads"
 
-echo "== 4. Estructura de un party — confirmar campos region/department/RUC =="
+echo "== 4. Estructura de un party - confirmar campos region/department/RUC =="
 python3 - "$OUT/releases.json" <<'PY'
 import json, sys
 d = json.load(open(sys.argv[1], encoding="utf-8"))

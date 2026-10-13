@@ -1,5 +1,5 @@
 ---
-title: Plan 005 — review-panel
+title: Plan 005 - review-panel
 spec: "005"
 capability: review-panel
 status: draft
@@ -12,7 +12,7 @@ confidence: medium
 verified: false
 ---
 
-# Plan 005 — review-panel
+# Plan 005 - review-panel
 
 A diferencia de `002`, `003` y `004`, esta capacidad no depende de ninguna verificación técnica
 externa: su lógica es un flujo de decisión humana sobre datos que ya existen como `RedFlag`. Lo
@@ -30,7 +30,7 @@ stateDiagram-v2
 ```
 
 No existe transición directa de `[*]` a `published`: `pending_review` es un estado obligatorio,
-lo que hace que RN-005-01 sea una propiedad de la máquina de estados, no solo una regla escrita —
+lo que hace que RN-005-01 sea una propiedad de la máquina de estados, no solo una regla escrita -
 un tercero que implemente esta máquina no puede saltarse el paso sin reescribir la máquina misma,
 lo cual es una señal visible en el código, no un descuido silencioso.
 
@@ -47,7 +47,7 @@ decide(
 
 `reviewed_by` no se infiere de una sesión implícita ni de una cabecera HTTP sin verificar: debe
 ser un identificador de persona ya autenticada por el sistema que exista fuera de esta capacidad
-(mecanismo de autenticación no especificado aquí — depende del stack, `specs/pending-adrs.md`).
+(mecanismo de autenticación no especificado aquí - depende del stack, `specs/pending-adrs.md`).
 
 ## Concurrencia (CL-005-01)
 
@@ -86,11 +86,11 @@ Detalle de ficheros y funciones: pendiente del stack.
 
 ## Orden de implementación
 
-1. Máquina de estados y contrato de `decide()` — no bloqueado.
-2. Mecanismo de identidad de revisor (`reviewed_by`) — depende del sistema de autenticación del
+1. Máquina de estados y contrato de `decide()` - no bloqueado.
+2. Mecanismo de identidad de revisor (`reviewed_by`) - depende del sistema de autenticación del
    stack, `specs/pending-adrs.md`.
-3. Mecanismo de concurrencia/reclamo — **bloqueado por AC-005-01**.
-4. Texto final del descargo — **bloqueado por AC-005-02**.
+3. Mecanismo de concurrencia/reclamo - **bloqueado por AC-005-01**.
+4. Texto final del descargo - **bloqueado por AC-005-02**.
 
 No se escribe `tasks.md` todavía: los pasos 3 y 4 son bloqueantes para un panel operativo real, y
 fabricar tareas solo para 1-2 dejaría fuera la parte que más le importa a quien va a usar esto en

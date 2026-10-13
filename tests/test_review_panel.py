@@ -75,6 +75,7 @@ def test_rechazo_revisor_generico(sample_flag):
             entity_id="ce-20160759086",
             red_flags=[sample_flag],
             reviewer_id="system",  # Invalido (CA-005-02)
+            review_notes="Nota de prueba para evaluar el rechazo de identidad.",
             reviewed_at=NOW_UTC,
         )
 
@@ -85,11 +86,12 @@ def test_filtrado_por_estado(sample_flag):
         entity_id="ce-20160759086",
         red_flags=[sample_flag],
         reviewer_id="revisor1@ong.pe",
+        review_notes="Proceso revisado contra el expediente de contratacion.",
         reviewed_at=NOW_UTC,
     )
     service.discard_alert(
         entity_id="ce-20160759086",
-        red_flags=["rf-otro-2"],
+        red_flags=[sample_flag.model_copy(update={"red_flag_id": "rf-otro-2"})],
         reviewer_id="revisor2@ong.pe",
         review_notes="Descartado",
         reviewed_at=NOW_UTC,

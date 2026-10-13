@@ -16,6 +16,9 @@ on:
         required: false
         default: true
 
+permissions:
+  contents: read
+
 concurrency:
   group: harvester-worker
   cancel-in-progress: false
@@ -46,9 +49,10 @@ jobs:
           CAJAMARCA_QHAWAY_DATABASE_URL: ${{ secrets.CAJAMARCA_QHAWAY_DATABASE_URL }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          HARVEST_SOURCES: ${{ inputs.sources || 'seace,mef' }}
         run: |
           echo "Iniciando ciclo de recoleccion continua..."
-          python -m cajamarca_qhaway.cli harvest run --source "${{ inputs.sources || 'seace,mef' }}" --once
+          python -m cajamarca_qhaway.cli harvest run --source "$HARVEST_SOURCES" --once
 
       - name: Ejecutar evaluacion geoespacial satelital multi-temporal
         if: ${{ inputs.evaluate_geospatial != false }}

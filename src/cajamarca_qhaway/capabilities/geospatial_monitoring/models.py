@@ -252,8 +252,8 @@ class PhysicalFinancialDivergenceSignal(BaseModel):
             self.generated_at.isoformat(),
         )
         formula = (
-            f"Divergencia fisico-financiera = devengado_ratio ({self.financial_devengado_ratio:.2f}) "
-            f"- physical_activity_index ({self.observed_physical_activity_index:.2f})"
+            f"Divergencia fisico-financiera = abs(devengado_ratio ({self.financial_devengado_ratio:.2f}) "
+            f"- physical_activity_index ({self.observed_physical_activity_index:.2f}))"
         )
         return RedFlag(
             red_flag_id=red_flag_id,

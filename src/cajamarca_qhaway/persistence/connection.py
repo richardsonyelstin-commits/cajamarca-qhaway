@@ -83,11 +83,13 @@ class DatabaseManager:
             indicator_code TEXT NOT NULL,
             formula_description TEXT NOT NULL,
             threshold TEXT NOT NULL,
+            threshold_value TEXT NOT NULL,
             observed_value TEXT NOT NULL,
             procurement_ids TEXT NOT NULL DEFAULT '[]',
             execution_record_ids TEXT NOT NULL DEFAULT '[]',
             evidence_source TEXT NOT NULL,
             evidence_retrieved_at TEXT NOT NULL,
+            retrieved_at TEXT NOT NULL,
             generated_at TEXT NOT NULL
         );
 
@@ -96,11 +98,17 @@ class DatabaseManager:
             red_flag_ids TEXT NOT NULL,
             entity_id TEXT NOT NULL REFERENCES contracting_entities(entity_id),
             status TEXT NOT NULL CHECK (status IN ('published', 'discarded')),
-            reviewed_by TEXT NOT NULL,
+            reviewed_by TEXT NOT NULL CHECK (lower(trim(reviewed_by)) NOT IN
+                ('admin', 'system', 'root', 'bot', 'auto', 'automated', '')),
             reviewed_at TEXT NOT NULL,
-            review_notes TEXT,
+            review_notes TEXT NOT NULL CHECK (length(trim(review_notes)) > 0),
             disclaimer TEXT NOT NULL,
-            published_at TEXT
+            legal_disclaimer TEXT NOT NULL,
+            evidence TEXT NOT NULL DEFAULT '[]',
+            published_at TEXT,
+            CHECK (status <> 'published' OR json_array_length(evidence) > 0),
+            CHECK ((status = 'published' AND published_at IS NOT NULL) OR
+                   (status = 'discarded' AND published_at IS NULL))
         );
 
         CREATE TABLE IF NOT EXISTS citizen_reports (
@@ -112,7 +120,10 @@ class DatabaseManager:
             moderation_status TEXT NOT NULL,
             moderated_by TEXT,
             moderated_at TEXT,
-            legal_disclaimer_shown INTEGER NOT NULL CHECK (legal_disclaimer_shown = 1)
+            legal_disclaimer_shown INTEGER NOT NULL CHECK (legal_disclaimer_shown = 1),
+            tracking_token_hash TEXT UNIQUE CHECK (
+                tracking_token_hash IS NULL OR length(tracking_token_hash) = 64
+            )
         );
 
         CREATE TABLE IF NOT EXISTS harvest_watermarks (

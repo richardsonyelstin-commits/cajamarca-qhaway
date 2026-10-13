@@ -1,4 +1,4 @@
-"""`CitizenReport` — contrato canonico definido en `docs/sdd/constitution.md`, Articulo 19.
+"""`CitizenReport` - contrato canonico definido en `docs/sdd/constitution.md`, Articulo 19.
 
 Representa una denuncia ciudadana entrante sujeta a moderacion humana.
 Exige confirmacion obligatoria de lectura del aviso legal (CA-006-01).
@@ -7,6 +7,7 @@ Exige confirmacion obligatoria de lectura del aviso legal (CA-006-01).
 from __future__ import annotations
 
 import hashlib
+import re
 from datetime import datetime
 from typing import Literal
 
@@ -50,6 +51,7 @@ class CitizenReport(BaseModel):
     moderated_by: str | None = None
     moderated_at: datetime | None = None
     legal_disclaimer_shown: bool
+    tracking_token_hash: str | None = None
 
     @model_validator(mode="after")
     def _validate_invariants(self) -> CitizenReport:
@@ -63,6 +65,10 @@ class CitizenReport(BaseModel):
         # CA-006-01: debe haberse mostrado y aceptado el descargo legal
         if not self.legal_disclaimer_shown:
             raise ValueError("legal_disclaimer_shown debe ser True para registrar la denuncia (CA-006-01)")
+        if self.tracking_token_hash is not None and not re.fullmatch(
+            r"[0-9a-f]{64}", self.tracking_token_hash
+        ):
+            raise ValueError("tracking_token_hash debe ser un digest SHA-256 hexadecimal")
 
         # RN-006-03: si esta moderada, exige moderador valido y fecha
         if self.moderation_status != "pending":

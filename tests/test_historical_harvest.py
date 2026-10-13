@@ -99,6 +99,8 @@ def test_seace_poller_historical_batch_zip(tmp_harvest_env):
         assert rec.ocid == "ocds-dgv273-seacev3-historical-2024-001"
         assert rec.entity_id == by_ruc["20453744168"].entity_id
         assert rec.awarded_amount == 1490000.0
+        assert not w_store.is_seace_ocid_seen("ocds-dgv273-seacev3-historical-2024-001")
+        poller.acknowledge_persisted()
         assert w_store.is_seace_ocid_seen("ocds-dgv273-seacev3-historical-2024-001")
 
     asyncio.run(_run())

@@ -908,15 +908,15 @@ html[data-lang-mode="ciudadano"] .civic-mode-toggle {
 }
 
 .civic-status-good {
-  background-color: rgba(5, 150, 105, 0.12);
-  color: #059669;
-  border: 1px solid rgba(5, 150, 105, 0.3);
+  background-color: color-mix(in srgb, var(--color-civic-emerald) 12%, transparent);
+  color: var(--color-civic-emerald);
+  border: 1px solid color-mix(in srgb, var(--color-civic-emerald) 35%, transparent);
 }
 
 .civic-status-warning {
-  background-color: rgba(217, 119, 6, 0.12);
-  color: #d97706;
-  border: 1px solid rgba(217, 119, 6, 0.3);
+  background-color: color-mix(in srgb, var(--color-alert-amber) 12%, transparent);
+  color: var(--color-alert-amber);
+  border: 1px solid color-mix(in srgb, var(--color-alert-amber) 35%, transparent);
 }
 
 .civic-status-critical {

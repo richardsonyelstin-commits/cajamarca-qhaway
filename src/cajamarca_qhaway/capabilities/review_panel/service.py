@@ -10,7 +10,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Literal
 
-from cajamarca_qhaway.models import Alert, RedFlag, compute_alert_id
+from cajamarca_qhaway.models import Alert, AlertEvidence, RedFlag, compute_alert_id
 
 
 class ReviewPanelService:
@@ -19,16 +19,34 @@ class ReviewPanelService:
     def __init__(self) -> None:
         self._decisions: dict[str, Alert] = {}
 
+    @staticmethod
+    def _evidence(red_flags: list[RedFlag]) -> list[AlertEvidence]:
+        if any(not isinstance(flag, RedFlag) for flag in red_flags):
+            raise TypeError("La revision requiere objetos RedFlag completos, no identificadores sueltos")
+        return [
+            AlertEvidence(
+                red_flag_id=flag.red_flag_id,
+                formula_description=flag.formula_description,
+                observed_value=flag.observed_value,
+                threshold_value=flag.threshold_value,
+                retrieved_at=flag.retrieved_at,
+                evidence_source=flag.evidence_source,
+            )
+            for flag in red_flags
+        ]
+
     def publish_alert(
         self,
         entity_id: str,
-        red_flags: list[RedFlag] | list[str],
+        red_flags: list[RedFlag],
         reviewer_id: str,
         review_notes: str | None = None,
         reviewed_at: datetime | None = None,
     ) -> Alert:
         """Aprueba y publica una Alerta para su consumo en el dashboard publico."""
-        flag_ids = [rf.red_flag_id if isinstance(rf, RedFlag) else rf for rf in red_flags]
+        if review_notes is None or not review_notes.strip():
+            raise ValueError("review_notes es obligatorio para publicar una alerta")
+        flag_ids = [rf.red_flag_id for rf in red_flags]
         if not flag_ids:
             raise ValueError("Debe proporcionarse al menos un RedFlag para publicar una alerta")
 
@@ -45,6 +63,7 @@ class ReviewPanelService:
             reviewed_by=reviewer_id,
             reviewed_at=now,
             review_notes=review_notes,
+            evidence=self._evidence(red_flags),
             published_at=now,
         )
         self._decisions[alert.alert_id] = alert
@@ -53,13 +72,16 @@ class ReviewPanelService:
     def discard_alert(
         self,
         entity_id: str,
-        red_flags: list[RedFlag] | list[str],
+        red_flags: list[RedFlag],
         reviewer_id: str,
         review_notes: str,
         reviewed_at: datetime | None = None,
     ) -> Alert:
         """Descarta un candidato de Alerta registrando el motivo obligatorio del descarte."""
-        flag_ids = [rf.red_flag_id if isinstance(rf, RedFlag) else rf for rf in red_flags]
+        if not review_notes or not review_notes.strip():
+            raise ValueError("review_notes es obligatorio para descartar una alerta")
+        self._evidence(red_flags)
+        flag_ids = [rf.red_flag_id for rf in red_flags]
         if not flag_ids:
             raise ValueError("Debe proporcionarse al menos un RedFlag para registrar una alerta descartada")
 
@@ -76,6 +98,7 @@ class ReviewPanelService:
             reviewed_by=reviewer_id,
             reviewed_at=now,
             review_notes=review_notes,
+            evidence=self._evidence(red_flags),
             published_at=None,
         )
         self._decisions[alert.alert_id] = alert

@@ -4,16 +4,14 @@
  *
  * Politicas:
  * - Antislop R-02: Cero rayas em-dash en todo el archivo.
- * - Prioridad de carga: Supabase Live -> /api/snapshot -> verified-snapshot.json -> SEED_DATA.
+ * - Prioridad de carga: API backend con timeout -> verified-snapshot.json -> SEED_DATA.
  * - Soporte para enriquecimiento RUC/SUNAT (supplier_sunat / /api/sunat/ruc).
  */
 
 import {
   CANONICAL_ENTITIES,
   CANONICAL_INDICATORS,
-  LOCAL_API_BASE,
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
+  LOCAL_API_BASE
 } from './config.js';
 
 class DataEngine {
@@ -24,9 +22,19 @@ class DataEngine {
     this.sunatCache = new Map();
   }
 
+  async _fetch(url, options = {}, timeoutMs = 3500) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      return await fetch(url, { ...options, signal: controller.signal });
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
   async _fetchBackendSnapshot() {
     try {
-      const response = await fetch(`${LOCAL_API_BASE}/snapshot`, {
+      const response = await this._fetch(`${LOCAL_API_BASE}/snapshot`, {
         headers: { Accept: 'application/json' }
       });
       if (!response.ok) return null;
@@ -35,57 +43,6 @@ class DataEngine {
       return snapshot;
     } catch (error) {
       console.warn('Backend API no disponible:', error.message);
-      return null;
-    }
-  }
-
-  async _fetchSupabaseLive() {
-    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return null;
-    const headers = {
-      apikey: SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-      Accept: 'application/json'
-    };
-    try {
-      const [entRes, procRes, budRes, alertRes, flagRes, repRes] = await Promise.all([
-        fetch(`${SUPABASE_URL}/rest/v1/contracting_entities?select=*&order=official_name.asc`, { headers }),
-        fetch(`${SUPABASE_URL}/rest/v1/procurement_records?select=procurement_id,ocid,entity_id,title,procurement_method,awarded_amount,executed_amount,number_of_bidders,supplier_name,supplier_ruc,source,retrieved_at&order=retrieved_at.desc&limit=1000`, { headers }),
-        fetch(`${SUPABASE_URL}/rest/v1/budget_execution_records?select=execution_record_id,entity_id,fiscal_year,budget_category,budgeted_amount,executed_amount,source,retrieved_at&order=fiscal_year.desc&limit=1000`, { headers }),
-        fetch(`${SUPABASE_URL}/rest/v1/alerts?select=*&status=eq.published&order=published_at.desc`, { headers }),
-        fetch(`${SUPABASE_URL}/rest/v1/red_flags?select=*&order=detected_at.desc`, { headers }).catch(() => null),
-        fetch(`${SUPABASE_URL}/rest/v1/citizen_reports?select=*&order=submitted_at.desc`, { headers }).catch(() => null)
-      ]);
-
-      if (!entRes.ok || !procRes.ok || !budRes.ok || !alertRes.ok) return null;
-
-      const [entities, procurements, budgets, alerts] = await Promise.all([
-        entRes.json(),
-        procRes.json(),
-        budRes.json(),
-        alertRes.json()
-      ]);
-
-      if (!Array.isArray(entities) || entities.length === 0) return null;
-
-      let flags = [];
-      let reports = [];
-      if (flagRes && flagRes.ok) {
-        try { flags = await flagRes.json(); } catch {}
-      }
-      if (repRes && repRes.ok) {
-        try { reports = await repRes.json(); } catch {}
-      }
-
-      return {
-        contracting_entities: entities,
-        procurement_records: Array.isArray(procurements) ? procurements : [],
-        budget_execution_records: Array.isArray(budgets) ? budgets : [],
-        alerts: Array.isArray(alerts) ? alerts : [],
-        red_flags: Array.isArray(flags) ? flags : [],
-        citizen_reports: Array.isArray(reports) ? reports : []
-      };
-    } catch (err) {
-      console.warn('Conexion directa a Supabase live no disponible:', err.message);
       return null;
     }
   }
@@ -110,61 +67,11 @@ class DataEngine {
         return this.snapshot;
       }
 
-      // Prioridad 2: Conexion directa de contingencia a Supabase PostgREST
-      try {
-        const liveData = await this._fetchSupabaseLive();
-        if (liveData && liveData.contracting_entities.length > 0) {
-          this.snapshot = {
-            metadata: {
-              version: '1.0.0',
-              generated_at: new Date().toISOString(),
-              region: 'CAJAMARCA',
-              source_mode: 'supabase-live',
-              total_entities: liveData.contracting_entities.length,
-              total_procurements: liveData.procurement_records.length,
-              total_budget_executions: liveData.budget_execution_records.length,
-              total_published_alerts: liveData.alerts.length
-            },
-            contracting_entities: liveData.contracting_entities,
-            procurement_records: liveData.procurement_records,
-            budget_execution_records: liveData.budget_execution_records,
-            alerts: liveData.alerts,
-            red_flags: liveData.red_flags,
-            citizen_reports: liveData.citizen_reports
-          };
-          this.loaded = true;
-          return this.snapshot;
-        }
-      } catch (supaErr) {
-        console.warn('Supabase live no disponible, intentando /api/snapshot:', supaErr.message);
-      }
-
-      // Prioridad 3: API REST local de snapshot (/api/snapshot)
-      try {
-        const res = await fetch('/api/snapshot');
-        if (res.ok) {
-          const apiSnapshot = await res.json();
-          if (apiSnapshot && apiSnapshot.contracting_entities) {
-            this.snapshot = {
-              ...apiSnapshot,
-              metadata: {
-                ...(apiSnapshot.metadata || {}),
-                source_mode: 'api-snapshot'
-              }
-            };
-            this.loaded = true;
-            return this.snapshot;
-          }
-        }
-      } catch (apiErr) {
-        console.warn('No se pudo consultar /api/snapshot, recurriendo a archivo verified-snapshot.json:', apiErr.message);
-      }
-
-      // Prioridad 4: Snapshot verificado estatico local (/src/data/verified-snapshot.json)
+      // Prioridad 2: snapshot estatico verificado con timeout estricto.
       const snapshotPaths = ['/src/data/verified-snapshot.json', './src/data/verified-snapshot.json'];
       for (const snapPath of snapshotPaths) {
         try {
-          const res2 = await fetch(snapPath);
+          const res2 = await this._fetch(snapPath);
           if (res2.ok) {
             const fileSnapshot = await res2.json();
             if (fileSnapshot && fileSnapshot.contracting_entities) {
@@ -184,7 +91,7 @@ class DataEngine {
         }
       }
 
-      // Prioridad 5: Respaldo de contingencia con semilla canonica
+      // Prioridad 3: respaldo de contingencia con semilla canonica.
       this.snapshot = {
         metadata: {
           version: '1.0.0',
@@ -335,7 +242,7 @@ class DataEngine {
       highCount,
       medCount,
       distinctEntitiesCount: distinctEntities.size,
-      flaggedAmount: flaggedAmount > 0 ? flaggedAmount : 1240651.69
+      flaggedAmount
     };
   }
 
