@@ -514,29 +514,43 @@
         }
 
         // Ocultar barrera y mostrar panel
-        document.getElementById('auth-gate-modal').classList.add('hidden');
-        const mainPanel = document.getElementById('main-panel-content');
-        mainPanel.classList.remove('opacity-0');
+        const authGateModal = document.getElementById('auth-gate-modal');
+        if (authGateModal) authGateModal.classList.add('hidden');
+        const mainPanel = document.getElementById('main-content') || document.getElementById('main-panel-content');
+        if (mainPanel) mainPanel.classList.remove('opacity-0');
 
         // Poblar identidad del veedor en el panel
-        document.getElementById('veedor-name-display').textContent = activeVeedor.name;
-        document.getElementById('veedor-org-display').textContent = `${activeVeedor.organization} • Acreditación N° ${activeVeedor.accreditationNumber}`;
-        document.getElementById('veedor-accreditation-badge').textContent = `Rol: ${activeVeedor.role.replace('_', ' ').toUpperCase()}`;
-        document.getElementById('reviewed-by').value = `${activeVeedor.name} (${activeVeedor.organization})`;
+        if (activeVeedor) {
+          const nameEl = document.getElementById('veedor-name-display');
+          if (nameEl) nameEl.textContent = activeVeedor.name;
+          const orgEl = document.getElementById('veedor-org-display');
+          if (orgEl) orgEl.textContent = `${activeVeedor.organization} • Acreditación N° ${activeVeedor.accreditationNumber}`;
+          const badgeEl = document.getElementById('veedor-accreditation-badge');
+          if (badgeEl) badgeEl.textContent = `Rol: ${(activeVeedor.role || 'veedor').replace('_', ' ').toUpperCase()}`;
+          const revInput = document.getElementById('reviewed-by');
+          if (revInput) revInput.value = `${activeVeedor.name} (${activeVeedor.organization})`;
+        }
 
       } catch (err) {
         console.error('Error al validar sesión:', err);
         if (cachedProfile) {
           try {
             activeVeedor = JSON.parse(cachedProfile);
-            document.getElementById('auth-gate-modal').classList.add('hidden');
-            const mainPanel = document.getElementById('main-panel-content');
-            mainPanel.classList.remove('opacity-0');
+            const authGateModal = document.getElementById('auth-gate-modal');
+            if (authGateModal) authGateModal.classList.add('hidden');
+            const mainPanel = document.getElementById('main-content') || document.getElementById('main-panel-content');
+            if (mainPanel) mainPanel.classList.remove('opacity-0');
 
-            document.getElementById('veedor-name-display').textContent = activeVeedor.name;
-            document.getElementById('veedor-org-display').textContent = `${activeVeedor.organization} • Acreditación N° ${activeVeedor.accreditationNumber}`;
-            document.getElementById('veedor-accreditation-badge').textContent = `Rol: ${activeVeedor.role.replace('_', ' ').toUpperCase()} (Contingencia)`;
-            document.getElementById('reviewed-by').value = `${activeVeedor.name} (${activeVeedor.organization})`;
+            if (activeVeedor) {
+              const nameEl = document.getElementById('veedor-name-display');
+              if (nameEl) nameEl.textContent = activeVeedor.name;
+              const orgEl = document.getElementById('veedor-org-display');
+              if (orgEl) orgEl.textContent = `${activeVeedor.organization} • Acreditación N° ${activeVeedor.accreditationNumber}`;
+              const badgeEl = document.getElementById('veedor-accreditation-badge');
+              if (badgeEl) badgeEl.textContent = `Rol: ${(activeVeedor.role || 'veedor').replace('_', ' ').toUpperCase()} (Contingencia)`;
+              const revInput = document.getElementById('reviewed-by');
+              if (revInput) revInput.value = `${activeVeedor.name} (${activeVeedor.organization})`;
+            }
             return;
           } catch {}
         }

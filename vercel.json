@@ -66,6 +66,22 @@
       "destination": "/web/acerca.html"
     },
     {
+      "source": "/metodologia",
+      "destination": "/web/acerca.html"
+    },
+    {
+      "source": "/georreferenciacion",
+      "destination": "/web/georreferenciacion.html"
+    },
+    {
+      "source": "/mapa",
+      "destination": "/web/georreferenciacion.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/web/admin-revision.html"
+    },
+    {
       "source": "/admin/revision",
       "destination": "/web/admin-revision.html"
     },

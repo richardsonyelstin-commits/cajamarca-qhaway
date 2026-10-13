@@ -182,7 +182,7 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
         return 200, "text/plain; charset=utf-8", b"OK"
 
     rewritten_path = query.get("__path", [None])[0]
-    if rewritten_path and path in ("/api/index.py", "/api/index", "/api", "/python"):
+    if rewritten_path:
         path = rewritten_path if rewritten_path.startswith("/") else f"/{rewritten_path}"
 
     if path in ("/api/index.py", "/api/index", "/api"):

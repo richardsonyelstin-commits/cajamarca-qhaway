@@ -308,7 +308,7 @@ class WebApiHandler(BaseHTTPRequestHandler):
 
         # Soportar parametro __path enviado por rewrites de vercel.json
         rewritten_path = query.get("__path", [None])[0]
-        if rewritten_path and path in ("/api/index.py", "/api/index", "/api", "/python"):
+        if rewritten_path:
             path = rewritten_path if rewritten_path.startswith("/") else f"/{rewritten_path}"
 
         if method_upper == "GET":
