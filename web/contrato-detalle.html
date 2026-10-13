@@ -92,6 +92,7 @@
         <a class="px-3 py-1.5 rounded text-xs font-semibold text-secondary bg-secondary-container/20 border border-secondary/30 transition-colors" href="/contrataciones">Contrataciones</a>
         <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/presupuesto">Presupuesto</a>
         <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/proveedores">Proveedores</a>
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/georreferenciacion">Geoespacial</a>
         <a class="px-3 py-1.5 rounded text-xs font-semibold text-secondary hover:text-secondary-hover hover:bg-secondary-container/20 transition-colors flex items-center gap-1" href="/denuncia">
           <span class="material-symbols-outlined text-[15px]">campaign</span>
           <span>Denunciar</span>
@@ -319,44 +320,65 @@
     </div>
   </main>
 
-  <!-- Pie de Página Institucional Robusto y Homogéneo -->
+  <!-- Pie de Página Institucional (Andean Civic Observatory) -->
   <footer class="w-full bg-surface-container-low border-t border-slate-border mt-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
-        <!-- Columna 1: Identidad y Alianzas de la Sociedad Civil -->
-        <div class="flex flex-col">
-          <div class="flex items-center gap-2 mb-3">
-            <img alt="Logotipo Cajamarca Qhaway" class="h-6 w-auto object-contain" src="/media/brand-symbol.svg"/>
-            <span class="font-serif text-lg font-bold text-on-surface">Cajamarca Qhaway</span>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+        <!-- Columna 1: Identidad Institucional y Misión -->
+        <div class="lg:col-span-2 flex flex-col pr-0 lg:pr-8">
+          <div class="flex items-center gap-2.5 mb-3">
+            <img alt="Emblema Cajamarca Qhaway" class="h-8 w-auto object-contain" src="/media/brand-symbol.svg"/>
+            <div class="flex flex-col">
+              <span class="font-serif text-lg font-bold text-on-surface leading-tight">Cajamarca Qhaway</span>
+              <span class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Observatorio Cívico Regional</span>
+            </div>
           </div>
-          <p class="text-xs text-on-surface-variant mb-4 leading-relaxed">
-            Observatorio Cívico Regional independiente dedicado a la auditoría ciudadana, fiscalización de contrataciones y seguimiento del gasto público en el Departamento de Cajamarca.
+          <p class="text-body-sm text-on-surface-variant mb-4 leading-relaxed">
+            Plataforma cívica independiente de auditoría algorítmica y control social de las contrataciones públicas (SEACE OCDS) y ejecución presupuestal (MEF SIAF) en el departamento de Cajamarca, Perú. Diseñada como herramienta de fiscalización para organizaciones de la sociedad civil, veedurías comunales y periodismo de investigación.
           </p>
-          <div class="p-3 bg-surface border border-slate-border rounded text-body-sm text-on-surface-variant space-y-1">
+          <div class="p-3.5 bg-surface border border-slate-border rounded text-body-sm text-on-surface-variant space-y-1.5">
             <div class="flex items-center gap-2 text-on-surface font-semibold text-xs">
               <span class="material-symbols-outlined text-secondary text-[16px]">verified</span>
-              <span>Control Social Articulado</span>
+              <span>Iniciativa de Control Social Articulada</span>
             </div>
             <p class="text-xs text-on-surface-variant leading-relaxed">
-              En articulación de estándares cívicos con <strong>Proética</strong>, <strong>Propuesta Ciudadana</strong> y <strong>GRUFIDES</strong>. El panel revisor colegiado audita antes de publicar (Invariante 01).
+              En articulación de estándares cívicos con <strong>Proética Cajamarca</strong>, <strong>Grupo Propuesta Ciudadana</strong> y <strong>GRUFIDES</strong>. El motor algorítmico prioriza candidatos de riesgo que un panel humano colegiado revisa antes de su publicación (Invariante 01).
             </p>
           </div>
         </div>
 
-        <!-- Columna 2: Módulos de Auditoría -->
+        <!-- Columna 2: Ámbito de Cobertura (14 Pliegos Fase 1) -->
         <div>
-          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-3 font-semibold">Módulos de Auditoría</span>
-          <ul class="space-y-2 text-xs text-on-surface-variant">
-            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/entidades"><span class="material-symbols-outlined text-[14px] text-secondary">account_balance</span> 14 Entidades Monitoreadas</a></li>
-            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/alertas"><span class="material-symbols-outlined text-[14px] text-alert-rose">flag</span> Banderas Rojas y Riesgos</a></li>
-            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5 text-secondary font-semibold" href="/contrataciones"><span class="material-symbols-outlined text-[14px] text-civic-teal">description</span> Contratos OCDS SEACE</a></li>
-            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/presupuesto"><span class="material-symbols-outlined text-[14px] text-civic-emerald">query_stats</span> Presupuesto y Devengado MEF</a></li>
-            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/proveedores"><span class="material-symbols-outlined text-[14px] text-alert-amber">hub</span> Concentración Proveedores HHI</a></li>
-            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/transparencia"><span class="material-symbols-outlined text-[14px] text-outline">database</span> Microdatos Descargables</a></li>
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-3 font-semibold">14 Entidades Monitoreadas</span>
+          <p class="text-caption text-on-surface-variant mb-2">Gobierno Regional y 13 Provincias:</p>
+          <ul class="space-y-1.5 text-xs text-on-surface-variant">
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=gore-cajamarca">GORE Cajamarca (Pliego 445)</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-cajamarca">M. P. de Cajamarca</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-jaen">M. P. de Jaén</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-chota">M. P. de Chota</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-cutervo">M. P. de Cutervo</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-celendin">M. P. de Celendín</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-hualgayoc">M. P. de Hualgayoc-Bambamarca</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-san-ignacio">M. P. de San Ignacio</a></li>
+            <li><a class="hover:text-on-surface transition-colors text-secondary font-medium" href="/entidades">+ 6 Provincias y SEDACAJ →</a></li>
           </ul>
         </div>
 
-        <!-- Columna 3: Fuentes Oficiales -->
+        <!-- Columna 3: Exploración y Datos Abiertos -->
+        <div>
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-3 font-semibold">Módulos de Auditoría</span>
+          <ul class="space-y-2 text-xs text-on-surface-variant">
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/entidades"><span class="material-symbols-outlined text-[14px] text-secondary">account_balance</span> Directorio de 14 Entidades</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/alertas"><span class="material-symbols-outlined text-[14px] text-alert-rose">flag</span> Banderas Rojas y Riesgos</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5 text-secondary font-semibold" href="/contrataciones"><span class="material-symbols-outlined text-[14px] text-civic-teal">description</span> Contratos Públicos SEACE</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/presupuesto"><span class="material-symbols-outlined text-[14px] text-civic-emerald">query_stats</span> Presupuesto y Devengado MEF</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/proveedores"><span class="material-symbols-outlined text-[14px] text-alert-amber">hub</span> Concentración Proveedores HHI</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5 text-secondary font-medium" href="/georreferenciacion"><span class="material-symbols-outlined text-[14px]">satellite_alt</span> Monitoreo Satelital de Obras</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/transparencia"><span class="material-symbols-outlined text-[14px] text-outline">database</span> Descarga Microdatos OCDS</a></li>
+          </ul>
+        </div>
+
+        <!-- Columna 4: Fuentes Oficiales y Veeduría -->
         <div>
           <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-3 font-semibold">Fuentes Oficiales del Estado</span>
           <ul class="space-y-2 text-xs text-on-surface-variant mb-4">
@@ -365,39 +387,36 @@
             <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://e-consultaruc.sunat.gob.pe/" rel="noopener noreferrer" target="_blank">SUNAT Padrón RUC Proveedores <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
             <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://datosabiertos.gob.pe/" rel="noopener noreferrer" target="_blank">Portal Datos Abiertos Perú <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
           </ul>
-        </div>
 
-        <!-- Columna 4: Veeduría Ciudadana -->
-        <div>
-          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-3 font-semibold">Acceso y Veeduría</span>
-          <ul class="space-y-2 text-xs text-on-surface-variant">
-            <li><a class="hover:text-on-surface transition-colors font-medium text-secondary flex items-center gap-1" href="/denuncia"><span class="material-symbols-outlined text-[15px]">campaign</span> Canal Seguro de Denuncia</a></li>
-            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1" href="/login"><span class="material-symbols-outlined text-[15px]">verified_user</span> Acreditación de Veedores</a></li>
-            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1 text-alert-amber font-semibold" href="/admin/revision"><span class="material-symbols-outlined text-[15px]">gavel</span> Panel Revisor Colegiado</a></li>
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-2 font-semibold">Acceso y Veeduría</span>
+          <ul class="space-y-1.5 text-xs text-on-surface-variant">
+            <li><a class="hover:text-on-surface transition-colors font-medium text-secondary" href="/denuncia">Canal Seguro de Denuncia</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/login">Acreditación de Veedores</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/admin/revision">Panel Revisor Colegiado CU5</a></li>
           </ul>
         </div>
       </div>
 
       <!-- Franja Legal, Constitucional y Técnica -->
-      <div class="border-t border-slate-border pt-6 space-y-4 text-xs text-on-surface-variant">
+      <div class="border-t border-slate-border pt-8 space-y-4 text-xs text-on-surface-variant">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="leading-relaxed">
             <strong class="font-semibold text-on-surface block mb-1">Fundamento Constitucional:</strong>
-            Artículos 2 (incisos 5 y 6) y 31 de la Constitución Política del Perú: derecho irrestricto al acceso a la información pública y control cívico.
+            Amparado en los Artículos 2 (incisos 5 y 6) y 31 de la Constitución Política del Perú, que consagran el derecho fundamental al acceso a la información pública, la fiscalización ciudadana y la participación en los asuntos públicos de la región.
           </div>
           <div class="leading-relaxed">
-            <strong class="font-semibold text-on-surface block mb-1">Marco de Transparencia:</strong>
-            Ley N° 27806 (Transparencia y Acceso a la Información) y Ley N° 30225 (Contrataciones del Estado). Procesos de contratación OCDS estándar internacional.
+            <strong class="font-semibold text-on-surface block mb-1">Marco Legal de Transparencia:</strong>
+            Cumplimiento de la Ley N° 27806 (Transparencia y Acceso a la Información Pública), Ley N° 30225 (Contrataciones del Estado) y Ley N° 29733 (Protección de Datos Personales). Fuentes 100% de acceso público oficial.
           </div>
           <div class="leading-relaxed">
             <strong class="font-semibold text-on-surface block mb-1">Principio de No Imputación Judicial:</strong>
-            Las banderas rojas son alertas analíticas objetivas basadas en metadatos oficiales del SEACE. No constituyen sentencia judicial ni scoring individual.
+            Las alertas de riesgo son indicadores matemáticos y analíticos preventivos basados en datos oficiales. No constituyen sentencia judicial, imputación penal ni scoring de personas naturales (Invariante 03).
           </div>
         </div>
 
         <div class="border-t border-slate-border pt-4 flex flex-col md:flex-row items-center justify-between gap-3 text-caption text-on-surface-variant">
           <div>
-            © 2025–2026 Cajamarca Qhaway. Licencia Abierta ODC-By 1.0.
+            © 2025–2026 Cajamarca Qhaway. Licencia Abierta ODC-By 1.0 (Open Data Commons Attribution License).
           </div>
           <div class="flex items-center gap-4">
             <span class="inline-flex items-center gap-1 text-civic-emerald font-semibold">
@@ -457,18 +476,18 @@
 
         document.getElementById('kpi-awarded-amount').textContent = dataEngine.formatCurrency(currentProcurement.awarded_amount || 0);
         document.getElementById('kpi-bidders').textContent = currentProcurement.number_of_bidders || 1;
-        document.getElementById('kpi-supplier-ruc').textContent = currentProcurement.supplier_ruc || 'Sin RUC';
-
-        if (Number(currentProcurement.number_of_bidders) === 1) {
-          document.getElementById('kpi-bidders-label').textContent = 'Atipicidad: Postor único';
-          document.getElementById('kpi-bidders-label').className = 'text-caption text-alert-rose mt-1 block font-semibold';
+        const suppInfo = dataEngine.formatSupplierId(currentProcurement.supplier_ruc);
+        const rucEl = document.getElementById('kpi-supplier-ruc');
+        if (suppInfo.isConsorcio) {
+          rucEl.innerHTML = `<span class="inline-flex items-center gap-1 text-sm font-semibold text-secondary"><span class="material-symbols-outlined text-[16px]">badge</span><span>Consorcio OSCE: ${suppInfo.clean}</span></span>`;
+          document.getElementById('link-sunat').textContent = 'Consultar Registro OSCE';
+          document.getElementById('link-sunat').href = `https://www.gob.pe/seace`;
+        } else if (suppInfo.isRuc11) {
+          rucEl.textContent = suppInfo.clean;
+          document.getElementById('link-sunat').textContent = 'Consultar en SUNAT';
+          document.getElementById('link-sunat').href = `https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/jcrS00Alias?accion=consPorRuc&nroRuc=${suppInfo.clean}`;
         } else {
-          document.getElementById('kpi-bidders-label').textContent = 'Múltiples participantes';
-          document.getElementById('kpi-bidders-label').className = 'text-caption text-civic-emerald mt-1 block';
-        }
-
-        if (currentProcurement.supplier_ruc) {
-          document.getElementById('link-sunat').href = `https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/jcrS00Alias?accion=consPorRuc&nroRuc=${currentProcurement.supplier_ruc}`;
+          rucEl.textContent = suppInfo.clean;
         }
 
         // Banderas Rojas y Dictamenes Oficiales (Art. 14)

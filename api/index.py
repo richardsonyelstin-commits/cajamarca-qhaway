@@ -6,9 +6,14 @@ evitando cualquier colision con `BaseHTTPRequestHandler` o fallos de importacion
 Cumple con Antislop R-02 (cero em-dash).
 """
 
+import base64
+import hashlib
+import hmac
 import json
 import mimetypes
+import os
 import posixpath
+import secrets
 import sys
 import time
 import traceback
@@ -79,7 +84,96 @@ def _load_sunat_stdlib():
             return _STDLIB_SUNAT_CACHE
         except Exception:
             pass
-    return {"metadata": {}, "registry": {}}
+_ACCREDITED_VEEDORES_STDLIB = [
+    {
+        "email": "veeduria-cajamarca@proetica.org.pe",
+        "password_hash": hashlib.sha256(b"demo-veedor-2025").hexdigest(),
+        "name": "Lic. Carlos Arana Silva",
+        "organization": "Proetica (Capitulo Peruano de Transparency International)",
+        "accreditationNumber": "VEED-PROETICA-2025-014",
+        "role": "veedor_titular",
+    },
+    {
+        "email": "veeduria.proetica@cajamarca-qhaway.pe",
+        "password_hash": hashlib.sha256(b"Proetica#Cajamarca2025!").hexdigest(),
+        "name": "Dra. Elena Santillan Mori",
+        "organization": "Proetica Cajamarca",
+        "accreditationNumber": "VEED-PROETICA-2025-008",
+        "role": "veedor_titular",
+    },
+    {
+        "email": "veeduria.propuesta@cajamarca-qhaway.pe",
+        "password_hash": hashlib.sha256(b"Propuesta#Civica2025!").hexdigest(),
+        "name": "Ing. Marco Tacilla Vasquez",
+        "organization": "Grupo Propuesta Ciudadana",
+        "accreditationNumber": "VEED-PROPUESTA-2025-021",
+        "role": "veedor_revisor",
+    },
+    {
+        "email": "veeduria.grufides@cajamarca-qhaway.pe",
+        "password_hash": hashlib.sha256(b"Grufides#Veedor2025!").hexdigest(),
+        "name": "Abg. Mirtha Villanueva Quispe",
+        "organization": "GRUFIDES Cajamarca",
+        "accreditationNumber": "VEED-GRUFIDES-2025-003",
+        "role": "veedor_titular",
+    },
+    {
+        "email": "veedor.regional@cajamarca-qhaway.pe",
+        "password_hash": hashlib.sha256(b"Veedor#Qhaway2025!").hexdigest(),
+        "name": "Prof. Jorge Terrones Bazan",
+        "organization": "Mesa de Concertacion y Veeduria Ciudadana Cajamarca",
+        "accreditationNumber": "VEED-MESA-2025-007",
+        "role": "veedor_colegiado",
+    },
+]
+
+_TOKEN_SECRET_STDLIB = os.environ.get(
+    "CAJAMARCA_QHAWAY_AUTH_SECRET",
+    "cajamarca-qhaway-civic-veedor-hmac-key-2026",
+).encode("utf-8")
+_REVOKED_TOKENS_STDLIB = set()
+_LOGIN_ATTEMPTS_STDLIB = {}
+_MAX_ATTEMPTS_STDLIB = 5
+_LOCKOUT_SECONDS_STDLIB = 15 * 60
+
+
+def _issue_veedor_token_stdlib(veedor, ttl_seconds=8 * 3600):
+    now_ms = int(time.time() * 1000)
+    expires_at = now_ms + (ttl_seconds * 1000)
+    payload = {
+        "veedor": {
+            "email": veedor["email"],
+            "name": veedor["name"],
+            "organization": veedor["organization"],
+            "accreditationNumber": veedor["accreditationNumber"],
+            "role": veedor["role"],
+        },
+        "createdAt": now_ms,
+        "expiresAt": expires_at,
+        "nonce": secrets.token_hex(8),
+    }
+    raw_bytes = json.dumps(payload, separators=(",", ":")).encode("utf-8")
+    b64_payload = base64.urlsafe_b64encode(raw_bytes).decode("ascii").rstrip("=")
+    sig = hmac.new(_TOKEN_SECRET_STDLIB, b64_payload.encode("ascii"), hashlib.sha256).hexdigest()
+    return f"{b64_payload}.{sig}", expires_at
+
+
+def _verify_veedor_token_stdlib(token):
+    if not token or token in _REVOKED_TOKENS_STDLIB or "." not in token:
+        return None
+    b64_payload, sig = token.split(".", 1)
+    expected_sig = hmac.new(_TOKEN_SECRET_STDLIB, b64_payload.encode("ascii"), hashlib.sha256).hexdigest()
+    if not hmac.compare_digest(sig, expected_sig):
+        return None
+    padding = "=" * (-len(b64_payload) % 4)
+    try:
+        raw = base64.urlsafe_b64decode(b64_payload + padding)
+        data = json.loads(raw.decode("utf-8"))
+    except Exception:
+        return None
+    if int(time.time() * 1000) > int(data.get("expiresAt", 0)):
+        return None
+    return data
 
 
 def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
@@ -236,6 +330,75 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
                 "published_at": now_iso if status == "published" else None,
             }
             return 201, "application/json; charset=utf-8", json.dumps({**alert, "alert": alert}).encode("utf-8")
+
+        if path == "/api/auth/session":
+            auth_header = req_headers.get("authorization", "")
+            if not auth_header.startswith("Bearer "):
+                return 401, "application/json; charset=utf-8", json.dumps({"valid": False, "error": "No token provided"}).encode("utf-8")
+            token = auth_header[7:].strip()
+            session = _verify_veedor_token_stdlib(token)
+            if not session:
+                return 401, "application/json; charset=utf-8", json.dumps({"valid": False, "error": "Session expired"}).encode("utf-8")
+            return 200, "application/json; charset=utf-8", json.dumps({
+                "valid": True,
+                "veedor": session["veedor"],
+                "expiresAt": session["expiresAt"],
+            }).encode("utf-8")
+
+        if path == "/api/auth/login" and method == "POST":
+            try:
+                data = json.loads(body.decode("utf-8")) if body else {}
+            except Exception:
+                return 400, "application/json; charset=utf-8", json.dumps({"error": "JSON invalido"}).encode("utf-8")
+            if data.get("honeypot"):
+                return 400, "application/json; charset=utf-8", json.dumps({"error": "Solicitud rechazada"}).encode("utf-8")
+            email = str(data.get("email", "")).strip().lower()
+            password = str(data.get("password", ""))
+            if not email or not password:
+                return 400, "application/json; charset=utf-8", json.dumps({"error": "Debe ingresar el correo y la contrasena de acreditacion"}).encode("utf-8")
+
+            now = time.time()
+            user_key = f"user:{email}"
+            record = _LOGIN_ATTEMPTS_STDLIB.get(user_key)
+            if record and record.get("locked_until", 0) > now:
+                remaining_sec = int(record["locked_until"] - now)
+                return 429, "application/json; charset=utf-8", json.dumps({
+                    "error": f"Cuenta bloqueada temporalmente por seguridad. Reintente en {max(1, remaining_sec // 60)} minutos.",
+                    "retryAfter": remaining_sec,
+                    "status": 429,
+                }).encode("utf-8")
+
+            cand_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
+            matched = next((v for v in _ACCREDITED_VEEDORES_STDLIB if v["email"] == email), None)
+            is_valid = bool(matched and hmac.compare_digest(matched["password_hash"], cand_hash))
+
+            if not is_valid or matched is None:
+                rec = _LOGIN_ATTEMPTS_STDLIB.setdefault(user_key, {"attempts": 0, "locked_until": 0.0})
+                rec["attempts"] += 1
+                if rec["attempts"] >= _MAX_ATTEMPTS_STDLIB:
+                    rec["locked_until"] = now + _LOCKOUT_SECONDS_STDLIB
+                remaining = max(0, _MAX_ATTEMPTS_STDLIB - rec["attempts"])
+                return 401, "application/json; charset=utf-8", json.dumps({
+                    "error": "Credenciales invalidas. Compruebe su correo u organizacion y el codigo de veeduria.",
+                    "remainingAttempts": remaining,
+                    "status": 401,
+                }).encode("utf-8")
+
+            if user_key in _LOGIN_ATTEMPTS_STDLIB:
+                del _LOGIN_ATTEMPTS_STDLIB[user_key]
+
+            token, expires_at = _issue_veedor_token_stdlib(matched)
+            return 200, "application/json; charset=utf-8", json.dumps({
+                "token": token,
+                "expiresAt": expires_at,
+                "veedor": {
+                    "email": matched["email"],
+                    "name": matched["name"],
+                    "organization": matched["organization"],
+                    "accreditationNumber": matched["accreditationNumber"],
+                    "role": matched["role"],
+                },
+            }).encode("utf-8")
 
         if path == "/api/auth/logout" and method == "POST":
             return 200, "application/json; charset=utf-8", json.dumps({"message": "Sesion finalizada correctamente"}).encode("utf-8")

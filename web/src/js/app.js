@@ -87,28 +87,57 @@ export function openRawPayloadDrawer(payloadObj, title = 'Evidencia Original OCD
       <div class="bg-surface-container-lowest border border-slate-border rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden">
         <div class="p-4 border-b border-slate-border flex items-center justify-between bg-surface-container-low">
           <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-secondary text-[20px]">data_object</span>
+            <span class="material-symbols-outlined text-secondary text-[20px]">policy</span>
             <h3 id="global-raw-payload-title" class="font-serif font-bold text-base text-on-surface truncate"></h3>
           </div>
           <div class="flex items-center gap-2">
+            <div class="inline-flex rounded border border-slate-border p-0.5 bg-surface text-xs">
+              <button id="payload-tab-card" type="button" class="px-2.5 py-1 rounded bg-secondary text-white font-semibold cursor-pointer">Ficha Técnica</button>
+              <button id="payload-tab-json" type="button" class="px-2.5 py-1 rounded text-on-surface-variant hover:text-on-surface font-semibold cursor-pointer">Microdatos JSON</button>
+            </div>
             <button id="global-raw-payload-copy-btn" class="px-3 py-1.5 rounded bg-surface border border-slate-border hover:bg-surface-container text-xs font-semibold text-on-surface flex items-center gap-1 cursor-pointer transition-colors" title="Copiar JSON completo">
-              <span class="material-symbols-outlined text-[15px]">content_copy</span> Copiar
+              <span class="material-symbols-outlined text-[15px]">content_copy</span> <span class="hidden sm:inline">Copiar</span>
             </button>
             <button id="global-raw-payload-close-btn" class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface cursor-pointer" aria-label="Cerrar modal">
               <span class="material-symbols-outlined text-[20px]">close</span>
             </button>
           </div>
         </div>
-        <div class="p-4 overflow-y-auto flex-1 bg-surface font-mono text-xs text-on-surface leading-relaxed">
+
+        <div id="payload-view-card" class="p-6 overflow-y-auto flex-1 bg-surface space-y-4">
+          <div id="payload-card-content"></div>
+        </div>
+
+        <div id="payload-view-json" class="p-4 overflow-y-auto flex-1 bg-surface font-mono text-xs text-on-surface leading-relaxed hidden">
           <pre id="global-raw-payload-code" class="whitespace-pre-wrap break-all"></pre>
         </div>
+
         <div class="p-3 border-t border-slate-border bg-surface-container-low text-[11px] text-on-surface-variant flex items-center justify-between">
-          <span>Fuente inmutable verificable: SEACE OCDS / MEF SIAF (Art. 10 de la Constitucion)</span>
-          <span class="font-semibold text-secondary">JSON Canonico</span>
+          <span>Fuente inmutable verificable: SEACE OCDS / MEF SIAF (Art. 10 y 14 de la Constitución)</span>
+          <span class="font-semibold text-secondary">Veeduría Ciudadana Cajamarca</span>
         </div>
       </div>
     `;
     document.body.appendChild(modalEl);
+
+    const btnTabCard = modalEl.querySelector('#payload-tab-card');
+    const btnTabJson = modalEl.querySelector('#payload-tab-json');
+    const viewCard = modalEl.querySelector('#payload-view-card');
+    const viewJson = modalEl.querySelector('#payload-view-json');
+
+    btnTabCard.addEventListener('click', () => {
+      btnTabCard.className = 'px-2.5 py-1 rounded bg-secondary text-white font-semibold cursor-pointer';
+      btnTabJson.className = 'px-2.5 py-1 rounded text-on-surface-variant hover:text-on-surface font-semibold cursor-pointer';
+      viewCard.classList.remove('hidden');
+      viewJson.classList.add('hidden');
+    });
+
+    btnTabJson.addEventListener('click', () => {
+      btnTabJson.className = 'px-2.5 py-1 rounded bg-secondary text-white font-semibold cursor-pointer';
+      btnTabCard.className = 'px-2.5 py-1 rounded text-on-surface-variant hover:text-on-surface font-semibold cursor-pointer';
+      viewJson.classList.remove('hidden');
+      viewCard.classList.add('hidden');
+    });
 
     modalEl.querySelector('#global-raw-payload-close-btn').addEventListener('click', () => {
       modalEl.classList.add('hidden');
@@ -131,8 +160,73 @@ export function openRawPayloadDrawer(payloadObj, title = 'Evidencia Original OCD
 
   const titleEl = modalEl.querySelector('#global-raw-payload-title');
   const codeEl = modalEl.querySelector('#global-raw-payload-code');
+  const cardContentEl = modalEl.querySelector('#payload-card-content');
+
   if (titleEl) titleEl.textContent = title;
   if (codeEl) codeEl.textContent = JSON.stringify(payloadObj || {}, null, 2);
+
+  if (cardContentEl) {
+    const alerta = payloadObj?.alerta || {};
+    const flag = payloadObj?.bandera_roja || {};
+    cardContentEl.innerHTML = `
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-4 rounded-lg bg-surface-container-low border border-slate-border">
+          <span class="text-[11px] font-semibold text-secondary uppercase font-mono block mb-1">Identificador de Alerta</span>
+          <div class="text-base font-bold text-on-surface">${alerta.alert_id || 'ID Pendiente'}</div>
+          <div class="text-xs text-on-surface-variant mt-1">Estado de Publicación: <strong class="text-civic-emerald uppercase">${alerta.status || 'Publicado'}</strong></div>
+        </div>
+
+        <div class="p-4 rounded-lg bg-surface-container-low border border-slate-border">
+          <span class="text-[11px] font-semibold text-secondary uppercase font-mono block mb-1">Entidad Auditada</span>
+          <div class="text-base font-bold text-on-surface">${alerta.entity_id || 'Pliego Regional'}</div>
+          <div class="text-xs text-on-surface-variant mt-1">Publicado el: <span class="font-mono">${alerta.published_at || alerta.reviewed_at || '2026'}</span></div>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-lg bg-surface-container-low border border-slate-border space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-border pb-2">
+          <span class="text-xs font-semibold text-on-surface uppercase tracking-wider">Métrica Auditada</span>
+          <span class="font-mono text-xs px-2 py-0.5 rounded bg-secondary-container/30 text-secondary font-bold">${flag.rule_code || 'FLAG-CU5'}</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div>
+            <span class="text-outline block mb-0.5">Fórmula Algorítmica:</span>
+            <div class="font-mono font-medium text-on-surface">${flag.formula_description || 'Algoritmo determinista de detección de desvíos.'}</div>
+          </div>
+          <div>
+            <span class="text-outline block mb-0.5">Umbral vs Valor Observado:</span>
+            <div class="font-mono font-bold text-on-surface">Umbral: ${flag.threshold ?? 1} | Observado: <span class="text-alert-rose">${flag.observed_value ?? 1}</span></div>
+          </div>
+        </div>
+
+        <div class="text-xs pt-2 border-t border-slate-border">
+          <span class="text-outline block mb-0.5">Fuente Oficial del Dato:</span>
+          <span class="font-mono font-semibold text-secondary uppercase">${flag.evidence_source || 'SEACE OCDS / MEF SIAF'}</span>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-lg bg-surface-container-low border border-slate-border space-y-2 text-xs">
+        <div class="text-xs font-semibold text-on-surface uppercase tracking-wider border-b border-slate-border pb-1.5 flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-secondary text-[16px]">verified_user</span>
+          <span>Dictamen de Veeduría Humana (Art. 14)</span>
+        </div>
+        <div>
+          <span class="text-outline block mb-0.5">Revisor Colegiado Nominal:</span>
+          <span class="font-semibold text-on-surface">${alerta.reviewed_by || 'Panel de Veedores Acreditados'}</span>
+        </div>
+        <div>
+          <span class="text-outline block mb-0.5">Fundamento del Dictamen:</span>
+          <p class="text-on-surface leading-relaxed">${alerta.review_notes || 'Verificación conforme de concordancia entre fuente oficial OCDS/MEF y umbral de alerta.'}</p>
+        </div>
+      </div>
+
+      <div class="p-3 rounded bg-surface border border-alert-amber/30 text-xs text-on-surface-variant leading-relaxed">
+        <strong class="font-semibold text-on-surface block mb-0.5">Aviso Constitucional (Art. 14 y 15):</strong>
+        Esta evidencia técnica refleja datos del registro público oficial. No constituye sentencia judicial, imputación penal ni calificación de personas naturales.
+      </div>
+    `;
+  }
 
   modalEl.classList.remove('hidden');
 }
@@ -475,11 +569,16 @@ function toggleTooltipPopover(triggerBtn) {
     return;
   }
 
-  closeActiveTooltip();
-
-  const termId = triggerBtn.dataset.term || triggerBtn.getAttribute('data-term-id');
-  const termData = termId ? CIVIC_DICTIONARY_MAP.get(termId) : null;
-  if (!termData) return;
+  const rawTerm = triggerBtn.dataset.term || triggerBtn.dataset.civicTerm || triggerBtn.getAttribute('data-term-id') || triggerBtn.getAttribute('data-civic-term') || '';
+  const termId = String(rawTerm).trim().toLowerCase();
+  let termData = termId ? CIVIC_DICTIONARY_MAP.get(termId) : null;
+  if (!termData && termId) {
+    termData = CIVIC_DICTIONARY.find(item => item.id.toLowerCase() === termId || item.id.replace(/-/g, '') === termId.replace(/-/g, '')) || null;
+  }
+  if (!termData) {
+    openCivicDictionaryModal();
+    return;
+  }
 
   const popover = document.createElement('div');
   popover.id = 'civic-tooltip-bubble';
