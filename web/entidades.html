@@ -225,7 +225,7 @@
               </span>
               <span class="material-symbols-outlined text-[18px] text-outline">account_balance</span>
             </div>
-            <div id="entidades-kpi-pim" class="font-headline-lg text-headline-lg text-on-surface font-normal">S/ 4,820.5 M</div>
+            <div id="entidades-kpi-pim" class="font-headline-lg text-headline-lg text-on-surface font-normal">S/ 2,567.4 M</div>
             <div class="mt-1 font-caption text-caption text-on-surface-variant">
               1 Sede Regional + 13 Provincias
             </div>
@@ -239,7 +239,7 @@
               </span>
               <span class="material-symbols-outlined text-[18px] text-secondary">payments</span>
             </div>
-            <div id="entidades-kpi-devengado" class="font-headline-lg text-headline-lg text-secondary font-semibold">S/ 1,368.8 M</div>
+            <div id="entidades-kpi-devengado" class="font-headline-lg text-headline-lg text-secondary font-semibold">S/ 1,831.1 M</div>
             <div class="mt-1 font-caption text-caption text-on-surface-variant">
               Recursos efectivamente pagados
             </div>
@@ -254,11 +254,11 @@
               <span class="material-symbols-outlined text-[18px] text-alert-amber">speed</span>
             </div>
             <div class="flex items-baseline gap-2">
-              <span id="entidades-kpi-ejecucion" class="font-headline-lg text-headline-lg text-on-surface font-semibold">28.4%</span>
-              <span data-pocket="execution-rate" class="civic-pocket-badge text-alert-amber">S/ 28 de cada S/ 100</span>
+              <span id="entidades-kpi-ejecucion" class="font-headline-lg text-headline-lg text-on-surface font-semibold">71.3%</span>
+              <span data-pocket="execution-rate" class="civic-pocket-badge civic-status-good text-secondary">S/ 71 de cada S/ 100</span>
             </div>
             <div class="w-full bg-surface-container rounded-full h-1.5 mt-2 overflow-hidden">
-              <div class="bg-alert-amber h-full rounded-full" style="width: 28.4%"></div>
+              <div class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 71.3%"></div>
             </div>
           </div>
 
@@ -270,7 +270,7 @@
               </span>
               <span class="material-symbols-outlined text-[18px] text-outline">description</span>
             </div>
-            <div id="entidades-kpi-contratos" class="font-headline-lg text-headline-lg text-on-surface font-normal">1,425</div>
+            <div id="entidades-kpi-contratos" class="font-headline-lg text-headline-lg text-on-surface font-normal">474</div>
             <div class="mt-1 flex items-center justify-between font-caption text-caption text-on-surface-variant">
               <span>22 Alertas de riesgo</span>
               <span class="text-alert-rose font-semibold flex items-center gap-0.5">
@@ -361,7 +361,7 @@
         <!-- CONTENEDOR DE TARJETAS (CARDS VIEW) -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="cards-container">
           <!-- Tarjeta 1: GORE Cajamarca -->
-          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="4" data-entity-id="ce-f5f5d8fc32518855" data-exec="24.2" data-name="Gobierno Regional de Cajamarca" data-pim="2410.8" data-ruc="20453744168" data-zone="gore">
+          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="4" data-entity-id="ce-f5f5d8fc32518855" data-exec="74.5" data-name="Gobierno Regional de Cajamarca" data-pim="1851.2" data-ruc="20453744168" data-zone="gore">
             <div class="p-6 space-y-4">
               <div class="flex items-start justify-between gap-2 border-b border-slate-border pb-2">
                 <div>
@@ -385,21 +385,21 @@
               <div class="grid grid-cols-2 gap-2 bg-slate-surface p-3 rounded border border-slate-border">
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">PIM Total 2025</span>
-                  <span class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 2,410.8 M</span>
+                  <span data-card-pim class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 1851.2 M</span>
                 </div>
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">Devengado (% / S/.)</span>
-                  <span class="font-headline-sm text-headline-sm text-alert-rose font-semibold">24.2%</span>
-                  <span class="block font-caption text-caption text-on-surface-variant">S/ 583.4 M</span>
+                  <span data-card-rate class="font-headline-sm text-headline-sm text-secondary font-semibold">74.5%</span>
+                  <span data-card-dev class="block font-caption text-caption text-on-surface-variant">S/ 1380.0 M</span>
                 </div>
               </div>
               <div>
                 <div class="flex justify-between items-center text-caption font-caption mb-1">
                   <span class="text-on-surface-variant">Nivel de ejecución presupuestal</span>
-                  <span class="text-alert-rose font-semibold">Crítico (&lt;25%)</span>
+                  <span class="text-secondary font-semibold">Meta Superada (≥45%)</span>
                 </div>
                 <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
-                  <div class="bg-alert-rose h-full rounded-full" style="width: 24.2%"></div>
+                  <div data-card-bar class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 74.5%"></div>
                 </div>
               </div>
               <div class="space-y-1 text-body-sm font-body-sm pt-1">
@@ -425,7 +425,7 @@
           </article>
 
           <!-- Tarjeta 2: MP Cajamarca -->
-          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="2" data-entity-id="ce-2caad0e1b7467492" data-exec="33.1" data-name="Municipalidad Provincial de Cajamarca" data-pim="385.4" data-ruc="20143623042" data-zone="centrosur">
+          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="2" data-entity-id="ce-2caad0e1b7467492" data-exec="65.7" data-name="Municipalidad Provincial de Cajamarca" data-pim="149.3" data-ruc="20143623042" data-zone="centrosur">
             <div class="p-6 space-y-4">
               <div class="flex items-start justify-between gap-2 border-b border-slate-border pb-2">
                 <div>
@@ -449,12 +449,12 @@
               <div class="grid grid-cols-2 gap-2 bg-slate-surface p-3 rounded border border-slate-border">
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">PIM Total 2025</span>
-                  <span class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 385.4 M</span>
+                  <span data-card-pim class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 149.3 M</span>
                 </div>
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">Devengado (% / S/.)</span>
-                  <span class="font-headline-sm text-headline-sm text-alert-amber font-semibold">33.1%</span>
-                  <span class="block font-caption text-caption text-on-surface-variant">S/ 127.5 M</span>
+                  <span data-card-rate class="font-headline-sm text-headline-sm text-secondary font-semibold">65.7%</span>
+                  <span data-card-dev class="block font-caption text-caption text-on-surface-variant">S/ 98.1 M</span>
                 </div>
               </div>
               <div>
@@ -463,7 +463,7 @@
                   <span class="text-alert-amber font-semibold">Moderado (25-35%)</span>
                 </div>
                 <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
-                  <div class="bg-alert-amber h-full rounded-full" style="width: 33.1%"></div>
+                  <div data-card-bar class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 65.7%"></div>
                 </div>
               </div>
               <div class="space-y-1 text-body-sm font-body-sm pt-1">
@@ -489,7 +489,7 @@
           </article>
 
           <!-- Tarjeta 3: MP Jaén -->
-          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="3" data-entity-id="ce-1817b32570ae7027" data-exec="29.8" data-name="Municipalidad Provincial de Jaén" data-pim="295.2" data-ruc="20201987297" data-zone="norte">
+          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="3" data-entity-id="ce-1817b32570ae7027" data-exec="66.3" data-name="Municipalidad Provincial de Jaén" data-pim="81.1" data-ruc="20201987297" data-zone="norte">
             <div class="p-6 space-y-4">
               <div class="flex items-start justify-between gap-2 border-b border-slate-border pb-2">
                 <div>
@@ -513,12 +513,12 @@
               <div class="grid grid-cols-2 gap-2 bg-slate-surface p-3 rounded border border-slate-border">
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">PIM Total 2025</span>
-                  <span class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 295.2 M</span>
+                  <span data-card-pim class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 81.1 M</span>
                 </div>
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">Devengado (% / S/.)</span>
-                  <span class="font-headline-sm text-headline-sm text-alert-amber font-semibold">29.8%</span>
-                  <span class="block font-caption text-caption text-on-surface-variant">S/ 87.9 M</span>
+                  <span data-card-rate class="font-headline-sm text-headline-sm text-secondary font-semibold">66.3%</span>
+                  <span data-card-dev class="block font-caption text-caption text-on-surface-variant">S/ 53.7 M</span>
                 </div>
               </div>
               <div>
@@ -527,7 +527,7 @@
                   <span class="text-alert-amber font-semibold">Regular (29.8%)</span>
                 </div>
                 <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
-                  <div class="bg-alert-amber h-full rounded-full" style="width: 29.8%"></div>
+                  <div data-card-bar class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 66.3%"></div>
                 </div>
               </div>
               <div class="space-y-1 text-body-sm font-body-sm pt-1">
@@ -553,7 +553,7 @@
           </article>
 
           <!-- Tarjeta 4: MP Chota -->
-          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="1" data-entity-id="ce-45fad1d64ba4bf0f" data-exec="31.5" data-name="Municipalidad Provincial de Chota" data-pim="248.6" data-ruc="20220499767" data-zone="centrosur">
+          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="1" data-entity-id="ce-45fad1d64ba4bf0f" data-exec="66.2" data-name="Municipalidad Provincial de Chota" data-pim="78.7" data-ruc="20220499767" data-zone="centrosur">
             <div class="p-6 space-y-4">
               <div class="flex items-start justify-between gap-2 border-b border-slate-border pb-2">
                 <div>
@@ -577,12 +577,12 @@
               <div class="grid grid-cols-2 gap-2 bg-slate-surface p-3 rounded border border-slate-border">
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">PIM Total 2025</span>
-                  <span class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 248.6 M</span>
+                  <span data-card-pim class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 78.7 M</span>
                 </div>
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">Devengado (% / S/.)</span>
-                  <span class="font-headline-sm text-headline-sm text-alert-amber font-semibold">31.5%</span>
-                  <span class="block font-caption text-caption text-on-surface-variant">S/ 78.3 M</span>
+                  <span data-card-rate class="font-headline-sm text-headline-sm text-secondary font-semibold">66.2%</span>
+                  <span data-card-dev class="block font-caption text-caption text-on-surface-variant">S/ 52.1 M</span>
                 </div>
               </div>
               <div>
@@ -591,7 +591,7 @@
                   <span class="text-alert-amber font-semibold">Moderado (31.5%)</span>
                 </div>
                 <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
-                  <div class="bg-alert-amber h-full rounded-full" style="width: 31.5%"></div>
+                  <div data-card-bar class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 66.2%"></div>
                 </div>
               </div>
               <div class="space-y-1 text-body-sm font-body-sm pt-1">
@@ -617,7 +617,7 @@
           </article>
 
           <!-- Tarjeta 5: MP Hualgayoc -->
-          <article class="entity-card bg-surface-container-lowest border-2 border-alert-rose/40 rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="5" data-entity-id="ce-dfd10c914365bbe3" data-exec="19.4" data-name="Municipalidad Provincial de Hualgayoc - Bambamarca" data-pim="215.3" data-ruc="20148260843" data-zone="centrosur">
+          <article class="entity-card bg-surface-container-lowest border-2 border-alert-rose/40 rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="5" data-entity-id="ce-dfd10c914365bbe3" data-exec="64.1" data-name="Municipalidad Provincial de Hualgayoc - Bambamarca" data-pim="81.1" data-ruc="20148260843" data-zone="centrosur">
             <div class="p-6 space-y-4">
               <div class="flex items-start justify-between gap-2 border-b border-slate-border pb-2">
                 <div>
@@ -645,8 +645,8 @@
                 </div>
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">Devengado Crítico</span>
-                  <span class="font-headline-sm text-headline-sm text-alert-rose font-semibold">19.4%</span>
-                  <span class="block font-caption text-caption text-on-surface-variant">S/ 41.7 M</span>
+                  <span data-card-rate class="font-headline-sm text-headline-sm text-secondary font-semibold">64.1%</span>
+                  <span data-card-dev class="block font-caption text-caption text-on-surface-variant">S/ 52.0 M</span>
                 </div>
               </div>
               <div>
@@ -655,7 +655,7 @@
                   <span class="text-alert-rose font-bold">Crítico Severo (&lt;20%)</span>
                 </div>
                 <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
-                  <div class="bg-alert-rose h-full rounded-full" style="width: 19.4%"></div>
+                  <div data-card-bar class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 64.1%"></div>
                 </div>
               </div>
               <div class="space-y-1 text-body-sm font-body-sm pt-1">
@@ -681,7 +681,7 @@
           </article>
 
           <!-- Tarjeta 6: MP Cutervo -->
-          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="2" data-entity-id="ce-360cf7aadccadabb" data-exec="27.2" data-name="Municipalidad Provincial de Cutervo" data-pim="186.7" data-ruc="20174691267" data-zone="norte">
+          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="2" data-entity-id="ce-360cf7aadccadabb" data-exec="64.8" data-name="Municipalidad Provincial de Cutervo" data-pim="32.9" data-ruc="20174691267" data-zone="norte">
             <div class="p-6 space-y-4">
               <div class="flex items-start justify-between gap-2 border-b border-slate-border pb-2">
                 <div>
@@ -705,12 +705,12 @@
               <div class="grid grid-cols-2 gap-2 bg-slate-surface p-3 rounded border border-slate-border">
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">PIM Total 2025</span>
-                  <span class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 186.7 M</span>
+                  <span data-card-pim class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 32.9 M</span>
                 </div>
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">Devengado (% / S/.)</span>
-                  <span class="font-headline-sm text-headline-sm text-alert-amber font-semibold">27.2%</span>
-                  <span class="block font-caption text-caption text-on-surface-variant">S/ 50.8 M</span>
+                  <span data-card-rate class="font-headline-sm text-headline-sm text-secondary font-semibold">64.8%</span>
+                  <span data-card-dev class="block font-caption text-caption text-on-surface-variant">S/ 21.3 M</span>
                 </div>
               </div>
               <div>
@@ -719,7 +719,7 @@
                   <span class="text-alert-amber font-semibold">Regular (27.2%)</span>
                 </div>
                 <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
-                  <div class="bg-alert-amber h-full rounded-full" style="width: 27.2%"></div>
+                  <div data-card-bar class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 64.8%"></div>
                 </div>
               </div>
               <div class="space-y-1 text-body-sm font-body-sm pt-1">
@@ -745,7 +745,7 @@
           </article>
 
           <!-- Tarjeta 7: MP San Ignacio -->
-          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="3" data-entity-id="ce-697eb5a0a1b4e6c6" data-exec="22.8" data-name="Municipalidad Provincial de San Ignacio" data-pim="174.1" data-ruc="20148261572" data-zone="norte">
+          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="3" data-entity-id="ce-697eb5a0a1b4e6c6" data-exec="66.0" data-name="Municipalidad Provincial de San Ignacio" data-pim="33.5" data-ruc="20148261572" data-zone="norte">
             <div class="p-6 space-y-4">
               <div class="flex items-start justify-between gap-2 border-b border-slate-border pb-2">
                 <div>
@@ -769,21 +769,21 @@
               <div class="grid grid-cols-2 gap-2 bg-slate-surface p-3 rounded border border-slate-border">
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">PIM Total 2025</span>
-                  <span class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 174.1 M</span>
+                  <span data-card-pim class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 33.5 M</span>
                 </div>
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">Devengado (% / S/.)</span>
-                  <span class="font-headline-sm text-headline-sm text-alert-rose font-semibold">22.8%</span>
-                  <span class="block font-caption text-caption text-on-surface-variant">S/ 39.7 M</span>
+                  <span data-card-rate class="font-headline-sm text-headline-sm text-secondary font-semibold">66.0%</span>
+                  <span data-card-dev class="block font-caption text-caption text-on-surface-variant">S/ 22.1 M</span>
                 </div>
               </div>
               <div>
                 <div class="flex justify-between items-center text-caption font-caption mb-1">
                   <span class="text-on-surface-variant">Nivel de ejecución presupuestal</span>
-                  <span class="text-alert-rose font-semibold">Crítico (&lt;25%)</span>
+                  <span class="text-secondary font-semibold">Meta Superada (≥45%)</span>
                 </div>
                 <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
-                  <div class="bg-alert-rose h-full rounded-full" style="width: 22.8%"></div>
+                  <div data-card-bar class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 66.0%"></div>
                 </div>
               </div>
               <div class="space-y-1 text-body-sm font-body-sm pt-1">
@@ -809,7 +809,7 @@
           </article>
 
           <!-- Tarjeta 8: MP Celendín -->
-          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="1" data-entity-id="ce-2b779c1e84ff4365" data-exec="35.6" data-name="Municipalidad Provincial de Celendín" data-pim="152.0" data-ruc="20148289825" data-zone="centrosur">
+          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="1" data-entity-id="ce-2b779c1e84ff4365" data-exec="60.9" data-name="Municipalidad Provincial de Celendín" data-pim="34.6" data-ruc="20148289825" data-zone="centrosur">
             <div class="p-6 space-y-4">
               <div class="flex items-start justify-between gap-2 border-b border-slate-border pb-2">
                 <div>
@@ -833,7 +833,7 @@
               <div class="grid grid-cols-2 gap-2 bg-slate-surface p-3 rounded border border-slate-border">
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">PIM Total 2025</span>
-                  <span class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 152.0 M</span>
+                  <span data-card-pim class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 34.6 M</span>
                 </div>
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">Devengado (% / S/.)</span>
@@ -873,7 +873,7 @@
           </article>
 
           <!-- Tarjeta 9: MP Cajabamba -->
-          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="0" data-entity-id="ce-b4a52d15b3cffe4f" data-exec="30.4" data-name="Municipalidad Provincial de Cajabamba" data-pim="141.5" data-ruc="20148288853" data-zone="centrosur">
+          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="0" data-entity-id="ce-b4a52d15b3cffe4f" data-exec="63.5" data-name="Municipalidad Provincial de Cajabamba" data-pim="33.0" data-ruc="20148288853" data-zone="centrosur">
             <div class="p-6 space-y-4">
               <div class="flex items-start justify-between gap-2 border-b border-slate-border pb-2">
                 <div>
@@ -897,12 +897,12 @@
               <div class="grid grid-cols-2 gap-2 bg-slate-surface p-3 rounded border border-slate-border">
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">PIM Total 2025</span>
-                  <span class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 141.5 M</span>
+                  <span data-card-pim class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 33.0 M</span>
                 </div>
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">Devengado (% / S/.)</span>
-                  <span class="font-headline-sm text-headline-sm text-alert-amber font-semibold">30.4%</span>
-                  <span class="block font-caption text-caption text-on-surface-variant">S/ 43.0 M</span>
+                  <span data-card-rate class="font-headline-sm text-headline-sm text-secondary font-semibold">63.5%</span>
+                  <span data-card-dev class="block font-caption text-caption text-on-surface-variant">S/ 21.0 M</span>
                 </div>
               </div>
               <div>
@@ -911,7 +911,7 @@
                   <span class="text-alert-amber font-semibold">Moderado (30.4%)</span>
                 </div>
                 <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
-                  <div class="bg-alert-amber h-full rounded-full" style="width: 30.4%"></div>
+                  <div data-card-bar class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 63.5%"></div>
                 </div>
               </div>
               <div class="space-y-1 text-body-sm font-body-sm pt-1">
@@ -937,7 +937,7 @@
           </article>
 
           <!-- Tarjeta 10: MP San Marcos -->
-          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="0" data-entity-id="ce-ad540c85ce98e1d8" data-exec="38.2" data-name="Municipalidad Provincial de San Marcos" data-pim="118.9" data-ruc="20175083937" data-zone="centrosur">
+          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="0" data-entity-id="ce-ad540c85ce98e1d8" data-exec="66.6" data-name="Municipalidad Provincial de San Marcos" data-pim="33.7" data-ruc="20175083937" data-zone="centrosur">
             <div class="p-6 space-y-4">
               <div class="flex items-start justify-between gap-2 border-b border-slate-border pb-2">
                 <div>
@@ -961,7 +961,7 @@
               <div class="grid grid-cols-2 gap-2 bg-slate-surface p-3 rounded border border-slate-border">
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">PIM Total 2025</span>
-                  <span class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 118.9 M</span>
+                  <span data-card-pim class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 33.7 M</span>
                 </div>
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">Devengado (% / S/.)</span>
@@ -1001,7 +1001,7 @@
           </article>
 
           <!-- Tarjeta 11: MP San Miguel -->
-          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="2" data-entity-id="ce-3511b005adba63bf" data-exec="21.1" data-name="Municipalidad Provincial de San Miguel" data-pim="98.4" data-ruc="20143625843" data-zone="centrosur">
+          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="2" data-entity-id="ce-3511b005adba63bf" data-exec="58.7" data-name="Municipalidad Provincial de San Miguel" data-pim="35.9" data-ruc="20143625843" data-zone="centrosur">
             <div class="p-6 space-y-4">
               <div class="flex items-start justify-between gap-2 border-b border-slate-border pb-2">
                 <div>
@@ -1025,21 +1025,21 @@
               <div class="grid grid-cols-2 gap-2 bg-slate-surface p-3 rounded border border-slate-border">
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">PIM Total 2025</span>
-                  <span class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 98.4 M</span>
+                  <span data-card-pim class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 35.9 M</span>
                 </div>
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">Devengado (% / S/.)</span>
-                  <span class="font-headline-sm text-headline-sm text-alert-rose font-semibold">21.1%</span>
-                  <span class="block font-caption text-caption text-on-surface-variant">S/ 20.8 M</span>
+                  <span data-card-rate class="font-headline-sm text-headline-sm text-secondary font-semibold">58.7%</span>
+                  <span data-card-dev class="block font-caption text-caption text-on-surface-variant">S/ 21.0 M</span>
                 </div>
               </div>
               <div>
                 <div class="flex justify-between items-center text-caption font-caption mb-1">
                   <span class="text-on-surface-variant">Nivel de ejecución presupuestal</span>
-                  <span class="text-alert-rose font-semibold">Crítico (&lt;25%)</span>
+                  <span class="text-secondary font-semibold">Meta Superada (≥45%)</span>
                 </div>
                 <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
-                  <div class="bg-alert-rose h-full rounded-full" style="width: 21.1%"></div>
+                  <div data-card-bar class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 58.7%"></div>
                 </div>
               </div>
               <div class="space-y-1 text-body-sm font-body-sm pt-1">
@@ -1065,7 +1065,7 @@
           </article>
 
           <!-- Tarjeta 12: MP Santa Cruz -->
-          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="1" data-entity-id="ce-f29ffd64eff3fe9a" data-exec="26.5" data-name="Municipalidad Provincial de Santa Cruz" data-pim="89.2" data-ruc="20200367376" data-zone="centrosur">
+          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="1" data-entity-id="ce-f29ffd64eff3fe9a" data-exec="65.5" data-name="Municipalidad Provincial de Santa Cruz" data-pim="32.2" data-ruc="20200367376" data-zone="centrosur">
             <div class="p-6 space-y-4">
               <div class="flex items-start justify-between gap-2 border-b border-slate-border pb-2">
                 <div>
@@ -1089,12 +1089,12 @@
               <div class="grid grid-cols-2 gap-2 bg-slate-surface p-3 rounded border border-slate-border">
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">PIM Total 2025</span>
-                  <span class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 89.2 M</span>
+                  <span data-card-pim class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 32.2 M</span>
                 </div>
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">Devengado (% / S/.)</span>
-                  <span class="font-headline-sm text-headline-sm text-alert-amber font-semibold">26.5%</span>
-                  <span class="block font-caption text-caption text-on-surface-variant">S/ 23.6 M</span>
+                  <span data-card-rate class="font-headline-sm text-headline-sm text-secondary font-semibold">65.5%</span>
+                  <span data-card-dev class="block font-caption text-caption text-on-surface-variant">S/ 21.1 M</span>
                 </div>
               </div>
               <div>
@@ -1103,7 +1103,7 @@
                   <span class="text-alert-amber font-semibold">Regular (26.5%)</span>
                 </div>
                 <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
-                  <div class="bg-alert-amber h-full rounded-full" style="width: 26.5%"></div>
+                  <div data-card-bar class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 65.5%"></div>
                 </div>
               </div>
               <div class="space-y-1 text-body-sm font-body-sm pt-1">
@@ -1129,7 +1129,7 @@
           </article>
 
           <!-- Tarjeta 13: MP Contumazá -->
-          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="0" data-entity-id="ce-3337df921084c80a" data-exec="34.0" data-name="Municipalidad Provincial de Contumazá" data-pim="62.3" data-ruc="20191657447" data-zone="centrosur">
+          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="0" data-entity-id="ce-3337df921084c80a" data-exec="66.1" data-name="Municipalidad Provincial de Contumazá" data-pim="32.9" data-ruc="20191657447" data-zone="centrosur">
             <div class="p-6 space-y-4">
               <div class="flex items-start justify-between gap-2 border-b border-slate-border pb-2">
                 <div>
@@ -1153,12 +1153,12 @@
               <div class="grid grid-cols-2 gap-2 bg-slate-surface p-3 rounded border border-slate-border">
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">PIM Total 2025</span>
-                  <span class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 62.3 M</span>
+                  <span data-card-pim class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 32.9 M</span>
                 </div>
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">Devengado (% / S/.)</span>
-                  <span class="font-headline-sm text-headline-sm text-alert-amber font-semibold">34.0%</span>
-                  <span class="block font-caption text-caption text-on-surface-variant">S/ 21.2 M</span>
+                  <span data-card-rate class="font-headline-sm text-headline-sm text-secondary font-semibold">66.1%</span>
+                  <span data-card-dev class="block font-caption text-caption text-on-surface-variant">S/ 21.7 M</span>
                 </div>
               </div>
               <div>
@@ -1167,7 +1167,7 @@
                   <span class="text-alert-amber font-semibold">Moderado (34.0%)</span>
                 </div>
                 <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
-                  <div class="bg-alert-amber h-full rounded-full" style="width: 34.0%"></div>
+                  <div data-card-bar class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 66.1%"></div>
                 </div>
               </div>
               <div class="space-y-1 text-body-sm font-body-sm pt-1">
@@ -1193,7 +1193,7 @@
           </article>
 
           <!-- Tarjeta 14: MP San Pablo -->
-          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="1" data-entity-id="ce-d7fc753b1fb5ff5b" data-exec="25.8" data-name="Municipalidad Provincial de San Pablo" data-pim="42.1" data-ruc="20172446800" data-zone="centrosur">
+          <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow" data-alerts="1" data-entity-id="ce-d7fc753b1fb5ff5b" data-exec="40.6" data-name="Municipalidad Provincial de San Pablo" data-pim="57.3" data-ruc="20172446800" data-zone="centrosur">
             <div class="p-6 space-y-4">
               <div class="flex items-start justify-between gap-2 border-b border-slate-border pb-2">
                 <div>
@@ -1217,12 +1217,12 @@
               <div class="grid grid-cols-2 gap-2 bg-slate-surface p-3 rounded border border-slate-border">
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">PIM Total 2025</span>
-                  <span class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 42.1 M</span>
+                  <span data-card-pim class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ 57.3 M</span>
                 </div>
                 <div>
                   <span class="block text-caption font-caption text-on-surface-variant uppercase">Devengado (% / S/.)</span>
-                  <span class="font-headline-sm text-headline-sm text-alert-amber font-semibold">25.8%</span>
-                  <span class="block font-caption text-caption text-on-surface-variant">S/ 10.9 M</span>
+                  <span data-card-rate class="font-headline-sm text-headline-sm text-alert-amber font-semibold">40.6%</span>
+                  <span data-card-dev class="block font-caption text-caption text-on-surface-variant">S/ 23.3 M</span>
                 </div>
               </div>
               <div>
@@ -1231,7 +1231,7 @@
                   <span class="text-alert-amber font-semibold">Umbral Límite (25.8%)</span>
                 </div>
                 <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
-                  <div class="bg-alert-amber h-full rounded-full" style="width: 25.8%"></div>
+                  <div data-card-bar class="bg-alert-amber h-full rounded-full transition-all duration-700 ease-out" style="width: 40.6%"></div>
                 </div>
               </div>
               <div class="space-y-1 text-body-sm font-body-sm pt-1">
@@ -1447,65 +1447,65 @@
               <div class="space-y-3 mt-4">
                 <div>
                   <div class="flex justify-between font-label-sm text-label-sm mb-1">
-                    <span class="text-on-surface">1. M. P. San Marcos (Líder regional)</span>
-                    <span class="font-semibold text-civic-emerald">35.4% de avance</span>
+                    <span class="text-on-surface">1. Gobierno Regional Cajamarca (Sede Central)</span>
+                    <span class="font-semibold text-secondary">74.5% de avance</span>
                   </div>
                   <div class="w-full bg-surface-container rounded-full h-2.5 overflow-hidden">
-                    <div class="bg-civic-emerald h-full rounded-full" style="width: 35.4%"></div>
+                    <div class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 74.5%"></div>
                   </div>
                 </div>
                 <div>
                   <div class="flex justify-between font-label-sm text-label-sm mb-1">
-                    <span class="text-on-surface">2. M. P. Celendín</span>
-                    <span class="font-semibold text-civic-emerald">31.2% de avance</span>
+                    <span class="text-on-surface">2. M. P. San Marcos (Líder Provincial)</span>
+                    <span class="font-semibold text-secondary">66.6% de avance</span>
                   </div>
                   <div class="w-full bg-surface-container rounded-full h-2.5 overflow-hidden">
-                    <div class="bg-civic-emerald h-full rounded-full" style="width: 31.2%"></div>
+                    <div class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 66.6%"></div>
                   </div>
                 </div>
                 <div>
                   <div class="flex justify-between font-label-sm text-label-sm mb-1">
-                    <span class="text-on-surface">3. M. P. Contumazá</span>
-                    <span class="font-semibold text-alert-amber">30.2% de avance</span>
+                    <span class="text-on-surface">3. M. P. Jaén</span>
+                    <span class="font-semibold text-secondary">66.3% de avance</span>
                   </div>
                   <div class="w-full bg-surface-container rounded-full h-2.5 overflow-hidden">
-                    <div class="bg-alert-amber h-full rounded-full" style="width: 30.2%"></div>
+                    <div class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 66.3%"></div>
                   </div>
                 </div>
                 <div>
                   <div class="flex justify-between font-label-sm text-label-sm mb-1">
-                    <span class="text-on-surface">4. M. P. Cajamarca (Capital)</span>
-                    <span class="font-semibold text-alert-amber">28.4% de avance</span>
+                    <span class="text-on-surface">4. M. P. Chota</span>
+                    <span class="font-semibold text-secondary">66.2% de avance</span>
                   </div>
                   <div class="w-full bg-surface-container rounded-full h-2.5 overflow-hidden">
-                    <div class="bg-alert-amber h-full rounded-full" style="width: 28.4%"></div>
+                    <div class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 66.2%"></div>
                   </div>
                 </div>
                 <div>
                   <div class="flex justify-between font-label-sm text-label-sm mb-1">
-                    <span class="text-on-surface">5. Gobierno Regional Cajamarca (Sede Central)</span>
-                    <span class="font-semibold text-alert-rose">19.8% de avance (Crítico)</span>
+                    <span class="text-on-surface">5. M. P. Cajamarca (Capital)</span>
+                    <span class="font-semibold text-secondary">65.7% de avance</span>
                   </div>
                   <div class="w-full bg-surface-container rounded-full h-2.5 overflow-hidden">
-                    <div class="bg-alert-rose h-full rounded-full" style="width: 19.8%"></div>
+                    <div class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 65.7%"></div>
                   </div>
                 </div>
                 <div>
                   <div class="flex justify-between font-label-sm text-label-sm mb-1">
-                    <span class="text-on-surface">6. M. P. San Ignacio (Frontera)</span>
-                    <span class="font-semibold text-alert-rose">17.5% de avance (Crítico)</span>
+                    <span class="text-on-surface">6. M. P. Hualgayoc - Bambamarca (Zona Minera)</span>
+                    <span class="font-semibold text-secondary">64.1% de avance</span>
                   </div>
                   <div class="w-full bg-surface-container rounded-full h-2.5 overflow-hidden">
-                    <div class="bg-alert-rose h-full rounded-full" style="width: 17.5%"></div>
+                    <div class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 64.1%"></div>
                   </div>
                 </div>
                 <div>
                   <div class="flex justify-between font-label-sm text-label-sm mb-1">
-                    <span class="text-on-surface">7. M. P. Hualgayoc - Bambamarca (Zona Minera)</span>
-                    <span class="font-semibold text-alert-rose">14.2% de avance (Mínimo histórico)</span>
+                    <span class="text-on-surface">7. M. P. San Pablo</span>
+                    <span class="font-semibold text-alert-amber">40.6% de avance (Atención)</span>
                   </div>
                   <div class="w-full bg-surface-container rounded-full h-2.5 overflow-hidden">
-                    <div class="bg-alert-rose h-full rounded-full" style="width: 14.2%"></div>
+                    <div class="bg-alert-amber h-full rounded-full transition-all duration-700 ease-out" style="width: 40.6%"></div>
                   </div>
                 </div>
               </div>
@@ -1530,14 +1530,14 @@
               <!-- Gráfico Donut SVG -->
               <div class="py-4 flex flex-col sm:flex-row items-center gap-6">
                 <div class="relative w-36 h-36 shrink-0">
-                  <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                  <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36" role="img" aria-label="Distribución de fuentes de financiamiento: Canon 52%, Recursos Ordinarios 33%, FONCOMUN 15%">
                     <path class="text-surface-container" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4.5"></path>
-                    <path class="text-secondary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="52, 100" stroke-width="4.5"></path>
-                    <path class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="33, 100" stroke-dashoffset="-52" stroke-width="4.5"></path>
-                    <path class="text-alert-amber" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="15, 100" stroke-dashoffset="-85" stroke-width="4.5"></path>
+                    <path id="donut-slice-canon" class="text-secondary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="52.4, 100" stroke-width="4.5" style="transition: stroke-dasharray 0.8s ease-out, stroke-dashoffset 0.8s ease-out;"></path>
+                    <path id="donut-slice-ro" class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="32.6, 100" stroke-dashoffset="-52.4" stroke-width="4.5" style="transition: stroke-dasharray 0.8s ease-out, stroke-dashoffset 0.8s ease-out;"></path>
+                    <path id="donut-slice-foncomun" class="text-alert-amber" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="15.0, 100" stroke-dashoffset="-85" stroke-width="4.5" style="transition: stroke-dasharray 0.8s ease-out, stroke-dashoffset 0.8s ease-out;"></path>
                   </svg>
                   <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-                    <span class="font-headline-sm text-headline-sm font-semibold text-on-surface">52%</span>
+                    <span id="donut-pct-text" class="font-headline-sm text-headline-sm font-semibold text-on-surface">52%</span>
                     <span class="font-caption text-caption text-on-surface-variant uppercase">Canon</span>
                   </div>
                 </div>
