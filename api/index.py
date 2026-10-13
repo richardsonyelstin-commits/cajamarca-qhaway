@@ -208,7 +208,23 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
             }
             return 200, "application/json; charset=utf-8", json.dumps(payload).encode("utf-8")
         if path == "/api/snapshot":
-            return 200, "application/json; charset=utf-8", json.dumps(snap).encode("utf-8")
+            public_snap = dict(snap)
+            public_snap["citizen_reports"] = []
+            public_snap["alerts"] = [
+                alert for alert in public_snap.get("alerts", [])
+                if alert.get("status") == "published"
+            ]
+            published_ids = {
+                flag_id
+                for alert in public_snap.get("alerts", [])
+                if alert.get("status") == "published"
+                for flag_id in alert.get("red_flag_ids", [])
+            }
+            public_snap["red_flags"] = [
+                flag for flag in public_snap.get("red_flags", [])
+                if flag.get("red_flag_id") in published_ids
+            ]
+            return 200, "application/json; charset=utf-8", json.dumps(public_snap).encode("utf-8")
         if path == "/api/entities":
             entities = snap.get("contracting_entities", [])
             ent_id = query.get("id", [None])[0] or query.get("ruc", [None])[0]
@@ -249,7 +265,16 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
                 pubs = [a for a in pubs if a.get("entity_id") == eid]
             return 200, "application/json; charset=utf-8", json.dumps(pubs).encode("utf-8")
         if path == "/api/red-flags":
-            flags = snap.get("red_flags", [])
+            published_flag_ids = {
+                flag_id
+                for alert in snap.get("alerts", [])
+                if alert.get("status") == "published"
+                for flag_id in alert.get("red_flag_ids", [])
+            }
+            flags = [
+                flag for flag in snap.get("red_flags", [])
+                if flag.get("red_flag_id") in published_flag_ids
+            ]
             rfid = query.get("id", [None])[0]
             if rfid:
                 m = next((f for f in flags if f.get("red_flag_id") == rfid), None)
@@ -270,6 +295,8 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
                 if not bool(data.get("legal_disclaimer_shown") or data.get("disclaimer_accepted")):
                     return 400, "application/json; charset=utf-8", json.dumps({"error": "Descargo legal obligatorio (CA-006-01)"}).encode("utf-8")
                 report_id = f"cr-{int(time.time()*1000):x}"
+                tracking_token = secrets.token_urlsafe(32)
+                tracking_token_hash = hashlib.sha256(tracking_token.encode("utf-8")).hexdigest()
                 now_iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
                 payload = {
                     "report_id": report_id,
@@ -279,11 +306,15 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
                     "related_entity_id": data.get("related_entity_id"),
                     "moderation_status": "received",
                     "legal_disclaimer_shown": True,
+                    "tracking_token_hash": tracking_token_hash,
                 }
-                return 201, "application/json; charset=utf-8", json.dumps({**payload, "report": payload}).encode("utf-8")
+                snap.setdefault("citizen_reports", []).append(payload)
+                public_payload = {key: value for key, value in payload.items() if key != "tracking_token_hash"}
+                return 201, "application/json; charset=utf-8", json.dumps({**public_payload, "tracking_token": tracking_token, "report": public_payload}).encode("utf-8")
             # GET requiere sesion de veedor
             auth_h = req_headers.get("authorization", "")
-            if not auth_h.startswith("Bearer "):
+            token = auth_h[7:].strip() if auth_h.startswith("Bearer ") else ""
+            if not _verify_veedor_token_stdlib(token):
                 return 401, "application/json; charset=utf-8", json.dumps({"error": "Acceso restringido a veedores acreditados (Ley 29733)"}).encode("utf-8")
             return 200, "application/json; charset=utf-8", json.dumps(snap.get("citizen_reports", [])).encode("utf-8")
 
@@ -293,7 +324,8 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
                 return 400, "application/json; charset=utf-8", json.dumps({"error": "Parametro 'token' es obligatorio"}).encode("utf-8")
             tok_clean = tok.strip()
             reports = snap.get("citizen_reports", [])
-            m = next((r for r in reports if r.get("report_id") == tok_clean or r.get("tracking_token") == tok_clean), None)
+            token_hash = hashlib.sha256(tok_clean.encode("utf-8")).hexdigest()
+            m = next((r for r in reports if r.get("tracking_token_hash") == token_hash), None)
             if not m:
                 return 404, "application/json; charset=utf-8", json.dumps({"error": "Expediente de denuncia no encontrado"}).encode("utf-8")
             safe = {
@@ -307,29 +339,12 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
             return 200, "application/json; charset=utf-8", json.dumps(safe).encode("utf-8")
 
         if path == "/api/review" and method == "POST":
-            try:
-                data = json.loads(body.decode("utf-8")) if body else {}
-            except Exception:
-                return 400, "application/json; charset=utf-8", json.dumps({"error": "JSON invalido"}).encode("utf-8")
-            eid = str(data.get("entity_id", "")).strip()
-            rf_ids = data.get("red_flag_ids", [])
-            status = str(data.get("status", "")).strip()
-            reviewer = str(data.get("reviewed_by", "")).strip()
-            if not eid or not rf_ids or not status or not reviewer:
-                return 400, "application/json; charset=utf-8", json.dumps({"error": "Campos requeridos faltantes"}).encode("utf-8")
-            now_iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-            alert_id = f"al-{int(time.time()*1000):x}"
-            alert = {
-                "alert_id": alert_id,
-                "red_flag_ids": rf_ids if isinstance(rf_ids, list) else [rf_ids],
-                "entity_id": eid,
-                "status": status,
-                "reviewed_by": reviewer,
-                "reviewed_at": now_iso,
-                "review_notes": data.get("review_notes") or ("Descarte documentado" if status == "discarded" else None),
-                "published_at": now_iso if status == "published" else None,
-            }
-            return 201, "application/json; charset=utf-8", json.dumps({**alert, "alert": alert}).encode("utf-8")
+            auth_header = req_headers.get("authorization", "")
+            auth_token = auth_header[7:].strip() if auth_header.startswith("Bearer ") else ""
+            session = _verify_veedor_token_stdlib(auth_token)
+            if not session:
+                return 401, "application/json; charset=utf-8", json.dumps({"error": "Sesion de veedor requerida"}).encode("utf-8")
+            return 503, "application/json; charset=utf-8", json.dumps({"error": "El modo fallback no dispone de un repositorio privado de evidencia"}).encode("utf-8")
 
         if path == "/api/auth/session":
             auth_header = req_headers.get("authorization", "")

@@ -1,4 +1,4 @@
-"""Capacidad 003-mef-ingestion — Ingesta de ejecucion presupuestal (MEF)."""
+"""Capacidad 003-mef-ingestion - Ingesta de ejecucion presupuestal (MEF)."""
 
 from __future__ import annotations
 

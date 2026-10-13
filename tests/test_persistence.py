@@ -334,6 +334,7 @@ def test_alert_repository(
         reviewed_by="auditor_cajamarca",
         reviewed_at=datetime.now(timezone.utc),
         review_notes="Verificado conforme a ley",
+        evidence=[{"red_flag_id": "flag-single-bidder-001", "formula_description": "Licitación con un postor", "observed_value": 1, "threshold_value": 1, "retrieved_at": datetime.now(timezone.utc), "evidence_source": "seace-ocds"}],
         disclaimer="Indicador de riesgo automatizado, no constituye prueba ni acusación formal de corrupción.",
         published_at=datetime.now(timezone.utc),
     )

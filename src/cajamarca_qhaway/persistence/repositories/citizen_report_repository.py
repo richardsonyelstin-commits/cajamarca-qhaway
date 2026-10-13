@@ -25,6 +25,14 @@ class CitizenReportRepository:
                 return None
             return self._row_to_model(row)
 
+    def get_by_tracking_token_hash(self, token_hash: str) -> CitizenReport | None:
+        sql = "SELECT * FROM citizen_reports WHERE tracking_token_hash = ?"
+        with self.db.connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(sql, (token_hash,))
+            row = cursor.fetchone()
+            return self._row_to_model(row) if row else None
+
     def list_pending(self) -> list[CitizenReport]:
         sql = "SELECT * FROM citizen_reports WHERE moderation_status = 'pending' ORDER BY submitted_at ASC"
         with self.db.connection() as conn:
@@ -40,9 +48,10 @@ class CitizenReportRepository:
         sql = """
         INSERT INTO citizen_reports
             (report_id, submitted_at, channel, raw_text, related_entity_id,
-             moderation_status, moderated_by, moderated_at, legal_disclaimer_shown)
+             moderation_status, moderated_by, moderated_at, legal_disclaimer_shown,
+             tracking_token_hash)
         VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT (report_id) DO UPDATE SET
             moderation_status = excluded.moderation_status,
             moderated_by = excluded.moderated_by,
@@ -59,6 +68,7 @@ class CitizenReportRepository:
             report.moderated_by,
             report.moderated_at.isoformat() if report.moderated_at else None,
             True if report.legal_disclaimer_shown else False,
+            report.tracking_token_hash,
         )
 
         with self.db.connection() as conn:
@@ -91,4 +101,5 @@ class CitizenReportRepository:
             moderated_by=row["moderated_by"],
             moderated_at=moderated_at,
             legal_disclaimer_shown=bool(row["legal_disclaimer_shown"]),
+            tracking_token_hash=row["tracking_token_hash"],
         )

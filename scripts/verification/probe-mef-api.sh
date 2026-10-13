@@ -10,7 +10,7 @@ set -euo pipefail
 OUT="${1:-.}"
 mkdir -p "$OUT"
 
-echo "== 1. Portal Angular (datosabiertos.mef.gob.pe) — confirmar que es un SPA, no CKAN directo =="
+echo "== 1. Portal Angular (datosabiertos.mef.gob.pe) - confirmar que es un SPA, no CKAN directo =="
 curl -s --max-time 20 "https://datosabiertos.mef.gob.pe/" -o "$OUT/mef_index.html" \
   -w "HTTP:%{http_code}\n"
 JS=$(grep -o 'main-[A-Za-z0-9]*\.js' "$OUT/mef_index.html" | head -1 || true)
@@ -30,13 +30,13 @@ curl -s --max-time 20 "https://api.datosabiertos.mef.gob.pe/DatosAbiertos/v1/dat
 cat "$OUT/mef_datastore_probe.json"
 echo
 
-echo "== 4. Consulta Amigable (apps5.mineco.gob.pe) — confirmar si es API o interfaz clasica =="
+echo "== 4. Consulta Amigable (apps5.mineco.gob.pe) - confirmar si es API o interfaz clasica =="
 curl -s --max-time 20 "https://apps5.mineco.gob.pe/transparencia/Navegador/default.aspx" \
   -o "$OUT/consulta_amigable.html" -w "HTTP:%{http_code} TYPE:%{content_type}\n"
 head -c 400 "$OUT/consulta_amigable.html"
 echo
 
-echo "== 5. Portal Nacional de Datos Abiertos (posible espejo CKAN) — comprobar bloqueo anti-bot =="
+echo "== 5. Portal Nacional de Datos Abiertos (posible espejo CKAN) - comprobar bloqueo anti-bot =="
 curl -s --max-time 20 "https://www.datosabiertos.gob.pe/api/3/action/package_search?q=mef&rows=3" \
   -o "$OUT/pnda_probe.json" -w "HTTP:%{http_code} TYPE:%{content_type}\n"
 head -c 300 "$OUT/pnda_probe.json"

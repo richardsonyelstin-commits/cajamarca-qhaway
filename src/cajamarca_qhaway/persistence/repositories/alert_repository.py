@@ -48,14 +48,17 @@ class AlertRepository:
         sql = """
         INSERT INTO alerts
             (alert_id, red_flag_ids, entity_id, status, reviewed_by, reviewed_at,
-             review_notes, disclaimer, published_at)
+             review_notes, disclaimer, legal_disclaimer, evidence, published_at)
         VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT (alert_id) DO UPDATE SET
             status = excluded.status,
             reviewed_by = excluded.reviewed_by,
             reviewed_at = excluded.reviewed_at,
             review_notes = excluded.review_notes,
+            disclaimer = excluded.disclaimer,
+            legal_disclaimer = excluded.legal_disclaimer,
+            evidence = excluded.evidence,
             published_at = excluded.published_at
         """
 
@@ -67,7 +70,9 @@ class AlertRepository:
             alert.reviewed_by,
             alert.reviewed_at.isoformat(),
             alert.review_notes,
-            alert.disclaimer,
+            alert.legal_disclaimer,
+            alert.legal_disclaimer,
+            json.dumps([item.model_dump(mode="json") for item in alert.evidence]),
             alert.published_at.isoformat() if alert.published_at else None,
         )
 
@@ -98,6 +103,13 @@ class AlertRepository:
             if published_at.tzinfo is None:
                 published_at = published_at.replace(tzinfo=timezone.utc)
 
+        evidence = row["evidence"]
+        if isinstance(evidence, str):
+            try:
+                evidence = json.loads(evidence)
+            except json.JSONDecodeError:
+                evidence = []
+
         return Alert(
             alert_id=row["alert_id"],
             red_flag_ids=red_flag_ids,
@@ -106,6 +118,7 @@ class AlertRepository:
             reviewed_by=row["reviewed_by"],
             reviewed_at=reviewed_at,
             review_notes=row["review_notes"],
-            disclaimer=row["disclaimer"],
+            legal_disclaimer=row["legal_disclaimer"],
+            evidence=evidence,
             published_at=published_at,
         )

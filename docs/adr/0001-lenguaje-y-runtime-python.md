@@ -57,29 +57,29 @@ equipo pequeño sin capacidad de mantener dos ecosistemas de dependencias.
 - Ajuste con PostgreSQL y CTE recursivas, ya propuesto en `PROJECT.yaml` para el grafo
   proveedor-funcionario-contrato.
 - Compatibilidad con Cardinal (OCP), el motor de red flags de referencia que
-  `specs/004-red-flags-engine/spec.md` (AC-004-02) deja pendiente de evaluar — sin el lenguaje
+  `specs/004-red-flags-engine/spec.md` (AC-004-02) deja pendiente de evaluar - sin el lenguaje
   fijado, esa evaluación no puede ni empezar.
 - Carga de mantenimiento para un equipo pequeño: cuántos ecosistemas de dependencias hay que
   sostener a la vez.
 - Precedente operativo dentro de este mismo workspace (`scientific-literature-pipeline`, Python
   3.12, `httpx` + `pydantic` v2), que ya resolvió problemas de forma similares (ingesta HTTP con
   validación de cuerpo, contratos con pydantic) reutilizables como patrón, no como código.
-- Necesidad de un panel web y, después, un dashboard público — superficies que en cualquier
+- Necesidad de un panel web y, después, un dashboard público - superficies que en cualquier
   lenguaje de backend terminan sirviendo HTML/JS al navegador.
 
 ## Opciones consideradas
 
-### Opción 1 — Python (3.12) como lenguaje único de backend/ingesta/motor
+### Opción 1 - Python (3.12) como lenguaje único de backend/ingesta/motor
 
 - A favor: la carga de trabajo central del proyecto (ingesta HTTP + validación + persistencia
   relacional con consultas recursivas) es exactamente el tipo de trabajo para el que el ecosistema
   Python (`httpx`, `pydantic`, `SQLAlchemy`/`psycopg`, `pytest`) ya está probado en este mismo
   workspace.
-- A favor: mantiene abierta, sin comprometerla todavía, la opción de reutilizar Cardinal (OCP) —
+- A favor: mantiene abierta, sin comprometerla todavía, la opción de reutilizar Cardinal (OCP) -
   la decisión real de reúso se toma en el ADR 0004, pero solo es evaluable si el lenguaje de este
   proyecto no descarta la compatibilidad de entrada.
 - A favor: reduce la carga cognitiva de un equipo pequeño que probablemente ya mantiene
-  `scientific-literature-pipeline` en Python — mismas convenciones de testing (`pytest`), mismo
+  `scientific-literature-pipeline` en Python - mismas convenciones de testing (`pytest`), mismo
   patrón de validación de cuerpo de respuesta HTTP, mismo estilo de contratos (`pydantic`).
 - A favor: el panel de revisión y el dashboard público, con el volumen bajo de este proyecto
   (cientos a pocos miles de registros/año), no necesitan una aplicación de página única compleja:
@@ -92,13 +92,13 @@ equipo pequeño sin capacidad de mantener dos ecosistemas de dependencias.
   aunque no un framework completo.
 - En contra: el fondo de voluntarios/colaboradores con experiencia en desarrollo web moderno
   (formularios, sesión, autenticación) puede tener más soltura en JavaScript/TypeScript que en
-  Python para esas tareas — es una suposición, no una evidencia verificada sobre el equipo real de
+  Python para esas tareas - es una suposición, no una evidencia verificada sobre el equipo real de
   este proyecto, y se señala como límite honesto de esta decisión.
 
-### Opción 2 — TypeScript/Node.js como lenguaje único (backend + frontend con un solo framework, p. ej. Next.js)
+### Opción 2 - TypeScript/Node.js como lenguaje único (backend + frontend con un solo framework, p. ej. Next.js)
 
 - A favor: un solo lenguaje cubre ingesta, backend, panel de revisión y dashboard público sin
-  ningún cambio de contexto — ventaja real para un equipo pequeño que también construye la
+  ningún cambio de contexto - ventaja real para un equipo pequeño que también construye la
   interfaz.
 - A favor: los SDK de mensajería más usados (Twilio, Meta Business SDK) tienen soporte de primera
   clase en Node, relevante para `009-sms-whatsapp-notify` cuando se especifique.
@@ -106,7 +106,7 @@ equipo pequeño sin capacidad de mantener dos ecosistemas de dependencias.
   público y al panel de revisión una experiencia de usuario más pulida con menos esfuerzo que
   construirla en Python.
 - En contra: Cardinal (OCP) queda fuera de alcance de reúso directo sin un paso de integración
-  poliglota (subproceso, microservicio aparte) — coste operativo añadido para un equipo pequeño
+  poliglota (subproceso, microservicio aparte) - coste operativo añadido para un equipo pequeño
   que este ADR busca evitar precisamente por el factor "carga de mantenimiento".
 - En contra: el ecosistema de Node para trabajo de datos con PostgreSQL y consultas recursivas
   (CTE) es funcional pero menos maduro y menos usado en este tipo de tarea que el de Python
@@ -118,8 +118,8 @@ equipo pequeño sin capacidad de mantener dos ecosistemas de dependencias.
 
 **Opción 1: Python 3.12.**
 
-Gana sobre TypeScript/Node porque el trabajo central de este proyecto en Fase 1 —ingesta HTTP
-contra APIs JSON, validación de contratos, persistencia relacional con consultas recursivas— es
+Gana sobre TypeScript/Node porque el trabajo central de este proyecto en Fase 1 -ingesta HTTP
+contra APIs JSON, validación de contratos, persistencia relacional con consultas recursivas- es
 exactamente donde Python tiene ventaja probada dentro de este mismo workspace, y porque mantiene
 abierta la evaluación real de Cardinal (ADR 0004) sin forzar una decisión de "reescribir o
 integrar poliglota" antes de tiempo. El volumen bajo de datos y el número reducido de usuarios del
@@ -129,7 +129,7 @@ server-rendered y JavaScript mínimo cubre los casos de uso documentados sin sob
 escala que este proyecto no tiene.
 
 No hay evidencia real (benchmark, prueba de integración) de cuánto costaría en la práctica
-integrar Cardinal desde Python — esa evaluación es, precisamente, el contenido del ADR 0004; esta
+integrar Cardinal desde Python - esa evaluación es, precisamente, el contenido del ADR 0004; esta
 decisión solo garantiza que la pregunta sigue siendo evaluable.
 
 ## Consecuencias
@@ -147,10 +147,10 @@ decisión solo garantiza que la pregunta sigue siendo evaluable.
 ### Negativas
 
 - El panel de revisión (`005`) y el futuro dashboard público (`007`) necesitarán, en algún punto,
-  JavaScript en el navegador para interactividad — Python no elimina esa necesidad, solo evita
+  JavaScript en el navegador para interactividad - Python no elimina esa necesidad, solo evita
   comprometerse a un framework de frontend pesado ahora.
 - Si el equipo real que termina construyendo esto tiene más experiencia en JavaScript/TypeScript
-  que en Python para desarrollo web, esta decisión impone una curva de aprendizaje — no verificado
+  que en Python para desarrollo web, esta decisión impone una curva de aprendizaje - no verificado
   contra la composición real del equipo, que hoy no está definida (mismo vacío que
   `AC-005-01`, quién compone el panel).
 - Compromete el proyecto a un único lenguaje de backend antes de que exista ningún código: si en
@@ -171,9 +171,9 @@ flags y el panel completos, no solo una capa de presentación.
 - `specs/pending-adrs.md`, fila 1.
 - `PROJECT.yaml`, `stack.language: null`.
 - Todos los `plan.md` de `001` a `006`, sección "Dependencias nuevas".
-- [ADR 0002](0002-forma-del-pipeline-ingesta.md) — depende de esta decisión solo indirectamente
+- [ADR 0002](0002-forma-del-pipeline-ingesta.md) - depende de esta decisión solo indirectamente
   (ambas capas de persistencia funcionan igual en Python).
-- [ADR 0004](0004-motor-de-red-flags-propio.md) — depende directamente de esta decisión: la
+- [ADR 0004](0004-motor-de-red-flags-propio.md) - depende directamente de esta decisión: la
   evaluación de Cardinal solo es posible porque este ADR mantiene Python como lenguaje base.
 - Precedente: `../../scientific-literature-pipeline/CLAUDE.md`, sección "Stack".
 

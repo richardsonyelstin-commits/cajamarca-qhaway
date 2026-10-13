@@ -163,7 +163,12 @@ El nucleo analitico de la Capacidad 007 es el contraste matematico y temporal en
    donde $I_p \in [0.0, 1.0]$. Representa la fraccion de alteracion estructural verificable en el poligono.
 
 3. **Puntaje de Divergencia ($\delta$)**:
-   $$\delta = R_f - I_p$$
+   $$\delta = |R_f - I_p|$$
+
+   Ambas proporciones se validan en la escala `[0.0, 1.0]`. Si no hay observacion satelital
+   utilizable, la evaluacion queda degradada e informativa y no asigna actividad cero ni severidad
+   basada en una ausencia de datos. El identificador de señal se deriva de la evidencia, no del
+   instante de ejecucion, para que reprocesar la misma evidencia sea idempotente.
 
 ### 4.2 Criterios de Clasificacion de Senales
 
@@ -174,7 +179,7 @@ flowchart TD
     SAR_CHECK{"Existe Respaldo Sentinel-1 SAR?"}
     SAR_EVAL["Evaluar Coherencia Radar SAR"]
     CLOUD_HOLD["Emitir Senal DEGRADADA_POR_CLIMA (Sin Falso Positivo)"]
-    DIFF_CALC["Calcular delta = R_f - I_p"]
+    DIFF_CALC["Calcular delta = abs(R_f - I_p)"]
 
     CRIT{"delta >= 0.40?"}
     HIGH{"delta >= 0.25?"}

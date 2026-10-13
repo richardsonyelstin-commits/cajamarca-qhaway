@@ -1,5 +1,5 @@
 ---
-title: Spec 003 — mef-ingestion
+title: Spec 003 - mef-ingestion
 spec: "003"
 capability: mef-ingestion
 status: draft
@@ -15,7 +15,7 @@ confidence: low
 verified: false
 ---
 
-# Spec 003 — mef-ingestion
+# Spec 003 - mef-ingestion
 
 Ingiere ejecución presupuestal desde el Portal de Datos Abiertos del MEF, filtrada al universo de
 `001-entity-mapping`, cruzada por entidad con `002-seace-ingestion`. Fundamentada en la
@@ -29,7 +29,7 @@ El diseño de producto trataba "MEF Consulta Amigable / datos abiertos" como una
 verificación técnica encontró dos sistemas distintos:
 
 1. **Consulta Amigable** (`apps5.mineco.gob.pe/transparencia/Navegador/`): una aplicación ASP.NET
-   WebForms clásica, con `<frameset>` y postback de formulario — sin ninguna API confirmable, y
+   WebForms clásica, con `<frameset>` y postback de formulario - sin ninguna API confirmable, y
    sin indicio de que pueda tenerla.
 2. **Portal de Datos Abiertos del MEF** (`datosabiertos.mef.gob.pe`): una SPA Angular que, según
    su propio código compilado, consume una API real en `api.datosabiertos.mef.gob.pe` con
@@ -38,7 +38,7 @@ verificación técnica encontró dos sistemas distintos:
 
 Esta spec se especifica sobre el sistema (2), porque es el único con evidencia real de API. No se
 sabe todavía si el Portal de Datos Abiertos republica el mismo dato que Consulta Amigable, un
-subconjunto, o algo distinto — es la ambigüedad más importante que deja abierta.
+subconjunto, o algo distinto - es la ambigüedad más importante que deja abierta.
 
 ## Usuarios e intención
 
@@ -54,7 +54,7 @@ subconjunto, o algo distinto — es la ambigüedad más importante que deja abie
 |---|---|---|
 | Universo de entidades | `001-entity-mapping` | sí |
 | Host de API real | `https://api.datosabiertos.mef.gob.pe/DatosAbiertos/v1/` (confirmado 2026-08-20) | sí |
-| `resource_id` del dataset de ejecución presupuestal | No confirmado — ver Ambigüedades abiertas | sí, y bloqueante |
+| `resource_id` del dataset de ejecución presupuestal | No confirmado - ver Ambigüedades abiertas | sí, y bloqueante |
 | Esquema de columnas del dataset (nombres de campo reales) | No confirmado | sí, y bloqueante |
 
 ## Salidas
@@ -63,7 +63,7 @@ Un conjunto de `BudgetExecutionRecord` (contrato canónico, Artículo 19), uno p
 periodo fiscal disponible en el dataset, con el registro crudo devuelto por la API en
 `raw_payload`.
 
-**Ubicación.** `[NECESITA ACLARACIÓN: depende del stack — ver specs/pending-adrs.md]`
+**Ubicación.** `[NECESITA ACLARACIÓN: depende del stack - ver specs/pending-adrs.md]`
 
 ## Reglas de negocio
 
@@ -79,7 +79,7 @@ en principio permite filtrar por entidad/departamento del lado del servidor si e
 dataset trae esas columnas. Esta regla queda condicionada: si el esquema no expone un campo de
 ubicación geográfica o de entidad identificable por RUC, el filtro se hace del lado del cliente,
 igual que en `002-seace-ingestion`.
-`[NECESITA ACLARACIÓN: columnas reales del dataset — ver Ambigüedades abiertas]`
+`[NECESITA ACLARACIÓN: columnas reales del dataset - ver Ambigüedades abiertas]`
 
 **RN-003-03. `raw_payload` no se transforma.**
 El registro devuelto por `datastore_search`/`datastore_search_sql` se persiste completo. La
@@ -89,7 +89,7 @@ etapa.
 **RN-003-04. Cruce con `002-seace-ingestion` es por `entity_id`, no por texto de nombre.**
 El cruce entre `BudgetExecutionRecord` y `ProcurementRecord` para que `004-red-flags-engine`
 compare monto adjudicado contra monto ejecutado se hace exclusivamente por `entity_id` (RUC), y
-opcionalmente por periodo/proyecto si el dataset lo permite — nunca por coincidencia aproximada
+opcionalmente por periodo/proyecto si el dataset lo permite - nunca por coincidencia aproximada
 de nombre de entidad o de obra, que es frágil y no auditable.
 
 **RN-003-05. `retrieved_at` y `source` son obligatorios en todo registro.**
@@ -97,7 +97,7 @@ de nombre de entidad o de obra, que es frágil y no auditable.
 
 **RN-003-06. Fallo de la API no se sustituye por scraping de Consulta Amigable.**
 Si la API del Portal de Datos Abiertos falla o no cubre lo que se necesita, la corrida lo declara
-como hueco de cobertura — no se degrada silenciosamente a otra fuente con garantías técnicas
+como hueco de cobertura - no se degrada silenciosamente a otra fuente con garantías técnicas
 distintas (RN-003-01).
 
 ## Criterios de aceptación
@@ -122,25 +122,25 @@ registro sustituto de otra fuente.
 
 ## Casos límite
 
-**CL-003-01** — El dataset de ejecución presupuestal no tiene un campo explícito de RUC ni de
+**CL-003-01** - El dataset de ejecución presupuestal no tiene un campo explícito de RUC ni de
 código CONSUCODE, solo nombre de entidad en texto libre.
 `[NECESITA ACLARACIÓN: cómo se cruza con el universo de 001 si no hay identificador estructurado
-— ver Ambigüedades abiertas]`
+- ver Ambigüedades abiertas]`
 
-**CL-003-02** — El `resource_id` correcto cambia de un año a otro (dataset republicado por
+**CL-003-02** - El `resource_id` correcto cambia de un año a otro (dataset republicado por
 periodo fiscal en vez de un solo dataset acumulado).
-`[NECESITA ACLARACIÓN: si hay un resource_id por año o uno acumulado — depende de explorar el
+`[NECESITA ACLARACIÓN: si hay un resource_id por año o uno acumulado - depende de explorar el
 Portal con navegador real]`
 
-**CL-003-03** — La API responde con datos que no coinciden con lo que muestra Consulta Amigable
+**CL-003-03** - La API responde con datos que no coinciden con lo que muestra Consulta Amigable
 para la misma entidad y periodo (dado que son sistemas distintos, confirmado en la verificación).
 Se documenta la discrepancia; no se asume que uno es más correcto que el otro sin evidencia
 adicional. `[sin verificar]`
 
 ## Evidencia y manifiesto
 
-Por cada `BudgetExecutionRecord`: `source`, `retrieved_at`, `raw_payload` íntegro y —una vez
-resuelta AC-003-01— el `resource_id` exacto consultado, porque sin ese dato no se puede
+Por cada `BudgetExecutionRecord`: `source`, `retrieved_at`, `raw_payload` íntegro y -una vez
+resuelta AC-003-01- el `resource_id` exacto consultado, porque sin ese dato no se puede
 reconstruir contra qué dataset se habló, y eso es tan importante para la explicabilidad como el
 propio número.
 
@@ -157,34 +157,34 @@ propio número.
 **AC-003-01. `resource_id` del dataset de ejecución presupuestal.**
 Es la ambigüedad bloqueante de esta spec. La API real (`api.datosabiertos.mef.gob.pe`) exige un
 `resource_id` (UUID) por dataset, que el *frontend* Angular obtiene dinámicamente al navegar a
-cada página de dataset — no se encontró embebido en el *bundle* JavaScript principal descargado
+cada página de dataset - no se encontró embebido en el *bundle* JavaScript principal descargado
 en esta ronda de verificación, porque probablemente se carga en un módulo distinto (lazy-loaded).
 No lo cierro yo: requiere abrir el sitio con un navegador real (ejecutando JavaScript) y capturar
 la petición de red al navegar al dataset de ejecución de gasto, o inspección manual humana del
 Portal. Sin este dato, ningún campo de `RN-003-02` en adelante se puede verificar contra el
 esquema real.
-`[NECESITA ACLARACIÓN: resource_id real — requiere sesión de verificación con navegador]`
+`[NECESITA ACLARACIÓN: resource_id real - requiere sesión de verificación con navegador]`
 
 **AC-003-02. Esquema de columnas del dataset (nombres de campo reales).**
 Depende de AC-003-01: sin el `resource_id` no se puede consultar el esquema
 (`datastore_search` con `limit=1` revelaría las columnas). Los campos `budgeted_amount` y
 `executed_amount` del contrato canónico (Artículo 19) son nombres provisionales, no confirmados
 contra el dataset real.
-`[NECESITA ACLARACIÓN: nombres de columna reales — depende de AC-003-01]`
+`[NECESITA ACLARACIÓN: nombres de columna reales - depende de AC-003-01]`
 
 **AC-003-03. Relación entre el Portal de Datos Abiertos y Consulta Amigable.**
 No se sabe si son la misma información republicada en dos sistemas, o si divergen. Afecta
 directamente si esta capacidad puede afirmar "cubre la ejecución presupuestal de Cajamarca" o
 solo "cubre lo que el Portal de Datos Abiertos publica, que puede o no coincidir con Consulta
 Amigable".
-`[NECESITA ACLARACIÓN: relación entre ambos sistemas MEF — requiere comparación manual de una
+`[NECESITA ACLARACIÓN: relación entre ambos sistemas MEF - requiere comparación manual de una
 muestra]`
 
 **AC-003-04. Identificador de cruce cuando el dataset no trae RUC (CL-003-01).**
-`[NECESITA ACLARACIÓN: mecanismo de cruce alternativo — depende del esquema real, AC-003-02]`
+`[NECESITA ACLARACIÓN: mecanismo de cruce alternativo - depende del esquema real, AC-003-02]`
 
 **AC-003-05. Un `resource_id` por año fiscal o uno acumulado (CL-003-02).**
-`[NECESITA ACLARACIÓN: estructura de publicación del dataset — depende de exploración con
+`[NECESITA ACLARACIÓN: estructura de publicación del dataset - depende de exploración con
 navegador]`
 
 **AC-003-06. Si `datastore_search_sql` es de acceso público sin restricción adicional.**
@@ -199,7 +199,7 @@ descartar que exista un límite de tasa o una restricción no observada en una c
 **AC-003-07. Si Consulta Amigable es una fuente automatizable.**
 **Decisión: no, en esta spec.** La evidencia técnica (frameset ASP.NET con postback,
 confirmado 2026-08-20) no sustenta tratarla como una fuente con API. Automatizarla exigiría
-scraping de formulario con manejo de estado de sesión — exactamente el patrón que el estado del
+scraping de formulario con manejo de estado de sesión - exactamente el patrón que el estado del
 arte (`brain/70-inbox/2026-08-20-estado-del-arte-ia-anticorrupcion.md`) señala como frágil y que
 el diseño de producto ya prioriza evitar. Si en el futuro se confirma que el Portal de Datos
 Abiertos no cubre lo mismo que Consulta Amigable (AC-003-03), esta decisión se revisita con una

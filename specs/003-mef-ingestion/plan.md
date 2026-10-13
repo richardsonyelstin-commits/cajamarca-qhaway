@@ -1,5 +1,5 @@
 ---
-title: Plan 003 — mef-ingestion
+title: Plan 003 - mef-ingestion
 spec: "003"
 capability: mef-ingestion
 status: draft
@@ -12,7 +12,7 @@ confidence: low
 verified: false
 ---
 
-# Plan 003 — mef-ingestion
+# Plan 003 - mef-ingestion
 
 Plan deliberadamente mínimo. Dos ambigüedades de `spec.md` (AC-003-01, `resource_id`; AC-003-02,
 esquema de columnas) bloquean casi todo el diseño técnico de esta capacidad: sin saber contra qué
@@ -23,7 +23,7 @@ tanto como escribirlo en la spec.
 ## Lo único que no depende de esas dos ambigüedades
 
 **Cliente HTTP base.** `GET https://api.datosabiertos.mef.gob.pe/DatosAbiertos/v1/datastore_search`
-con parámro `resource_id` (una vez conocido) y `limit`/`offset` para paginar — la forma de
+con parámro `resource_id` (una vez conocido) y `limit`/`offset` para paginar - la forma de
 paginación de una API tipo CKAN DataStore es estándar y no depende del dataset concreto.
 
 **Primer paso de reconocimiento, no de ingesta.** Antes de poder implementar nada de esta
@@ -34,7 +34,7 @@ capacidad, hace falta una sesión de verificación con un navegador real (no `cu
    `api.datosabiertos.mef.gob.pe` y su `resource_id`.
 4. Ejecute `datastore_search?resource_id=<id>&limit=1` para ver el esquema de columnas real.
 
-Este reconocimiento no es parte de la implementación de la capacidad — es la verificación técnica
+Este reconocimiento no es parte de la implementación de la capacidad - es la verificación técnica
 que le falta a `docs/research/2026-08-20-verificacion-tecnica-fuentes.md` para que esta spec
 pueda avanzar de `draft` a `review`.
 
@@ -48,11 +48,11 @@ pueda avanzar de `draft` a `review`.
 
 ## Orden de implementación
 
-1. Sesión de verificación con navegador real para obtener `resource_id` y esquema — **bloquea
+1. Sesión de verificación con navegador real para obtener `resource_id` y esquema - **bloquea
    todo lo demás**.
 2. Una vez resuelto: algoritmo de filtrado y cruce, siguiendo el mismo patrón de dos pasos que
    `002-seace-ingestion` si el esquema lo permite.
-3. Persistencia — depende de `specs/pending-adrs.md`.
+3. Persistencia - depende de `specs/pending-adrs.md`.
 
 No se detalla estrategia de prueba: no hay nada que probar sin el esquema real. Escribirla ahora
 produciría pruebas contra un contrato inventado.

@@ -1,5 +1,5 @@
 ---
-title: Arquitectura — cajamarca-qhaway
+title: Arquitectura - cajamarca-qhaway
 status: draft
 created: 2026-08-20
 updated: 2026-08-20
@@ -7,7 +7,7 @@ applies_to_version: ">=0.1.0"
 source: human
 ---
 
-# Arquitectura — cajamarca-qhaway
+# Arquitectura - cajamarca-qhaway
 
 <!-- Tres renglones: la forma del sistema en una idea. -->
 

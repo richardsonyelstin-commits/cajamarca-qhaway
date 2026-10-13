@@ -11,7 +11,7 @@ Exporta los seis modelos canonicos compartidos:
 
 from __future__ import annotations
 
-from cajamarca_qhaway.models.alert import Alert, STANDARD_ALERT_DISCLAIMER, compute_alert_id
+from cajamarca_qhaway.models.alert import Alert, AlertEvidence, STANDARD_ALERT_DISCLAIMER, compute_alert_id
 from cajamarca_qhaway.models.budget_execution_record import (
     BudgetExecutionRecord,
     compute_execution_record_id,
@@ -28,6 +28,7 @@ from cajamarca_qhaway.models.red_flag import RedFlag, compute_red_flag_id
 
 __all__ = [
     "Alert",
+    "AlertEvidence",
     "BudgetExecutionRecord",
     "ChannelType",
     "CitizenReport",

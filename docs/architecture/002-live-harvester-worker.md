@@ -1,4 +1,4 @@
-# Arquitectura Técnica Integral — Pilar 1: Cosecha Continua de Datos en Vivo
+# Arquitectura Técnica Integral - Pilar 1: Cosecha Continua de Datos en Vivo
 **Componente:** Harvester Daemon & Background Worker (`live_harvest`)  
 **Proyecto:** Cajamarca Qhaway (`c:\ws\projects\cajamarca-qhaway`)  
 **Autor:** `sdd-architect`  

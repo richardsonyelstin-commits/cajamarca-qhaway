@@ -68,10 +68,10 @@ revisión concurrente y, en Fase 2 o antes, un dashboard público con lectores c
 
 ## Opciones consideradas
 
-### Opción 1 — PostgreSQL
+### Opción 1 - PostgreSQL
 
 - A favor: modelo de concurrencia cliente-servidor con múltiples escritores nativo, sin necesidad
-  de trabajar alrededor de un bloqueo de escritor único — encaja directamente con el patrón
+  de trabajar alrededor de un bloqueo de escritor único - encaja directamente con el patrón
   "ingesta recurrente + decisiones humanas concurrentes" que el ADR 0002 estableció.
   concurrentes) sin fricción adicional de configuración.
 - A favor: tipo `JSONB` nativo, adecuado para `raw_payload` (Artículo 10 de la constitución) con
@@ -84,11 +84,11 @@ revisión concurrente y, en Fase 2 o antes, un dashboard público con lectores c
   de conexiones concurrentes en capas gratuitas/económicas, y necesidad de herramienta de
   migraciones (p. ej. Alembic) que el equipo debe aprender a operar con disciplina.
 - En contra: no hay benchmark real de este proyecto que confirme que PostgreSQL es necesario a
-  este volumen — la justificación es de patrón de acceso (concurrencia), no de throughput medido.
+  este volumen - la justificación es de patrón de acceso (concurrencia), no de throughput medido.
 
-### Opción 2 — SQLite
+### Opción 2 - SQLite
 
-- A favor: cero infraestructura que operar — un solo fichero, backup trivial (copiar el fichero),
+- A favor: cero infraestructura que operar - un solo fichero, backup trivial (copiar el fichero),
   sin servicio que administrar ni monitorear.
 - A favor: `WITH RECURSIVE` disponible, cubre el mismo requisito de CTE recursivas que PostgreSQL
   para el volumen y profundidad de saltos (2-3) que `PROJECT.yaml` anticipa.
@@ -112,7 +112,7 @@ revisión concurrente y, en Fase 2 o antes, un dashboard público con lectores c
 
 **Opción 1: PostgreSQL.**
 
-Gana sobre SQLite no por volumen de datos —a ese volumen, SQLite sería suficiente por sí solo—
+Gana sobre SQLite no por volumen de datos -a ese volumen, SQLite sería suficiente por sí solo-
 sino porque el ADR 0002 ya comprometió a este proyecto con un patrón de acceso concurrente
 multi-proceso (ingesta recurrente + panel de revisión humana +, después, dashboard público) que
 choca directamente con el modelo de escritor único de SQLite. Rechazar PostgreSQL aquí obligaría a
@@ -146,10 +146,10 @@ no se asume errónea por adelantado.
   disciplina.
 - Para desarrollo local, cada persona necesita una instancia de PostgreSQL (mitigable con
   contenedor de desarrollo, no diseñado en este ADR).
-- Esta decisión no está respaldada por ningún benchmark real de este proyecto — es una inferencia
+- Esta decisión no está respaldada por ningún benchmark real de este proyecto - es una inferencia
   razonada a partir de las specs, no una medición; queda como riesgo declarado.
 - Si el volumen real termina siendo tan bajo que ni la concurrencia justifica el coste operativo,
-  el equipo habrá pagado la complejidad de PostgreSQL sin necesitarla — reevaluable con datos
+  el equipo habrá pagado la complejidad de PostgreSQL sin necesitarla - reevaluable con datos
   reales tras los primeros meses de operación.
 
 ### Qué se vuelve difícil de revertir
@@ -164,12 +164,12 @@ mecanismos de concurrencia, no solo cambiar una cadena de conexión.
 
 - `specs/pending-adrs.md`, fila 2.
 - `PROJECT.yaml`, `stack.datastore: PostgreSQL (propuesto)`.
-- `docs/sdd/constitution.md`, Artículo 19 — asume campos tipo clave foránea que encajan con un
+- `docs/sdd/constitution.md`, Artículo 19 - asume campos tipo clave foránea que encajan con un
   motor relacional.
-- [ADR 0002](0002-forma-del-pipeline-ingesta.md) — decisión de la que este ADR depende
+- [ADR 0002](0002-forma-del-pipeline-ingesta.md) - decisión de la que este ADR depende
   directamente: fija que el almacén es compartido y concurrente, lo cual descarta SQLite para este
   patrón de uso.
-- [ADR 0006](0006-persistencia-universo-contracting-entity.md) — depende de esta decisión para
+- [ADR 0006](0006-persistencia-universo-contracting-entity.md) - depende de esta decisión para
   fijar dónde vive el universo de `ContractingEntity`.
 
 ---

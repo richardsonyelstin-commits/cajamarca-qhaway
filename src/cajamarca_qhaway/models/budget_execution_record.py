@@ -1,4 +1,4 @@
-"""`BudgetExecutionRecord` — contrato canonico definido en `docs/sdd/constitution.md`, Articulo 19.
+"""`BudgetExecutionRecord` - contrato canonico definido en `docs/sdd/constitution.md`, Articulo 19.
 
 Representa un registro de ejecucion presupuestal, por entidad y periodo fiscal (MEF).
 Conserva el payload original integro en `raw_payload` (Articulo 10 de la constitucion).

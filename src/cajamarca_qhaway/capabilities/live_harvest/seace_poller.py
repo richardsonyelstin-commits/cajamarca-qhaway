@@ -51,6 +51,20 @@ class SeacePoller:
         self.entities_by_consucode = entities_by_consucode
         self._http_client = http_client
         self._semaphore = asyncio.Semaphore(config.max_concurrency)
+        self._pending_seen_ocids: set[str] = set()
+        self._pending_records: dict[str, ProcurementRecord] = {}
+
+    def acknowledge_persisted(self) -> None:
+        """Advance deduplication cursor only after durable record persistence succeeds."""
+        if self._pending_seen_ocids:
+            self.watermark_store.update_seace_cursor(
+                datetime.now(timezone.utc), sorted(self._pending_seen_ocids)
+            )
+            self._pending_seen_ocids.clear()
+            self._pending_records.clear()
+
+    def _has_seen(self, ocid: str) -> bool:
+        return ocid in self._pending_seen_ocids or self.watermark_store.is_seace_ocid_seen(ocid)
 
     async def _get_client(self) -> httpx.AsyncClient:
         if self._http_client is None:
@@ -103,7 +117,7 @@ class SeacePoller:
         """
         effective_pages = page_limit or 1
         window_start = datetime.now(timezone.utc)
-        all_harvested_records: list[ProcurementRecord] = []
+        all_harvested_records: list[ProcurementRecord] = list(self._pending_records.values())
         new_seen_ocids: list[str] = []
         total_items_received = 0
         cycle_failed = False
@@ -149,7 +163,7 @@ class SeacePoller:
                     continue
 
                 # RN-002-04 / CA-002-04: Deduplicacion idempotente por ocid
-                if self.watermark_store.is_seace_ocid_seen(ocid):
+                if self._has_seen(ocid) or ocid in new_seen_ocids:
                     continue
 
                 # Parseo y doble filtrado (Cajamarca + Universo 001)
@@ -184,8 +198,12 @@ class SeacePoller:
             return []
 
         # Actualizar cursor y registrar ventana de cobertura
-        if new_seen_ocids:
-            self.watermark_store.update_seace_cursor(window_end, new_seen_ocids)
+        if new_seen_ocids and not cycle_failed:
+            self._pending_seen_ocids.update(new_seen_ocids)
+            self._pending_records.update(
+                (record.ocid, record) for record in all_harvested_records
+                if record.ocid in new_seen_ocids
+            )
 
         self.coverage_logger.log_window(
             source="seace-ocds",
@@ -207,7 +225,7 @@ class SeacePoller:
         if not res:
             return []
 
-        harvested_records: list[ProcurementRecord] = []
+        harvested_records: list[ProcurementRecord] = list(self._pending_records.values())
         new_seen_ocids: list[str] = []
         retrieval_timestamp = datetime.now(timezone.utc)
 
@@ -226,7 +244,7 @@ class SeacePoller:
                                 if not comp_rel:
                                     continue
                                 ocid = comp_rel.get("ocid")
-                                if not ocid or self.watermark_store.is_seace_ocid_seen(ocid):
+                                if not ocid or self._has_seen(ocid):
                                     continue
 
                                 prec = parse_ocds_release(
@@ -243,7 +261,7 @@ class SeacePoller:
                 releases = data.get("releases", [])
                 for rel in releases:
                     ocid = rel.get("ocid")
-                    if not ocid or self.watermark_store.is_seace_ocid_seen(ocid):
+                    if not ocid or self._has_seen(ocid):
                         continue
                     prec = parse_ocds_release(
                         release=rel,
@@ -256,7 +274,11 @@ class SeacePoller:
                         new_seen_ocids.append(ocid)
 
             if new_seen_ocids:
-                self.watermark_store.update_seace_cursor(retrieval_timestamp, new_seen_ocids)
+                self._pending_seen_ocids.update(new_seen_ocids)
+                self._pending_records.update(
+                    (record.ocid, record) for record in harvested_records
+                    if record.ocid in new_seen_ocids
+                )
 
             self.coverage_logger.log_window(
                 source="seace-ocds",

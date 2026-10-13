@@ -37,7 +37,7 @@ resto del sistema.
 base de datos operativa", y señala que la respuesta depende del stack (ADR 0001) y de si el
 proyecto adopta un concepto de "corrida" (ADR 0002). Ambas decisiones ya están tomadas: el
 almacén operativo es PostgreSQL (ADR 0002, ADR 0003), y este proyecto no adopta un concepto de
-corrida tipo `run_manifest` — la procedencia vive por registro (ADR 0002).
+corrida tipo `run_manifest` - la procedencia vive por registro (ADR 0002).
 
 Pero `ContractingEntity` tiene una característica que ninguna otra salida de este proyecto
 comparte: la propia spec la describe como algo que "cambia poco" y exige que cada cambio "pueda
@@ -53,10 +53,10 @@ tratamiento distinto dado su perfil particular.
 
 ## Factores de decisión
 
-- Baja frecuencia de cambio y bajo volumen (decenas de filas, no miles) — perfil muy distinto del
+- Baja frecuencia de cambio y bajo volumen (decenas de filas, no miles) - perfil muy distinto del
   resto de contratos canónicos.
 - Exigencia explícita de la spec de un "diff legible" por cambio (spec.md, sección "Salidas").
-- RN-001-02: cada distrital incluida necesita una justificación documentada de inclusión — un
+- RN-001-02: cada distrital incluida necesita una justificación documentada de inclusión - un
   requisito de gobernanza sobre el propio dato, no solo de almacenamiento.
 - Coherencia con el ADR 0002/0003 (almacén operativo compartido en PostgreSQL) para todo lo demás
   que `002` y `003` consumen como llave foránea (`entity_id`).
@@ -64,29 +64,29 @@ tratamiento distinto dado su perfil particular.
 
 ## Opciones consideradas
 
-### Opción 1 — Dataset declarativo versionado en el repo, sembrado a PostgreSQL
+### Opción 1 - Dataset declarativo versionado en el repo, sembrado a PostgreSQL
 
 El universo vive como un fichero de datos (formato exacto a fijar en `plan.md`, p. ej. YAML/JSON)
 bajo control de versiones del propio repositorio; un paso de siembra/carga lo escribe en la tabla
 operativa de PostgreSQL, que es lo que `002` y `003` consultan realmente en tiempo de ingesta.
 
 - A favor: satisface literalmente lo que la spec pide ("diff legible" por cambio) sin construir
-  nada nuevo — el historial de Git de ese fichero **es** el diff legible, con autor y fecha
+  nada nuevo - el historial de Git de ese fichero **es** el diff legible, con autor y fecha
   incluidos gratis.
 - A favor: RN-001-02 (justificación de inclusión de una distrital) encaja de forma natural en un
   flujo de revisión de código (una solicitud de cambio sobre el fichero, con su descripción, es
-  exactamente esa justificación) — sin construir un mecanismo de justificación aparte.
+  exactamente esa justificación) - sin construir un mecanismo de justificación aparte.
 - A favor: el volumen y la frecuencia de cambio de este contrato en particular (decenas de filas,
   cambios por evento) son precisamente el perfil para el que un fichero versionado es apropiado,
   a diferencia del resto de contratos canónicos, de mayor volumen y escritura concurrente.
 - En contra: introduce una segunda fuente de verdad (el fichero y la tabla sembrada), con el
-  riesgo de que ambas queden desincronizadas si el paso de siembra se olvida o falla en silencio —
+  riesgo de que ambas queden desincronizadas si el paso de siembra se olvida o falla en silencio -
   ningún registro de `002`/`003` puede referenciar un `entity_id` que no exista en la tabla, así
   que un fallo de sincronización rompe la ingesta corriente abajo, no solo la lectura.
 - En contra: añade un paso operativo más (el script de siembra) que documentar como dependencia en
   los planes de `002` y `003`.
 
-### Opción 2 — Tabla ordinaria en PostgreSQL, con registro de auditoría propio
+### Opción 2 - Tabla ordinaria en PostgreSQL, con registro de auditoría propio
 
 `ContractingEntity` vive únicamente como tabla en la misma base de datos operativa que todo lo
 demás, con una tabla adicional de historial de cambios (quién, cuándo, por qué) construida a nivel
@@ -94,13 +94,13 @@ de aplicación.
 
 - A favor: una sola fuente de verdad, sin paso de siembra ni riesgo de desincronización.
 - A favor: consistente con el resto de contratos canónicos, que ya viven en PostgreSQL por el ADR
-  0002/0003 — no hay caso especial que explicar.
-- En contra: pierde la auditabilidad "gratis" del historial de Git — hay que diseñar, construir y
+  0002/0003 - no hay caso especial que explicar.
+- En contra: pierde la auditabilidad "gratis" del historial de Git - hay que diseñar, construir y
   mantener una tabla de auditoría de cambios desde cero, replicando en la práctica el mismo patrón
   append-only que RN-005-07 ya exige para decisiones del panel de revisión, ahora para un tercer
   tipo de contrato.
 - En contra: un cambio de base de datos no pasa por el mismo proceso de revisión de código que un
-  cambio de fichero versionado — cumplir RN-001-02 (justificación explícita por distrital)
+  cambio de fichero versionado - cumplir RN-001-02 (justificación explícita por distrital)
   exigiría construir una interfaz o convención de captura de esa justificación en la propia base
   de datos, en vez de heredarla gratis de un flujo de *pull request*.
 
@@ -109,8 +109,8 @@ de aplicación.
 **Opción 1: dataset declarativo versionado en el repo, sembrado a PostgreSQL.**
 
 Gana porque `ContractingEntity` tiene un perfil claramente distinto del resto de contratos
-canónicos —bajo volumen, baja frecuencia de cambio, con una exigencia explícita de auditabilidad
-por diff que la propia spec nombra— y ese perfil es exactamente el que justificó, en
+canónicos -bajo volumen, baja frecuencia de cambio, con una exigencia explícita de auditabilidad
+por diff que la propia spec nombra- y ese perfil es exactamente el que justificó, en
 `scientific-literature-pipeline`, preferir ficheros versionados sobre una base de datos: pocos
 registros, cambios raros, beneficio claro de ser copiable/diffable. Esto **no** revierte el ADR
 0002: el resto de la operación (`ProcurementRecord`, `BudgetExecutionRecord`, `RedFlag`, `Alert`,
@@ -146,7 +146,7 @@ avisar.
   planes de `002` y `003`, que hoy no lo mencionan.
 - Si el universo eventualmente necesita cambiar con mucha frecuencia (más distritales incorporadas
   rápido, por ejemplo tras la coordinación con Proética/Propuesta Ciudadana/GRUFIDES), el flujo de
-  fichero + *pull request* podría convertirse en un cuello de botella — en ese caso, esta decisión
+  fichero + *pull request* podría convertirse en un cuello de botella - en ese caso, esta decisión
   debe revisitarse con evidencia real de esa fricción, no se descarta preventivamente aquí.
 
 ### Qué se vuelve difícil de revertir
@@ -156,18 +156,18 @@ como la tabla sembrada deben preservar idéntica; todo `ProcurementRecord`/`Budg
 histórico queda enlazado a ese identificador. Migrar el universo por completo a una tabla ordinaria
 después (Opción 2) exigiría, o bien renunciar al historial de Git como mecanismo de auditoría y
 construir uno nuevo desde cero, o bien mantener el fichero como archivo histórico congelado sin
-seguir siendo la fuente activa — cualquiera de las dos rutas es una migración de proceso, no solo
+seguir siendo la fuente activa - cualquiera de las dos rutas es una migración de proceso, no solo
 de esquema.
 
 ## Enlaces
 
 - `specs/pending-adrs.md`, fila 7.
 - `specs/001-entity-mapping/spec.md`, sección "Salidas" y AC-001-02, RN-001-02, RN-001-06.
-- `specs/001-entity-mapping/plan.md`, sección "Orden de implementación", paso 6 — bloqueado por
+- `specs/001-entity-mapping/plan.md`, sección "Orden de implementación", paso 6 - bloqueado por
   esta decisión y por el stack, ambos ya resueltos por este ADR y el ADR 0001.
-- [ADR 0002](0002-forma-del-pipeline-ingesta.md) — regla general de la que este ADR declara una
+- [ADR 0002](0002-forma-del-pipeline-ingesta.md) - regla general de la que este ADR declara una
   excepción acotada para `ContractingEntity`.
-- [ADR 0003](0003-motor-de-base-de-datos-postgresql.md) — fija el motor al que se siembra el
+- [ADR 0003](0003-motor-de-base-de-datos-postgresql.md) - fija el motor al que se siembra el
   dataset versionado.
 - Precedente de diseño (no de decisión): `../../scientific-literature-pipeline/docs/adr/0001-arquitectura-de-tuberia-por-etapas.md`,
   factores de decisión "auditabilidad" e "inspección sin instrumentación".

@@ -1,5 +1,5 @@
 ---
-title: Spec 005 — review-panel
+title: Spec 005 - review-panel
 spec: "005"
 capability: review-panel
 status: draft
@@ -15,7 +15,7 @@ confidence: medium
 verified: false
 ---
 
-# Spec 005 — review-panel
+# Spec 005 - review-panel
 
 Recibe los candidatos de `RedFlag` producidos por `004-red-flags-engine` y decide, por acción
 humana explícita, publicarlos como `Alert` o descartarlos. Es la implementación directa del
@@ -27,7 +27,7 @@ atajo técnico.
 Toda la literatura revisada (`brain/70-inbox/2026-08-20-estado-del-arte-ia-anticorrupcion.md`,
 §8.2) coincide en que el patrón de mayor riesgo legal y reputacional es publicar alertas
 automáticas sin revisión humana previa. El problema de esta capacidad no es solo "quién aprueba"
-sino **cómo se garantiza técnicamente que no exista ningún camino que salte este paso** — porque
+sino **cómo se garantiza técnicamente que no exista ningún camino que salte este paso** - porque
 una regla de negoción documentada pero no forzada por el propio flujo de datos es una promesa que
 un error de implementación futuro puede romper sin que nadie lo note hasta que ya haya daño
 reputacional real.
@@ -52,11 +52,11 @@ reputacional real.
 ## Salidas
 
 Un `Alert` (contrato canónico, Artículo 19) por cada decisión de publicar, y un registro de
-descarte (mismo contrato, con `status == "discarded"`) por cada decisión de no publicar — ambos
+descarte (mismo contrato, con `status == "discarded"`) por cada decisión de no publicar - ambos
 casos quedan registrados, no solo el positivo, porque un `RedFlag` descartado sin rastro sería
 indistinguible de uno que nunca se generó, y eso rompería la auditoría de qué se revisó.
 
-**Ubicación.** `[NECESITA ACLARACIÓN: depende del stack — ver specs/pending-adrs.md]`
+**Ubicación.** `[NECESITA ACLARACIÓN: depende del stack - ver specs/pending-adrs.md]`
 
 ## Reglas de negocio
 
@@ -67,21 +67,20 @@ ausencia de objeción en un plazo. El silencio nunca equivale a aprobación.
 **RN-005-02. `reviewed_by` identifica a una persona concreta, nunca a un rol genérico ni a
 "sistema".**
 Un valor como `"admin"` compartido por varias personas no cumple esta regla: debe poder
-distinguir, meses después, exactamente quién tomó cada decisión — es lo que exige la
+distinguir, meses después, exactamente quién tomó cada decisión - es lo que exige la
 defensibilidad legal del proyecto (`CLAUDE.md`, invariantes).
 
-**RN-005-03. `Alert.disclaimer` es el texto fijo del descargo estándar, sin excepción y sin
+**RN-005-03. `Alert.legal_disclaimer` es el texto fijo del descargo estándar, sin excepción y sin
 edición por el revisor.**
 "Esto es un indicador de riesgo automatizado, no una prueba ni una acusación de corrupción" (o su
 formulación final, fijada una sola vez para todo el proyecto) aparece en toda `Alert` publicada.
-Un revisor no puede publicar sin ese texto ni reformularlo caso por caso — la consistencia es
+Un revisor no puede publicar sin ese texto ni reformularlo caso por caso - la consistencia es
 parte de la defensa legal.
 
-**RN-005-04. Descartar exige un motivo, publicar no lo exige pero lo admite.**
-`review_notes` es obligatorio cuando `status == "discarded"` (RN de trazabilidad: por qué se
-descartó algo que el motor sí consideró candidato) y opcional cuando `status == "published"`
-(el propio `RedFlag` ya trae su fórmula y evidencia; el revisor puede añadir contexto, no está
-obligado).
+**RN-005-04. Toda decisión exige una nota de revisión.**
+`review_notes` es obligatorio y no vacío cuando `status` es `discarded` o `published`.
+En el descarte documenta el motivo; en la publicación documenta la revisión humana de la
+evidencia. La extensión del contrato está propuesta en ADR 0010 y requiere aceptación humana.
 
 **RN-005-05. Una `Alert` puede agrupar más de un `RedFlag` sobre la misma entidad o proceso, por
 decisión humana explícita del revisor, nunca automáticamente por el motor.**
@@ -94,7 +93,7 @@ similitud.
 Análogo al Artículo 8 de la constitución (un agente no aprueba su propia spec): si en el futuro
 alguna parte de la ingesta o del motor de red flags corre bajo la responsabilidad operativa de
 una persona concreta, esa persona no puede ser la única revisora de sus propios candidatos.
-`[NECESITA ACLARACIÓN: cómo se aplica en la práctica con un equipo pequeño — ver Ambigüedades
+`[NECESITA ACLARACIÓN: cómo se aplica en la práctica con un equipo pequeño - ver Ambigüedades
 abiertas]`
 
 **RN-005-07. Una decisión de revisión es inmutable una vez tomada; una corrección es una decisión
@@ -114,11 +113,11 @@ Dada cualquier `Alert` o descarte, `reviewed_by` identifica a una persona concre
 valores genéricos como `"system"`, `"admin"` o vacío.
 
 **CA-005-03** · RN-005-03
-Dada cualquier `Alert` con `status == "published"`, `disclaimer` es idéntico al texto fijo
+Dada cualquier `Alert` con `status == "published"`, `legal_disclaimer` es idéntico al texto fijo
 declarado para todo el proyecto.
 
 **CA-005-04** · RN-005-04
-Dado un registro con `status == "discarded"`, `review_notes` no está vacío.
+Dado cualquier registro publicado o descartado, `review_notes` no está vacío.
 
 **CA-005-05** · RN-005-05
 Dada una `Alert` con más de un `red_flag_id`, existe un registro explícito de que un revisor
@@ -130,18 +129,18 @@ un registro nuevo que referencia su `alert_id` con el motivo del retiro.
 
 ## Casos límite
 
-**CL-005-01** — Dos revisores deciden lo contrario sobre el mismo `RedFlag` (uno publica, otro
+**CL-005-01** - Dos revisores deciden lo contrario sobre el mismo `RedFlag` (uno publica, otro
 descarta) por error de coordinación.
 `[NECESITA ACLARACIÓN: mecanismo de bloqueo/asignación para evitar decisión concurrente sobre el
-mismo candidato — depende de cuántas personas componen el panel]`
+mismo candidato - depende de cuántas personas componen el panel]`
 
-**CL-005-02** — Un `RedFlag` queda sin revisar durante semanas.
+**CL-005-02** - Un `RedFlag` queda sin revisar durante semanas.
 No se resuelve automáticamente (RN-005-01); pero un panel sin capacidad de revisar el volumen de
-candidatos generados es un riesgo operativo real que esta spec no puede resolver por sí sola —
+candidatos generados es un riesgo operativo real que esta spec no puede resolver por sí sola -
 depende de cuántas personas y cuánto tiempo dedica el panel (Ambigüedades abiertas del diseño de
 producto, punto 5).
 
-**CL-005-03** — Un revisor quiere publicar parte de la evidencia de un `RedFlag` pero no toda
+**CL-005-03** - Un revisor quiere publicar parte de la evidencia de un `RedFlag` pero no toda
 (p. ej. ocultar un dato sensible).
 No está permitido: RN-005-03 y el Artículo 15 de la constitución exigen la capa de explicabilidad
 completa. Si un dato es demasiado sensible para publicar, la decisión correcta es descartar la
@@ -159,7 +158,7 @@ amplio (ver `specs/pending-adrs.md`), esta capacidad declara sus eventos igual q
 - Generar `RedFlag`: eso es `004-red-flags-engine`.
 - Moderar `CitizenReport`: aunque conceptualmente parecido (revisión humana antes de convertir
   algo en candidato accionable), el diseño de producto trata la denuncia ciudadana como un canal
-  con su propia moderación (`006-denuncia-intake`) — no se fusionan en esta spec porque los
+  con su propia moderación (`006-denuncia-intake`) - no se fusionan en esta spec porque los
   criterios de admisión son distintos (una denuncia no trae fórmula ni umbral).
 - Publicar la `Alert` en el dashboard público: eso es `007-public-dashboard`, no construida aún.
 - Notificar por SMS/WhatsApp: eso es `009-sms-whatsapp-notify`, no construida aún.
@@ -171,12 +170,12 @@ Es la pregunta 5 del diseño de producto (`docs/research/2026-08-20-diseno-cajam
 §6), explícitamente sin resolver por el usuario. No la cierro yo: afecta directamente RN-005-06
 (cómo se evita que alguien revise su propio trabajo con un equipo pequeño) y CL-005-01 (mecanismo
 de concurrencia).
-`[NECESITA ACLARACIÓN: composición del panel — decisión de producto pendiente, señalada
+`[NECESITA ACLARACIÓN: composición del panel - decisión de producto pendiente, señalada
 explícitamente por el usuario]`
 
 **AC-005-02. Texto final del descargo estándar (RN-005-03).**
 El diseño de producto propone una redacción (§3.5) pero no está confirmada como texto legal
-definitivo — podría requerir revisión de alguien con criterio legal, dado que es la pieza central
+definitivo - podría requerir revisión de alguien con criterio legal, dado que es la pieza central
 de la defensa del proyecto ante un cuestionamiento.
 `[NECESITA ACLARACIÓN: redacción final del disclaimer, posiblemente con revisión legal]`
 
@@ -190,7 +189,7 @@ de la defensa del proyecto ante un cuestionamiento.
 
 **AC-005-05. Si el panel puede editar el contenido de un `RedFlag` antes de publicarlo.**
 **Decisión: no.** El panel decide `publicar`/`descartar` y añade `review_notes` de contexto, pero
-no reescribe `formula_description`, `observed_value` ni `threshold` del `RedFlag` original —
+no reescribe `formula_description`, `observed_value` ni `threshold_value` del `RedFlag` original -
 eso rompería la trazabilidad hasta el dato de origen que exige el Artículo 15. Si el `RedFlag`
 está mal calculado, el defecto se corrige en `004-red-flags-engine`, no editando la salida a mano
 en el panel.
