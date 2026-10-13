@@ -1,25 +1,21 @@
 # Estado de projects/cajamarca-qhaway
 
-Generado automaticamente el 2026-10-13 00:46. No editar a mano: lo reescriben los hooks de memoria.
+Generado automaticamente el 2026-10-13 01:21. No editar a mano: lo reescriben los hooks de memoria.
 
-- Rama: `main`
-- HEAD: `1570f6b Mejoras en el frontend (16 minutes ago)`
-- Arbol de trabajo: 6 archivo(s) con cambios.
+- Rama: `agent/real-data-extractor/extraction-mechanism`
+- HEAD: `45e56d1 feat(harvest): implement historical and recent real data extraction mechanism for OECE and MEF (4 minutes ago)`
+- Sin empujar: 1 commits.
+- Arbol de trabajo: 1 archivo(s) con cambios.
     M context/snapshots/latest.md
-     M package.json
-     M pyproject.toml
-     M requirements.txt
-     M uv.lock
-     M vercel.json
 
 ## Ultimos commits
 
+- `45e56d1 feat(harvest): implement historical and recent real data extraction mechanism for OECE and MEF`
+- `ec56976 Correciones menores`
 - `1570f6b Mejoras en el frontend`
 - `50e30f8 style: update typography and navigation`
 - `22a695a refactor: modernize visual identity and site structure`
 - `1c603f6 fix(vercel): apply vercel-deploy skill patterns for CDN static rewrites and resilient WSGI app`
-- `08d59e7 fix(vercel): add native WSGI app entrypoint and fix Python framework routing`
-- `503128a fix(vercel): remove deprecated public property from vercel.json and add README/requirements.txt`
 
 ## Por donde entrar
 

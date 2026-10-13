@@ -418,8 +418,8 @@ export class SupabaseClient {
     try {
       const [entities, procurements, budgets, alerts] = await Promise.all([
         this.queryTable('contracting_entities', 'select=*&order=official_name.asc'),
-        this.queryTable('procurement_records', 'select=*&order=retrieved_at.desc&limit=100'),
-        this.queryTable('budget_execution_records', 'select=*&order=fiscal_year.desc&limit=100'),
+        this.queryTable('procurement_records', 'select=*&order=retrieved_at.desc&limit=1000'),
+        this.queryTable('budget_execution_records', 'select=*&order=fiscal_year.desc&limit=1000'),
         this.queryTable('alerts', 'select=*&status=eq.published&order=published_at.desc')
       ]);
 
@@ -430,6 +430,18 @@ export class SupabaseClient {
         dataset.alerts = alerts || [];
         dataset.sourceMode = 'online';
         onlineSuccess = true;
+
+        // Cargar banderas rojas y reportes ciudadanos desde snapshot complementario
+        try {
+          const snapRes = await fetchWithTimeout(LOCAL_SNAPSHOT_URL, { method: 'GET' }, 2000);
+          if (snapRes.ok) {
+            const snapData = await snapRes.json();
+            dataset.redFlags = snapData.red_flags || snapData.redFlags || [];
+            dataset.citizenReports = snapData.citizen_reports || snapData.citizenReports || [];
+          }
+        } catch {
+          // Si el snapshot local no responde, el bloque posterior fusionara con la semilla canonica local
+        }
       }
     } catch (supaErr) {
       console.info('Supabase en linea no disponible o con latencia, evaluando respaldo snapshot:', supaErr.message);
