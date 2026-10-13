@@ -104,7 +104,7 @@ class DataEngine {
             ...(backendSnapshot.metadata || {}),
             source_mode: backendSnapshot.metadata?.source_mode || 'backend-api'
           },
-          alerts: (backendSnapshot.alerts || []).filter(a => a.status === 'published')
+          alerts: backendSnapshot.alerts || []
         };
         this.loaded = true;
         return this.snapshot;

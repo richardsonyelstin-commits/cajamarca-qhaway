@@ -390,9 +390,84 @@ app.get('/api/red-flags', (req, res) => {
   res.json(flags);
 });
 
-app.get('/api/reports', (req, res) => {
+// Denuncias ciudadanas: GET protegido segun Ley 29733 (CA-005-01)
+app.get('/api/reports', requireVeedorAuth, (req, res) => {
   const snapshot = loadSnapshot();
   res.json(snapshot.citizen_reports || []);
+});
+
+// Seguimiento publico anonimo de denuncias: metadatos no sensibles
+app.get('/api/reports/track', (req, res) => {
+  const token = req.query.token || req.query.id;
+  if (!token) {
+    return res.status(400).json({ error: "Parametro 'token' es obligatorio", status: 400 });
+  }
+  const cleanToken = String(token).trim();
+  const snapshot = loadSnapshot();
+  const reports = snapshot.citizen_reports || [];
+  const matched = reports.find(r => r.report_id === cleanToken || r.tracking_token === cleanToken);
+  if (!matched) {
+    return res.status(404).json({ error: "Expediente de denuncia no encontrado", status: 404 });
+  }
+  res.json({
+    report_id: matched.report_id,
+    submitted_at: matched.submitted_at || matched.created_at,
+    moderation_status: matched.moderation_status || 'received',
+    related_entity_id: matched.related_entity_id || null,
+    channel: matched.channel || 'web',
+    legal_disclaimer_shown: matched.legal_disclaimer_shown !== false
+  });
+});
+
+// Padron de proveedores y validacion SUNAT (con guarda constitucional Art. 16)
+app.get('/api/sunat/ruc', (req, res) => {
+  const dniParam = req.query.dni;
+  if (dniParam !== undefined) {
+    return res.status(403).json({
+      error: 'Articulo 16 (Prohibicion de perfilamiento de personas naturales): Queda terminantemente prohibido consultar, almacenar o procesar solicitudes de DNI o RENIEC. El sistema opera exclusivamente sobre entidades publicas y proveedores contratistas del Estado mediante RUC.',
+      code: 'CONSTITUTIONAL_PRIVACY_GUARD_ART_16'
+    });
+  }
+
+  const rucParam = req.query.ruc;
+  if (rucParam !== undefined) {
+    const cleanedVal = String(rucParam).trim().replace('PE-RUC-', '');
+    if (cleanedVal.length === 8 && /^\d+$/.test(cleanedVal)) {
+      return res.status(403).json({
+        error: `Articulo 16 (Prohibicion de perfilamiento de personas naturales): El identificador '${rucParam}' corresponde a un DNI de 8 digitos. Se rechaza la operacion para salvaguardar la privacidad de personas naturales.`,
+        code: 'CONSTITUTIONAL_PRIVACY_GUARD_ART_16'
+      });
+    }
+
+    if (cleanedVal.length !== 11 || !/^\d+$/.test(cleanedVal)) {
+      return res.status(400).json({ error: 'RUC invalido: debe contener 11 digitos numericos.', status: 400 });
+    }
+
+    const registryPath = path.join(__dirname, 'data', 'sunat', 'ruc_registry.json');
+    if (fs.existsSync(registryPath)) {
+      try {
+        const registryData = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+        const suppliers = registryData.suppliers || registryData.registry || [];
+        const found = suppliers.find(s => s.ruc === cleanedVal || s.ruc === `PE-RUC-${cleanedVal}`);
+        if (found) return res.json(found);
+      } catch (err) {
+        console.error('Error leyendo registro SUNAT:', err);
+      }
+    }
+    return res.status(404).json({ error: `RUC '${cleanedVal}' no encontrado en el padron verificado.`, status: 404 });
+  }
+
+  const registryPath = path.join(__dirname, 'data', 'sunat', 'ruc_registry.json');
+  if (fs.existsSync(registryPath)) {
+    try {
+      const registryData = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+      return res.json({
+        metadata: registryData.metadata || {},
+        total_suppliers: (registryData.suppliers || registryData.registry || []).length
+      });
+    } catch {}
+  }
+  res.json({ total_suppliers: 0 });
 });
 
 // Endpoint de proveedores y concentración (accesible vía /api/concentration y /api/suppliers)

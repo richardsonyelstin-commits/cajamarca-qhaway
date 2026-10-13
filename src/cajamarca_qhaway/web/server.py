@@ -40,6 +40,20 @@ from cajamarca_qhaway.capabilities.review_panel import ReviewPanelService
 from cajamarca_qhaway.models.alert import GENERIC_REVIEWERS
 from cajamarca_qhaway.web.exporter import build_verified_web_snapshot, export_verified_snapshot
 
+try:
+    from cajamarca_qhaway.persistence.connection import DatabaseManager
+    from cajamarca_qhaway.persistence.repositories import (
+        AlertRepository,
+        CitizenReportRepository,
+    )
+    _db_manager = DatabaseManager()
+    _alert_repo = AlertRepository(_db_manager)
+    _report_repo = CitizenReportRepository(_db_manager)
+except Exception:
+    _db_manager = None
+    _alert_repo = None
+    _report_repo = None
+
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 SECURITY_HEADERS = {
@@ -465,8 +479,54 @@ class WebApiHandler(BaseHTTPRequestHandler):
             return cls._json_bytes(flags)
 
         if path == "/api/reports":
+            auth_header = req_headers.get("authorization", "")
+            if not auth_header.startswith("Bearer "):
+                return cls._json_bytes(
+                    {"error": "Acceso restringido a veedores acreditados (Ley 29733 de Proteccion de Datos Personales)"},
+                    status_code=401,
+                )
+            token = auth_header[7:].strip()
+            session = _verify_veedor_token(token)
+            if not session:
+                return cls._json_bytes(
+                    {"error": "Sesion de veedor invalida o expirada"},
+                    status_code=401,
+                )
             reports = snapshot.get("citizen_reports", [])
             return cls._json_bytes(reports)
+
+        if path == "/api/reports/track":
+            token = query.get("token", [None])[0] or query.get("id", [None])[0]
+            if not token:
+                return cls._error_bytes("Parametro 'token' es obligatorio", 400)
+            token_clean = token.strip()
+            reports = snapshot.get("citizen_reports", [])
+            matched = next(
+                (r for r in reports if r.get("report_id") == token_clean or r.get("tracking_token") == token_clean),
+                None,
+            )
+            # Si no esta en snapshot en memoria, consultar repositorio de base de datos
+            if not matched and _report_repo is not None:
+                try:
+                    db_report = _report_repo.get_by_id(token_clean)
+                    if db_report:
+                        matched = db_report.model_dump(mode="json")
+                except Exception:
+                    pass
+
+            if not matched:
+                return cls._error_bytes("Expediente de denuncia no encontrado", 404)
+
+            # Exponer unicamente metadatos publicos de seguimiento, NUNCA raw_text ni identidades
+            safe_summary = {
+                "report_id": matched.get("report_id"),
+                "submitted_at": matched.get("submitted_at") or matched.get("created_at"),
+                "moderation_status": matched.get("moderation_status", "received"),
+                "related_entity_id": matched.get("related_entity_id"),
+                "channel": matched.get("channel", "web"),
+                "legal_disclaimer_shown": matched.get("legal_disclaimer_shown", True),
+            }
+            return cls._json_bytes(safe_summary)
 
         if path in ("/api/concentration", "/api/suppliers"):
             entity_id = query.get("entity_id", [None])[0]
@@ -620,6 +680,14 @@ class WebApiHandler(BaseHTTPRequestHandler):
             snapshot = cls.get_snapshot()
             payload = report.model_dump(mode="json")
             snapshot.setdefault("citizen_reports", []).append(payload)
+
+            # Persistencia en base de datos operativa (Pilar 2)
+            if _report_repo is not None:
+                try:
+                    _report_repo.save(report)
+                except Exception:
+                    pass
+
             return cls._json_bytes({**payload, "report": payload}, status_code=201)
         except Exception as exc:
             return cls._error_bytes(f"Error al procesar denuncia: {str(exc)}", 400)
@@ -639,11 +707,13 @@ class WebApiHandler(BaseHTTPRequestHandler):
         review_notes = str(data.get("review_notes", "")).strip() or None
 
         auth_header = req_headers.get("authorization", "")
-        if auth_header.startswith("Bearer ") and not reviewed_by:
+        if auth_header.startswith("Bearer "):
             session = _verify_veedor_token(auth_header[7:].strip())
             if session:
                 veedor = session["veedor"]
                 reviewed_by = f"{veedor['name']} ({veedor['organization']})"
+            else:
+                return cls._json_bytes({"error": "Sesion de veedor invalida o expirada"}, status_code=401)
 
         if not entity_id or not red_flag_ids or not status or not reviewed_by:
             return cls._error_bytes(
@@ -687,6 +757,14 @@ class WebApiHandler(BaseHTTPRequestHandler):
             snapshot = cls.get_snapshot()
             payload = alert.model_dump(mode="json")
             snapshot.setdefault("alerts", []).append(payload)
+
+            # Persistencia en base de datos operativa (Pilar 2)
+            if _alert_repo is not None:
+                try:
+                    _alert_repo.save(alert)
+                except Exception:
+                    pass
+
             return cls._json_bytes({**payload, "alert": payload}, status_code=201)
         except Exception as exc:
             return cls._error_bytes(f"Error al procesar decision: {str(exc)}", 400)

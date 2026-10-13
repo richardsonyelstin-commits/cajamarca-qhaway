@@ -548,19 +548,20 @@
         }
 
         try {
-          const res = await fetch('/api/reports');
-          const reports = await res.json();
-          const found = reports.find(r => r.report_id === token);
-
+          const res = await fetch(`/api/reports/track?token=${encodeURIComponent(token)}`);
           resBox.classList.remove('hidden');
-          if (found) {
+          if (res.ok) {
+            const found = await res.json();
+            const statusLabel = found.moderation_status === 'validated'
+              ? 'Verificado por el Equipo Técnico'
+              : (found.moderation_status === 'dismissed' ? 'Desestimado con Fundamentación' : 'Ingresado al Pipeline de Verificación');
             resBox.innerHTML = `
               <div class="flex items-center gap-2 text-civic-emerald mb-1">
                 <span class="material-symbols-outlined text-[18px]">check_circle</span>
                 <strong>Expediente Localizado (${found.report_id})</strong>
               </div>
-              <p class="text-on-surface-variant">Estado Técnico: <strong class="text-on-surface">Ingresado al Pipeline de Verificación</strong></p>
-              <p class="text-caption text-outline mt-1">Fecha de recepción: ${found.created_at || 'Reciente'}</p>
+              <p class="text-on-surface-variant">Estado Técnico: <strong class="text-on-surface">${statusLabel}</strong></p>
+              <p class="text-caption text-outline mt-1">Fecha de recepción: ${found.submitted_at || 'Reciente'}</p>
             `;
           } else {
             resBox.innerHTML = `

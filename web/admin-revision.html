@@ -227,7 +227,7 @@
             <span class="text-caption font-label-sm text-on-surface-variant" id="candidates-count-label">-</span>
           </div>
 
-          <div id="candidates-list" class="space-y-3">
+          <div id="candidates-list" class="space-y-3 max-h-[750px] overflow-y-auto pr-2">
             <!-- Renderizado dinámico de candidatos -->
           </div>
         </div>
@@ -519,26 +519,58 @@
     async function loadPanelData() {
       const snapshot = await dataEngine.getSnapshot();
       const entities = await dataEngine.getEntities();
+      const procurements = await dataEngine.getProcurements();
+      const redFlags = await dataEngine.getRedFlags();
       const alerts = snapshot.alerts || [];
 
       const published = alerts.filter(a => a.status === 'published').length;
       const discarded = alerts.filter(a => a.status === 'discarded').length;
 
-      // Generar candidatos basados en entidades con banderas rojas o contratos con banderas
-      candidates = entities.slice(0, 5).map((e, idx) => {
+      // Unificar banderas rojas que ya fueron evaluadas en dictamenes previos
+      const reviewedFlagIds = new Set();
+      alerts.forEach(a => {
+        (a.red_flag_ids || []).forEach(rfId => reviewedFlagIds.add(rfId));
+      });
+
+      const entityMap = new Map(entities.map(e => [e.entity_id, e]));
+      const procMap = new Map(procurements.map(p => [p.procurement_id, p]));
+
+      // Banderas pendientes de dictamen humano
+      const pendingFlags = redFlags.filter(f => !reviewedFlagIds.has(f.red_flag_id));
+
+      const codeMap = {
+        'single-bidder': 'R-POSTOR-UNICO',
+        'short-tender-window': 'R-PLAZO-CORTO',
+        'direct-award-threshold': 'R-CONTRAT-DIRECTA',
+        'budget-deviation': 'R-DESV-PRESUP',
+        'split-procurement': 'R-FRACCIONAMIENTO'
+      };
+
+      candidates = pendingFlags.map((flag) => {
+        const procId = (flag.procurement_ids && flag.procurement_ids[0]) || null;
+        const proc = procId ? procMap.get(procId) : null;
+        const entityId = proc ? proc.entity_id : null;
+        const entity = entityId ? entityMap.get(entityId) : null;
+
+        const flagCode = codeMap[flag.indicator_code] || (flag.indicator_code || 'R-RIESGO').toUpperCase();
+        const flagTitle = flag.formula_description || 'Patron de riesgo detectado en contratacion publica';
+        const entityName = entity ? entity.official_name : (proc?.raw_payload?.buyer?.name || 'Entidad Publica de Cajamarca');
+        const province = entity?.province || 'Cajamarca';
+        const ruc = entity?.ruc || '20000000000';
+        const amount = Number(proc?.awarded_amount || proc?.raw_payload?.tender?.value?.amount || 0);
+        const tenderDesc = proc?.raw_payload?.tender?.description || proc?.title || 'Contratacion publica registrada en SEACE.';
+
         return {
-          id: `cand-${idx + 1}`,
-          entity_id: e.entity_id,
-          entity_name: e.official_name,
-          province: e.province || 'Departamental',
-          ruc: e.ruc,
-          red_flag_ids: [`rf-cand-${idx + 1}`],
-          flag_code: idx % 2 === 0 ? 'R-CANON-02' : 'R-FRAC-08',
-          flag_title: idx % 2 === 0 ? 'Desviación en Gasto de Canon Minero' : 'Concentración de Compras Menores a 8 UIT',
-          flag_desc: idx % 2 === 0 
-            ? 'Se identificaron devengados superiores a S/ 1.2M en rubro de gasto corriente financiados presuntamente con recursos de canon y sobrecanon minero.'
-            : 'Múltiples órdenes de servicio consecutivas por montos de S/ 38,000 otorgadas al mismo proveedor en un lapso de 45 días.',
-          amount: idx % 2 === 0 ? 1250000 : 380000
+          id: `cand-${flag.red_flag_id}`,
+          entity_id: entityId || (entity ? entity.entity_id : 'ce-cajamarca'),
+          entity_name: entityName,
+          province: province,
+          ruc: ruc,
+          red_flag_ids: [flag.red_flag_id],
+          flag_code: flagCode,
+          flag_title: flagTitle,
+          flag_desc: `Proceso: ${proc?.title || procId || 'Sin codigo'}. ${tenderDesc} (Valor observado: ${flag.observed_value}, Umbral: ${flag.threshold}).`,
+          amount: amount
         };
       });
 
@@ -550,6 +582,14 @@
       renderCandidatesList();
       if (candidates.length > 0) {
         selectCandidate(candidates[0]);
+      } else {
+        document.getElementById('candidates-list').innerHTML = `
+          <div class="p-6 text-center text-on-surface-variant bg-surface-container-low border border-slate-border rounded">
+            <span class="material-symbols-outlined text-3xl text-civic-emerald mb-2">check_circle</span>
+            <p class="font-body-sm font-semibold text-on-surface">Todos los expedientes han sido dictaminados</p>
+            <p class="text-caption text-outline mt-1">No quedan banderas rojas pendientes de revision tecnica.</p>
+          </div>
+        `;
       }
     }
 

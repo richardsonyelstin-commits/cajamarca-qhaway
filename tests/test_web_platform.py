@@ -410,3 +410,124 @@ def test_19_veedor_auth_flow(local_web_server):
         assert resp.status == 200
 
 
+def test_20_api_reports_privacy_and_tracking(local_web_server):
+    """Verifica proteccion de privacidad en denuncias (Ley 29733) y endpoint de seguimiento seguro."""
+    # 1. GET /api/reports sin token debe ser rechazado con 401
+    reports_unauth_req = urllib.request.Request(f"{local_web_server}/api/reports", method="GET")
+    with pytest.raises(urllib.error.HTTPError) as exc_info:
+        urllib.request.urlopen(reports_unauth_req)
+    assert exc_info.value.code == 401
+
+    # 2. Iniciar sesion como veedor
+    login_req = urllib.request.Request(
+        f"{local_web_server}/api/auth/login",
+        data=json.dumps({
+            "email": "veeduria-cajamarca@proetica.org.pe",
+            "password": "demo-veedor-2025",
+        }).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with urllib.request.urlopen(login_req) as resp:
+        token = json.loads(resp.read().decode("utf-8"))["token"]
+
+    # 3. GET /api/reports con token valido debe retornar 200
+    reports_auth_req = urllib.request.Request(
+        f"{local_web_server}/api/reports",
+        headers={"Authorization": f"Bearer {token}"},
+        method="GET",
+    )
+    with urllib.request.urlopen(reports_auth_req) as resp:
+        assert resp.status == 200
+        reports_list = json.loads(resp.read().decode("utf-8"))
+        assert isinstance(reports_list, list)
+
+    # 4. Crear una denuncia ciudadana para probar seguimiento
+    post_req = urllib.request.Request(
+        f"{local_web_server}/api/reports",
+        data=json.dumps({
+            "raw_text": "Observacion sobre irregularidades en expediente tecnico San Ignacio.",
+            "legal_disclaimer_shown": True,
+            "channel": "web",
+        }).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with urllib.request.urlopen(post_req) as resp:
+        assert resp.status == 201
+        created_report = json.loads(resp.read().decode("utf-8"))
+        test_rep_id = created_report["report_id"]
+
+    # 5. GET /api/reports/track?token=<id> retorna metadatos publicos sanitizados
+    track_req = urllib.request.Request(f"{local_web_server}/api/reports/track?token={test_rep_id}", method="GET")
+    with urllib.request.urlopen(track_req) as resp:
+        assert resp.status == 200
+        meta = json.loads(resp.read().decode("utf-8"))
+        assert meta["report_id"] == test_rep_id
+        assert meta["moderation_status"] == "pending"
+        # Invariante de privacidad: Jamas exponer raw_text ni datos de identidad
+        assert "raw_text" not in meta
+        assert "reporter" not in meta
+
+    # 6. GET /api/reports/track con token inexistente retorna 404
+    track_404_req = urllib.request.Request(f"{local_web_server}/api/reports/track?token=cr-inexistente", method="GET")
+    with pytest.raises(urllib.error.HTTPError) as exc_404:
+        urllib.request.urlopen(track_404_req)
+    assert exc_404.value.code == 404
+
+
+def test_21_vercel_wsgi_security_and_tracking():
+    """Verifica la paridad de proteccion y tracking en api/index.py (WSGI fallback)."""
+    from api.index import app as vercel_wsgi_app
+
+    def call_wsgi(method: str, path: str, query: str = "", body: bytes = b"", headers: dict = None):
+        captured = {}
+        headers = headers or {}
+
+        def start_response(status, hdrs):
+            captured["status"] = status
+            captured["headers"] = dict(hdrs)
+
+        environ = {
+            "REQUEST_METHOD": method,
+            "PATH_INFO": path,
+            "QUERY_STRING": query,
+            "CONTENT_LENGTH": str(len(body)),
+            "wsgi.input": io.BytesIO(body),
+        }
+        for k, v in headers.items():
+            environ[f"HTTP_{k.upper().replace('-', '_')}"] = v
+
+        chunks = vercel_wsgi_app(environ, start_response)
+        return captured["status"], captured["headers"], b"".join(chunks)
+
+    # 1. GET /api/reports sin token debe retornar 401
+    status, _, _ = call_wsgi("GET", "/api/reports")
+    assert status.startswith("401")
+
+    # 2. GET /api/reports con token Bearer valido de veedor retorna 200
+    from cajamarca_qhaway.web.server import ACCREDITED_VEEDORES, _issue_veedor_token
+    real_token, _ = _issue_veedor_token(ACCREDITED_VEEDORES[0])
+    status_auth, _, body_auth = call_wsgi("GET", "/api/reports", headers={"Authorization": f"Bearer {real_token}"})
+    assert status_auth.startswith("200")
+    assert isinstance(json.loads(body_auth.decode("utf-8")), list)
+
+    # 3. GET /api/reports/track sin parametro retorna 400
+    status_bad, _, _ = call_wsgi("GET", "/api/reports/track")
+    assert status_bad.startswith("400")
+
+    # 4. POST /api/reports por WSGI
+    rep_body = json.dumps({"raw_text": "Alerta vecinal", "legal_disclaimer_shown": True}).encode("utf-8")
+    status_post, _, body_post = call_wsgi("POST", "/api/reports", body=rep_body)
+    assert status_post.startswith("201")
+    created = json.loads(body_post.decode("utf-8"))
+    assert "report_id" in created
+
+    # 5. Probar directamente _stdlib_fallback_dispatch para certificar el fallback estricto
+    from api.index import _stdlib_fallback_dispatch
+    s_code, _, s_body = _stdlib_fallback_dispatch("GET", "/api/reports", {}, req_headers={})
+    assert s_code == 401
+    s_code_ok, _, s_body_ok = _stdlib_fallback_dispatch("GET", "/api/reports", {}, req_headers={"authorization": "Bearer valid"})
+    assert s_code_ok == 200
+
+
