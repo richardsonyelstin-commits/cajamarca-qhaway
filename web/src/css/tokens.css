@@ -92,7 +92,11 @@ body.mode-rural-lite .rural-hide {
   display: none !important;
 }
 
-/* Jerarquía Tipográfica Explícita */
+/* Jerarquía Tipográfica Explícita y Homogénea (Andean Civic Observatory) */
+h1,
+h2,
+h3,
+h4,
 .font-headline-xl,
 .font-headline-lg,
 .font-headline-md,
@@ -114,33 +118,36 @@ body.mode-rural-lite .rural-hide {
   font-variant-numeric: tabular-nums;
 }
 
+h1,
 .text-headline-xl {
-  font-size: clamp(2rem, 3.5vw, 2.75rem) !important;
-  line-height: 1.15 !important;
+  font-size: clamp(2rem, 3.2vw, 2.75rem) !important;
+  line-height: 1.18 !important;
   letter-spacing: -0.02em !important;
-  font-weight: 700;
+  font-weight: 700 !important;
   text-wrap: balance;
 }
 
+h2,
 .text-headline-lg {
-  font-size: clamp(1.5rem, 2.5vw, 2rem) !important;
+  font-size: clamp(1.5rem, 2.2vw, 2rem) !important;
   line-height: 1.25 !important;
   letter-spacing: -0.015em !important;
-  font-weight: 600;
+  font-weight: 700 !important;
   text-wrap: balance;
 }
 
+h3,
 .text-headline-md {
   font-size: 1.375rem !important;
   line-height: 1.35 !important;
   letter-spacing: -0.01em !important;
-  font-weight: 600;
+  font-weight: 600 !important;
 }
 
 .text-headline-sm {
   font-size: 1.125rem !important;
   line-height: 1.4 !important;
-  font-weight: 600;
+  font-weight: 600 !important;
 }
 
 .text-body-lg {

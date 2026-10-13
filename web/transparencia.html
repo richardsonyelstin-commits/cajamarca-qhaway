@@ -83,6 +83,7 @@
 
       <!-- 2. Navegación Principal Unificada -->
       <nav class="hidden lg:flex items-center gap-1 xl:gap-2">
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/">Inicio</a>
         <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/entidades">Entidades</a>
         <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/alertas">Alertas</a>
         <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/contrataciones">Contrataciones</a>
@@ -145,22 +146,29 @@
 
   <!-- Contenido Principal -->
   <main class="w-full flex-1 bg-surface">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      <!-- Encabezado Editorial -->
-      <div class="border-b border-slate-border pb-8">
-        <div class="flex items-center gap-2 text-body-sm font-label-sm text-secondary uppercase tracking-wider mb-2">
-          <span class="material-symbols-outlined text-[18px]">database</span>
+    <!-- Encabezado Editorial Cívico Unificado -->
+    <div class="w-full bg-surface-container-lowest border-b border-slate-border">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+        <div class="flex items-center gap-2 text-xs uppercase tracking-wider text-secondary font-semibold mb-3">
+          <a class="hover:underline" href="/">Inicio</a>
+          <span class="text-outline-variant">·</span>
           <span>Transparencia Activa y Acceso Público</span>
-          <span>·</span>
-          <span>Ley N° 27806</span>
+          <span class="text-outline-variant">·</span>
+          <span>Open Data Commons ODC-By 1.0</span>
+          <span class="text-outline-variant">·</span>
+          <span class="text-on-surface-variant font-normal">Ley N° 27806</span>
         </div>
-        <h1 class="font-headline-xl text-3xl sm:text-4xl lg:text-5xl font-semibold text-on-surface tracking-tight">
+        <h1 class="font-headline-xl text-headline-xl font-bold text-on-surface tracking-tight">
           Portal de Transparencia y Microdatos
         </h1>
-        <p class="font-body-md text-on-surface-variant mt-3 max-w-3xl leading-relaxed">
+        <p class="font-body-lg text-body-lg text-on-surface-variant max-w-4xl leading-relaxed mt-2">
           Garantía de libre reutilización de datos para periodistas de investigación, académicos, auditores forenses y veedores comunales. Todos los datasets están normalizados bajo OCDS v1.1 y el catálogo presupuestal del MEF SIAF.
         </p>
       </div>
+    </div>
+
+    <!-- Catálogo de Descargas de Microdatos -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
       <!-- Catálogo de Descargas de Microdatos -->
       <div class="my-10">

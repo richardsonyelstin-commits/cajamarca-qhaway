@@ -83,6 +83,7 @@
 
       <!-- 2. Navegación Principal Unificada -->
       <nav class="hidden lg:flex items-center gap-1 xl:gap-2">
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/">Inicio</a>
         <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/entidades">Entidades</a>
         <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/alertas">Alertas</a>
         <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/contrataciones">Contrataciones</a>
@@ -145,22 +146,29 @@
 
   <!-- Contenido Principal -->
   <main class="w-full flex-1 bg-surface">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-      <!-- Encabezado Editorial -->
-      <div class="border-b border-slate-border pb-8">
-        <div class="flex items-center gap-2 text-body-sm font-label-sm text-secondary uppercase tracking-wider mb-2">
-          <span class="material-symbols-outlined text-[18px]">security</span>
+    <!-- Encabezado Editorial Cívico Unificado -->
+    <div class="w-full bg-surface-container-lowest border-b border-slate-border">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 py-10">
+        <div class="flex items-center gap-2 text-xs uppercase tracking-wider text-secondary font-semibold mb-3">
+          <a class="hover:underline" href="/">Inicio</a>
+          <span class="text-outline-variant">·</span>
           <span>Veeduría y Control Social</span>
-          <span>·</span>
-          <span>Capacidad 006 Intake</span>
+          <span class="text-outline-variant">·</span>
+          <span>Canal de Denuncia</span>
+          <span class="text-outline-variant">·</span>
+          <span class="text-on-surface-variant font-normal">Capacidad 006 Intake</span>
         </div>
-        <h1 class="font-headline-xl text-3xl sm:text-4xl lg:text-5xl font-semibold text-on-surface tracking-tight">
+        <h1 class="font-headline-xl text-headline-xl font-bold text-on-surface tracking-tight">
           Canal Seguro de Denuncia Ciudadana
         </h1>
-        <p class="font-body-md text-on-surface-variant mt-3 leading-relaxed">
+        <p class="font-body-lg text-body-lg text-on-surface-variant max-w-3xl leading-relaxed mt-2">
           Mecanismo confidencial para que veedores comunales, periodistas y ciudadanos de las 13 provincias reporten presuntas irregularidades en contratos, sobrecostos u obras paralizadas. Toda información es contrastada contra fuentes oficiales antes de elevarse al Panel Revisor CU5.
         </p>
       </div>
+    </div>
+
+    <!-- Formulario Seguro -->
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
 
       <!-- Tarjeta de Confirmación / Token (oculta al inicio) -->
       <div id="report-confirmation" class="hidden mt-8 p-6 bg-secondary-container text-on-secondary-container border border-secondary rounded">

@@ -83,6 +83,7 @@
 
       <!-- 2. Navegación Principal Unificada -->
       <nav class="hidden lg:flex items-center gap-1 xl:gap-2">
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/">Inicio</a>
         <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/entidades">Entidades</a>
         <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/alertas">Alertas</a>
         <a class="px-3 py-1.5 rounded text-xs font-semibold text-secondary bg-secondary-container/20 border border-secondary/30 transition-colors" href="/contrataciones">Contrataciones</a>
@@ -143,20 +144,21 @@
     </div>
   </header>
 
-  <!-- Contenido Principal (Sin pt-36 redundante) -->
+  <!-- Contenido Principal -->
   <main class="w-full flex-1 bg-surface">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      <!-- Breadcrumbs -->
-      <nav class="flex items-center gap-2 text-caption font-label-sm text-on-surface-variant mb-6">
-        <a href="/" class="hover:text-on-surface transition-colors">Inicio</a>
-        <span>/</span>
-        <a href="/contrataciones" class="hover:text-on-surface transition-colors">Contratos SEACE</a>
-        <span>/</span>
-        <span class="text-on-surface font-semibold" id="crumb-ocid">Expediente OCDS</span>
-      </nav>
+    <!-- Encabezado Editorial Cívico Unificado -->
+    <div class="w-full bg-surface-container-lowest border-b border-slate-border">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+        <!-- Breadcrumbs -->
+        <nav class="flex items-center gap-2 text-xs uppercase tracking-wider text-secondary font-semibold mb-3">
+          <a href="/" class="hover:underline">Inicio</a>
+          <span class="text-outline-variant">·</span>
+          <a href="/contrataciones" class="hover:underline">Contratos SEACE</a>
+          <span class="text-outline-variant">·</span>
+          <span class="text-on-surface-variant font-normal" id="crumb-ocid">Expediente OCDS</span>
+        </nav>
 
-      <!-- Encabezado del Dossier -->
-      <div class="border-b border-slate-border pb-8">
+        <!-- Encabezado del Dossier -->
         <div class="flex flex-wrap items-center gap-3 mb-3">
           <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-secondary-container text-on-secondary-container font-mono text-caption font-semibold" id="dossier-ocid">
             Cargando...
@@ -168,7 +170,7 @@
           </button>
         </div>
 
-        <h1 class="font-headline-lg text-2xl sm:text-3xl lg:text-4xl font-semibold text-on-surface" id="dossier-title">
+        <h1 class="font-headline-xl text-headline-xl text-on-surface font-bold tracking-tight" id="dossier-title">
           Cargando expediente contractual...
         </h1>
 
@@ -183,6 +185,9 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
       <!-- Resumen Cuantitativo en Tarjetas -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 my-8">

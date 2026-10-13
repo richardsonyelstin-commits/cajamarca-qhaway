@@ -83,6 +83,7 @@
 
       <!-- 2. Navegación Principal Unificada -->
       <nav class="hidden lg:flex items-center gap-1 xl:gap-2">
+        <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/">Inicio</a>
         <a class="px-3 py-1.5 rounded text-xs font-semibold text-secondary bg-secondary-container/20 border border-secondary/30 transition-colors" href="/entidades">Entidades</a>
         <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/alertas">Alertas</a>
         <a class="px-3 py-1.5 rounded text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="/contrataciones">Contrataciones</a>
@@ -160,7 +161,7 @@
         <!-- Titular Principal -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end pb-6 border-b border-slate-border">
           <div class="lg:col-span-8 space-y-2">
-            <h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight leading-none">
+            <h1 class="font-headline-xl text-headline-xl text-on-surface font-bold tracking-tight">
               Directorio de 14 Entidades Fiscalizadas
             </h1>
             <p class="font-body-lg text-body-lg text-on-surface-variant max-w-4xl leading-relaxed">
@@ -299,7 +300,7 @@
             <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded bg-alert-amber"></span> 25-35% En Riesgo</span>
             <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded bg-alert-rose"></span> &lt;25% Crítico</span>
           </div>
-
+        </div>
 
         <!-- CONTENEDOR DE TARJETAS (CARDS VIEW) -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="cards-container">
@@ -1720,9 +1721,10 @@
     function applyFiltersAndSearch() {
       const searchVal = document.getElementById("entity-search").value.toLowerCase().trim();
       const cards = document.querySelectorAll(".entity-card");
+      const tableRows = document.querySelectorAll("#table-container tbody tr");
       let visibleCount = 0;
 
-      cards.forEach(card => {
+      cards.forEach((card, idx) => {
         const name = (card.dataset.name || "").toLowerCase();
         const ruc = card.dataset.ruc || "";
         const zone = card.dataset.zone || "";
@@ -1738,11 +1740,14 @@
         else if (currentFilter === 'critica') matchesFilter = (exec < 25.0);
         else if (currentFilter === 'alertas') matchesFilter = (alerts > 0);
 
-        if (matchesSearch && matchesFilter) {
+        const isVisible = matchesSearch && matchesFilter;
+        if (isVisible) {
           card.classList.remove("hidden");
+          if (tableRows[idx]) tableRows[idx].classList.remove("hidden");
           visibleCount++;
         } else {
           card.classList.add("hidden");
+          if (tableRows[idx]) tableRows[idx].classList.add("hidden");
         }
       });
 
@@ -1752,17 +1757,24 @@
     function sortEntities(sortKey) {
       const container = document.getElementById("cards-container");
       const cards = Array.from(container.querySelectorAll(".entity-card"));
+      const tbody = document.querySelector("#table-container tbody");
+      const rows = tbody ? Array.from(tbody.querySelectorAll("tr")) : [];
 
-      cards.sort((a, b) => {
-        if (sortKey === "pim-desc") return parseFloat(b.dataset.pim) - parseFloat(a.dataset.pim);
-        if (sortKey === "exec-asc") return parseFloat(a.dataset.exec) - parseFloat(b.dataset.exec);
-        if (sortKey === "exec-desc") return parseFloat(b.dataset.exec) - parseFloat(a.dataset.exec);
-        if (sortKey === "alerts-desc") return parseInt(b.dataset.alerts) - parseInt(a.dataset.alerts);
-        if (sortKey === "name-asc") return a.dataset.name.localeCompare(b.dataset.name);
+      const paired = cards.map((card, i) => ({ card, row: rows[i] }));
+
+      paired.sort((a, b) => {
+        if (sortKey === "pim-desc") return parseFloat(b.card.dataset.pim) - parseFloat(a.card.dataset.pim);
+        if (sortKey === "exec-asc") return parseFloat(a.card.dataset.exec) - parseFloat(b.card.dataset.exec);
+        if (sortKey === "exec-desc") return parseFloat(b.card.dataset.exec) - parseFloat(a.card.dataset.exec);
+        if (sortKey === "alerts-desc") return parseInt(b.card.dataset.alerts) - parseInt(a.card.dataset.alerts);
+        if (sortKey === "name-asc") return a.card.dataset.name.localeCompare(b.card.dataset.name);
         return 0;
       });
 
-      cards.forEach(card => container.appendChild(card));
+      paired.forEach(item => {
+        container.appendChild(item.card);
+        if (tbody && item.row) tbody.appendChild(item.row);
+      });
     }
 
     // Auto-search param handler si viene de query param (?q=...)
