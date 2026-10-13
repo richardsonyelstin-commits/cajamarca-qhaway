@@ -1586,7 +1586,21 @@ async function hydrateAlertasPage(kpis) {
       const badgeIcon = isCrit ? 'error' : 'warning';
       const badgeLabel = isCrit ? 'SEVERIDAD CRITICA' : 'SEVERIDAD ALTA';
 
-      const searchKeywords = `${a.alert_id} ${entName} ${a.review_notes || ''} ${flag.formula_description || ''} ${code}`.toLowerCase();
+      const INDICATOR_LABELS = {
+        'short-tender-window': 'Ventana anormalmente corta de licitacion publica',
+        'single-bidder': 'Licitacion publica adjudicada a postor unico',
+        'execution-overrun': 'Sobrecosto y desvio del presupuesto modificado',
+        'contract-concentration': 'Concentracion contractual en un solo proveedor',
+        'direct-award-threshold': 'Adjudicacion directa en el umbral limite legal',
+        'direct-administration-equipment-rent': 'Alquiler irregular de maquinaria en administracion directa',
+        'contract-splitting-orders': 'Fraccionamiento de compras en ordenes menores a 8 UIT',
+        'mef-underspending': 'Subejecucion presupuestal critica en proyectos de inversion',
+        'recurrent-direct-award': 'Contrataciones directas recurrentes a la misma empresa',
+        'hhi-concentration': 'Alta concentracion de mercado de proveedores (Indice HHI)'
+      };
+      const humanIndicatorName = INDICATOR_LABELS[code] || flag.name || flag.formula_description || `Alerta Tecnica: ${code}`;
+
+      const searchKeywords = `${a.alert_id} ${entName} ${humanIndicatorName} ${a.review_notes || ''} ${flag.formula_description || ''} ${code}`.toLowerCase();
 
       return `
         <article class="alert-card bg-surface-container-lowest rounded border border-slate-border shadow-sm p-6 flex flex-col gap-4" data-severity="${severity}" data-text="${searchKeywords}">
@@ -1611,10 +1625,15 @@ async function hydrateAlertasPage(kpis) {
           </div>
 
           <div>
-            <h2 class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight hover:text-secondary cursor-pointer transition-colors">
-              Alerta de Riesgo en Contratacion Publica: ${code}
+            <div class="flex items-center gap-2 mb-1 text-xs">
+              <span class="font-mono text-caption text-secondary font-semibold uppercase">Alerta Preventiva</span>
+              <span class="text-outline">·</span>
+              <span class="font-mono text-caption text-outline">Regla: ${code}</span>
+            </div>
+            <h2 class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight hover:text-secondary cursor-pointer transition-colors leading-snug">
+              ${humanIndicatorName}
             </h2>
-            <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed mt-1">
+            <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed mt-1.5">
               ${a.review_notes || 'Revision colegiada formal completada conforme a los Articulos 14 y 15.'}
             </p>
           </div>
