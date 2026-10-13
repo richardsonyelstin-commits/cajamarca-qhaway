@@ -67,8 +67,11 @@
     };
   </script>
   <link rel="stylesheet" href="/src/css/tokens.css"/>
+  <link rel="stylesheet" href="/src/css/main.css"/>
+  <link rel="stylesheet" href="/src/css/components.css"/>
 </head>
 <body class="bg-surface font-sans text-on-surface antialiased min-h-screen flex flex-col">
+  <a class="skip-link" href="#main-content">Saltar al contenido principal</a>
   <!-- Encabezado Unificado (Top Bar Contract: 1 Fila, 64px, Sin Colisiones) -->
   <header class="w-full sticky top-0 z-50 bg-surface/95 backdrop-blur-md border-b border-slate-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
@@ -145,7 +148,7 @@
   </header>
 
   <!-- Contenido: Ficha de Auditoría Individual (Sin pt-36 redundante) -->
-  <main class="w-full flex-1 bg-surface">
+  <main id="main-content" class="w-full flex-1 bg-surface">
     <!-- Meta Bar Superior del Dossier -->
     <section class="w-full bg-surface-container-low py-3 px-4 sm:px-6 border-b border-slate-border">
       <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">

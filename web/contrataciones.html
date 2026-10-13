@@ -67,8 +67,11 @@
     };
   </script>
   <link rel="stylesheet" href="/src/css/tokens.css"/>
+  <link rel="stylesheet" href="/src/css/main.css"/>
+  <link rel="stylesheet" href="/src/css/components.css"/>
 </head>
 <body class="bg-surface font-sans text-on-surface antialiased min-h-screen flex flex-col">
+  <a class="skip-link" href="#main-content">Saltar al contenido principal</a>
   <!-- Encabezado Unificado (Top Bar Contract: 1 Fila, 64px, Sin Colisiones) -->
   <header class="w-full sticky top-0 z-50 bg-surface/95 backdrop-blur-md border-b border-slate-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
@@ -165,7 +168,7 @@
   </header>
 
   <!-- Contenido Principal -->
-  <main class="w-full flex-1 bg-surface">
+  <main id="main-content" class="w-full flex-1 bg-surface">
     <!-- Encabezado Editorial Cívico Unificado -->
     <div class="w-full bg-surface-container-lowest border-b border-slate-border">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
@@ -255,10 +258,10 @@
         <div class="flex-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <div class="relative flex-1">
             <span class="material-symbols-outlined absolute left-3 top-2.5 text-outline text-[18px]">search</span>
-            <input id="filter-search" class="w-full bg-surface border border-slate-border pl-9 pr-3 py-2 rounded text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-secondary" placeholder="Buscar por objeto, proveedor o RUC..." type="text"/>
+            <input id="filter-search" class="w-full bg-surface border border-slate-border pl-9 pr-3 py-2 rounded text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-secondary" placeholder="Buscar por objeto, proveedor o RUC..." type="text" aria-label="Buscar contrataciones por objeto, proveedor o RUC"/>
           </div>
           <div class="w-full sm:w-64">
-            <select id="filter-entity" class="w-full bg-surface border border-slate-border px-3 py-2 rounded text-body-sm font-body-sm text-on-surface focus:outline-none focus:border-secondary">
+            <select id="filter-entity" class="w-full bg-surface border border-slate-border px-3 py-2 rounded text-body-sm font-body-sm text-on-surface focus:outline-none focus:border-secondary" aria-label="Filtrar contrataciones por entidad">
               <option value="">Todas las 14 Entidades</option>
             </select>
           </div>
@@ -298,7 +301,7 @@
       <div class="p-4 border-b border-slate-border flex items-center justify-between">
         <div class="flex items-center gap-2">
           <span class="material-symbols-outlined text-secondary">data_object</span>
-          <h3 class="font-headline-sm text-lg font-semibold text-on-surface">Visor de Release OCDS JSON</h3>
+          <h2 class="font-headline-sm text-lg font-semibold text-on-surface">Visor de Release OCDS JSON</h2>
         </div>
         <button id="btn-close-modal" class="text-on-surface-variant hover:text-on-surface cursor-pointer">
           <span class="material-symbols-outlined">close</span>

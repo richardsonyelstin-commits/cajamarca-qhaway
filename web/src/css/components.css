@@ -323,21 +323,16 @@
 }
 
 .skeleton-box {
-  background: linear-gradient(
-    90deg,
-    var(--color-bg-subtle) 25%,
-    var(--color-border-subtle) 50%,
-    var(--color-bg-subtle) 75%
-  );
-  background-size: 200% 100%;
+  background: var(--color-bg-subtle);
   border-radius: var(--radius-sm);
   margin-bottom: 0.75rem;
   animation: skeleton-pulse 1.6s ease-in-out infinite;
 }
 
 @keyframes skeleton-pulse {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0%,
+  100% { opacity: 0.55; }
+  50% { opacity: 1; }
 }
 
 /* Estado 2: Vacio (Empty) */
@@ -482,10 +477,10 @@ html[data-lang-mode="ciudadano"] .civic-mode-toggle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.125rem !important;
-  height: 1.125rem !important;
-  min-width: 1.125rem !important;
-  min-height: 1.125rem !important;
+  width: 2.75rem !important;
+  height: 2.75rem !important;
+  min-width: 2.75rem !important;
+  min-height: 2.75rem !important;
   border-radius: 9999px;
   background-color: var(--color-secondary-container, #ccfbf1);
   color: var(--color-on-secondary-container, #00504a);

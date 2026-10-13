@@ -29,6 +29,7 @@ import posixpath
 import secrets
 import time
 import urllib.parse
+import urllib.request
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -175,6 +176,11 @@ class WebApiHandler(BaseHTTPRequestHandler):
         if cls.snapshot_cache is not None:
             return cls.snapshot_cache
 
+        live_snapshot = cls._fetch_live_snapshot()
+        if live_snapshot is not None:
+            cls.snapshot_cache = live_snapshot
+            return live_snapshot
+
         snapshot_file = Path(cls.web_dir) / "src" / "data" / "verified-snapshot.json"
         if snapshot_file.exists():
             try:
@@ -188,6 +194,66 @@ class WebApiHandler(BaseHTTPRequestHandler):
         data = build_verified_web_snapshot()
         cls.snapshot_cache = data
         return data
+
+    @classmethod
+    def _fetch_live_snapshot(cls) -> dict[str, Any] | None:
+        """Consulta las tablas publicas de Supabase sin exponer credenciales al cliente."""
+        base_url = os.environ.get("SUPABASE_URL", "").rstrip("/")
+        anon_key = os.environ.get("SUPABASE_ANON_KEY", "")
+        if not base_url or not anon_key:
+            return None
+
+        tables = {
+            "contracting_entities": "select=*&order=official_name.asc",
+            "procurement_records": (
+                "select=*&order=retrieved_at.desc&limit=1000"
+            ),
+            "budget_execution_records": (
+                "select=*&order=fiscal_year.desc&limit=1000"
+            ),
+            "alerts": "select=*&status=eq.published&order=published_at.desc",
+        }
+        headers = {
+            "apikey": anon_key,
+            "Authorization": f"Bearer {anon_key}",
+            "Accept": "application/json",
+        }
+        result: dict[str, Any] = {}
+        try:
+            for table, query in tables.items():
+                url = f"{base_url}/rest/v1/{table}?{query}"
+                request = urllib.request.Request(url, headers=headers)
+                with urllib.request.urlopen(request, timeout=8) as response:
+                    rows = json.loads(response.read().decode("utf-8"))
+                if not isinstance(rows, list):
+                    return None
+                result[table] = rows
+        except Exception:
+            return None
+
+        fallback = cls._snapshot_from_disk()
+        result["red_flags"] = fallback.get("red_flags", [])
+        result["citizen_reports"] = fallback.get("citizen_reports", [])
+        result["metadata"] = {
+            **fallback.get("metadata", {}),
+            "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "source_mode": "supabase-live-via-backend",
+            "total_entities": len(result["contracting_entities"]),
+            "total_procurements": len(result["procurement_records"]),
+            "total_budget_executions": len(result["budget_execution_records"]),
+            "total_published_alerts": len(result["alerts"]),
+        }
+        return result
+
+    @classmethod
+    def _snapshot_from_disk(cls) -> dict[str, Any]:
+        snapshot_file = Path(cls.web_dir) / "src" / "data" / "verified-snapshot.json"
+        if snapshot_file.exists():
+            try:
+                return json.loads(snapshot_file.read_text(encoding="utf-8"))
+            except Exception:
+                pass
+        return {}
 
     @classmethod
     def _json_bytes(cls, data: Any, status_code: int = 200) -> tuple[int, str, bytes]:

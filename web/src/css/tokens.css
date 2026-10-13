@@ -26,9 +26,9 @@
   --color-secondary-container: #ccfbf1;
   --color-on-secondary-container: #00504a;
 
-  --color-civic-emerald: #059669;
+  --color-civic-emerald: #047857;
   --color-civic-teal: #0d9488;
-  --color-alert-amber: #d97706;
+  --color-alert-amber: #b45309;
   --color-alert-rose: #e11d48;
   --color-slate-surface: #f8fafc;
   --color-slate-border: #e2e8f0;
@@ -36,6 +36,49 @@
   --font-serif: "Newsreader", Georgia, serif;
   --font-sans: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
+
+  /* Alias compartidos para que todas las páginas usen la misma semántica visual. */
+  --color-bg-canvas: var(--color-surface);
+  --color-bg-surface: var(--color-surface-container-lowest);
+  --color-bg-subtle: var(--color-surface-container-low);
+  --color-text-primary: var(--color-on-surface);
+  --color-text-secondary: var(--color-on-surface-variant);
+  --color-text-muted: var(--color-outline);
+  --color-text-inverse: var(--color-on-primary);
+  --color-border-subtle: var(--color-slate-border);
+  --color-border-strong: var(--color-outline-variant);
+  --color-brand-primary: var(--color-primary);
+  --color-brand-light: var(--color-secondary-container);
+  --color-brand-accent: var(--color-secondary);
+  --color-success: var(--color-civic-emerald);
+  --color-success-bg: color-mix(in srgb, var(--color-civic-emerald) 12%, transparent);
+  --color-success-border: color-mix(in srgb, var(--color-civic-emerald) 35%, transparent);
+  --color-alert-high: var(--color-alert-rose);
+  --color-alert-high-bg: color-mix(in srgb, var(--color-alert-rose) 12%, transparent);
+  --color-alert-high-border: color-mix(in srgb, var(--color-alert-rose) 35%, transparent);
+  --color-alert-med: var(--color-alert-amber);
+  --color-alert-med-bg: color-mix(in srgb, var(--color-alert-amber) 12%, transparent);
+  --color-alert-med-border: color-mix(in srgb, var(--color-alert-amber) 35%, transparent);
+  --color-alert-low: var(--color-civic-emerald);
+  --color-alert-low-bg: var(--color-success-bg);
+  --color-alert-low-border: var(--color-success-border);
+  --color-danger: var(--color-alert-rose);
+  --color-danger-bg: var(--color-alert-high-bg);
+  --color-danger-border: var(--color-alert-high-border);
+  --color-info-bg: var(--color-secondary-container);
+  --color-info-border: var(--color-secondary);
+  --focus-ring-color: var(--color-secondary);
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
+  --touch-target-min: 2.75rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --shadow-sm: 0 1px 3px rgb(15 23 42 / 0.06);
+  --shadow-md: 0 8px 20px rgb(15 23 42 / 0.10);
+  --shadow-lg: 0 12px 24px rgb(15 23 42 / 0.14);
+  --transition-fast: 150ms ease;
+  --transition-normal: 220ms ease;
 }
 
 .dark,

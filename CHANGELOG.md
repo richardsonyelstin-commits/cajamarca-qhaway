@@ -7,6 +7,21 @@ Se escribe **en el PR**, no en el release: reconstruirlo después es inventarlo.
 
 ## [Unreleased]
 
+### Fixed
+
+- Se ejecutó auditoría WCAG 2.1 AA sobre las 15 páginas y se documentaron hallazgos pendientes
+  de etiquetas de formulario, jerarquía de encabezados y contraste de estados.
+- Se unificó la carga de tokens, estilos principales y componentes en las 15 páginas HTML.
+- Se añadieron enlaces de salto, foco visible, objetivos táctiles mínimos, reducción de movimiento
+  y una escala coherente de tipografía, color, bordes y superficies.
+- Se eliminaron gradientes del skeleton y se corrigieron los estilos heredados para modo oscuro,
+  estados de alerta y compatibilidad responsive.
+- El frontend prioriza el snapshot servido por `/api`, con datos vivos de Supabase cuando
+  `SUPABASE_URL` y `SUPABASE_ANON_KEY` están configuradas en el backend.
+- Las denuncias y decisiones de revisión usan primero los endpoints del backend, y conservan
+  el respaldo local únicamente ante fallos de red.
+- Los KPI ya no muestran cifras sintéticas cuando la fuente real está vacía.
+
 ### Added
 
 - **Pilar 3: Plataforma Web Integral, Auditoría y Despliegue Cloud (`web/` y `cajamarca_qhaway.web`)**:

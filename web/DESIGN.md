@@ -13,8 +13,8 @@ The palette is anchored by deep Andean slates and structured civic emeralds, est
 - **Primary (`#0f172a` / `#000000`)**: Deep Andean Slate anchors headlines, critical data labels, and formal borders, conveying institutional weight and uncompromising focus.
 - **Secondary (`#006a63` / `#0f766e`)**: Civic Teal signals verification, official database synchronicity, and active audit points.
 - **Named Accents**:
-  - `civic-emerald` (`#059669`): Denotes clean procurement pipelines, compliant budgets, and healthy transparency indices.
-  - `alert-amber` (`#d97706`) and `alert-rose` (`#e11d48`): Highlight statistical outliers, single-bidder procurement warnings, and discrepancy alerts without resorting to sensationalist alarms.
+  - `civic-emerald` (`#047857`): Denotes clean procurement pipelines, compliant budgets, and healthy transparency indices.
+  - `alert-amber` (`#b45309`) and `alert-rose` (`#e11d48`): Highlight statistical outliers, single-bidder procurement warnings, and discrepancy alerts without resorting to sensationalist alarms.
   - `slate-surface` (`#f8fafc`) and `slate-border` (`#e2e8f0`): Create high-contrast editorial surfaces that separate metric modules cleanly on varied display densities.
 
 ## Typography

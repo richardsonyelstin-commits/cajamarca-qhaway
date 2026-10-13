@@ -55,8 +55,11 @@
     };
   </script>
   <link rel="stylesheet" href="/src/css/tokens.css"/>
+  <link rel="stylesheet" href="/src/css/main.css"/>
+  <link rel="stylesheet" href="/src/css/components.css"/>
 </head>
 <body class="bg-surface font-sans text-on-surface antialiased min-h-screen flex flex-col">
+  <a class="skip-link" href="#main-content">Saltar al contenido principal</a>
 
   <!-- Barrera de Seguridad Anti-Acceso No Autorizado -->
   <div id="auth-gate-modal" class="fixed inset-0 z-[100] bg-surface/98 backdrop-blur-lg flex items-center justify-center p-4">
@@ -64,7 +67,7 @@
       <div class="w-14 h-14 rounded-full bg-alert-rose/10 text-alert-rose mx-auto flex items-center justify-center">
         <span class="material-symbols-outlined text-3xl">gpp_bad</span>
       </div>
-      <h2 class="font-headline-sm text-2xl font-bold text-on-surface">Acceso Restringido a Veedores</h2>
+      <h1 class="font-headline-sm text-2xl font-bold text-on-surface">Acceso Restringido a Veedores</h1>
       <p class="text-body-sm text-on-surface-variant leading-relaxed">
         El Panel Revisor de Banderas Rojas (CU5) está blindado para miembros acreditados de la sociedad civil. Verificando token de sesión criptográfica...
       </p>
@@ -153,7 +156,7 @@
   </header>
 
   <!-- Contenido Principal: Protegido por Sesión -->
-  <main id="main-panel-content" class="w-full flex-1 bg-surface opacity-0 transition-opacity duration-300">
+  <main id="main-content" class="w-full flex-1 bg-surface opacity-0 transition-opacity duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       
       <!-- Franja de Identidad del Veedor Autenticado -->
@@ -188,9 +191,9 @@
           <span>·</span>
           <span>Capacidad 005 Review</span>
         </div>
-        <h1 class="font-headline-xl text-headline-xl font-bold text-on-surface tracking-tight">
+        <h2 class="font-headline-xl text-headline-xl font-bold text-on-surface tracking-tight">
           Panel Revisor de Veeduría CU5
-        </h1>
+        </h2>
         <p class="font-body-lg text-body-lg text-on-surface-variant mt-2 max-w-3xl leading-relaxed">
           Módulo de evaluación y dictamen colegiado. Los candidatos de riesgo detectados por el motor de banderas rojas son analizados técnicamente por veedores de la sociedad civil antes de publicarse como alertas o ser descartados con fundamentación.
         </p>

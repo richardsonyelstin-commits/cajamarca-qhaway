@@ -67,8 +67,11 @@
     };
   </script>
   <link rel="stylesheet" href="/src/css/tokens.css"/>
+  <link rel="stylesheet" href="/src/css/main.css"/>
+  <link rel="stylesheet" href="/src/css/components.css"/>
 </head>
 <body class="bg-surface font-sans text-on-surface antialiased min-h-screen flex flex-col">
+  <a class="skip-link" href="#main-content">Saltar al contenido principal</a>
   <!-- Encabezado Unificado (Top Bar Contract: 1 Fila, 64px, Sin Colisiones) -->
   <header class="w-full sticky top-0 z-50 bg-surface/95 backdrop-blur-md border-b border-slate-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
@@ -145,7 +148,7 @@
   </header>
 
   <!-- Contenido Principal -->
-  <main class="w-full flex-1 bg-surface">
+  <main id="main-content" class="w-full flex-1 bg-surface">
     <!-- Encabezado Editorial Cívico Unificado -->
     <div class="w-full bg-surface-container-lowest border-b border-slate-border">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 py-10">
@@ -329,7 +332,7 @@
           Si ya remitió un reporte previo, ingrese su código único para consultar su avance en el pipeline de auditoría:
         </p>
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 max-w-lg">
-          <input id="track-token-input" type="text" class="flex-1 bg-surface-container-low border border-slate-border px-4 py-2.5 rounded font-mono text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-secondary" placeholder="Ej: cr-m89x42"/>
+          <input id="track-token-input" type="text" class="flex-1 bg-surface-container-low border border-slate-border px-4 py-2.5 rounded font-mono text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-secondary" placeholder="Ej: cr-m89x42" aria-label="Código de seguimiento de denuncia"/>
           <button id="btn-track-token" class="px-5 py-2.5 bg-secondary text-white rounded text-body-sm font-label-sm hover:opacity-90 transition-opacity cursor-pointer flex items-center justify-center gap-1">
             <span class="material-symbols-outlined text-[18px]">search</span>
             <span>Consultar</span>

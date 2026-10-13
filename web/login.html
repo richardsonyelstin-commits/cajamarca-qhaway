@@ -55,8 +55,11 @@
     };
   </script>
   <link rel="stylesheet" href="/src/css/tokens.css"/>
+  <link rel="stylesheet" href="/src/css/main.css"/>
+  <link rel="stylesheet" href="/src/css/components.css"/>
 </head>
 <body class="bg-surface font-sans text-on-surface antialiased min-h-screen flex flex-col">
+  <a class="skip-link" href="#main-content">Saltar al contenido principal</a>
 
   <!-- Encabezado Unificado (Top Bar Contract: 1 Fila, 64px, Sin Colisiones) -->
   <header class="w-full sticky top-0 z-50 bg-surface/95 backdrop-blur-md border-b border-slate-border">
@@ -134,7 +137,7 @@
   </header>
 
   <!-- Contenido Principal: Login Seguro y Blindado Contra Hackeos -->
-  <main class="w-full flex-1 bg-surface flex items-center justify-center py-12 px-4 sm:px-6">
+  <main id="main-content" class="w-full flex-1 bg-surface flex items-center justify-center py-12 px-4 sm:px-6">
     <div class="max-w-xl w-full mx-auto space-y-6">
       
       <!-- Banner Informativo de Restricción -->
@@ -170,7 +173,7 @@
 
         <form id="login-form" class="space-y-4">
           <!-- Campo Honeypot Oculto para bots -->
-          <input type="text" name="honeypot" id="login-honeypot" class="hidden" tabindex="-1" autocomplete="off"/>
+          <input type="text" name="honeypot" id="login-honeypot" class="hidden" tabindex="-1" autocomplete="off" aria-label="Campo de seguridad, dejar vacío"/>
 
           <div>
             <label for="login-email" class="block font-label-sm text-xs font-semibold text-on-surface mb-1.5">

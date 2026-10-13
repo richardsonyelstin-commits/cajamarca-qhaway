@@ -67,8 +67,11 @@
     };
   </script>
   <link rel="stylesheet" href="/src/css/tokens.css"/>
+  <link rel="stylesheet" href="/src/css/main.css"/>
+  <link rel="stylesheet" href="/src/css/components.css"/>
 </head>
 <body class="bg-surface font-sans text-on-surface antialiased min-h-screen flex flex-col">
+  <a class="skip-link" href="#main-content">Saltar al contenido principal</a>
   <!-- Encabezado Unificado (Top Bar Contract: 1 Fila, 64px, Sin Colisiones) -->
   <header class="w-full sticky top-0 z-50 bg-surface/95 backdrop-blur-md border-b border-slate-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
@@ -165,7 +168,7 @@
   </header>
 
   <!-- Contenido: Monitor de Alertas -->
-  <main class="w-full flex-1 bg-surface">
+  <main id="main-content" class="w-full flex-1 bg-surface">
     <!-- Sección 1: Encabezado Editorial Cívico Unificado -->
     <div class="w-full bg-surface-container-lowest border-b border-slate-border">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
@@ -292,7 +295,7 @@
       <div class="bg-surface-container-lowest p-4 rounded border border-slate-border shadow-sm flex flex-col gap-4">
         <div class="relative w-full">
           <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
-          <input class="w-full bg-surface-container-low pl-11 pr-4 py-2.5 rounded text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container border border-slate-border transition-all" id="alert-search-input" oninput="filterAlertCards()" placeholder="Buscar por código de alerta (ej: OCDS-RED-084), entidad, RUC o palabra clave..." type="text"/>
+          <input class="w-full bg-surface-container-low pl-11 pr-4 py-2.5 rounded text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container border border-slate-border transition-all" id="alert-search-input" oninput="filterAlertCards()" placeholder="Buscar por código de alerta (ej: OCDS-RED-084), entidad, RUC o palabra clave..." type="text" aria-label="Buscar alertas por código, entidad, RUC o palabra clave"/>
         </div>
 
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">

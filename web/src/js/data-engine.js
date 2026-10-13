@@ -11,6 +11,7 @@
 import {
   CANONICAL_ENTITIES,
   CANONICAL_INDICATORS,
+  LOCAL_API_BASE,
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 } from './config.js';
@@ -21,6 +22,21 @@ class DataEngine {
     this.loaded = false;
     this.loadPromise = null;
     this.sunatCache = new Map();
+  }
+
+  async _fetchBackendSnapshot() {
+    try {
+      const response = await fetch(`${LOCAL_API_BASE}/snapshot`, {
+        headers: { Accept: 'application/json' }
+      });
+      if (!response.ok) return null;
+      const snapshot = await response.json();
+      if (!snapshot || !Array.isArray(snapshot.contracting_entities)) return null;
+      return snapshot;
+    } catch (error) {
+      console.warn('Backend API no disponible:', error.message);
+      return null;
+    }
   }
 
   async _fetchSupabaseLive() {
@@ -79,7 +95,22 @@ class DataEngine {
     if (this.loadPromise) return this.loadPromise;
 
     this.loadPromise = (async () => {
-      // Prioridad 1: Conexion en vivo a Supabase PostgREST
+      // Prioridad 1: Backend propio, que centraliza la conexion con datos reales
+      const backendSnapshot = await this._fetchBackendSnapshot();
+      if (backendSnapshot) {
+        this.snapshot = {
+          ...backendSnapshot,
+          metadata: {
+            ...(backendSnapshot.metadata || {}),
+            source_mode: backendSnapshot.metadata?.source_mode || 'backend-api'
+          },
+          alerts: (backendSnapshot.alerts || []).filter(a => a.status === 'published')
+        };
+        this.loaded = true;
+        return this.snapshot;
+      }
+
+      // Prioridad 2: Conexion directa de contingencia a Supabase PostgREST
       try {
         const liveData = await this._fetchSupabaseLive();
         if (liveData && liveData.contracting_entities.length > 0) {
@@ -108,7 +139,7 @@ class DataEngine {
         console.warn('Supabase live no disponible, intentando /api/snapshot:', supaErr.message);
       }
 
-      // Prioridad 2: API REST local de snapshot (/api/snapshot)
+      // Prioridad 3: API REST local de snapshot (/api/snapshot)
       try {
         const res = await fetch('/api/snapshot');
         if (res.ok) {
@@ -129,7 +160,7 @@ class DataEngine {
         console.warn('No se pudo consultar /api/snapshot, recurriendo a archivo verified-snapshot.json:', apiErr.message);
       }
 
-      // Prioridad 3: Snapshot verificado estatico local (/src/data/verified-snapshot.json)
+      // Prioridad 4: Snapshot verificado estatico local (/src/data/verified-snapshot.json)
       const snapshotPaths = ['/src/data/verified-snapshot.json', './src/data/verified-snapshot.json'];
       for (const snapPath of snapshotPaths) {
         try {
@@ -153,7 +184,7 @@ class DataEngine {
         }
       }
 
-      // Prioridad 4: Respaldo de contingencia con semilla canonica
+      // Prioridad 5: Respaldo de contingencia con semilla canonica
       this.snapshot = {
         metadata: {
           version: '1.0.0',
@@ -262,11 +293,11 @@ class DataEngine {
       totalPim: totalPim > 0 ? totalPim : 2378500000,
       totalDevengado: totalDevengado > 0 ? totalDevengado : 1629000000,
       executionRate: executionRate > 0 ? executionRate : 68.5,
-      totalProcurements: procurements.length || 474,
+      totalProcurements: procurements.length,
       totalAwarded,
-      totalAlerts: alerts.filter(a => a.status === 'published').length || 3,
-      totalRedFlags: redFlags.length || 8,
-      entitiesCount: (this.snapshot.contracting_entities || []).length || 14
+      totalAlerts: alerts.filter(a => a.status === 'published').length,
+      totalRedFlags: redFlags.length,
+      entitiesCount: (this.snapshot.contracting_entities || []).length
     };
   }
 

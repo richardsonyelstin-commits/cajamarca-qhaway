@@ -67,8 +67,11 @@
     };
   </script>
   <link rel="stylesheet" href="/src/css/tokens.css"/>
+  <link rel="stylesheet" href="/src/css/main.css"/>
+  <link rel="stylesheet" href="/src/css/components.css"/>
 </head>
 <body class="bg-surface font-sans text-on-surface antialiased min-h-screen flex flex-col">
+  <a class="skip-link" href="#main-content">Saltar al contenido principal</a>
   <!-- Encabezado Unificado (Top Bar Contract: 1 Fila, 64px, Sin Colisiones) -->
   <header class="w-full sticky top-0 z-50 bg-surface/95 backdrop-blur-md border-b border-slate-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
@@ -159,7 +162,7 @@
   </header>
 
   <!-- Contenido Principal -->
-  <main class="w-full flex-1 bg-surface">
+  <main id="main-content" class="w-full flex-1 bg-surface">
     <!-- Encabezado Editorial Cívico Unificado -->
     <div class="w-full bg-surface-container-lowest border-b border-slate-border">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
@@ -295,7 +298,7 @@
             <p class="text-caption text-on-surface-variant mt-0.5">Cuota de mercado relativa sobre el monto total contratado en el ámbito seleccionado</p>
           </div>
           <div class="w-full sm:w-72">
-            <input type="text" id="supplier-search" placeholder="Filtrar por proveedor o RUC..." class="w-full bg-surface border border-slate-border px-3 py-2 rounded text-body-sm text-on-surface focus:outline-none focus:border-secondary"/>
+            <input type="text" id="supplier-search" placeholder="Filtrar por proveedor o RUC..." class="w-full bg-surface border border-slate-border px-3 py-2 rounded text-body-sm text-on-surface focus:outline-none focus:border-secondary" aria-label="Filtrar proveedores por nombre o RUC"/>
           </div>
         </div>
 

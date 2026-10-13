@@ -600,10 +600,23 @@ export class SupabaseClient {
       legal_disclaimer_shown: true
     };
 
-    // Intentar POST a Supabase PostgREST
+    // Intentar primero el backend propio, que valida y persiste la denuncia
     let remoteSuccess = false;
     try {
-      const url = `${this.supabaseUrl}/rest/v1/citizen_reports`;
+      const backendResponse = await fetch(`${LOCAL_API_BASE}/reports`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(record)
+      });
+      remoteSuccess = backendResponse.ok;
+    } catch (err) {
+      console.info('Backend no disponible para la denuncia:', err.message);
+    }
+
+    // Contingencia: intentar POST directo a Supabase PostgREST
+    if (!remoteSuccess) {
+      try {
+        const url = `${this.supabaseUrl}/rest/v1/citizen_reports`;
       const res = await fetchWithTimeout(url, {
         method: 'POST',
         headers: this.getHeaders(),
@@ -612,8 +625,9 @@ export class SupabaseClient {
       if (res.ok) {
         remoteSuccess = true;
       }
-    } catch (err) {
-      console.info('Persistencia remota en Supabase no disponible temporalmente, guardando en respaldo local:', err.message);
+      } catch (err) {
+        console.info('Supabase no disponible para la denuncia:', err.message);
+      }
     }
 
     // Persistir siempre en respaldo local del navegador
@@ -670,20 +684,24 @@ export class SupabaseClient {
       published_at: status === 'published' ? nowIso : null
     };
 
-    // Intentar persistir en Supabase si esta en linea
+    // Intentar persistir en el backend propio, con autenticacion del revisor
     let remoteSuccess = false;
     try {
-      const url = `${this.supabaseUrl}/rest/v1/alerts`;
-      const res = await fetchWithTimeout(url, {
+      const token = sessionStorage.getItem('cajamarca_veedor_token') || '';
+      const res = await fetchWithTimeout(`${LOCAL_API_BASE}/review`, {
         method: 'POST',
-        headers: this.getHeaders(),
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
         body: JSON.stringify(alertRecord)
       }, 3000);
       if (res.ok) {
         remoteSuccess = true;
       }
     } catch (err) {
-      console.info('No se pudo enviar alerta a Supabase en este instante, guardando en respaldo local:', err.message);
+      console.info('Backend no disponible para la revision:', err.message);
     }
 
     // Persistir localmente
