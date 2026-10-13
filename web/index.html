@@ -752,64 +752,114 @@
       </div>
     </section>
 
-    <!-- Evidencia Documental y Fotoperiodismo -->
+    <!-- Monitoreo Geoespacial y Satelital de Obras (Capacidad 007) -->
     <section class="w-full bg-surface-container-low py-12 px-4 sm:px-6 border-y border-slate-border">
       <div class="max-w-7xl mx-auto">
-        <div class="mb-8">
-          <span class="text-xs uppercase tracking-wider text-secondary font-semibold block mb-1">Evidencia Documental en Terreno</span>
-          <h2 class="text-headline-lg font-serif text-on-surface">Auditoría Visual de Obras Fiscalizadas</h2>
-          <p class="text-body-md text-on-surface-variant mt-1">Cotejo físico entre expedientes técnicos SEACE y el estado real de las obras en campo.</p>
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+          <div>
+            <div class="flex items-center gap-2 text-xs uppercase tracking-wider text-secondary font-semibold mb-1">
+              <span class="px-2 py-0.5 rounded bg-secondary-container/30 text-secondary border border-secondary/30 font-mono">Capacidad 007</span>
+              <span>·</span>
+              <span>Sensores Sentinel-2 &amp; Radar SAR Sentinel-1</span>
+            </div>
+            <h2 class="text-headline-lg font-serif text-on-surface">Monitoreo Satelital de Obras Públicas</h2>
+            <p class="text-body-md text-on-surface-variant mt-1">Cruce determinista entre devengado presupuestal MEF SIAF y actividad física observable desde órbita.</p>
+          </div>
+          <a class="px-4 py-2 rounded bg-secondary text-white text-xs font-semibold hover:bg-secondary-hover transition-colors inline-flex items-center gap-2 self-start md:self-auto shrink-0 shadow-sm" href="/georreferenciacion">
+            <span class="material-symbols-outlined text-[16px]">satellite_alt</span>
+            <span>Explorar Centro de Monitoreo Satelital →</span>
+          </a>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           
-          <!-- Reportaje 1 -->
-          <div class="bg-surface-container-lowest rounded overflow-hidden border border-slate-border shadow-sm flex flex-col">
-            <div class="relative w-full h-56 overflow-hidden bg-slate-surface">
-              <img class="w-full h-full object-cover" alt="Fotografía documental de obras viales en Cajamarca" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCaUVLV-jItZSc8bQjvCgtZ2Al7sBCDkaSNQZqfq5A7pJhi54M_IfG7PP27u-6epau9WcF1lpTVnWILxAp1AihFN9Yue8bT2EkcOjBaqV3aucmjRWRjbsY0l7xlZig_XoQejb0I3GOGVhp42Ss8hOHJ423uF3le_vPqyy6hVT136VITNKwqFAyWEfv22H4ldULKgAjN-6m9zwW1h5VaTbs3PwGUxC55ZxDf43UmJDykbgKi219uDuzO"/>
-              <span class="absolute top-3 left-3 bg-surface/90 backdrop-blur px-2.5 py-0.5 rounded text-xs font-semibold text-on-surface uppercase border border-slate-border">
-                San Ignacio · Tramo Rural KM 14
-              </span>
+          <!-- Caso Real 1: Divergencia Critica Observable -->
+          <div class="bg-surface-container-lowest rounded-lg overflow-hidden border border-slate-border shadow-sm flex flex-col">
+            <div class="p-4 bg-surface-container border-b border-slate-border flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-alert-rose/10 text-alert-rose border border-alert-rose/30">Divergencia Crítica GEO-001</span>
+                <span class="text-xs font-mono font-semibold text-secondary">Cajamarca · MP Cajamarca</span>
+              </div>
+              <span class="text-caption font-mono text-outline">CUI 2348910</span>
             </div>
-            <div class="p-6 flex flex-col justify-between flex-1">
+            <div class="p-6 flex flex-col justify-between flex-1 space-y-4">
               <div>
-                <div class="text-xs text-alert-rose font-semibold mb-1 uppercase tracking-wider">Demora Verificada: +340 Días</div>
-                <h3 class="text-lg font-serif font-bold text-on-surface mb-2">Vialidad Conectora Cuenca Chinchipe Paralizada</h3>
+                <h3 class="text-lg font-serif font-bold text-on-surface mb-1">Pavimentación y Drenaje Pluvial Integral Av. Héroes del Cenepa</h3>
                 <p class="text-body-sm text-on-surface-variant leading-relaxed">
-                  El contrato OCDS <span class="font-mono text-xs text-on-surface bg-surface-container px-1 py-0.5 rounded">LP-SM-4-2023-MPSI</span> registra 94% de desembolsos aprobados, pero la inspección ciudadana registró solo 41% de pavimentación efectiva.
+                  Contrato registrado con devengado financiero del 90.0% en MEF SIAF, mientras que el análisis multi-temporal con radar SAR Sentinel-1 y óptico Sentinel-2 registra solo 24.0% de actividad estructural efectiva.
                 </p>
               </div>
-              <div class="pt-4 flex items-center justify-between text-xs text-outline border-t border-slate-border mt-4">
-                <span>Informe Comunal Nº 08-2025</span>
-                <a class="text-secondary font-semibold hover:underline inline-flex items-center gap-1" href="/contrataciones">
-                  <span>Ver expediente</span>
-                  <span class="material-symbols-outlined text-[14px]">arrow_outward</span>
+
+              <div class="grid grid-cols-2 gap-3 p-3 bg-surface border border-slate-border rounded text-xs font-mono">
+                <div>
+                  <span class="text-outline block text-[11px] mb-0.5">Devengado MEF:</span>
+                  <div class="font-bold text-on-surface text-sm">90.0%</div>
+                  <div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden mt-1">
+                    <div class="h-full bg-secondary" style="width: 90%"></div>
+                  </div>
+                </div>
+                <div>
+                  <span class="text-outline block text-[11px] mb-0.5">Avance Físico Satelital:</span>
+                  <div class="font-bold text-alert-rose text-sm">24.0%</div>
+                  <div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden mt-1">
+                    <div class="h-full bg-alert-rose" style="width: 24%"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-3 flex items-center justify-between text-xs border-t border-slate-border">
+                <span class="inline-flex items-center gap-1 text-civic-emerald font-semibold text-[11px]">
+                  <span class="material-symbols-outlined text-[14px]">radar</span> Respaldo SAR Anti-Nubosidad Activo
+                </span>
+                <a class="text-secondary font-semibold hover:underline inline-flex items-center gap-1" href="/georreferenciacion">
+                  <span>Inspeccionar satélite</span>
+                  <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                 </a>
               </div>
             </div>
           </div>
 
-          <!-- Reportaje 2 -->
-          <div class="bg-surface-container-lowest rounded overflow-hidden border border-slate-border shadow-sm flex flex-col">
-            <div class="relative w-full h-56 overflow-hidden bg-slate-surface">
-              <img class="w-full h-full object-cover" alt="Inspección de centro de salud en Bambamarca" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDC1e6IySW3zev7CLp6pDRweLBXDWzO8R_uSvnezH4Qj53ncepolX_vfFs-ka5kmQdr7XQEYuJfbXmb_PUFCrhyc35Yf0oANdoIqfH6KaE3aOFcNORJ965L8_G764p8PwN4UdSF1rg6sk2bZtqqR-Y6DME409cLrQfQdP8iK9VO4x7ShxNHiK-PilC8ONApfFYI-udNDvJzHRVhXRdCt08Zxv5GxR6UoysnVDnXBbvUwn3ZwZyh9Hb"/>
-              <span class="absolute top-3 left-3 bg-surface/90 backdrop-blur px-2.5 py-0.5 rounded text-xs font-semibold text-on-surface uppercase border border-slate-border">
-                Hualgayoc · Microred Salud
-              </span>
+          <!-- Caso Real 2: Monitoreo Regional Conforme -->
+          <div class="bg-surface-container-lowest rounded-lg overflow-hidden border border-slate-border shadow-sm flex flex-col">
+            <div class="p-4 bg-surface-container border-b border-slate-border flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-civic-emerald/10 text-civic-emerald border border-civic-emerald/30">Conforme / En Proceso</span>
+                <span class="text-xs font-mono font-semibold text-secondary">Cajamarca · GORE Cajamarca</span>
+              </div>
+              <span class="text-caption font-mono text-outline">CUI 2195041</span>
             </div>
-            <div class="p-6 flex flex-col justify-between flex-1">
+            <div class="p-6 flex flex-col justify-between flex-1 space-y-4">
               <div>
-                <div class="text-xs text-alert-amber font-semibold mb-1 uppercase tracking-wider">3 Adendas de Costo Acumuladas</div>
-                <h3 class="text-lg font-serif font-bold text-on-surface mb-2">Módulo Materno Infantil con Adendas Atípicas</h3>
+                <h3 class="text-lg font-serif font-bold text-on-surface mb-1">Mejoramiento de Servicios del Hospital Regional Docente</h3>
                 <p class="text-body-sm text-on-surface-variant leading-relaxed">
-                  Adjudicación menor a 8 UIT fragmentada en 4 órdenes correlativas. La obra carece de residencia técnica activa según padrón de supervisión comarcal.
+                  Supervisión física continua de obras hospitalarias. La firma espectral y backscatter de radar confirman movimiento de estructuras y concordancia con cronograma financiero.
                 </p>
               </div>
-              <div class="pt-4 flex items-center justify-between text-xs text-outline border-t border-slate-border mt-4">
-                <span>Veeduría Territorial Bambamarca</span>
-                <a class="text-secondary font-semibold hover:underline inline-flex items-center gap-1" href="/contrataciones">
-                  <span>Ver expediente</span>
-                  <span class="material-symbols-outlined text-[14px]">arrow_outward</span>
+
+              <div class="grid grid-cols-2 gap-3 p-3 bg-surface border border-slate-border rounded text-xs font-mono">
+                <div>
+                  <span class="text-outline block text-[11px] mb-0.5">Devengado MEF:</span>
+                  <div class="font-bold text-on-surface text-sm">65.0%</div>
+                  <div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden mt-1">
+                    <div class="h-full bg-secondary" style="width: 65%"></div>
+                  </div>
+                </div>
+                <div>
+                  <span class="text-outline block text-[11px] mb-0.5">Avance Físico Satelital:</span>
+                  <div class="font-bold text-civic-emerald text-sm">62.0%</div>
+                  <div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden mt-1">
+                    <div class="h-full bg-civic-emerald" style="width: 62%"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-3 flex items-center justify-between text-xs border-t border-slate-border">
+                <span class="inline-flex items-center gap-1 text-on-surface-variant text-[11px]">
+                  <span class="material-symbols-outlined text-[14px]">check_circle</span> Concordancia F-F Evaluada
+                </span>
+                <a class="text-secondary font-semibold hover:underline inline-flex items-center gap-1" href="/georreferenciacion">
+                  <span>Inspeccionar satélite</span>
+                  <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                 </a>
               </div>
             </div>
@@ -945,64 +995,112 @@
 
   </main>
 
-  <!-- Pie de Página Institucional -->
-  <footer class="w-full bg-surface-container-low border-t border-slate-border">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
+  <!-- Pie de Página Institucional (Andean Civic Observatory) -->
+  <footer class="w-full bg-surface-container-low border-t border-slate-border mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+        <!-- Columna 1: Identidad Institucional y Misión -->
         <div class="lg:col-span-2 flex flex-col pr-0 lg:pr-8">
-          <div class="flex items-center gap-2 mb-3">
-            <img alt="Logotipo Cajamarca Qhaway" class="h-6 w-auto object-contain" src="/media/brand-mark.svg"/>
-            <span class="font-serif text-lg font-bold text-on-surface">Cajamarca Qhaway</span>
+          <div class="flex items-center gap-2.5 mb-3">
+            <img alt="Emblema Cajamarca Qhaway" class="h-8 w-auto object-contain" src="/media/brand-symbol.svg"/>
+            <div class="flex flex-col">
+              <span class="font-serif text-lg font-bold text-on-surface leading-tight">Cajamarca Qhaway</span>
+              <span class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Observatorio Cívico Regional</span>
+            </div>
           </div>
-          <p class="text-xs text-on-surface-variant mb-4 leading-relaxed">
-            Observatorio Cívico Regional independiente dedicado a la auditoría ciudadana, fiscalización de contrataciones y seguimiento de la ejecución presupuestal en las 13 provincias de la Región Cajamarca.
+          <p class="text-body-sm text-on-surface-variant mb-4 leading-relaxed">
+            Plataforma cívica independiente de auditoría algorítmica y control social de las contrataciones públicas (SEACE OCDS) y ejecución presupuestal (MEF SIAF) en el departamento de Cajamarca, Perú. Diseñada como herramienta de fiscalización para organizaciones de la sociedad civil, veedurías comunales y periodismo de investigación.
           </p>
-          <div class="p-3 bg-surface border border-slate-border rounded text-xs text-on-surface-variant">
-            <span class="font-semibold text-on-surface block mb-1">Alcance Operativo Fase 1</span>
-            Monitoreo continuo de 14 entidades prioritarias: Gobiernos locales provinciales, GORE Cajamarca y empresas de saneamiento.
+          <div class="p-3.5 bg-surface border border-slate-border rounded text-body-sm text-on-surface-variant space-y-1.5">
+            <div class="flex items-center gap-2 text-on-surface font-semibold text-xs">
+              <span class="material-symbols-outlined text-secondary text-[16px]">verified</span>
+              <span>Iniciativa de Control Social Articulada</span>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              En articulación de estándares cívicos con <strong>Proética Cajamarca</strong>, <strong>Grupo Propuesta Ciudadana</strong> y <strong>GRUFIDES</strong>. El motor algorítmico prioriza candidatos de riesgo que un panel humano colegiado revisa antes de su publicación (Invariante 01).
+            </p>
           </div>
         </div>
 
+        <!-- Columna 2: Ámbito de Cobertura (14 Pliegos Fase 1) -->
         <div>
-          <span class="text-xs uppercase tracking-wider text-on-surface block mb-3 font-semibold">Explorar Datos</span>
-          <ul class="space-y-2 text-xs text-on-surface-variant">
-            <li><a class="hover:text-on-surface transition-colors" href="/entidades">14 Entidades Auditadas</a></li>
-            <li><a class="hover:text-on-surface transition-colors" href="/contrataciones">Contrataciones OCDS</a></li>
-            <li><a class="hover:text-on-surface transition-colors" href="/presupuesto">Presupuesto MEF SIAF</a></li>
-            <li><a class="hover:text-on-surface transition-colors" href="/alertas">Alertas y Banderas Rojas</a></li>
-            <li><a class="hover:text-on-surface transition-colors" href="/proveedores">Concentración de Proveedores (HHI)</a></li>
-            <li><a class="hover:text-on-surface transition-colors" href="/georreferenciacion">Monitoreo Geoespacial Satelital</a></li>
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-3 font-semibold">14 Entidades Monitoreadas</span>
+          <p class="text-caption text-on-surface-variant mb-2">Gobierno Regional y 13 Provincias:</p>
+          <ul class="space-y-1.5 text-xs text-on-surface-variant">
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=gore-cajamarca">GORE Cajamarca (Pliego 445)</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-cajamarca">M. P. de Cajamarca</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-jaen">M. P. de Jaén</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-chota">M. P. de Chota</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-cutervo">M. P. de Cutervo</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-celendin">M. P. de Celendín</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-hualgayoc">M. P. de Hualgayoc-Bambamarca</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-san-ignacio">M. P. de San Ignacio</a></li>
+            <li><a class="hover:text-on-surface transition-colors text-secondary font-medium" href="/entidades">+ 6 Provincias y SEDACAJ →</a></li>
           </ul>
         </div>
 
+        <!-- Columna 3: Exploración y Datos Abiertos -->
         <div>
-          <span class="text-xs uppercase tracking-wider text-on-surface block mb-3 font-semibold">Participación Cívica</span>
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-3 font-semibold">Módulos de Auditoría</span>
           <ul class="space-y-2 text-xs text-on-surface-variant">
-            <li><a class="hover:text-on-surface transition-colors" href="/denuncia">Canal de Alerta Ciudadana</a></li>
-            <li><a class="hover:text-on-surface transition-colors" href="/transparencia">Descarga de Microdatos</a></li>
-            <li><a class="hover:text-on-surface transition-colors" href="/acerca">Metodología y Principios</a></li>
-            <li><a class="hover:text-on-surface transition-colors" href="/admin/revision">Panel Revisor CU5</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/entidades"><span class="material-symbols-outlined text-[14px] text-secondary">account_balance</span> Directorio de 14 Entidades</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/alertas"><span class="material-symbols-outlined text-[14px] text-alert-rose">flag</span> Banderas Rojas y Riesgos</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/contrataciones"><span class="material-symbols-outlined text-[14px] text-civic-teal">description</span> Contratos Públicos SEACE</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/presupuesto"><span class="material-symbols-outlined text-[14px] text-civic-emerald">query_stats</span> Presupuesto y Devengado MEF</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/proveedores"><span class="material-symbols-outlined text-[14px] text-alert-amber">hub</span> Concentración Proveedores HHI</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5 text-secondary font-medium" href="/georreferenciacion"><span class="material-symbols-outlined text-[14px]">satellite_alt</span> Monitoreo Satelital de Obras</a></li>
+            <li><a class="hover:text-on-surface transition-colors flex items-center gap-1.5" href="/transparencia"><span class="material-symbols-outlined text-[14px] text-outline">database</span> Descarga Microdatos OCDS</a></li>
+          </ul>
+        </div>
+
+        <!-- Columna 4: Fuentes Oficiales y Veeduría -->
+        <div>
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-3 font-semibold">Fuentes Oficiales del Estado</span>
+          <ul class="space-y-2 text-xs text-on-surface-variant mb-4">
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://www.gob.pe/seace" rel="noopener noreferrer" target="_blank">SEACE API OCDS (OSCE) <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://datosabiertos.gob.pe/dataset/ejecucion-presupuestal-mef" rel="noopener noreferrer" target="_blank">MEF SIAF DataStore Mensual <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://e-consultaruc.sunat.gob.pe/" rel="noopener noreferrer" target="_blank">SUNAT Padrón RUC Proveedores <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://datosabiertos.gob.pe/" rel="noopener noreferrer" target="_blank">Portal Datos Abiertos Perú <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+          </ul>
+
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-2 font-semibold">Acceso y Veeduría</span>
+          <ul class="space-y-1.5 text-xs text-on-surface-variant">
+            <li><a class="hover:text-on-surface transition-colors font-medium text-secondary" href="/denuncia">Canal Seguro de Denuncia</a></li>
             <li><a class="hover:text-on-surface transition-colors" href="/login">Acreditación de Veedores</a></li>
-          </ul>
-        </div>
-
-        <div>
-          <span class="text-xs uppercase tracking-wider text-on-surface block mb-3 font-semibold">Fuentes Oficiales</span>
-          <ul class="space-y-2 text-xs text-on-surface-variant">
-            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://www.gob.pe/seace" rel="noopener noreferrer" target="_blank">SEACE API OCDS <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
-            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://datosabiertos.gob.pe/dataset/ejecucion-presupuestal-mef" rel="noopener noreferrer" target="_blank">MEF SIAF DataStore <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
-            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://e-consultaruc.sunat.gob.pe/" rel="noopener noreferrer" target="_blank">SUNAT Padrón RUC <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
-            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://datosabiertos.gob.pe/" rel="noopener noreferrer" target="_blank">Portal Datos Abiertos <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/admin/revision">Panel Revisor Colegiado CU5</a></li>
           </ul>
         </div>
       </div>
 
-      <div class="border-t border-slate-border pt-6 text-xs text-on-surface-variant flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div class="leading-relaxed">
-          <span class="font-semibold text-on-surface">Marco Constitucional &amp; Legal:</span> En apego estricto a los Artículos 15, 16, 17 y 18 del Título Preliminar de la Ley N° 27806 de Transparencia y Acceso a la Información Pública y Ley N° 29733 de Protección de Datos Personales.
+      <!-- Franja Legal, Constitucional y Técnica -->
+      <div class="border-t border-slate-border pt-8 space-y-4 text-xs text-on-surface-variant">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="leading-relaxed">
+            <strong class="font-semibold text-on-surface block mb-1">Fundamento Constitucional:</strong>
+            Amparado en los Artículos 2 (incisos 5 y 6) y 31 de la Constitución Política del Perú, que consagran el derecho fundamental al acceso a la información pública, la fiscalización ciudadana y la participación en los asuntos públicos de la región.
+          </div>
+          <div class="leading-relaxed">
+            <strong class="font-semibold text-on-surface block mb-1">Marco Legal de Transparencia:</strong>
+            Cumplimiento de la Ley N° 27806 (Transparencia y Acceso a la Información Pública), Ley N° 30225 (Contrataciones del Estado) y Ley N° 29733 (Protección de Datos Personales). Fuentes 100% de acceso público oficial.
+          </div>
+          <div class="leading-relaxed">
+            <strong class="font-semibold text-on-surface block mb-1">Principio de No Imputación Judicial:</strong>
+            Las alertas de riesgo son indicadores matemáticos y analíticos preventivos basados en datos oficiales. No constituyen sentencia judicial, imputación penal ni scoring de personas naturales (Invariante 03).
+          </div>
         </div>
-        <div class="shrink-0 text-on-surface-variant">
-          © 2025–2026 Cajamarca Qhaway. Licencia Abierta ODC-By 1.0.
+
+        <div class="border-t border-slate-border pt-4 flex flex-col md:flex-row items-center justify-between gap-3 text-caption text-on-surface-variant">
+          <div>
+            © 2025–2026 Cajamarca Qhaway. Licencia Abierta ODC-By 1.0 (Open Data Commons Attribution License).
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="inline-flex items-center gap-1 text-civic-emerald font-semibold">
+              <span class="w-2 h-2 rounded-full bg-civic-emerald"></span>
+              Sincronización OCDS 1.1 / MEF SIAF 2025
+            </span>
+            <span>·</span>
+            <span>Región Cajamarca (13 Provincias)</span>
+          </div>
         </div>
       </div>
     </div>

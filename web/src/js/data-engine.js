@@ -439,6 +439,44 @@ class DataEngine {
     return sunatData;
   }
 
+  formatSupplierId(rawId) {
+    if (!rawId || rawId === 'Sin RUC' || rawId === 'undefined' || rawId === 'null') {
+      return {
+        clean: 'Sin RUC',
+        label: 'Sin RUC',
+        isConsorcio: false,
+        isRuc11: false,
+        badgeHtml: '<span class="px-1.5 py-0.5 rounded text-[10px] bg-surface-container text-outline font-mono">Sin RUC</span>'
+      };
+    }
+    const clean = String(rawId).replace(/^PE-RUC-/, '').trim();
+    if (/^\d{11}$/.test(clean)) {
+      return {
+        clean,
+        label: clean,
+        isConsorcio: false,
+        isRuc11: true,
+        badgeHtml: `<span class="font-mono text-xs font-semibold text-on-surface">${clean}</span>`
+      };
+    }
+    if (/^\d{6,9}$/.test(clean)) {
+      return {
+        clean,
+        label: `OSCE-${clean}`,
+        isConsorcio: true,
+        isRuc11: false,
+        badgeHtml: `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-secondary-container/30 text-secondary border border-secondary/20" title="Consorcio Registrado en OSCE N° ${clean}"><span class="material-symbols-outlined text-[11px]">badge</span><span>Consorcio OSCE: ${clean}</span></span>`
+      };
+    }
+    return {
+      clean,
+      label: clean,
+      isConsorcio: false,
+      isRuc11: false,
+      badgeHtml: `<span class="font-mono text-caption text-outline">${clean}</span>`
+    };
+  }
+
   /**
    * Calcula el Indice Herfindahl-Hirschman (HHI) y cuotas de mercado
    * Formula HHI = Sum(s_i ^ 2) donde s_i es la fraccion de mercado [0..1]
@@ -451,13 +489,16 @@ class DataEngine {
     for (const p of procurements) {
       const rawAwardSupp = (p.raw_payload && p.raw_payload.awards && p.raw_payload.awards[0] && p.raw_payload.awards[0].suppliers && p.raw_payload.awards[0].suppliers[0]) ? p.raw_payload.awards[0].suppliers[0] : null;
       const name = p.supplier_name || (rawAwardSupp ? rawAwardSupp.name : null) || 'Proveedor en Convocatoria';
-      const ruc = p.supplier_ruc || (rawAwardSupp ? String(rawAwardSupp.id).replace(/^PE-RUC-/, '') : 'Sin RUC');
+      let rawRuc = p.supplier_ruc || (rawAwardSupp ? String(rawAwardSupp.id) : 'Sin RUC');
+      const rucInfo = this.formatSupplierId(rawRuc);
+      const ruc = rucInfo.clean;
       const supKey = ruc !== 'Sin RUC' ? ruc : name;
       const amount = Number(p.awarded_amount) || Number(p.executed_amount) || 0;
 
       if (!supplierTotals.has(supKey)) {
         supplierTotals.set(supKey, {
           ruc,
+          rucInfo,
           name,
           totalAmount: 0,
           contractsCount: 0,

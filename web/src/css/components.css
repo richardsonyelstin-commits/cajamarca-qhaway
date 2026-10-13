@@ -477,10 +477,10 @@ html[data-lang-mode="ciudadano"] .civic-mode-toggle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.75rem !important;
-  height: 2.75rem !important;
-  min-width: 2.75rem !important;
-  min-height: 2.75rem !important;
+  width: 1.125rem;
+  height: 1.125rem;
+  min-width: 1.125rem;
+  min-height: 1.125rem;
   border-radius: 9999px;
   background-color: var(--color-secondary-container, #ccfbf1);
   color: var(--color-on-secondary-container, #00504a);
