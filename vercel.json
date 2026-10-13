@@ -1,5 +1,37 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "functions": {
+    "api/index.py": {
+      "includeFiles": "{web,src,data}/**"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.py?__path=/api/$1"
+    },
+    {
+      "source": "/",
+      "destination": "/web/index.html"
+    },
+    {
+      "source": "/index.html",
+      "destination": "/web/index.html"
+    },
+    {
+      "source": "/DESIGN.md",
+      "destination": "/web/DESIGN.md"
+    },
+    {
+      "source": "/src/(.*)",
+      "destination": "/web/src/$1"
+    },
+    {
+      "source": "/media/(.*)",
+      "destination": "/web/media/$1"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

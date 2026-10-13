@@ -37,6 +37,7 @@ packages = ["src/cajamarca_qhaway"]
 [tool.pytest.ini_options]
 minversion = "8.0"
 testpaths = ["tests"]
+pythonpath = [".", "src"]
 addopts = "-ra --strict-markers"
 markers = [
     "contract: prueba de contrato derivada de un criterio de aceptacion de una spec",
@@ -44,4 +45,5 @@ markers = [
 
 [tool.vercel]
 entrypoint = "api.index:app"
+
 

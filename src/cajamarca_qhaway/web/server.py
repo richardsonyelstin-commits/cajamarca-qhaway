@@ -95,6 +95,11 @@ class WebApiHandler(BaseHTTPRequestHandler):
         if method_upper == "OPTIONS":
             return 200, "text/plain; charset=utf-8", b"OK"
 
+        # Soportar parametro __path enviado por rewrites de vercel.json
+        rewritten_path = query.get("__path", [None])[0]
+        if rewritten_path and path in ("/api/index.py", "/api/index", "/api", "/python"):
+            path = rewritten_path if rewritten_path.startswith("/") else f"/{rewritten_path}"
+
         if method_upper == "GET":
             if path in ("/api/index.py", "/api/index", "/api"):
                 return cls._resolve_static("/index.html")
@@ -298,6 +303,10 @@ class WebApiHandler(BaseHTTPRequestHandler):
     def _resolve_static(cls, path: str) -> tuple[int, str, bytes]:
         """Resuelve y lee archivos estaticos desde web_dir respetando la raiz del proyecto."""
         clean_path = posixpath.normpath(path).lstrip("/")
+        if clean_path == "web":
+            clean_path = "index.html"
+        elif clean_path.startswith("web/"):
+            clean_path = clean_path[4:]
         if not clean_path or clean_path == ".":
             clean_path = "index.html"
 
@@ -406,9 +415,19 @@ def app(environ: dict[str, Any], start_response: Any) -> list[bytes]:
         phrase = "OK"
     status_line = f"{status_code} {phrase}"
 
+    cache_control = "no-store"
+    if method == "GET" and status_code == 200:
+        if raw_path in ("/api/red-flags",):
+            cache_control = "no-store"
+        elif raw_path.startswith("/api/"):
+            cache_control = "public, max-age=0, s-maxage=60, stale-while-revalidate=300"
+        else:
+            cache_control = "public, max-age=0, s-maxage=3600"
+
     response_headers: list[tuple[str, str]] = [
         ("Content-Type", content_type),
         ("Content-Length", str(len(response_body))),
+        ("Cache-Control", cache_control),
         ("Access-Control-Allow-Origin", "*"),
         ("Access-Control-Allow-Methods", "GET, POST, OPTIONS"),
         ("Access-Control-Allow-Headers", "Content-Type, Authorization"),
