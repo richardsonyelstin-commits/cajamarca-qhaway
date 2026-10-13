@@ -201,9 +201,9 @@
             <!-- Párrafo Descriptivo -->
             <p class="text-body-lg text-on-surface-variant leading-relaxed max-w-2xl mb-6">
               <span class="civic-text-swap"
-                    data-ciudadano="Monitoreamos los S/ 4,820 Millones del Gobierno Regional y las 13 provincias de Cajamarca (aprox. S/ 3,100 por habitante). Te mostramos cuánto dinero se ha gastado realmente, qué empresas ganan los contratos y qué obras tienen alertas de retraso o sobrecostos."
+                    data-ciudadano="Monitoreamos los S/ 2,567.4 Millones del Gobierno Regional y las 13 provincias de Cajamarca (aprox. S/ 1,650 por habitante). Te mostramos cuánto dinero se ha gastado realmente, qué empresas ganan los contratos y qué obras tienen alertas de retraso o sobrecostos."
                     data-especialista="Supervisión continua sobre S/ 4,820 Millones asignados al Gobierno Regional y las 13 Municipalidades Provinciales. Detección preventiva de banderas rojas en contrataciones OCDS y subejecución presupuestal del MEF.">
-                Monitoreamos los <strong id="hero-total-pim" class="text-on-surface font-semibold font-mono tabular-nums">S/ 4,820 Millones</strong> del Gobierno Regional y las 13 provincias de Cajamarca (aprox. S/ 3,100 por habitante). Te mostramos cuánto dinero se ha gastado realmente, qué empresas ganan los contratos y qué obras tienen alertas de retraso o sobrecostos.
+                Monitoreamos los <strong id="hero-total-pim" class="text-on-surface font-semibold font-mono tabular-nums">S/ 2,567.4 Millones</strong> del Gobierno Regional y las 13 provincias de Cajamarca (aprox. S/ 1,650 por habitante). Te mostramos cuánto dinero se ha gastado realmente, qué empresas ganan los contratos y qué obras tienen alertas de retraso o sobrecostos.
               </span>
             </p>
 
@@ -256,11 +256,16 @@
 
             <!-- Visualización Radial Cómoda y Espaciada -->
             <div class="py-2 flex flex-col items-center justify-center">
-              <svg class="w-56 h-32" viewBox="0 0 200 115" aria-label="Velocímetro de ejecución presupuestal">
+              <svg class="w-56 h-32" viewBox="0 0 200 115" aria-label="Velocímetro de ejecución presupuestal" role="img">
+                <!-- Pista base completa (0% a 100%) -->
                 <path class="text-surface-container-high" d="M 25 100 A 75 75 0 0 1 175 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="12"></path>
-                <path class="text-outline-variant" d="M 25 100 A 75 75 0 0 1 100 25" fill="none" stroke="currentColor" stroke-dasharray="2 3" stroke-linecap="round" stroke-width="12"></path>
-                <path class="text-alert-rose" d="M 25 100 A 75 75 0 0 1 65 37" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="12"></path>
-                <text id="speedo-text-pct" class="fill-current text-on-surface font-serif text-2xl font-bold" text-anchor="middle" x="100" y="82">28.4%</text>
+                <!-- Guía punteada hasta meta semestral (45% -> longitud 106.03) -->
+                <path class="text-outline-variant" d="M 25 100 A 75 75 0 0 1 175 100" fill="none" stroke="currentColor" stroke-dasharray="2 4" stroke-dashoffset="129.59" stroke-linecap="round" stroke-width="12"></path>
+                <!-- Arco reactivo dinámico (longitud total pi * 75 = 235.62; offset para 71.3% = 67.62) -->
+                <path id="speedo-meter-arc" class="text-secondary" d="M 25 100 A 75 75 0 0 1 175 100" fill="none" stroke="currentColor" stroke-dasharray="235.62" stroke-dashoffset="67.62" stroke-linecap="round" stroke-width="12" style="transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s ease;"></path>
+                <!-- Indicador de aguja en la punta del avance (x=146.52, y=41.17 para 71.3%) -->
+                <circle id="speedo-indicator-dot" cx="146.52" cy="41.17" r="4.5" class="fill-secondary stroke-surface stroke-2 transition-all duration-700"></circle>
+                <text id="speedo-text-pct" class="fill-current text-on-surface font-serif text-2xl font-bold" text-anchor="middle" x="100" y="82">71.3%</text>
                 <text class="fill-current text-outline text-[10px]" x="22" y="112">0%</text>
                 <text class="fill-current text-secondary text-[10px] font-semibold" text-anchor="middle" x="100" y="16">Meta Semestral: 45%</text>
                 <text class="fill-current text-outline text-[10px]" x="178" y="112">100%</text>
@@ -272,9 +277,9 @@
                 <button type="button" class="civic-tooltip-btn" data-term="devengado" aria-label="Qué significa devengado">?</button>
               </div>
               <div id="speedo-pocket-badge" class="mt-2 text-center">
-                <span class="civic-status-badge civic-status-critical">
-                  <span class="material-symbols-outlined text-[14px]">warning</span>
-                  <span>S/ 28 de cada S/ 100 · Atención requerida</span>
+                <span class="civic-status-badge civic-status-good">
+                  <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                  <span>S/ 71 de cada S/ 100 · Gasto al día</span>
                 </span>
               </div>
             </div>
@@ -286,20 +291,20 @@
                   <span>Presupuesto en Riesgo:</span>
                   <button type="button" class="civic-tooltip-btn" data-term="reversion-tesoro" aria-label="Qué significa riesgo de reversión">?</button>
                 </span>
-                <span class="text-on-surface font-semibold font-mono tabular-nums">S/ 1,368.4 M</span>
+                <span id="speedo-risk-budget" class="text-on-surface font-semibold font-mono tabular-nums">S/ 736.4 M</span>
               </div>
               <div class="flex items-center justify-between">
                 <span class="text-on-surface-variant flex items-center gap-1">
                   <span class="civic-text-swap" data-ciudadano="Reparto de contratos:" data-especialista="Índice Concentración:">Reparto de contratos:</span>
                   <button type="button" class="civic-tooltip-btn" data-term="hhi" aria-label="Qué significa HHI">?</button>
                 </span>
-                <span class="text-alert-amber font-semibold font-mono tabular-nums">
-                  <span class="civic-text-swap" data-ciudadano="Regular (pocas empresas)" data-especialista="0.42 HHI (Moderado)">Regular (pocas empresas)</span>
+                <span class="text-civic-emerald font-semibold font-mono tabular-nums">
+                  <span class="civic-text-swap" data-ciudadano="Diversificado (baja captura)" data-especialista="0.12 HHI (Bajo)">Diversificado (baja captura)</span>
                 </span>
               </div>
               <div class="flex items-center justify-between">
                 <span class="text-on-surface-variant">Provincias en Alerta:</span>
-                <span class="text-alert-rose font-semibold font-mono tabular-nums">6 de 13 Provincias</span>
+                <span id="speedo-alert-provinces" class="text-secondary font-semibold font-mono tabular-nums">1 de 13 Provincias</span>
               </div>
             </div>
 
@@ -328,10 +333,10 @@
                 <span class="material-symbols-outlined text-[20px] text-secondary">account_balance</span>
               </div>
               <div id="kpi-pim-total" class="text-2xl font-bold font-serif text-on-surface font-mono tabular-nums mb-1">
-                S/ 4,820.5 M
+                S/ 2,567.4 M
               </div>
               <div class="text-[11px] text-secondary font-medium">
-                aprox. S/ 3,100 por cada cajamarquino
+                aprox. S/ 1,650 por cada cajamarquino
               </div>
             </div>
             <div class="pt-3 text-xs text-on-surface-variant border-t border-slate-border mt-3">
@@ -347,21 +352,21 @@
                   <span class="civic-text-swap" data-ciudadano="Avance del Gasto" data-especialista="Ejecución Presupuestal">Avance del Gasto</span>
                   <button type="button" class="civic-tooltip-btn" data-term="devengado" aria-label="Qué significa Devengado">?</button>
                 </span>
-                <span class="material-symbols-outlined text-[20px] text-alert-rose">trending_down</span>
+                <span class="material-symbols-outlined text-[20px] text-secondary">trending_up</span>
               </div>
               <div class="flex items-baseline gap-2 mb-1">
-                <span id="kpi-devengado-pct" class="text-2xl font-bold font-serif text-on-surface font-mono tabular-nums">28.4%</span>
-                <span id="kpi-devengado-pocket" class="civic-pocket-badge text-alert-rose">S/ 28 de cada S/ 100</span>
+                <span id="kpi-devengado-pct" class="text-2xl font-bold font-serif text-on-surface font-mono tabular-nums">71.3%</span>
+                <span id="kpi-devengado-pocket" class="civic-pocket-badge civic-status-good text-secondary">S/ 71 de cada S/ 100</span>
               </div>
               <div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden mt-1 mb-2">
-                <div id="kpi-devengado-bar" class="bg-alert-rose h-full rounded-full" style="width: 28.4%"></div>
+                <div id="kpi-devengado-bar" class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 71.3%"></div>
               </div>
               <div id="kpi-devengado-narrative" class="text-[11px] text-on-surface-variant leading-snug">
-                De cada S/ 100 recibidos para obras, se han pagado S/ 28 y faltan S/ 72.
+                De cada 100 soles recibidos para obras este año, se han gastado 71 soles y faltan gastar 29 soles.
               </div>
             </div>
-            <div class="pt-2 text-xs text-alert-rose font-medium border-t border-slate-border mt-2">
-              Meta Semestral: 45.0% · Brecha: -16.6 p.p.
+            <div class="pt-2 text-xs text-secondary font-medium border-t border-slate-border mt-2">
+              Meta Semestral: 45.0% · Brecha: +26.3 p.p. (Superando la meta)
             </div>
           </div>
 
@@ -377,14 +382,14 @@
                 <span class="material-symbols-outlined text-[20px] text-secondary">contract</span>
               </div>
               <div id="kpi-procurements-total" class="text-2xl font-bold font-serif text-on-surface font-mono tabular-nums mb-1">
-                1,425 Procesos
+                474 Procesos
               </div>
             </div>
             <div id="kpi-procurements-sub" class="pt-3 text-xs text-on-surface-variant border-t border-slate-border mt-3">
               <span class="civic-text-swap"
-                    data-ciudadano="S/ 1,840 M en obras. 6 de cada 10 contratos se dieron de forma directa."
-                    data-especialista="S/ 1,840 M adjudicados · 58% adjudicación directa.">
-                S/ 1,840 M en obras. 6 de cada 10 contratos se dieron de forma directa.
+                    data-ciudadano="S/ 429.3 M adjudicados en obras y servicios verificados OCDS."
+                    data-especialista="S/ 429.3 M adjudicados en SEACE OCDS.">
+                S/ 429.3 M adjudicados en obras y servicios verificados OCDS.
               </span>
             </div>
           </div>
@@ -397,18 +402,18 @@
                   <span class="civic-text-swap" data-ciudadano="Alertas Preventivas" data-especialista="Banderas Rojas Activas">Alertas Preventivas</span>
                   <button type="button" class="civic-tooltip-btn" data-term="bandera-roja" aria-label="Qué significa Bandera Roja">?</button>
                 </span>
-                <span class="material-symbols-outlined text-[20px] text-alert-amber">flag</span>
+                <span class="material-symbols-outlined text-[20px] text-secondary">flag</span>
               </div>
               <div class="flex items-baseline gap-2 mb-1">
-                <span id="kpi-alerts-total" class="text-2xl font-bold font-serif text-alert-rose font-mono tabular-nums">22 Banderas</span>
-                <span class="text-xs font-semibold text-alert-amber">En Revisión</span>
+                <span id="kpi-alerts-total" class="text-2xl font-bold font-serif text-secondary font-mono tabular-nums">3 Alertas</span>
+                <span class="text-xs font-semibold text-secondary">Publicadas</span>
               </div>
             </div>
             <div class="pt-3 text-xs text-on-surface-variant border-t border-slate-border mt-3">
               <span class="civic-text-swap"
-                    data-ciudadano="6 alertas críticas · 9 obras con riesgo de no terminarse a tiempo."
-                    data-especialista="6 Severidad Crítica · 9 Riesgo en Canon.">
-                6 alertas críticas · 9 obras con riesgo de no terminarse a tiempo.
+                    data-ciudadano="3 alertas validadas formalmente por revisores humanos (Art. 14)."
+                    data-especialista="3 Alertas Publicadas · 4 Banderas Rojas detectadas.">
+                3 alertas validadas formalmente por revisores humanos (Art. 14).
               </span>
             </div>
           </div>
@@ -436,11 +441,11 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           
           <!-- Tarjeta 1: GORE Cajamarca -->
-          <div class="bg-surface-container-lowest p-6 rounded border border-slate-border shadow-sm flex flex-col justify-between hover:border-outline-variant transition-colors">
+          <div class="radar-card bg-surface-container-lowest p-6 rounded border border-slate-border shadow-sm flex flex-col justify-between hover:border-outline-variant transition-colors" data-entity-id="ce-f5f5d8fc32518855">
             <div>
               <div class="flex items-center justify-between text-xs mb-2">
                 <span class="text-on-surface-variant font-medium uppercase tracking-wider">Sede Regional</span>
-                <span class="text-alert-rose font-semibold">4 Banderas Rojas</span>
+                <span class="text-secondary font-semibold">4 Banderas Rojas</span>
               </div>
               <h3 class="text-lg font-serif font-bold text-on-surface mb-1">Gobierno Regional de Cajamarca</h3>
               <div class="text-xs font-mono text-outline mb-4">RUC 20453744168 · Pliego 445</div>
@@ -449,21 +454,21 @@
               <div class="py-2.5 border-t border-b border-slate-border space-y-1.5 text-xs">
                 <div class="flex justify-between items-center">
                   <span class="text-on-surface-variant">PIM Asignado:</span>
-                  <span class="font-semibold font-mono text-on-surface">S/ 2,410.8 M</span>
+                  <span data-radar-pim class="font-semibold font-mono text-on-surface">S/ 1,851.2 M</span>
                 </div>
                 <div class="flex justify-between items-center">
                   <span class="text-on-surface-variant">Avance Devengado:</span>
-                  <span class="font-semibold font-mono text-alert-rose">24.2%</span>
+                  <span data-radar-rate class="font-semibold font-mono text-secondary">74.5%</span>
                 </div>
                 <div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden mt-1">
-                  <div class="bg-alert-rose h-full rounded-full" style="width: 24.2%"></div>
+                  <div data-radar-bar class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 74.5%"></div>
                 </div>
               </div>
             </div>
             <div class="pt-4">
-              <div class="text-xs text-alert-rose font-medium mb-3 flex items-start gap-1">
-                <span class="material-symbols-outlined text-[15px] shrink-0 mt-0.5">report</span>
-                <span>Subejecución Crítica en Inversión Vial y Salud</span>
+              <div class="text-xs text-secondary font-medium mb-3 flex items-start gap-1">
+                <span class="material-symbols-outlined text-[15px] shrink-0 mt-0.5">check_circle</span>
+                <span>Meta semestral superada en transferencias e inversiones</span>
               </div>
               <a class="w-full inline-flex items-center justify-center gap-1 py-2 rounded bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-semibold transition-colors border border-slate-border" href="/entidad?id=ce-f5f5d8fc32518855">
                 <span>Inspeccionar Ficha de Entidad</span>
@@ -473,11 +478,11 @@
           </div>
 
           <!-- Tarjeta 2: MP Hualgayoc -->
-          <div class="bg-surface-container-lowest p-6 rounded border border-slate-border shadow-sm flex flex-col justify-between hover:border-outline-variant transition-colors">
+          <div class="radar-card bg-surface-container-lowest p-6 rounded border border-slate-border shadow-sm flex flex-col justify-between hover:border-outline-variant transition-colors" data-entity-id="ce-dfd10c914365bbe3">
             <div>
               <div class="flex items-center justify-between text-xs mb-2">
                 <span class="text-on-surface-variant font-medium uppercase tracking-wider">Zona Minera</span>
-                <span class="text-alert-rose font-semibold">5 Banderas Rojas</span>
+                <span class="text-alert-amber font-semibold">5 Banderas Rojas</span>
               </div>
               <h3 class="text-lg font-serif font-bold text-on-surface mb-1">M. P. de Hualgayoc - Bambamarca</h3>
               <div class="text-xs font-mono text-outline mb-4">RUC 20148260843 · Pliego 300607</div>
@@ -485,21 +490,21 @@
               <div class="py-2.5 border-t border-b border-slate-border space-y-1.5 text-xs">
                 <div class="flex justify-between items-center">
                   <span class="text-on-surface-variant">PIM Asignado:</span>
-                  <span class="font-semibold font-mono text-on-surface">S/ 215.3 M</span>
+                  <span data-radar-pim class="font-semibold font-mono text-on-surface">S/ 81.1 M</span>
                 </div>
                 <div class="flex justify-between items-center">
                   <span class="text-on-surface-variant">Avance Devengado:</span>
-                  <span class="font-semibold font-mono text-alert-rose">19.4%</span>
+                  <span data-radar-rate class="font-semibold font-mono text-secondary">64.1%</span>
                 </div>
                 <div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden mt-1">
-                  <div class="bg-alert-rose h-full rounded-full" style="width: 19.4%"></div>
+                  <div data-radar-bar class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 64.1%"></div>
                 </div>
               </div>
             </div>
             <div class="pt-4">
-              <div class="text-xs text-alert-rose font-medium mb-3 flex items-start gap-1">
-                <span class="material-symbols-outlined text-[15px] shrink-0 mt-0.5">warning</span>
-                <span>Canon minero represado; 73% en adjudicación directa</span>
+              <div class="text-xs text-on-surface-variant font-medium mb-3 flex items-start gap-1">
+                <span class="material-symbols-outlined text-[15px] shrink-0 mt-0.5">verified</span>
+                <span>Canon minero en ejecución; alertas en contrataciones directas</span>
               </div>
               <a class="w-full inline-flex items-center justify-center gap-1 py-2 rounded bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-semibold transition-colors border border-slate-border" href="/entidad?id=ce-dfd10c914365bbe3">
                 <span>Inspeccionar Ficha de Entidad</span>
@@ -509,11 +514,11 @@
           </div>
 
           <!-- Tarjeta 3: MP San Ignacio -->
-          <div class="bg-surface-container-lowest p-6 rounded border border-slate-border shadow-sm flex flex-col justify-between hover:border-outline-variant transition-colors">
+          <div class="radar-card bg-surface-container-lowest p-6 rounded border border-slate-border shadow-sm flex flex-col justify-between hover:border-outline-variant transition-colors" data-entity-id="ce-697eb5a0a1b4e6c6">
             <div>
               <div class="flex items-center justify-between text-xs mb-2">
                 <span class="text-on-surface-variant font-medium uppercase tracking-wider">Cuenca Norte</span>
-                <span class="text-alert-rose font-semibold">3 Banderas Rojas</span>
+                <span class="text-alert-amber font-semibold">3 Banderas Rojas</span>
               </div>
               <h3 class="text-lg font-serif font-bold text-on-surface mb-1">M. P. de San Ignacio</h3>
               <div class="text-xs font-mono text-outline mb-4">RUC 20148261572 · Pliego 300609</div>
@@ -521,21 +526,21 @@
               <div class="py-2.5 border-t border-b border-slate-border space-y-1.5 text-xs">
                 <div class="flex justify-between items-center">
                   <span class="text-on-surface-variant">PIM Asignado:</span>
-                  <span class="font-semibold font-mono text-on-surface">S/ 174.1 M</span>
+                  <span data-radar-pim class="font-semibold font-mono text-on-surface">S/ 33.5 M</span>
                 </div>
                 <div class="flex justify-between items-center">
                   <span class="text-on-surface-variant">Avance Devengado:</span>
-                  <span class="font-semibold font-mono text-alert-amber">22.8%</span>
+                  <span data-radar-rate class="font-semibold font-mono text-secondary">66.0%</span>
                 </div>
                 <div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden mt-1">
-                  <div class="bg-alert-rose h-full rounded-full" style="width: 22.8%"></div>
+                  <div data-radar-bar class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 66.0%"></div>
                 </div>
               </div>
             </div>
             <div class="pt-4">
-              <div class="text-xs text-alert-amber font-medium mb-3 flex items-start gap-1">
-                <span class="material-symbols-outlined text-[15px] shrink-0 mt-0.5">schedule</span>
-                <span>Hospital de Frontera con demoras y adendas</span>
+              <div class="text-xs text-on-surface-variant font-medium mb-3 flex items-start gap-1">
+                <span class="material-symbols-outlined text-[15px] shrink-0 mt-0.5">verified</span>
+                <span>Avance regular con adendas bajo seguimiento cívico</span>
               </div>
               <a class="w-full inline-flex items-center justify-center gap-1 py-2 rounded bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-semibold transition-colors border border-slate-border" href="/entidad?id=ce-697eb5a0a1b4e6c6">
                 <span>Inspeccionar Ficha de Entidad</span>
@@ -545,11 +550,11 @@
           </div>
 
           <!-- Tarjeta 4: MP Cutervo -->
-          <div class="bg-surface-container-lowest p-6 rounded border border-slate-border shadow-sm flex flex-col justify-between hover:border-outline-variant transition-colors">
+          <div class="radar-card bg-surface-container-lowest p-6 rounded border border-slate-border shadow-sm flex flex-col justify-between hover:border-outline-variant transition-colors" data-entity-id="ce-360cf7aadccadabb">
             <div>
               <div class="flex items-center justify-between text-xs mb-2">
                 <span class="text-on-surface-variant font-medium uppercase tracking-wider">Cuenca Norte</span>
-                <span class="text-alert-amber font-semibold">2 Banderas</span>
+                <span class="text-secondary font-semibold">2 Banderas</span>
               </div>
               <h3 class="text-lg font-serif font-bold text-on-surface mb-1">M. P. de Cutervo</h3>
               <div class="text-xs font-mono text-outline mb-4">RUC 20174691267 · Pliego 300606</div>
@@ -557,21 +562,21 @@
               <div class="py-2.5 border-t border-b border-slate-border space-y-1.5 text-xs">
                 <div class="flex justify-between items-center">
                   <span class="text-on-surface-variant">PIM Asignado:</span>
-                  <span class="font-semibold font-mono text-on-surface">S/ 186.7 M</span>
+                  <span data-radar-pim class="font-semibold font-mono text-on-surface">S/ 32.9 M</span>
                 </div>
                 <div class="flex justify-between items-center">
                   <span class="text-on-surface-variant">Avance Devengado:</span>
-                  <span class="font-semibold font-mono text-alert-amber">27.2%</span>
+                  <span data-radar-rate class="font-semibold font-mono text-secondary">64.8%</span>
                 </div>
                 <div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden mt-1">
-                  <div class="bg-alert-amber h-full rounded-full" style="width: 27.2%"></div>
+                  <div data-radar-bar class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 64.8%"></div>
                 </div>
               </div>
             </div>
             <div class="pt-4">
-              <div class="text-xs text-alert-amber font-medium mb-3 flex items-start gap-1">
-                <span class="material-symbols-outlined text-[15px] shrink-0 mt-0.5">traffic</span>
-                <span>Paralización de mantenimiento vial rural</span>
+              <div class="text-xs text-on-surface-variant font-medium mb-3 flex items-start gap-1">
+                <span class="material-symbols-outlined text-[15px] shrink-0 mt-0.5">verified</span>
+                <span>Seguimiento prioritario en mantenimiento vial rural</span>
               </div>
               <a class="w-full inline-flex items-center justify-center gap-1 py-2 rounded bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-semibold transition-colors border border-slate-border" href="/entidad?id=ce-360cf7aadccadabb">
                 <span>Inspeccionar Ficha de Entidad</span>
@@ -581,7 +586,7 @@
           </div>
 
           <!-- Tarjeta 5: MP Cajamarca Capital -->
-          <div class="bg-surface-container-lowest p-6 rounded border border-slate-border shadow-sm flex flex-col justify-between hover:border-outline-variant transition-colors">
+          <div class="radar-card bg-surface-container-lowest p-6 rounded border border-slate-border shadow-sm flex flex-col justify-between hover:border-outline-variant transition-colors" data-entity-id="ce-2caad0e1b7467492">
             <div>
               <div class="flex items-center justify-between text-xs mb-2">
                 <span class="text-on-surface-variant font-medium uppercase tracking-wider">Provincia Capital</span>
@@ -593,21 +598,21 @@
               <div class="py-2.5 border-t border-b border-slate-border space-y-1.5 text-xs">
                 <div class="flex justify-between items-center">
                   <span class="text-on-surface-variant">PIM Asignado:</span>
-                  <span class="font-semibold font-mono text-on-surface">S/ 385.4 M</span>
+                  <span data-radar-pim class="font-semibold font-mono text-on-surface">S/ 149.3 M</span>
                 </div>
                 <div class="flex justify-between items-center">
                   <span class="text-on-surface-variant">Avance Devengado:</span>
-                  <span class="font-semibold font-mono text-on-surface">33.1%</span>
+                  <span data-radar-rate class="font-semibold font-mono text-secondary">65.7%</span>
                 </div>
                 <div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden mt-1">
-                  <div class="bg-secondary h-full rounded-full" style="width: 33.1%"></div>
+                  <div data-radar-bar class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 65.7%"></div>
                 </div>
               </div>
             </div>
             <div class="pt-4">
               <div class="text-xs text-on-surface-variant font-medium mb-3 flex items-start gap-1">
-                <span class="material-symbols-outlined text-[15px] shrink-0 mt-0.5">tune</span>
-                <span>Concentración en órdenes de servicio &lt;8 UIT</span>
+                <span class="material-symbols-outlined text-[15px] shrink-0 mt-0.5">verified</span>
+                <span>Seguimiento en órdenes de servicio y compras menores</span>
               </div>
               <a class="w-full inline-flex items-center justify-center gap-1 py-2 rounded bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-semibold transition-colors border border-slate-border" href="/entidad?id=ce-2caad0e1b7467492">
                 <span>Inspeccionar Ficha de Entidad</span>
@@ -617,11 +622,11 @@
           </div>
 
           <!-- Tarjeta 6: MP Jaén -->
-          <div class="bg-surface-container-lowest p-6 rounded border border-slate-border shadow-sm flex flex-col justify-between hover:border-outline-variant transition-colors">
+          <div class="radar-card bg-surface-container-lowest p-6 rounded border border-slate-border shadow-sm flex flex-col justify-between hover:border-outline-variant transition-colors" data-entity-id="ce-1817b32570ae7027">
             <div>
               <div class="flex items-center justify-between text-xs mb-2">
                 <span class="text-on-surface-variant font-medium uppercase tracking-wider">Cuenca Norte</span>
-                <span class="text-alert-amber font-semibold">3 Banderas</span>
+                <span class="text-secondary font-semibold">3 Banderas</span>
               </div>
               <h3 class="text-lg font-serif font-bold text-on-surface mb-1">M. P. de Jaén</h3>
               <div class="text-xs font-mono text-outline mb-4">RUC 20201987297 · Pliego 300608</div>
@@ -629,21 +634,21 @@
               <div class="py-2.5 border-t border-b border-slate-border space-y-1.5 text-xs">
                 <div class="flex justify-between items-center">
                   <span class="text-on-surface-variant">PIM Asignado:</span>
-                  <span class="font-semibold font-mono text-on-surface">S/ 295.2 M</span>
+                  <span data-radar-pim class="font-semibold font-mono text-on-surface">S/ 81.1 M</span>
                 </div>
                 <div class="flex justify-between items-center">
                   <span class="text-on-surface-variant">Avance Devengado:</span>
-                  <span class="font-semibold font-mono text-alert-amber">29.8%</span>
+                  <span data-radar-rate class="font-semibold font-mono text-secondary">66.3%</span>
                 </div>
                 <div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden mt-1">
-                  <div class="bg-alert-amber h-full rounded-full" style="width: 29.8%"></div>
+                  <div data-radar-bar class="bg-secondary h-full rounded-full transition-all duration-700 ease-out" style="width: 66.3%"></div>
                 </div>
               </div>
             </div>
             <div class="pt-4">
-              <div class="text-xs text-alert-amber font-medium mb-3 flex items-start gap-1">
-                <span class="material-symbols-outlined text-[15px] shrink-0 mt-0.5">warning</span>
-                <span>Plazos perentorios en licitación de saneamiento</span>
+              <div class="text-xs text-on-surface-variant font-medium mb-3 flex items-start gap-1">
+                <span class="material-symbols-outlined text-[15px] shrink-0 mt-0.5">verified</span>
+                <span>Procesos en cuenca norte con seguimiento de plazos</span>
               </div>
               <a class="w-full inline-flex items-center justify-center gap-1 py-2 rounded bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-semibold transition-colors border border-slate-border" href="/entidad?id=ce-1817b32570ae7027">
                 <span>Inspeccionar Ficha de Entidad</span>

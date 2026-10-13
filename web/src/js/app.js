@@ -814,6 +814,48 @@ async function hydrateAllViews() {
   }
 }
 
+/**
+ * Actualiza reactivamente el velocimetro SVG con calculo geometrico y animacion fluida
+ * @param {number|string} rate - Porcentaje de ejecucion presupuestal
+ */
+export function updateSpeedometer(rate) {
+  const arc = document.getElementById('speedo-meter-arc');
+  const text = document.getElementById('speedo-text-pct');
+  const dot = document.getElementById('speedo-indicator-dot');
+  const pct = Math.max(0, Math.min(100, Number(rate) || 0));
+
+  if (text) text.textContent = `${pct.toFixed(1)}%`;
+
+  // Longitud de semicirculo para R=75: pi * 75 = 235.62
+  const totalLength = 235.62;
+  const offset = totalLength * (1 - pct / 100);
+
+  if (arc) {
+    arc.style.strokeDashoffset = `${offset.toFixed(2)}`;
+    arc.style.transition = 'stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s ease';
+    arc.classList.remove('text-alert-rose', 'text-alert-amber', 'text-secondary', 'text-civic-emerald');
+    if (pct >= 45) {
+      arc.classList.add('text-secondary');
+    } else if (pct >= 30) {
+      arc.classList.add('text-alert-amber');
+    } else {
+      arc.classList.add('text-alert-rose');
+    }
+  }
+
+  if (dot) {
+    // Calculo trigonometrico exacto:
+    // Arco inicia en x=25 (180 deg) y va a x=175 (0 deg)
+    const angleRad = Math.PI * (pct / 100);
+    const cx = (100 - 75 * Math.cos(angleRad)).toFixed(2);
+    const cy = (100 - 75 * Math.sin(angleRad)).toFixed(2);
+    dot.setAttribute('cx', cx);
+    dot.setAttribute('cy', cy);
+    const colorClass = pct >= 45 ? 'fill-secondary' : pct >= 30 ? 'fill-alert-amber' : 'fill-alert-rose';
+    dot.setAttribute('class', `${colorClass} stroke-surface stroke-2 transition-all duration-700`);
+  }
+}
+
 function hydrateGlobalKPIElements(kpis) {
   // Atributos genericos data-kpi
   document.querySelectorAll('[data-kpi="pim-total"]').forEach(el => el.textContent = dataEngine.formatMillions(kpis.totalPim));
@@ -844,7 +886,18 @@ function hydrateGlobalKPIElements(kpis) {
   if (kpiDevPct) kpiDevPct.textContent = `${kpis.executionRate}%`;
 
   const kpiDevBar = document.getElementById('kpi-devengado-bar');
-  if (kpiDevBar) kpiDevBar.style.width = `${Math.min(100, kpis.executionRate)}%`;
+  if (kpiDevBar) {
+    kpiDevBar.style.width = `${Math.min(100, kpis.executionRate)}%`;
+    kpiDevBar.style.transition = 'width 0.8s ease-out';
+    kpiDevBar.className = kpis.executionRate >= 45
+      ? 'bg-secondary h-full rounded-full transition-all duration-700 ease-out'
+      : kpis.executionRate >= 30
+      ? 'bg-alert-amber h-full rounded-full transition-all duration-700 ease-out'
+      : 'bg-alert-rose h-full rounded-full transition-all duration-700 ease-out';
+  }
+
+  // Actualizar velocimetro SVG con semantica y animacion
+  updateSpeedometer(kpis.executionRate);
 
   const kpiProcTotal = document.getElementById('kpi-procurements-total');
   if (kpiProcTotal) kpiProcTotal.textContent = `${kpis.totalProcurements.toLocaleString('es-PE')} Procesos`;
@@ -924,9 +977,37 @@ async function hydrateIndexPage(kpis) {
   const entitiesMap = new Map();
   entities.forEach(e => entitiesMap.set(e.entity_id, e));
 
-  // Actualizar Foco departamental / Speedometer
-  const speedoPct = document.getElementById('speedo-text-pct');
-  if (speedoPct) speedoPct.textContent = `${kpis.executionRate}%`;
+  // Actualizar Foco departamental / Speedometer reactivo
+  updateSpeedometer(kpis.executionRate);
+
+  // Actualizar Radar territorial con datos reales y animacion de barras
+  const radarCards = document.querySelectorAll('.radar-card');
+  for (const card of radarCards) {
+    const eid = card.dataset.entityId;
+    if (!eid) continue;
+    const stats = await dataEngine.getEntityBudgetStats(eid);
+    const pimEl = card.querySelector('[data-radar-pim]');
+    const rateEl = card.querySelector('[data-radar-rate]');
+    const barEl = card.querySelector('[data-radar-bar]');
+    if (pimEl) pimEl.textContent = dataEngine.formatMillions(stats.pim);
+    if (rateEl) {
+      rateEl.textContent = `${stats.rate}%`;
+      rateEl.className = stats.rate >= 45
+        ? 'font-semibold font-mono text-secondary'
+        : stats.rate >= 30
+        ? 'font-semibold font-mono text-alert-amber'
+        : 'font-semibold font-mono text-alert-rose';
+    }
+    if (barEl) {
+      barEl.style.width = `${Math.min(100, stats.rate)}%`;
+      barEl.style.transition = 'width 0.8s ease-out';
+      barEl.className = stats.rate >= 45
+        ? 'bg-secondary h-full rounded-full transition-all duration-700 ease-out'
+        : stats.rate >= 30
+        ? 'bg-alert-amber h-full rounded-full transition-all duration-700 ease-out'
+        : 'bg-alert-rose h-full rounded-full transition-all duration-700 ease-out';
+    }
+  }
 
   // Explorador de Contrataciones OCDS en index.html
   const tbody = document.getElementById('index-procurements-tbody');
@@ -1099,6 +1180,59 @@ async function hydrateEntidadesPage(kpis) {
     dataEngine.getProcurements()
   ]);
 
+  // Actualizar Donut Chart SVG de fuentes de financiamiento
+  const funding = dataEngine.getFundingComposition();
+  const sliceCanon = document.getElementById('donut-slice-canon');
+  const sliceRo = document.getElementById('donut-slice-ro');
+  const sliceFoncomun = document.getElementById('donut-slice-foncomun');
+  const donutText = document.getElementById('donut-pct-text');
+  if (sliceCanon && sliceRo && sliceFoncomun) {
+    sliceCanon.style.transition = 'stroke-dasharray 0.8s ease-out, stroke-dashoffset 0.8s ease-out';
+    sliceRo.style.transition = 'stroke-dasharray 0.8s ease-out, stroke-dashoffset 0.8s ease-out';
+    sliceFoncomun.style.transition = 'stroke-dasharray 0.8s ease-out, stroke-dashoffset 0.8s ease-out';
+    sliceCanon.setAttribute('stroke-dasharray', `${funding.canon.pct}, 100`);
+    sliceRo.setAttribute('stroke-dasharray', `${funding.recursosOrdinarios.pct}, 100`);
+    sliceRo.setAttribute('stroke-dashoffset', `-${funding.canon.pct}`);
+    sliceFoncomun.setAttribute('stroke-dasharray', `${funding.foncomun.pct}, 100`);
+    sliceFoncomun.setAttribute('stroke-dashoffset', `-${(funding.canon.pct + funding.recursosOrdinarios.pct).toFixed(1)}`);
+  }
+  if (donutText) donutText.textContent = `${Math.round(funding.canon.pct)}%`;
+
+  // Mapear estadisticas por entidad
+  const entityStatsMap = new Map();
+  for (const ent of entities) {
+    const stats = await dataEngine.getEntityBudgetStats(ent.entity_id);
+    entityStatsMap.set(ent.entity_id, stats);
+  }
+
+  // Dinamizar y animar las 14 tarjetas de entidades
+  const cards = document.querySelectorAll('.entity-card');
+  cards.forEach(card => {
+    const eid = card.dataset.entityId;
+    const stats = entityStatsMap.get(eid);
+    if (stats) {
+      card.dataset.exec = String(stats.rate);
+      card.dataset.pim = String((stats.pim / 1e6).toFixed(1));
+      const pimEl = card.querySelector('[data-card-pim]');
+      const devEl = card.querySelector('[data-card-dev]');
+      const rateEl = card.querySelector('[data-card-rate]');
+      const barEl = card.querySelector('[data-card-bar]');
+      if (pimEl) pimEl.textContent = dataEngine.formatMillions(stats.pim);
+      if (devEl) devEl.textContent = dataEngine.formatMillions(stats.devengado);
+      if (rateEl) {
+        rateEl.textContent = `${stats.rate}%`;
+        const color = stats.rate >= 45 ? 'text-secondary' : stats.rate >= 30 ? 'text-alert-amber' : 'text-alert-rose';
+        rateEl.className = `font-headline-sm text-headline-sm ${color} font-semibold`;
+      }
+      if (barEl) {
+        barEl.style.width = `${Math.min(100, stats.rate)}%`;
+        barEl.style.transition = 'width 0.8s ease-out';
+        const barColor = stats.rate >= 45 ? 'bg-secondary' : stats.rate >= 30 ? 'bg-alert-amber' : 'bg-alert-rose';
+        barEl.className = `${barColor} h-full rounded-full transition-all duration-700 ease-out`;
+      }
+    }
+  });
+
   const yearFilterContainer = document.getElementById('entidades-year-filter');
   if (yearFilterContainer) {
     const yearBtns = yearFilterContainer.querySelectorAll('.year-pill');
@@ -1112,6 +1246,31 @@ async function hydrateEntidadesPage(kpis) {
 
         const updatedKpis = await dataEngine.getMacroKPIs(year);
         hydrateGlobalKPIElements(updatedKpis);
+
+        // Actualizar tarjetas dinamicamente al cambiar ano
+        for (const card of cards) {
+          const eid = card.dataset.entityId;
+          const stats = await dataEngine.getEntityBudgetStats(eid, year);
+          card.dataset.exec = String(stats.rate);
+          card.dataset.pim = String((stats.pim / 1e6).toFixed(1));
+          const pimEl = card.querySelector('[data-card-pim]');
+          const devEl = card.querySelector('[data-card-dev]');
+          const rateEl = card.querySelector('[data-card-rate]');
+          const barEl = card.querySelector('[data-card-bar]');
+          if (pimEl) pimEl.textContent = dataEngine.formatMillions(stats.pim);
+          if (devEl) devEl.textContent = dataEngine.formatMillions(stats.devengado);
+          if (rateEl) {
+            rateEl.textContent = `${stats.rate}%`;
+            const color = stats.rate >= 45 ? 'text-secondary' : stats.rate >= 30 ? 'text-alert-amber' : 'text-alert-rose';
+            rateEl.className = `font-headline-sm text-headline-sm ${color} font-semibold`;
+          }
+          if (barEl) {
+            barEl.style.width = `${Math.min(100, stats.rate)}%`;
+            barEl.style.transition = 'width 0.8s ease-out';
+            const barColor = stats.rate >= 45 ? 'bg-secondary' : stats.rate >= 30 ? 'bg-alert-amber' : 'bg-alert-rose';
+            barEl.className = `${barColor} h-full rounded-full transition-all duration-700 ease-out`;
+          }
+        }
       });
     });
   }
@@ -1251,6 +1410,7 @@ window.initCivicDictionaryModal = initCivicDictionaryModal;
 window.openCivicDictionaryModal = openCivicDictionaryModal;
 window.closeCivicDictionaryModal = closeCivicDictionaryModal;
 window.formatCitizenPocketMoney = formatCitizenPocketMoney;
+window.updateSpeedometer = updateSpeedometer;
 window.formatCitizenPerCapita = formatCitizenPerCapita;
 
 // Iniciar al cargar

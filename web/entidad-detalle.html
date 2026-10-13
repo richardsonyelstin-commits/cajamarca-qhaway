@@ -325,22 +325,22 @@
             </div>
           </div>
 
-          <div class="bg-error-container/30 p-4 rounded border border-alert-rose/30 shadow-sm flex flex-col justify-between">
+          <div id="dossier-exec-box" class="bg-secondary-container/20 p-4 rounded border border-secondary/30 shadow-sm flex flex-col justify-between">
             <div class="space-y-1">
               <div class="flex items-center justify-between">
-                <span class="font-caption text-caption text-on-error-container uppercase tracking-wider font-semibold">Ejecución Global</span>
-                <span class="px-1.5 py-0.5 rounded bg-alert-rose text-white text-[10px] font-bold uppercase">Crítico</span>
+                <span class="font-caption text-caption text-secondary uppercase tracking-wider font-semibold">Ejecución Global</span>
+                <span id="dossier-exec-badge" class="px-1.5 py-0.5 rounded bg-secondary text-white text-[10px] font-bold uppercase">Meta Superada</span>
               </div>
-              <div class="font-headline-md text-headline-md font-bold text-alert-rose tracking-tight" id="kpi-pct">
-                24.2%
+              <div class="font-headline-md text-headline-md font-bold text-secondary tracking-tight" id="kpi-pct">
+                74.5%
               </div>
-              <p class="font-caption text-caption text-on-error-container">
-                Meta Semestral: 45.0% | <strong>Brecha: -20.8 p.p.</strong>
+              <p class="font-caption text-caption text-on-surface-variant">
+                Meta Semestral: 45.0% | <strong id="dossier-gap-text">Brecha: +29.5 p.p.</strong>
               </p>
             </div>
             <div class="mt-2">
               <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
-                <div class="bg-alert-rose h-2 rounded-full" style="width: 24.2%"></div>
+                <div id="dossier-exec-bar" class="bg-secondary h-2 rounded-full transition-all duration-700 ease-out" style="width: 74.5%"></div>
               </div>
             </div>
           </div>
@@ -828,12 +828,45 @@
       const urlParams = new URLSearchParams(window.location.search);
       const entityId = urlParams.get('id') || 'ce-f5f5d8fc32518855';
       const entity = await dataEngine.getEntityById(entityId);
+      const stats = await dataEngine.getEntityBudgetStats(entityId);
+      const procs = await dataEngine.getProcurements(entityId);
 
       if (entity) {
         document.getElementById('dossier-official-name').textContent = 'Ficha de Auditoría Individual: ' + entity.official_name;
         document.getElementById('dossier-ruc').textContent = entity.ruc;
         document.getElementById('dossier-pliego-code').textContent = entity.official_name;
         document.getElementById('dossier-ambito').textContent = entity.province ? `Provincia de ${entity.province}` : 'Departamental (13 Provincias)';
+      }
+
+      if (stats) {
+        const kpiPct = document.getElementById('kpi-pct');
+        const execBar = document.getElementById('dossier-exec-bar');
+        const execBadge = document.getElementById('dossier-exec-badge');
+        const gapText = document.getElementById('dossier-gap-text');
+        const execBox = document.getElementById('dossier-exec-box');
+
+        if (kpiPct) kpiPct.textContent = `${stats.rate}%`;
+        if (execBar) {
+          execBar.style.width = `${Math.min(100, stats.rate)}%`;
+          execBar.style.transition = 'width 0.8s ease-out';
+          execBar.className = stats.rate >= 45
+            ? 'bg-secondary h-2 rounded-full transition-all duration-700 ease-out'
+            : stats.rate >= 30
+            ? 'bg-alert-amber h-2 rounded-full transition-all duration-700 ease-out'
+            : 'bg-alert-rose h-2 rounded-full transition-all duration-700 ease-out';
+        }
+        if (execBadge) {
+          execBadge.textContent = stats.rate >= 45 ? 'Meta Superada' : stats.rate >= 30 ? 'En Seguimiento' : 'Crítico';
+          execBadge.className = stats.rate >= 45
+            ? 'px-1.5 py-0.5 rounded bg-secondary text-white text-[10px] font-bold uppercase'
+            : stats.rate >= 30
+            ? 'px-1.5 py-0.5 rounded bg-alert-amber text-white text-[10px] font-bold uppercase'
+            : 'px-1.5 py-0.5 rounded bg-alert-rose text-white text-[10px] font-bold uppercase';
+        }
+        if (gapText) {
+          const diff = (stats.rate - 45).toFixed(1);
+          gapText.textContent = diff >= 0 ? `Brecha: +${diff} p.p.` : `Brecha: ${diff} p.p.`;
+        }
       }
     });
   </script>
