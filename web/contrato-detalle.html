@@ -149,6 +149,30 @@
 
   <!-- Contenido Principal -->
   <main id="main-content" class="w-full flex-1 bg-surface">
+    <!-- Estado de Error 404: Contrato No Encontrado -->
+    <div id="contract-not-found" class="hidden max-w-4xl mx-auto py-16 px-4 text-center" role="alert" aria-live="assertive">
+      <div class="p-8 bg-surface-container-low border border-slate-border rounded space-y-4">
+        <div class="w-16 h-16 mx-auto rounded-full bg-alert-rose/10 flex items-center justify-center text-alert-rose">
+          <span class="material-symbols-outlined text-4xl">folder_off</span>
+        </div>
+        <h1 class="font-headline-lg text-2xl font-bold text-on-surface">Contratación Pública No Encontrada</h1>
+        <p class="font-body-md text-on-surface-variant max-w-lg mx-auto leading-relaxed" id="contract-not-found-msg">
+          El identificador de proceso (OCID) solicitado no se encuentra en la base de datos de contrataciones públicas auditadas de Cajamarca Qhaway.
+        </p>
+        <div class="pt-4 flex flex-wrap justify-center gap-4">
+          <a href="/contrataciones" class="px-5 py-2.5 rounded bg-secondary text-on-secondary font-label-md font-semibold hover:bg-secondary/90 transition-colors inline-flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            Volver a Contratos SEACE
+          </a>
+          <a href="/" class="px-5 py-2.5 rounded border border-slate-border text-on-surface font-label-md font-semibold hover:bg-surface-container transition-colors inline-flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">home</span>
+            Inicio del Observatorio
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div id="contract-dossier-content">
     <!-- Encabezado Editorial Cívico Unificado -->
     <div class="w-full bg-surface-container-lowest border-b border-slate-border">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
@@ -292,6 +316,7 @@
         </div>
       </div>
     </div>
+    </div>
   </main>
 
   <!-- Pie de Página Institucional Robusto y Homogéneo -->
@@ -336,7 +361,7 @@
           <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-3 font-semibold">Fuentes Oficiales del Estado</span>
           <ul class="space-y-2 text-xs text-on-surface-variant mb-4">
             <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://www.gob.pe/seace" rel="noopener noreferrer" target="_blank">SEACE API OCDS (OSCE) <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
-            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://apps5.mineco.gob.pe/transparencia/mensual/" rel="noopener noreferrer" target="_blank">MEF SIAF DataStore Mensual <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://datosabiertos.gob.pe/dataset/ejecucion-presupuestal-mef" rel="noopener noreferrer" target="_blank">MEF SIAF DataStore Mensual <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
             <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://e-consultaruc.sunat.gob.pe/" rel="noopener noreferrer" target="_blank">SUNAT Padrón RUC Proveedores <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
             <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://datosabiertos.gob.pe/" rel="noopener noreferrer" target="_blank">Portal Datos Abiertos Perú <span class="material-symbols-outlined text-[13px]">open_in_new</span></a></li>
           </ul>
@@ -395,13 +420,28 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const ocid = urlParams.get('id') || 'ocds-07smqs-gore-2026-001';
+      const ocid = urlParams.get('id') || urlParams.get('ocid');
+
+      const dossierContent = document.getElementById('contract-dossier-content');
+      const notFoundEl = document.getElementById('contract-not-found');
+
+      if (!ocid) {
+        if (dossierContent) dossierContent.classList.add('hidden');
+        if (notFoundEl) {
+          notFoundEl.classList.remove('hidden');
+          document.getElementById('contract-not-found-msg').textContent = 'No se especifico ningun identificador de proceso (?id=... o ?ocid=...). Por favor seleccione una contratacion del catalogo SEACE.';
+        }
+        return;
+      }
 
       currentProcurement = await dataEngine.getProcurementByOcid(ocid);
       if (!currentProcurement) {
-        // Fallback al primer contrato
-        const all = await dataEngine.getProcurements();
-        currentProcurement = all[0];
+        if (dossierContent) dossierContent.classList.add('hidden');
+        if (notFoundEl) {
+          notFoundEl.classList.remove('hidden');
+          document.getElementById('contract-not-found-msg').textContent = `El proceso de contratacion con identificador "${ocid}" no fue encontrado en el catalogo OCDS de Cajamarca Qhaway.`;
+        }
+        return;
       }
 
       if (currentProcurement) {
@@ -431,8 +471,8 @@
           document.getElementById('link-sunat').href = `https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/jcrS00Alias?accion=consPorRuc&nroRuc=${currentProcurement.supplier_ruc}`;
         }
 
-        // Banderas Rojas
-        renderFlags(currentProcurement);
+        // Banderas Rojas y Dictamenes Oficiales (Art. 14)
+        await renderFlags(currentProcurement);
       }
 
       document.getElementById('btn-copy-ocid').addEventListener('click', () => {
@@ -456,53 +496,51 @@
       });
     });
 
-    function renderFlags(proc) {
+    async function renderFlags(proc) {
       const flagsContainer = document.getElementById('dossier-flags-list');
-      const isSingleBidder = Number(proc.number_of_bidders) === 1;
-      const isHighAmount = Number(proc.awarded_amount) > 2000000;
+      
+      // Consultar alertas publicadas aprobadas colegiadamente por el panel (Art. 14)
+      const alerts = await dataEngine.getAlerts(proc.entity_id);
+      const matchingAlerts = alerts.filter(a => {
+        return a.procurement_id === proc.procurement_id || 
+               (a.red_flag_ids && (proc.red_flag_ids || []).some(rf => a.red_flag_ids.includes(rf)));
+      });
 
-      let flags = [];
-      if (isSingleBidder) {
-        flags.push({
-          code: 'R-PROC-01',
-          name: 'Adjudicación con Postor Único',
-          severity: 'Alta',
-          desc: 'El proceso se adjudicó con un único participante sin competencia efectiva en la etapa de ofertas económicas.'
-        });
-      }
-      if (isHighAmount) {
-        flags.push({
-          code: 'R-AMOUNT-03',
-          name: 'Contratación de Alto Volumen',
-          severity: 'Media',
-          desc: 'Monto adjudicado superior a 2 Millones de Soles, sujeto a fiscalización prioritaria del Panel Revisor.'
-        });
-      }
-
-      if (flags.length === 0) {
-        flagsContainer.innerHTML = `
-          <div class="p-4 bg-surface border border-slate-border rounded flex items-center gap-3 text-civic-emerald">
-            <span class="material-symbols-outlined text-[20px]">check_circle</span>
-            <span class="text-body-sm font-label-sm font-semibold">No se detectaron banderas rojas algorítmicas en este proceso.</span>
+      if (matchingAlerts.length > 0) {
+        flagsContainer.innerHTML = matchingAlerts.map(a => `
+          <div class="p-4 bg-surface border border-alert-rose/40 rounded space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-caption text-alert-rose font-bold">ALERTA OFICIAL</span>
+                <span class="font-label-sm text-body-sm font-semibold text-on-surface">Dictamen del Panel Revisor</span>
+              </div>
+              <span class="text-caption font-label-sm px-2 py-0.5 rounded bg-error-container text-on-error-container font-semibold">
+                Publicada
+              </span>
+            </div>
+            <p class="text-body-sm text-on-surface-variant leading-relaxed">${a.review_notes || 'Alerta con dictamen aprobatorio colegiado.'}</p>
+            <div class="pt-2 border-t border-slate-border text-caption text-outline flex items-center justify-between font-mono">
+              <span>Revisor: ${a.reviewed_by || 'Veedor Acreditado'}</span>
+              <span>Fecha: ${a.published_at ? a.published_at.slice(0, 10) : '2025'}</span>
+            </div>
+            <p class="text-[11px] text-outline italic pt-1">${a.disclaimer || 'Indicador de riesgo automatizado, no constituye acusacion judicial penal.'}</p>
           </div>
-        `;
+        `).join('');
         return;
       }
 
-      flagsContainer.innerHTML = flags.map(f => `
-        <div class="p-4 bg-surface border border-slate-border rounded">
-          <div class="flex items-center justify-between gap-2 mb-1">
-            <div class="flex items-center gap-2">
-              <span class="font-mono text-caption text-alert-rose font-bold">${f.code}</span>
-              <span class="font-label-sm text-body-sm font-semibold text-on-surface">${f.name}</span>
-            </div>
-            <span class="text-caption font-label-sm px-2 py-0.5 rounded ${f.severity === 'Alta' ? 'bg-error-container text-on-error-container' : 'bg-surface-container-highest text-on-surface'}">
-              Severidad ${f.severity}
-            </span>
+      // Si no hay alertas publicadas formalmente (Invariante Art. 14)
+      flagsContainer.innerHTML = `
+        <div class="p-4 bg-surface border border-slate-border rounded space-y-2">
+          <div class="flex items-center gap-2 text-civic-emerald">
+            <span class="material-symbols-outlined text-[20px]">verified_user</span>
+            <span class="text-body-sm font-label-sm font-semibold text-on-surface">Sin Alertas Oficiales Publicadas</span>
           </div>
-          <p class="text-body-sm text-on-surface-variant leading-relaxed mt-1">${f.desc}</p>
+          <p class="text-caption text-on-surface-variant leading-relaxed">
+            Conforme al Articulo 14 de la Constitucion de Cajamarca Qhaway, las senales algoritmicas no constituyen imputacion automatica ni se publican sin dictamen previo del Panel Revisor CU5. Este expediente no cuenta con dictamen de alerta activa.
+          </p>
         </div>
-      `).join('');
+      `;
     }
   </script>
 </body>

@@ -1,6 +1,8 @@
 /**
- * views.js: Renderizador seguro de vistas para Cajamarca Qhaway
- * Cumple con el Sitemap 004, Articulos 10-19 de la Constitucion SDD y Reglas Antislop.
+ * [ARCHIVADO - CODIGO HISTORICO]
+ * views.js: Renderizador seguro de vistas para Cajamarca Qhaway.
+ * Retirado y archivado segun ADR 0008 (Adopcion de Arquitectura Multi-Pagina MPA).
+ * Conservado exclusivamente como referencia historica de diseno.
  *
  * Restricciones:
  * - Antislop R-02: Cero rayas em-dash en todo el archivo.
