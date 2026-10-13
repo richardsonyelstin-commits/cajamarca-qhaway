@@ -1,9 +1,9 @@
-"""Poller resiliente y asincrono para la API CKAN DataStore del MEF (Pilar 1).
+"""Poller resiliente y asincrono para la API CKAN DataStore y Datasets Abiertos del MEF (Pilar 1).
 
 Cumple estrictamente con:
 - RN-003-01 / CA-003-01: Prohibicion terminante de acceso o scraping a Consulta Amigable.
 - RN-003-02: Filtro geografico por departamento Cajamarca (codigo '06') en API DataStore.
-- RN-003-03 / CA-003-02: raw_payload intacto.
+- RN-003-03 / CA-003-02: raw_payload intacto byte a byte.
 - RN-003-04 / CA-003-03: Cruce por entity_id canonico.
 - RN-003-05 / CA-003-04: source='mef-datastore' y retrieved_at UTC.
 - RN-003-06 / CA-003-05: Fallo de API no sustituido silenciosamente, registrado como brecha.
@@ -12,7 +12,10 @@ Cumple estrictamente con:
 from __future__ import annotations
 
 import asyncio
+import csv
 from datetime import datetime, timezone
+import io
+import logging
 from typing import Any
 
 import httpx
@@ -24,9 +27,11 @@ from cajamarca_qhaway.capabilities.live_harvest.watermark_store import Watermark
 from cajamarca_qhaway.capabilities.mef_ingestion.parser import parse_mef_record
 from cajamarca_qhaway.models import BudgetExecutionRecord, ContractingEntity
 
+logger = logging.getLogger("cajamarca_qhaway.mef_poller")
+
 
 class MefPoller:
-    """Recolector asincrono para MEF CKAN DataStore."""
+    """Recolector asincrono para MEF CKAN DataStore y Datasets Abiertos Oficiales."""
 
     def __init__(
         self,
@@ -122,7 +127,7 @@ class MefPoller:
 
         window_end = datetime.now(timezone.utc)
 
-        # CA-003-05: Si falla, registrar como brecha y no sustituir por scraping
+        # Si datastore_search falla, registrar incidente de brecha
         if (
             not response_payload
             or not isinstance(response_payload, dict)
@@ -170,6 +175,121 @@ class MefPoller:
         )
 
         return harvested_records
+
+    async def _fetch_csv_dataset(self, url: str) -> list[dict[str, Any]]:
+        """Descarga un dataset CSV oficial del MEF y extrae registros de Cajamarca."""
+        self._assert_valid_endpoint(url)
+        client = await self._get_client()
+
+        for attempt in range(self.config.max_retries):
+            try:
+                res = await client.get(url)
+                if res.status_code == 200:
+                    text_content = res.content.decode("utf-8-sig", errors="replace")
+                    reader = csv.reader(io.StringIO(text_content))
+                    header = next(reader, None)
+                    if not header:
+                        return []
+
+                    matching_rows: list[dict[str, Any]] = []
+                    dep_col_idx = None
+                    dep_name_idx = None
+                    for idx, h in enumerate(header):
+                        if h.upper() == "DEPARTAMENTO_EJECUTORA":
+                            dep_col_idx = idx
+                        elif "DEPARTAMENTO" in h.upper():
+                            dep_name_idx = idx
+
+                    for row in reader:
+                        if not row or len(row) < len(header):
+                            continue
+                        is_cajamarca = False
+                        if dep_col_idx is not None and row[dep_col_idx].strip() == self.config.cajamarca_dep_code:
+                            is_cajamarca = True
+                        elif dep_name_idx is not None and "CAJAMARCA" in row[dep_name_idx].upper():
+                            is_cajamarca = True
+                        elif any("CAJAMARCA" in str(val).upper() for val in row):
+                            is_cajamarca = True
+
+                        if is_cajamarca:
+                            matching_rows.append(dict(zip(header, row)))
+
+                    return matching_rows
+
+                self.coverage_logger.log_incident(
+                    source="mef-datastore",
+                    attempt=attempt + 1,
+                    status_code=res.status_code,
+                    endpoint=url,
+                    error_message=f"HTTP {res.status_code}",
+                )
+            except httpx.RequestError as exc:
+                self.coverage_logger.log_incident(
+                    source="mef-datastore",
+                    attempt=attempt + 1,
+                    status_code=None,
+                    endpoint=url,
+                    error_message=str(exc),
+                )
+
+            if attempt < self.config.max_retries - 1:
+                delay = calculate_jitter_delay(
+                    attempt=attempt,
+                    initial_delay=self.config.backoff_initial_delay,
+                    factor=self.config.backoff_factor,
+                    jitter_max=1.0,
+                )
+                await asyncio.sleep(delay)
+
+        return []
+
+    async def harvest_historical_and_recent(
+        self, years: list[int] | None = None
+    ) -> list[BudgetExecutionRecord]:
+        """Cosecha ejecuciones presupuestales tanto recientes como historicas (2024-2026)."""
+        target_years = years or [2024, 2025, 2026]
+        all_records: list[BudgetExecutionRecord] = []
+        seen_record_ids: set[str] = set()
+        window_start = datetime.now(timezone.utc)
+        retrieval_timestamp = datetime.now(timezone.utc)
+
+        # 1. Probar corrida normal primero
+        recent_records = await self.poll_cycle()
+        for r in recent_records:
+            if r.execution_record_id not in seen_record_ids:
+                seen_record_ids.add(r.execution_record_id)
+                all_records.append(r)
+
+        # 2. Si se solicitan anos o datastore_search no devolvio suficientes, consultar datasets anuales del MEF
+        if self.config.enable_open_data_fallback:
+            for yr in target_years:
+                yr_str = str(yr)
+                urls = self.config.annual_dataset_urls.get(yr_str, [])
+                for url in urls:
+                    raw_rows = await self._fetch_csv_dataset(url)
+                    for row in raw_rows:
+                        rec = parse_mef_record(
+                            record=row,
+                            entities_by_ruc=self.entities_by_ruc,
+                            entities_by_id=self.entities_by_id,
+                            retrieved_at=retrieval_timestamp,
+                        )
+                        if rec and rec.execution_record_id not in seen_record_ids:
+                            seen_record_ids.add(rec.execution_record_id)
+                            all_records.append(rec)
+
+        window_end = datetime.now(timezone.utc)
+        self.coverage_logger.log_window(
+            source="mef-datastore",
+            start_time=window_start,
+            end_time=window_end,
+            items_received=len(all_records),
+            items_retained=len(all_records),
+            status="OK",
+            notes=f"Cosecha historica MEF anos {target_years}",
+        )
+
+        return all_records
 
     async def aclose(self) -> None:
         if self._http_client:

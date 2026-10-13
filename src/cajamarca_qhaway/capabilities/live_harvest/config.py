@@ -28,10 +28,15 @@ class SeaceHarvestConfig(BaseModel):
     backoff_initial_delay: float = Field(default=1.5, ge=0.1)
     backoff_factor: float = Field(default=2.0, ge=1.1)
     jitter_max: float = Field(default=1.0, ge=0.0)
+    page_limit: int = Field(default=5, ge=1, le=50, description="Maximo de paginas en sondeo paginado de feed")
+    historical_batch_base_url: str = Field(
+        default="https://contratacionesabiertas.oece.gob.pe/api/v1/file/seace_v3/json",
+        description="Endpoint base para descargas de lotes mensuales OCDS de OECE",
+    )
 
 
 class MefHarvestConfig(BaseModel):
-    """Parametros de sondeo para MEF CKAN DataStore API."""
+    """Parametros de sondeo para MEF CKAN DataStore API y Datasets Abiertos."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
@@ -50,6 +55,50 @@ class MefHarvestConfig(BaseModel):
     backoff_initial_delay: float = Field(default=2.0, ge=0.1)
     backoff_factor: float = Field(default=2.0, ge=1.1)
     cajamarca_dep_code: str = Field(default="06", description="Codigo de departamento Cajamarca en MEF")
+    resource_ids_by_year: dict[str, list[str]] = Field(
+        default_factory=lambda: {
+            "2024": [
+                "f76d8bbe-3333-4ea9-8efd-1e47b9344484",  # Punche Peru 2024
+                "dd15152c-1bf5-47a2-bd5b-fa9c46fd1db6",  # FONDES 2024
+                "9af65bfe-d572-4477-9090-581cf35b0161",  # FEN 2024
+            ],
+            "2025": [
+                "ce4c81ec-0b83-4159-9266-0f544d76261d",  # FONDES 2025
+                "79ab7f59-425a-43b5-aa0f-910fd79e4e36",  # Punche Peru 2025
+                "63f71b20-4d8b-4310-90ae-af4f49cf33b6",  # FEN 2025
+            ],
+            "2026": [
+                "0a1036ca-00b7-4917-80f0-5da79c42ab96",  # FONDES 2026
+                "47500b94-180b-4f97-ab68-0ee813681d41",  # FEN 2026
+                "ca2fd54e-0a2a-4158-915a-8efba00b02e4",  # Punche Peru 2026
+            ],
+        },
+        description="UUIDs oficiales clasificados por ano fiscal descubiertos en portal MEF",
+    )
+    annual_dataset_urls: dict[str, list[str]] = Field(
+        default_factory=lambda: {
+            "2024": [
+                "https://fs.datosabiertos.mef.gob.pe/datastorefiles/2024-Gasto-Punche-Peru.csv",
+                "https://fs.datosabiertos.mef.gob.pe/datastorefiles/2024-Gasto-FONDES.csv",
+                "https://fs.datosabiertos.mef.gob.pe/datastorefiles/2024-Gasto-Emergencias-FEN.csv",
+            ],
+            "2025": [
+                "https://fs.datosabiertos.mef.gob.pe/datastorefiles/2025-Gasto-FONDES.csv",
+                "https://fs.datosabiertos.mef.gob.pe/datastorefiles/2025-Gasto-Punche-Peru.csv",
+                "https://fs.datosabiertos.mef.gob.pe/datastorefiles/2025-Gasto-Emergencias-FEN.csv",
+            ],
+            "2026": [
+                "https://fs.datosabiertos.mef.gob.pe/datastorefiles/2026-Gasto-FONDES.csv",
+                "https://fs.datosabiertos.mef.gob.pe/datastorefiles/2026-Gasto-Emergencias-FEN.csv",
+                "https://fs.datosabiertos.mef.gob.pe/datastorefiles/2026-Gasto-Punche-Peru.csv",
+            ],
+        },
+        description="URLs oficiales de datasets abiertos del MEF para ingesta historica y reciente",
+    )
+    enable_open_data_fallback: bool = Field(
+        default=True,
+        description="Habilitar consulta directa a datasets de datos abiertos oficiales del MEF",
+    )
 
 
 class StorageConfig(BaseModel):

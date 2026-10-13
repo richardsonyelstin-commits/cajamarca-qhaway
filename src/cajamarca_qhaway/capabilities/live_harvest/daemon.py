@@ -1,18 +1,19 @@
 """Daemon orquestador del ciclo de vida de la cosecha continua (Pilar 1).
 
-Coordina pollers concurrentes, manejo de señales para parada limpia (graceful shutdown),
-y persistencia durable de registros canónicos.
+Coordina pollers concurrentes, manejo de senales para parada limpia (graceful shutdown),
+y persistencia durable de registros canonicos.
 """
 
 from __future__ import annotations
 
 import asyncio
-import json
-import logging
-import signal
 from collections.abc import Sequence
 from datetime import datetime, timezone
+import json
+import logging
 from pathlib import Path
+import signal
+from typing import Any
 
 from cajamarca_qhaway.capabilities.entity_mapping.dataset import load_universe
 from cajamarca_qhaway.capabilities.live_harvest.config import HarvestConfig
@@ -108,6 +109,27 @@ class HarvesterDaemon:
 
         if "mef" in sources:
             new_executions = await self.mef_poller.poll_cycle()
+
+        self._persist_records(new_procurements, new_executions)
+        return new_procurements, new_executions
+
+    async def harvest_historical_and_recent(
+        self,
+        years: list[int] | None = None,
+        sources: Sequence[str] = ("seace", "mef"),
+        page_limit: int = 5,
+    ) -> tuple[list[ProcurementRecord], list[BudgetExecutionRecord]]:
+        """Ejecuta cosecha integral historica (2024-2025) y reciente (2026)."""
+        new_procurements: list[ProcurementRecord] = []
+        new_executions: list[BudgetExecutionRecord] = []
+
+        if "seace" in sources:
+            new_procurements = await self.seace_poller.harvest_historical_and_recent(
+                years=years, page_limit=page_limit
+            )
+
+        if "mef" in sources:
+            new_executions = await self.mef_poller.harvest_historical_and_recent(years=years)
 
         self._persist_records(new_procurements, new_executions)
         return new_procurements, new_executions

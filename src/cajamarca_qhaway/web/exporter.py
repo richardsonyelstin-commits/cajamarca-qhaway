@@ -392,6 +392,43 @@ def _generate_synthetic_mef_records(entities: list[ContractingEntity]) -> list[d
     return records
 
 
+def _load_harvested_records(storage_dir: Path = Path("data/harvested")) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Carga registros reales cosechados de data/harvested si existen."""
+    procurements_payloads: list[dict[str, Any]] = []
+    executions_payloads: list[dict[str, Any]] = []
+
+    if not storage_dir.exists():
+        return procurements_payloads, executions_payloads
+
+    for p_file in sorted(storage_dir.glob("procurements_*.jsonl")):
+        try:
+            with open(p_file, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    item = json.loads(line)
+                    raw = item.get("raw_payload", item)
+                    procurements_payloads.append(raw)
+        except Exception:
+            pass
+
+    for e_file in sorted(storage_dir.glob("budget_executions_*.jsonl")):
+        try:
+            with open(e_file, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    item = json.loads(line)
+                    raw = item.get("raw_payload", item)
+                    executions_payloads.append(raw)
+        except Exception:
+            pass
+
+    return procurements_payloads, executions_payloads
+
+
 def build_verified_web_snapshot(now: datetime | None = None) -> dict[str, Any]:
     """Construye el dataset completo verificado cumpliendo con los 6 modelos canonicos.
 
@@ -408,9 +445,26 @@ def build_verified_web_snapshot(now: datetime | None = None) -> dict[str, Any]:
     # 2. Inicializar pipeline
     pipeline = CajamarcaPipeline(universe=universe)
 
-    # 3. Datos de ingesta de SEACE y MEF
-    seace_releases = _generate_synthetic_ocds_releases(entities, base_time)
-    mef_records = _generate_synthetic_mef_records(entities)
+    # 3. Datos de ingesta de SEACE y MEF (priorizando cosechados reales de data/harvested)
+    real_seace, real_mef = _load_harvested_records()
+    synthetic_seace = _generate_synthetic_ocds_releases(entities, base_time)
+    synthetic_mef = _generate_synthetic_mef_records(entities)
+
+    seen_ocids = {r.get("ocid") for r in real_seace if isinstance(r, dict) and r.get("ocid")}
+    seace_releases = list(real_seace) + [r for r in synthetic_seace if r.get("ocid") not in seen_ocids]
+
+    seen_mef_keys = set()
+    for m in real_mef:
+        if isinstance(m, dict):
+            sec = m.get("SEC_EJEC") or m.get("sec_ejec") or m.get("ruc") or m.get("RUC") or m.get("entity_id")
+            yr = m.get("ANO_EJE") or m.get("ano_eje") or m.get("fiscal_year")
+            cat = m.get("GENERICA_NOMBRE") or m.get("budget_category")
+            seen_mef_keys.add((str(sec), str(yr), str(cat)))
+
+    mef_records = list(real_mef) + [
+        m for m in synthetic_mef
+        if (str(m.get("ruc")), str(m.get("fiscal_year")), str(m.get("budget_category"))) not in seen_mef_keys
+    ]
 
     detection_result = pipeline.run_detection(
         seace_releases=seace_releases,

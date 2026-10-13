@@ -46,6 +46,23 @@ def main() -> int:
         default="seace,mef",
         help="Fuentes a cosechar separadas por coma (seace, mef)",
     )
+    harvest_run.add_argument(
+        "--historical",
+        action="store_true",
+        help="Ejecutar extraccion historica (2024-2025) y reciente (2026)",
+    )
+    harvest_run.add_argument(
+        "--years",
+        type=str,
+        default="2024,2025,2026",
+        help="Anos fiscales para extraccion historica separados por coma (ej. 2024,2025,2026)",
+    )
+    harvest_run.add_argument(
+        "--pages",
+        type=int,
+        default=5,
+        help="Numero de paginas para barrido de feed de SEACE",
+    )
 
     # harvest status
     harvest_sub.add_parser("status", help="Muestra el estado actual de los cursores de cosecha")
@@ -160,6 +177,17 @@ def main() -> int:
                     asyncio.run(daemon.run_daemon(sources=sources))
                 except (KeyboardInterrupt, SystemExit):
                     print("\nDaemon detenido por el usuario.")
+                return 0
+            elif getattr(args, "historical", False):
+                years = [int(y.strip()) for y in args.years.split(",") if y.strip().isdigit()]
+                pages = getattr(args, "pages", 5)
+                print(f"\nEjecutando cosecha historica y reciente ({years}) para fuentes: {sources}...")
+                procurements, executions = asyncio.run(
+                    daemon.harvest_historical_and_recent(years=years, sources=sources, page_limit=pages)
+                )
+                print(f"Contratos cosechados (Cajamarca): {len(procurements)}")
+                print(f"Registros presupuestales cosechados: {len(executions)}")
+                print("Extraccion historica y reciente completada con exito.\n")
                 return 0
             else:
                 print(f"\nEjecutando corrida puntual de cosecha para fuentes: {sources}...")
