@@ -429,6 +429,100 @@ def _load_harvested_records(storage_dir: Path = Path("data/harvested")) -> tuple
     return procurements_payloads, executions_payloads
 
 
+
+def _compact_ocds_raw_payload(raw: dict[str, Any]) -> dict[str, Any]:
+    """Compacta raw_payload preservando campos auditables del release OCDS actual."""
+    if not isinstance(raw, dict):
+        return {}
+
+    releases = raw.get("releases", [])
+    historical_count = len(releases) if isinstance(releases, list) else 0
+
+    effective = raw.get("compiledRelease") if isinstance(raw.get("compiledRelease"), dict) else raw
+    if not effective and releases and isinstance(releases[-1], dict):
+        effective = releases[-1]
+    if not isinstance(effective, dict):
+        effective = raw
+
+    compacted: dict[str, Any] = {}
+
+    for k in ("ocid", "id", "date", "tag", "initiationType", "source_endpoint"):
+        if k in effective:
+            compacted[k] = effective[k]
+
+    if "buyer" in effective:
+        b = effective["buyer"]
+        compacted["buyer"] = {
+            bk: b[bk] for bk in ("id", "name", "identifier") if bk in b
+        } if isinstance(b, dict) else b
+
+    if "parties" in effective and isinstance(effective["parties"], list):
+        key_roles = {"buyer", "procuringEntity", "supplier", "payee"}
+        chosen = [p for p in effective["parties"] if isinstance(p, dict) and any(r in key_roles for r in p.get("roles", []))]
+        if not chosen:
+            chosen = [p for p in effective["parties"] if isinstance(p, dict)][:3]
+        compacted["parties"] = [
+            {
+                pk: p[pk]
+                for pk in ("id", "name", "roles", "identifier")
+                if pk in p
+            }
+            for p in chosen
+        ]
+
+    if "tender" in effective and isinstance(effective["tender"], dict):
+        t = effective["tender"]
+        ct: dict[str, Any] = {
+            tk: t[tk]
+            for tk in (
+                "id", "title", "description", "procurementMethod",
+                "procurementMethodDetails", "mainProcurementCategory",
+                "value", "tenderPeriod", "numberOfTenderers",
+                "datePublished", "hasTenderInformationProtectedByLaw",
+            )
+            if tk in t
+        }
+        if "procuringEntity" in t and isinstance(t["procuringEntity"], dict):
+            ct["procuringEntity"] = {
+                pek: t["procuringEntity"][pek]
+                for pek in ("id", "name")
+                if pek in t["procuringEntity"]
+            }
+        compacted["tender"] = ct
+
+    if "awards" in effective and isinstance(effective["awards"], list):
+        c_awards = []
+        for aw in effective["awards"]:
+            if isinstance(aw, dict):
+                c_aw: dict[str, Any] = {
+                    ak: aw[ak] for ak in ("id", "status", "date", "value") if ak in aw
+                }
+                if "suppliers" in aw and isinstance(aw["suppliers"], list):
+                    c_aw["suppliers"] = [
+                        {"id": s.get("id"), "name": s.get("name")}
+                        for s in aw["suppliers"]
+                        if isinstance(s, dict)
+                    ]
+                c_awards.append(c_aw)
+        compacted["awards"] = c_awards
+
+    if "contracts" in effective and isinstance(effective["contracts"], list):
+        c_contracts = []
+        for co in effective["contracts"]:
+            if isinstance(co, dict):
+                c_co = {
+                    ck: co[ck]
+                    for ck in ("id", "awardID", "title", "status", "period", "value", "dateSigned")
+                    if ck in co
+                }
+                c_contracts.append(c_co)
+        compacted["contracts"] = c_contracts
+
+    if historical_count > 1 or "_historical_releases_count" in raw:
+        compacted["_historical_releases_count"] = historical_count or raw.get("_historical_releases_count", 1)
+
+    return compacted
+
 def build_verified_web_snapshot(now: datetime | None = None) -> dict[str, Any]:
     """Construye el dataset completo verificado cumpliendo con los 6 modelos canonicos.
 
@@ -566,10 +660,17 @@ def build_verified_web_snapshot(now: datetime | None = None) -> dict[str, Any]:
     all_alerts: list[Alert] = review_panel.list_alerts()
     all_reports: list[CitizenReport] = [report_pending, report_accepted_mod]
 
+    # Compactar raw_payload para el snapshot web (conservando campos auditables OCDS)
+    compacted_procurements: list[ProcurementRecord] = []
+    for p in procurements:
+        c_payload = _compact_ocds_raw_payload(p.raw_payload)
+        compacted_p = p.model_copy(update={"raw_payload": c_payload})
+        compacted_procurements.append(compacted_p)
+
     # Validacion estricta: asegurar que cada objeto cumple con su contrato Pydantic v2
     for e in entities:
         ContractingEntity.model_validate(e)
-    for p in procurements:
+    for p in compacted_procurements:
         ProcurementRecord.model_validate(p)
     for ex in executions:
         BudgetExecutionRecord.model_validate(ex)
@@ -597,7 +698,7 @@ def build_verified_web_snapshot(now: datetime | None = None) -> dict[str, Any]:
             "total_citizen_reports": len(all_reports),
         },
         "contracting_entities": [e.model_dump(mode="json") for e in entities],
-        "procurement_records": [p.model_dump(mode="json") for p in procurements],
+        "procurement_records": [p.model_dump(mode="json") for p in compacted_procurements],
         "budget_execution_records": [ex.model_dump(mode="json") for ex in executions],
         "red_flags": [f.model_dump(mode="json") for f in candidate_flags],
         "alerts": [a.model_dump(mode="json") for a in all_alerts],
@@ -613,7 +714,7 @@ def export_verified_snapshot(output_path: Path | str = DEFAULT_SNAPSHOT_PATH) ->
     out.parent.mkdir(parents=True, exist_ok=True)
 
     data = build_verified_web_snapshot()
-    raw_json = json.dumps(data, indent=2, ensure_ascii=False)
+    raw_json = json.dumps(data, separators=(",", ":"), ensure_ascii=False)
 
     # Verificacion Antislop R-02
     if "\u2014" in raw_json:
