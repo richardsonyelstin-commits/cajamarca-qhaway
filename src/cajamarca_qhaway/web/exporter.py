@@ -357,34 +357,43 @@ def _generate_synthetic_ocds_releases(entities: list[ContractingEntity], base_ti
 
 
 def _generate_synthetic_mef_records(entities: list[ContractingEntity]) -> list[dict[str, Any]]:
-    """Genera registros presupuestales del MEF para las 14 entidades de Cajamarca."""
+    """Genera registros presupuestales del MEF para las 14 entidades de Cajamarca (2024, 2025, 2026)."""
     records: list[dict[str, Any]] = []
 
-    # Proyeccion de presupuestos y ejecuciones representativas
-    for idx, ent in enumerate(entities):
-        # Base de presupuesto segun escala
-        if ent.ruc == "20453744168":  # GORE Cajamarca
-            pim = 1850000000.0
-            devengado = 1380000000.0
-        elif ent.ruc == "20143623042":  # MP Cajamarca
-            pim = 145000000.0
-            devengado = 98000000.0
-        elif ent.province in {"JAEN", "CHOTA", "HUALGAYOC"}:
-            pim = 78000000.0
-            devengado = 52000000.0
-        else:
-            pim = 32000000.0
-            devengado = 21000000.0
+    # Proyeccion de presupuestos y ejecuciones representativas multianuales
+    years_scales = {
+        2024: {"gore_pim": 1720000000.0, "gore_dev": 1310000000.0, "mp_pim": 138000000.0, "mp_dev": 95000000.0, "major_pim": 72000000.0, "major_dev": 51000000.0, "base_pim": 30000000.0, "base_dev": 22000000.0},
+        2025: {"gore_pim": 1780000000.0, "gore_dev": 1340000000.0, "mp_pim": 142000000.0, "mp_dev": 96000000.0, "major_pim": 75000000.0, "major_dev": 51500000.0, "base_pim": 31000000.0, "base_dev": 21500000.0},
+        2026: {"gore_pim": 1850000000.0, "gore_dev": 1380000000.0, "mp_pim": 145000000.0, "mp_dev": 98000000.0, "major_pim": 78000000.0, "major_dev": 52000000.0, "base_pim": 32000000.0, "base_dev": 21000000.0},
+    }
 
-        records.append({
-            "ruc": ent.ruc,
-            "fiscal_year": 2026,
-            "budgeted_amount": pim,
-            "executed_amount": devengado,
-            "budget_category": "General",
-        })
+    for year, scale in years_scales.items():
+        for ent in entities:
+            if ent.ruc == "20453744168":  # GORE Cajamarca
+                pim = scale["gore_pim"]
+                devengado = scale["gore_dev"]
+            elif ent.ruc == "20143623042":  # MP Cajamarca
+                pim = scale["mp_pim"]
+                devengado = scale["mp_dev"]
+            elif ent.province in {"JAEN", "CHOTA", "HUALGAYOC"}:
+                pim = scale["major_pim"]
+                devengado = scale["major_dev"]
+            elif ent.province == "SAN PABLO" and year == 2026:
+                pim = scale["base_pim"]
+                devengado = scale["base_pim"] * 0.406  # Retraso presupuestal detectado (40.6%)
+            else:
+                pim = scale["base_pim"]
+                devengado = scale["base_dev"]
 
-    # Sobrecosto presupuestal para MP San Marcos (execution-overrun)
+            records.append({
+                "ruc": ent.ruc,
+                "fiscal_year": year,
+                "budgeted_amount": pim,
+                "executed_amount": devengado,
+                "budget_category": "General",
+            })
+
+    # Sobrecosto presupuestal para MP San Marcos (execution-overrun) en 2026
     san_marcos = next(e for e in entities if e.province == "SAN MARCOS")
     records.append({
         "ruc": san_marcos.ruc,

@@ -290,9 +290,9 @@ class DataEngine {
     const totalAwarded = procurements.reduce((acc, p) => acc + (Number(p.awarded_amount) || 0), 0);
 
     return {
-      totalPim: totalPim > 0 ? totalPim : 2567443011,
-      totalDevengado: totalDevengado > 0 ? totalDevengado : 1831063097,
-      executionRate: executionRate > 0 ? executionRate : 71.3,
+      totalPim,
+      totalDevengado,
+      executionRate,
       totalProcurements: procurements.length,
       totalAwarded,
       totalAlerts: alerts.filter(a => a.status === 'published').length,
@@ -363,8 +363,8 @@ class DataEngine {
     const sunatData = {
       ruc: cleanRuc,
       razon_social: name || 'PROVEEDOR REGISTRADO',
-      estado: isRucValido ? 'ACTIVO' : 'NO HABIDO',
-      condicion: isRucValido ? 'HABIDO' : 'PENDIENTE',
+      estado: isRucValido ? 'NO VERIFICADO' : 'RUC INVALIDO',
+      condicion: isRucValido ? 'CONSULTA PENDIENTE' : 'NO REGISTRADO',
       domicilio_fiscal: 'CAJAMARCA, PERU',
       sistema_emision: 'ELECTRONICA',
       tipo_contribuyente: cleanRuc.startsWith('20') ? 'PERSONA JURIDICA' : 'PERSONA NATURAL CON NEGOCIO'

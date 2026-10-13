@@ -515,3 +515,59 @@ def test_cli_db_sync(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixt
     assert exit_code == 0
     captured = capsys.readouterr().out
     assert "Sincronizacion completada" in captured
+
+
+def test_postgres_cursor_wrapper_and_adapt_sql() -> None:
+    from cajamarca_qhaway.persistence.connection import (
+        DatabaseManager,
+        PostgresConnectionWrapper,
+        PostgresCursorWrapper,
+    )
+    from pydantic import SecretStr
+
+    mgr = DatabaseManager()
+    assert mgr.adapt_sql("SELECT * FROM t WHERE a = ? AND b = ?") == "SELECT * FROM t WHERE a = ? AND b = ?"
+
+    # Simular modo Postgres
+    mgr._is_postgres = True
+    assert mgr.adapt_sql("SELECT * FROM t WHERE a = ? AND b = ?") == "SELECT * FROM t WHERE a = %s AND b = %s"
+
+    # Probar que PostgresCursorWrapper traduce '?' a '%s'
+    class MockRawCursor:
+        def __init__(self):
+            self.last_query = None
+            self.last_params = None
+
+        def execute(self, query, params=None):
+            self.last_query = query
+            self.last_params = params
+            return self
+
+        def executemany(self, query, params_seq):
+            self.last_query = query
+            self.last_params = params_seq
+            return self
+
+    mock_cur = MockRawCursor()
+    wrapper = PostgresCursorWrapper(mock_cur)
+    wrapper.execute("INSERT INTO test (id, name) VALUES (?, ?)", ("1", "test"))
+    assert mock_cur.last_query == "INSERT INTO test (id, name) VALUES (%s, %s)"
+    assert mock_cur.last_params == ("1", "test")
+
+    wrapper.executemany("UPDATE test SET x = ? WHERE id = ?", [("val", "1")])
+    assert mock_cur.last_query == "UPDATE test SET x = %s WHERE id = %s"
+
+
+def test_watermark_store_with_sqlite_schema(tmp_path: Path) -> None:
+    from cajamarca_qhaway.capabilities.live_harvest import WatermarkStore
+    from cajamarca_qhaway.persistence.connection import DatabaseManager
+
+    mgr = DatabaseManager()
+    store_file = tmp_path / "watermarks.json"
+    store = WatermarkStore(store_file, db_manager=mgr)
+    now = datetime.now(timezone.utc)
+    store.update_seace_cursor(now, ["ocds-1", "ocds-2"])
+    assert store.is_seace_ocid_seen("ocds-1")
+    assert store.is_seace_ocid_seen("ocds-2")
+    assert not store.is_seace_ocid_seen("ocds-3")
+

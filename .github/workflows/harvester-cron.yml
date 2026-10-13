@@ -1,0 +1,66 @@
+name: Harvester Cloud Worker - Ingesta y Monitoreo Continuo
+
+on:
+  schedule:
+    # Ejecuta cada 2 horas (a minuto 0) de forma completamente autonoma
+    - cron: "0 */2 * * *"
+  workflow_dispatch:
+    inputs:
+      sources:
+        description: "Fuentes a cosechar separadas por coma"
+        required: false
+        default: "seace,mef"
+      evaluate_geospatial:
+        description: "Evaluar teledeteccion satelital geoespacial (Sentinel-1/2)"
+        type: boolean
+        required: false
+        default: true
+
+concurrency:
+  group: harvester-worker
+  cancel-in-progress: false
+
+jobs:
+  harvest-and-monitor:
+    name: Cosecha Continua SEACE/MEF y Teledeteccion Satelital
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Instalar dependencias con soporte relacional
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev,db]"
+
+      - name: Ejecutar cosecha en vivo (SEACE OCDS y MEF DataStore)
+        env:
+          CAJAMARCA_QHAWAY_DATABASE_URL: ${{ secrets.CAJAMARCA_QHAWAY_DATABASE_URL }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          echo "Iniciando ciclo de recoleccion continua..."
+          python -m cajamarca_qhaway.cli harvest run --source "${{ inputs.sources || 'seace,mef' }}" --once
+
+      - name: Ejecutar evaluacion geoespacial satelital multi-temporal
+        if: ${{ inputs.evaluate_geospatial != false }}
+        env:
+          CAJAMARCA_QHAWAY_DATABASE_URL: ${{ secrets.CAJAMARCA_QHAWAY_DATABASE_URL }}
+        run: |
+          echo "Evaluando divergencia fisico-financiera con radar SAR y optico..."
+          python -m cajamarca_qhaway.cli geospatial evaluate --sar
+
+      - name: Verificar estado y consistencia de la base de datos
+        env:
+          CAJAMARCA_QHAWAY_DATABASE_URL: ${{ secrets.CAJAMARCA_QHAWAY_DATABASE_URL }}
+        run: |
+          python -m cajamarca_qhaway.cli db status
+          python -m cajamarca_qhaway.cli harvest status

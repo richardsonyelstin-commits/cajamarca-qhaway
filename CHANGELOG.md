@@ -7,7 +7,22 @@ Se escribe **en el PR**, no en el release: reconstruirlo después es inventarlo.
 
 ## [Unreleased]
 
+### Added
+
+- **Arquitectura Cloud Hibrida y Desacoplamiento Local (ADR 0009)**:
+  - Workflow de GitHub Actions (`.github/workflows/harvester-cron.yml`) para recoleccion continua autonoma de SEACE OCDS, MEF DataStore y teledeteccion satelital cada 2 horas (`0 */2 * * *`).
+  - Migracion `scripts/migrations/0005_harvest_watermarks.sql` y tabla `harvest_watermarks` en PostgreSQL para almacenamiento de cursores de tiempo desacoplado del filesystem local.
+  - Wrappers `PostgresConnectionWrapper` y `PostgresCursorWrapper` en `DatabaseManager` con traduccion dinamica y transparente de comodines SQL (`?` a `%s`), resolviendo la incompatibilidad con PostgreSQL y Supabase.
+  - Persistencia relacional directa para denuncias ciudadanas y decisiones de revision humana en Supabase desde `api/index.py` y `server.py`.
+
+### Removed
+
+- Se retiro definitivamente el servidor secundario Express de Node.js (`server.js`) y su dependencia en `package.json`, consolidando el runtime canonico exclusivo en Python 3.12 (ADR 0001).
+
 ### Fixed
+
+- Se corrigio la caida silenciosa a SQLite en memoria (`:memory:`) cuando se configuraba PostgreSQL/Supabase en los repositorios de persistencia.
+- Se corrigio la perdida de denuncias y dictamenes en entornos serverless efimeros.
 
 - Se ejecutó auditoría WCAG 2.1 AA sobre las 15 páginas y se documentaron hallazgos pendientes
   de etiquetas de formulario, jerarquía de encabezados y contraste de estados.

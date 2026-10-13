@@ -58,7 +58,7 @@ class CitizenReportRepository:
             report.moderation_status,
             report.moderated_by,
             report.moderated_at.isoformat() if report.moderated_at else None,
-            1 if report.legal_disclaimer_shown else 0,
+            True if report.legal_disclaimer_shown else False,
         )
 
         with self.db.connection() as conn:

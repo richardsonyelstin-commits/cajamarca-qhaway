@@ -3,17 +3,12 @@
   "version": "1.0.0",
   "description": "Observatorio Civico Regional de contrataciones publicas y ejecucion presupuestal en Cajamarca",
   "type": "module",
-  "main": "server.js",
   "scripts": {
     "start": "python -m cajamarca_qhaway.web.server",
     "dev": "python -m cajamarca_qhaway.web.server",
-    "serve:python": "python -m cajamarca_qhaway.web.server",
-    "serve:node": "node server.js",
+    "serve": "python -m cajamarca_qhaway.web.server",
     "audit": "python web/tools/validate_web_integrity.py",
     "test": "python -m pytest -q tests/test_web_platform.py",
     "lint": "python web/tools/validate_web_integrity.py"
-  },
-  "dependencies": {
-    "express": "^4.21.2"
   }
 }

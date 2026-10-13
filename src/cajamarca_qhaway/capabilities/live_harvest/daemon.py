@@ -38,8 +38,10 @@ class HarvesterDaemon:
         sync_manager: Any | None = None,
     ) -> None:
         self.config = config or HarvestConfig()
-
-        self.watermark_store = watermark_store or WatermarkStore(self.config.storage.watermark_file_path)
+        db_mgr = getattr(sync_manager, "db", None) if sync_manager else None
+        self.watermark_store = watermark_store or WatermarkStore(
+            self.config.storage.watermark_file_path, db_manager=db_mgr
+        )
         self.coverage_logger = coverage_logger or CoverageGapLogger(self.config.storage.coverage_gap_log_path)
 
         universe = load_universe(universe_path)

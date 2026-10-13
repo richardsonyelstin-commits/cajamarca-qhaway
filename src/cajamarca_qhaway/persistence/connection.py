@@ -114,24 +114,85 @@ class DatabaseManager:
             moderated_at TEXT,
             legal_disclaimer_shown INTEGER NOT NULL CHECK (legal_disclaimer_shown = 1)
         );
+
+        CREATE TABLE IF NOT EXISTS harvest_watermarks (
+            source_name TEXT PRIMARY KEY,
+            last_timestamp TEXT,
+            last_offset INTEGER DEFAULT 0,
+            seen_ids TEXT DEFAULT '[]',
+            updated_at TEXT NOT NULL
+        );
         """
         conn.executescript(schema)
         conn.commit()
+
+    def adapt_sql(self, sql: str) -> str:
+        """Adapta consultas al motor relacional activo (? para SQLite, %s para Postgres)."""
+        if self._is_postgres:
+            return sql.replace("?", "%s")
+        return sql
 
     @contextmanager
     def connection(self) -> Iterator[Any]:
         """Provee un contexto transaccional para la base de datos configurada."""
         if self._is_postgres and self._dsn:
-            try:
-                import psycopg
-                from psycopg.rows import dict_row
+            import psycopg
+            from psycopg.rows import dict_row
 
-                with psycopg.connect(self._dsn, row_factory=dict_row) as conn:
-                    yield conn
+            conn = None
+            try:
+                conn = psycopg.connect(self._dsn, row_factory=dict_row)
             except Exception:
-                # Si falla la conexion remota, fallback controlado
+                # Si falla la conexion inicial remota (red o DNS), fallback controlado
                 conn = self.get_sqlite_memory_connection()
                 yield conn
+                return
+
+            try:
+                wrapped = PostgresConnectionWrapper(conn)
+                yield wrapped
+                conn.commit()
+            except Exception:
+                conn.rollback()
+                raise
+            finally:
+                conn.close()
         else:
             conn = self.get_sqlite_memory_connection()
             yield conn
+
+
+class PostgresCursorWrapper:
+    """Cursor wrapper que traduce comodines '?' de SQLite al formato '%s' de psycopg."""
+
+    def __init__(self, raw_cursor: Any) -> None:
+        self._raw = raw_cursor
+
+    def execute(self, query: str, params: Any = None) -> Any:
+        adapted = query.replace("?", "%s")
+        if params is None:
+            return self._raw.execute(adapted)
+        return self._raw.execute(adapted, params)
+
+    def executemany(self, query: str, params_seq: Any) -> Any:
+        adapted = query.replace("?", "%s")
+        return self._raw.executemany(adapted, params_seq)
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self._raw, name)
+
+    def __iter__(self) -> Any:
+        return iter(self._raw)
+
+
+class PostgresConnectionWrapper:
+    """Connection wrapper que entrega cursores adaptados a la sintaxis del proyecto."""
+
+    def __init__(self, raw_conn: Any) -> None:
+        self._raw = raw_conn
+
+    def cursor(self, *args: Any, **kwargs: Any) -> PostgresCursorWrapper:
+        return PostgresCursorWrapper(self._raw.cursor(*args, **kwargs))
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self._raw, name)

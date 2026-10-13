@@ -37,7 +37,7 @@ class EntityRepository:
             return self._row_to_model(row)
 
     def list_active(self) -> list[ContractingEntity]:
-        sql = "SELECT * FROM contracting_entities WHERE active = 1"
+        sql = "SELECT * FROM contracting_entities WHERE active = TRUE"
         with self.db.connection() as conn:
             cursor = conn.cursor()
             cursor.execute(sql)
@@ -77,7 +77,7 @@ class EntityRepository:
                 e.consucode_id,
                 e.department,
                 e.verified_at.isoformat(),
-                1 if e.active else 0,
+                True if e.active else False,
             )
             for e in entities
         ]

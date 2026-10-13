@@ -1,89 +1,89 @@
 ---
-title: Guía de Despliegue Cloud (GitHub, Supabase y Vercel)
+title: Guia de Despliegue Cloud (GitHub, Supabase y Vercel)
 status: active
 created: 2026-10-12
-updated: 2026-10-12
+updated: 2026-10-13
 source: ai
-generator: antigravity-orchestrator
-generated_at: 2026-10-12T18:08:00-05:00
+generator: infrastructure-architect
+generated_at: 2026-10-13T14:26:00-05:00
 confidence: high
 verified: false
 ---
 
-# Guía de Despliegue Cloud (GitHub, Supabase y Vercel)
+# Guia de Despliegue Cloud (GitHub, Supabase y Vercel)
 
-Manual operativo del Pilar 3 para desplegar y conectar Cajamarca Qhaway en GitHub,
-Supabase PostgreSQL (`oglltrpvvifqvwmxmkjq`) y Vercel Serverless Python.
-Garantiza continuidad operativa online y modo de contingencia rural desconectado.
+Manual operativo para desplegar y operar Cajamarca Qhaway en la nube de forma 100% autonoma
+y desacoplada de la maquina local del desarrollador (ADR 0009).
+Combina GitHub Actions, Supabase PostgreSQL (`oglltrpvvifqvwmxmkjq`) y Vercel Serverless Python.
 
-## 1. Arquitectura de Despliegue
+## 1. Arquitectura de Despliegue Desacoplada
 
 ```mermaid
-flowchart LR
-    GH["GitHub Repo: richardsonyelstin-commits/cajamarca-qhaway"] -->|"CI: pytest + web audit"| GA["GitHub Actions (.github/workflows/ci.yml)"]
-    GH -->|"CD: Deploy automatico"| VC["Vercel Platform (vercel.json)"]
-    VC -->|"Archivos estaticos (/)"| WEB["Frontend SPA (web/)"]
+flowchart TD
+    GH["GitHub Repo: richardsonyelstin-commits/cajamarca-qhaway"] -->|"Push / PR"| GA_CI["GitHub Actions CI (.github/workflows/ci.yml)"]
+    GH -->|"Cron cada 2h / Dispatch"| GA_WORKER["Harvester Worker (.github/workflows/harvester-cron.yml)"]
+    GH -->|"CD Deploy automatico"| VC["Vercel Platform (vercel.json)"]
+    
+    GA_WORKER -->|"Cosecha SEACE/MEF + Sentinel-1/2"| SB["Supabase PostgreSQL (oglltrpvvifqvwmxmkjq)"]
+    GA_WORKER -->|"Cursores de tiempo"| WM["Tabla harvest_watermarks"]
+    
+    VC -->|"Frontend MPA Estatico"| WEB["Vistas Web (web/*.html)"]
     VC -->|"Rutas /api/*"| PY["Vercel Python Function (api/index.py)"]
-    WEB -->|"PostgREST + RLS + OAuth Google"| SB["Supabase (oglltrpvvifqvwmxmkjq)"]
-    PY -->|"SyncManager / Snapshot"| SB
+    
+    WEB -->|"Lectura directa PostgREST (anon RLS)"| SB
+    PY -->|"Persistencia transaccional de denuncias y revisiones"| SB
 ```
 
-## 2. Repositorio en GitHub
+## 2. Repositorio y Automatizacion en GitHub
 
 - **Repositorio oficial**: `https://github.com/richardsonyelstin-commits/cajamarca-qhaway`
-- **Flujo de Integración Continua (`.github/workflows/ci.yml`)**:
+- **Integracion Continua (`.github/workflows/ci.yml`)**:
   1. Instala el paquete en modo editable (`pip install -e ".[dev]"`).
-  2. Ejecuta la suite completa de pruebas (`pytest -v`, 104 pruebas deterministas).
-  3. Ejecuta la auditoría de integridad web (`python -m cajamarca_qhaway.cli web audit`).
+  2. Ejecuta la suite de pruebas completa (143 pruebas deterministas).
+  3. Ejecuta la auditoria de integridad web (`python -m cajamarca_qhaway.cli web audit`).
+- **Worker de Cosecha Continua (`.github/workflows/harvester-cron.yml`)**:
+  1. Se ejecuta automaticamente cada 2 horas (`0 */2 * * *`) o por disparo manual.
+  2. Conecta con Supabase usando `CAJAMARCA_QHAWAY_DATABASE_URL`.
+  3. Realiza la cosecha de SEACE OCDS y MEF SIAF DataStore (`harvest run --once`).
+  4. Realiza la evaluacion de divergencia fisico-financiera satelital (`geospatial evaluate --sar`).
+  5. Persiste cursores de ingesta en la tabla `harvest_watermarks`.
 
-## 3. Base de Datos y Seguridad en Supabase
+## 3. Base de Datos y Persistencia en Supabase
 
 - **Project ID**: `oglltrpvvifqvwmxmkjq`
 - **Endpoint PostgREST**: `https://oglltrpvvifqvwmxmkjq.supabase.co/rest/v1`
-- **Migraciones aplicadas (`migrations/0001` a `0004`)**:
-  - `0001_initial_schema.sql`: Crea las 6 tablas canónicas (`contracting_entities`,
-    `procurement_records`, `budget_execution_records`, `red_flags`, `alerts`,
-    `citizen_reports`) con restricciones `CHECK` constitucionales.
-  - `0002_rls_policies.sql`: Habilita Row Level Security (RLS) de menor privilegio:
-    - Rol `anon`: lectura exclusiva de alertas con `status = 'published'` (Art. 14) y
-      registro de denuncias con `legal_disclaimer_shown = true` (CA-006-01).
-    - Rol `authenticated`: acceso a `red_flags` y publicación auditada en `alerts`
-      bajo OAuth Google (ADR 0005).
-  - `0003_indexes_and_views.sql`: Índices B-Tree y GIN sobre `raw_payload` JSONB.
-  - `0004_seed_cajamarca_entities.sql`: Siembra determinista de las 14 entidades del
-    universo de Cajamarca (Art. 18).
+- **Migraciones aplicadas (`scripts/migrations/`)**:
+  - `0001_create_contracting_entities.sql`: Universo dorado de 14 entidades de Cajamarca.
+  - `0002_create_pipeline_tables.sql`: Tablas operativas del pipeline (`procurement_records`,
+    `budget_execution_records`, `red_flags`, `alerts`, `citizen_reports`).
+  - `0003_enable_rls_policies.sql`: Politicas RLS de menor privilegio.
+  - `0004_seed_contracting_entities.sql`: Siembra inicial de las 14 entidades.
+  - `0005_harvest_watermarks.sql`: Estado persistente de cursores de recoleccion continua.
 
-### Variables de Entorno para Backend / Worker
+### Variables de Entorno de Produccion (GitHub Secrets y Vercel Environment)
 
-Configure en el entorno de ejecución (nunca en el código fuente ni en `web/`):
+Configure en la configuracion del repositorio GitHub y en el dashboard de Vercel:
 
-- `CAJAMARCA_QHAWAY_DB_URL`: Cadena PostgreSQL transaccional hacia Supabase.
+- `CAJAMARCA_QHAWAY_DATABASE_URL`: Cadena transaccional de conexión directa o pooler de Supabase
+  (`postgresql://postgres:[PASSWORD]@db.oglltrpvvifqvwmxmkjq.supabase.co:5432/postgres`).
 - `SUPABASE_URL`: `https://oglltrpvvifqvwmxmkjq.supabase.co`
-- `SUPABASE_ANON_KEY`: Llave pública `anon` protegida por políticas RLS.
+- `SUPABASE_ANON_KEY`: Llave publica `anon` protegida por politicas RLS.
+- `CAJAMARCA_QHAWAY_AUTH_SECRET`: Secreto criptografico para tokens de veedores acreditados.
 
 ## 4. Despliegue en Vercel (`vercel.json` + `api/index.py`)
 
-El archivo `vercel.json` en la raíz del proyecto enlaza dos capas:
+- **Capa Estatica (`web/`)**: Vistas MPA (`index.html`, `entidades.html`, `alertas.html`,
+  `contrataciones.html`, `presupuesto.html`, `proveedores.html`, `denuncia.html`,
+  `georreferenciacion.html`, `acerca.html`, `login.html`, `admin-revision.html`).
+- **Capa Serverless (`api/index.py`)**: Endpoints WSGI (`/api/health`, `/api/snapshot`,
+  `/api/entities`, `/api/procurements`, `/api/budget`, `/api/alerts`, `/api/red-flags`,
+  `/api/reports`, `/api/review`, `/api/geospatial/works`, `/api/geospatial/divergence`).
+- **Seguridad HTTP**: Encabezados `nosniff`, `X-Frame-Options: DENY` y `Referrer-Policy`.
 
-1. **Capa Estática (`web/`)**: Sirve `web/index.html`, `web/src/css/*`, `web/src/js/*`,
-   `web/media/*` y el snapshot firmado `web/src/data/verified-snapshot.json`.
-2. **Capa Serverless (`api/index.py`)**: Expone los endpoints `/api/health`,
-   `/api/snapshot`, `/api/entities`, `/api/procurements`, `/api/budget`, `/api/alerts`,
-   `/api/red-flags`, `/api/reports` y `/api/review` reutilizando `cajamarca_qhaway.web`.
-3. **Cabeceras de Seguridad HTTP**:
-   - `X-Content-Type-Options: nosniff`
-   - `X-Frame-Options: DENY`
-   - `Referrer-Policy: strict-origin-when-cross-origin`
+## 5. Operacion y Monitoreo Desatendido
 
-## 5. Comandos Operativos Locales
-
-```bash
-# 1. Regenerar el snapshot verificado desde los modelos Pydantic v2
-python -m cajamarca_qhaway.cli web export-snapshot
-
-# 2. Auditar integridad de la carpeta web/ e invariantes constitucionales
-python -m cajamarca_qhaway.cli web audit
-
-# 3. Levantar el servidor híbrido local (estáticos + API REST)
-python -m cajamarca_qhaway.cli web serve --port 8080
-```
+Al no depender del entorno local:
+1. Las denuncias ciudadanas emitidas por la web se guardan de forma permanente en Supabase.
+2. Las alertas aprobadas por veedores acreditados impactan inmediatamente en la nube.
+3. El Harvester de GitHub Actions mantiene actualizada la base de datos cada 2 horas.
+4. El observatorio opera con costo $0 USD de infraestructura mensual.
