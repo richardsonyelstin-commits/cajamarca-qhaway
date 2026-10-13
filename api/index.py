@@ -64,6 +64,23 @@ def _load_snapshot_stdlib():
     }
 
 
+_STDLIB_SUNAT_CACHE = None
+
+
+def _load_sunat_stdlib():
+    global _STDLIB_SUNAT_CACHE
+    if _STDLIB_SUNAT_CACHE is not None:
+        return _STDLIB_SUNAT_CACHE
+    sunat_path = PROJECT_ROOT / "data" / "sunat" / "ruc_registry.json"
+    if sunat_path.exists():
+        try:
+            _STDLIB_SUNAT_CACHE = json.loads(sunat_path.read_text(encoding="utf-8"))
+            return _STDLIB_SUNAT_CACHE
+        except Exception:
+            pass
+    return {"metadata": {}, "registry": {}}
+
+
 def _stdlib_fallback_dispatch(method, path, query):
     if method == "OPTIONS":
         return 200, "text/plain; charset=utf-8", b"OK"
@@ -109,6 +126,66 @@ def _stdlib_fallback_dispatch(method, path, query):
             return 200, "application/json; charset=utf-8", json.dumps(snap.get("red_flags", [])).encode("utf-8")
         if path == "/api/reports":
             return 200, "application/json; charset=utf-8", json.dumps(snap.get("citizen_reports", [])).encode("utf-8")
+        if path == "/api/sunat/ruc":
+            dni_param = query.get("dni", [None])[0]
+            if dni_param is not None:
+                return (
+                    403,
+                    "application/json; charset=utf-8",
+                    json.dumps(
+                        {
+                            "error": (
+                                "Articulo 16 (Prohibicion de perfilamiento de personas naturales): "
+                                "Queda terminantemente prohibido consultar, almacenar o procesar "
+                                "solicitudes de DNI o RENIEC. El sistema opera exclusivamente sobre "
+                                "entidades publicas y proveedores contratistas del Estado mediante RUC."
+                            ),
+                            "code": "CONSTITUTIONAL_PRIVACY_GUARD_ART_16",
+                        }
+                    ).encode("utf-8"),
+                )
+
+            ruc_param = query.get("ruc", [None])[0]
+            if ruc_param is not None:
+                cleaned_val = ruc_param.strip().replace("PE-RUC-", "")
+                if len(cleaned_val) == 8 and cleaned_val.isdigit():
+                    return (
+                        403,
+                        "application/json; charset=utf-8",
+                        json.dumps(
+                            {
+                                "error": (
+                                    "Articulo 16 (Prohibicion de perfilamiento de personas naturales): "
+                                    f"El identificador '{ruc_param}' corresponde a un DNI de 8 digitos. "
+                                    "Se rechaza la operacion para salvaguardar la privacidad de personas naturales."
+                                ),
+                                "code": "CONSTITUTIONAL_PRIVACY_GUARD_ART_16",
+                            }
+                        ).encode("utf-8"),
+                    )
+
+                if len(cleaned_val) != 11 or not cleaned_val.isdigit():
+                    return (
+                        400,
+                        "application/json; charset=utf-8",
+                        json.dumps({"error": "RUC invalido: debe contener 11 digitos numericos."}).encode("utf-8"),
+                    )
+
+                sunat_data = _load_sunat_stdlib()
+                reg = sunat_data.get("registry", {})
+                profile = reg.get(cleaned_val)
+                if profile:
+                    return 200, "application/json; charset=utf-8", json.dumps(profile).encode("utf-8")
+                return (
+                    404,
+                    "application/json; charset=utf-8",
+                    json.dumps({"error": f"RUC '{cleaned_val}' no encontrado en el padron verificado."}).encode("utf-8"),
+                )
+
+            sunat_data = _load_sunat_stdlib()
+            meta = sunat_data.get("metadata", {})
+            return 200, "application/json; charset=utf-8", json.dumps(meta).encode("utf-8")
+
         return 404, "application/json; charset=utf-8", json.dumps({"error": f"Ruta no encontrada: {path}", "status": 404}).encode("utf-8")
 
     clean_routes = {
