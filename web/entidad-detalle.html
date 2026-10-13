@@ -149,7 +149,31 @@
 
   <!-- Contenido: Ficha de Auditoría Individual (Sin pt-36 redundante) -->
   <main id="main-content" class="w-full flex-1 bg-surface">
-    <!-- Meta Bar Superior del Dossier -->
+    <!-- Estado de Error 404: Pliego No Encontrado -->
+    <div id="entity-not-found" class="hidden max-w-4xl mx-auto py-16 px-4 text-center" role="alert" aria-live="assertive">
+      <div class="p-8 bg-surface-container-low border border-slate-border rounded space-y-4">
+        <div class="w-16 h-16 mx-auto rounded-full bg-alert-rose/10 flex items-center justify-center text-alert-rose">
+          <span class="material-symbols-outlined text-4xl">domain_disabled</span>
+        </div>
+        <h1 class="font-headline-lg text-2xl font-bold text-on-surface">Pliego Institucional No Encontrado</h1>
+        <p class="font-body-md text-on-surface-variant max-w-lg mx-auto leading-relaxed" id="entity-not-found-msg">
+          El identificador de pliego solicitado no corresponde a ninguna de las 14 entidades auditadas de la Fase 1 en Cajamarca (Gobierno Regional y 13 Municipalidades Provinciales).
+        </p>
+        <div class="pt-4 flex flex-wrap justify-center gap-4">
+          <a href="/entidades" class="px-5 py-2.5 rounded bg-secondary text-on-secondary font-label-md font-semibold hover:bg-secondary/90 transition-colors inline-flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            Volver al Directorio de 14 Entidades
+          </a>
+          <a href="/" class="px-5 py-2.5 rounded border border-slate-border text-on-surface font-label-md font-semibold hover:bg-surface-container transition-colors inline-flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">home</span>
+            Inicio del Observatorio
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div id="entity-dossier-content">
+      <!-- Meta Bar Superior del Dossier -->
     <section class="w-full bg-surface-container-low py-3 px-4 sm:px-6 border-b border-slate-border">
       <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant flex-wrap">
@@ -287,7 +311,7 @@
             </h2>
           </div>
           <span class="hidden sm:inline-block font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2.5 py-1 rounded border border-slate-border">
-            SIAF-MEF Consulta Amigable
+            SIAF-MEF Datastore Oficial
           </span>
         </div>
 
@@ -756,6 +780,7 @@
         </div>
       </section>
     </div>
+    </div>
   </main>
 
   <!-- Pie de Página Institucional -->
@@ -802,7 +827,7 @@
           <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface block mb-4 font-semibold">Fuentes Oficiales</span>
           <ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant">
             <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://www.gob.pe/seace" rel="noopener noreferrer" target="_blank">SEACE API OCDS <span class="material-symbols-outlined text-[14px]">open_in_new</span></a></li>
-            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://apps5.mineco.gob.pe/transparencia/mensual/" rel="noopener noreferrer" target="_blank">MEF SIAF DataStore <span class="material-symbols-outlined text-[14px]">open_in_new</span></a></li>
+            <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://datosabiertos.gob.pe/dataset/ejecucion-presupuestal-mef" rel="noopener noreferrer" target="_blank">MEF SIAF DataStore <span class="material-symbols-outlined text-[14px]">open_in_new</span></a></li>
             <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://e-consultaruc.sunat.gob.pe/" rel="noopener noreferrer" target="_blank">SUNAT Padrón RUC <span class="material-symbols-outlined text-[14px]">open_in_new</span></a></li>
             <li><a class="inline-flex items-center gap-1 hover:text-on-surface transition-colors" href="https://datosabiertos.gob.pe/" rel="noopener noreferrer" target="_blank">Portal Datos Abiertos <span class="material-symbols-outlined text-[14px]">open_in_new</span></a></li>
           </ul>
@@ -826,17 +851,37 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const entityId = urlParams.get('id') || 'ce-f5f5d8fc32518855';
-      const entity = await dataEngine.getEntityById(entityId);
-      const stats = await dataEngine.getEntityBudgetStats(entityId);
-      const procs = await dataEngine.getProcurements(entityId);
+      const entityId = urlParams.get('id');
 
-      if (entity) {
-        document.getElementById('dossier-official-name').textContent = 'Ficha de Auditoría Individual: ' + entity.official_name;
-        document.getElementById('dossier-ruc').textContent = entity.ruc;
-        document.getElementById('dossier-pliego-code').textContent = entity.official_name;
-        document.getElementById('dossier-ambito').textContent = entity.province ? `Provincia de ${entity.province}` : 'Departamental (13 Provincias)';
+      const dossierContent = document.getElementById('entity-dossier-content');
+      const notFoundEl = document.getElementById('entity-not-found');
+
+      if (!entityId) {
+        if (dossierContent) dossierContent.classList.add('hidden');
+        if (notFoundEl) {
+          notFoundEl.classList.remove('hidden');
+          document.getElementById('entity-not-found-msg').textContent = 'No se especifico ningun pliego en el enlace (?id=...). Por favor seleccione una entidad fiscalizada en el directorio oficial.';
+        }
+        return;
       }
+
+      const entity = await dataEngine.getEntityById(entityId);
+      if (!entity) {
+        if (dossierContent) dossierContent.classList.add('hidden');
+        if (notFoundEl) {
+          notFoundEl.classList.remove('hidden');
+          document.getElementById('entity-not-found-msg').textContent = `El pliego institucional o RUC "${entityId}" no fue encontrado entre las 14 entidades fiscalizadas en el departamento de Cajamarca.`;
+        }
+        return;
+      }
+
+      const stats = await dataEngine.getEntityBudgetStats(entity.entity_id);
+      const procs = await dataEngine.getProcurements(entity.entity_id);
+
+      document.getElementById('dossier-official-name').textContent = 'Ficha de Auditoría Individual: ' + entity.official_name;
+      document.getElementById('dossier-ruc').textContent = entity.ruc;
+      document.getElementById('dossier-pliego-code').textContent = entity.official_name;
+      document.getElementById('dossier-ambito').textContent = entity.province ? `Provincia de ${entity.province}` : 'Departamental (13 Provincias)';
 
       if (stats) {
         const kpiPct = document.getElementById('kpi-pct');

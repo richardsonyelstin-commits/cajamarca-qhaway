@@ -1,6 +1,8 @@
 /**
- * router.js: Enrutador SPA basado en Hash (#) para Cajamarca Qhaway
- * Soporta parametros de consulta (?id=...) y proteccion de rutas de administracion.
+ * [ARCHIVADO - CODIGO HISTORICO]
+ * router.js: Enrutador SPA basado en Hash (#) para Cajamarca Qhaway.
+ * Retirado y archivado segun ADR 0008 (Adopcion de Arquitectura Multi-Pagina MPA).
+ * Conservado exclusivamente como referencia historica de diseno.
  *
  * Restricciones:
  * - Antislop R-02: Cero rayas em-dash en todo el archivo.

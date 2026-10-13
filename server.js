@@ -1,3 +1,9 @@
+/**
+ * @deprecated server.js es un servidor secundario de compatibilidad Node.js.
+ * El backend canonico oficial del proyecto es Python (src/cajamarca_qhaway/web/server.py).
+ * Para iniciar el entorno de desarrollo oficial, use: npm start o python -m cajamarca_qhaway.web.server
+ */
+
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
@@ -6,6 +12,8 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+console.warn('[AVISO DE DEPRECACION] server.js es un runtime secundario de compatibilidad. El backend canonico oficial es Python (python -m cajamarca_qhaway.web.server).');
 
 const app = express();
 const PORT = 3000;

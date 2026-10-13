@@ -34,3 +34,4 @@ reconstruir el porque cuesta dias.
 | [0005-geo](0005-monitoreo-geoespacial-satelital-y-camaras-publicas.md) | Monitoreo geoespacial multi-temporal satelital y de camaras publicas para obras | `proposed` | 2026-10-13 |
 | [0006](0006-persistencia-universo-contracting-entity.md) | Universo de `ContractingEntity` como dataset versionado, sembrado a PostgreSQL | `accepted` | 2026-08-20 |
 | [0007](0007-arquitectura-plataforma-web-hibrida.md) | Arquitectura de plataforma web hibrida (HTML5/CSS3/Bootstrap 5/JS ES6+ con Supabase y respaldo local) | `proposed` | 2026-10-12 |
+| [0008](0008-adopcion-arquitectura-multi-pagina-y-retiro-spa.md) | Adopcion de Arquitectura Multi-Pagina (MPA) y Retiro de Enrutador SPA Residual | `proposed` | 2026-10-13 |
