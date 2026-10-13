@@ -31,6 +31,7 @@ ajustar la columna "Cargar cuando".
 | `deployment/001-cloud-deployment-guide.md` | ¿Cómo se despliega y conecta con GitHub, Supabase (`oglltrpvvifqvwmxmkjq`) y Vercel? | Antes de tocar `.github/workflows/`, `vercel.json` o `api/index.py` | ~1200 |
 | `plans/2026-10-13-plan-lenguaje-claro-pedagogia-civica.md` | ¿Cómo transformar la UX y contenido con Pedagogía Cívica, Lenguaje Claro y Accesibilidad Cognitiva? | Antes de implementar UI cívica, tooltips, diccionario o selector de modo | ~3000 |
 | `a11y/2026-10-13-wcag-2.1-aa-audit.md` | ¿Qué hallazgos de accesibilidad WCAG 2.1 AA tiene el sitio? | Antes de declarar conformidad o corregir accesibilidad | ~1600 |
+| `audits/2026-10-13-full-project-gap-audit.md` | ¿Qué vacíos lógicos, inconsistencias y fallbacks tiene el proyecto? | Planificar remediación técnica o auditar arquitectura | ~3200 |
 | `roadmap.md` | ¿Qué viene después? | Priorizar, planificar | ~600 |
 | `adr/` | ¿Por qué se decidió X? | Cuestionar una decisión existente | variable |
 | `adr/0005-monitoreo-geoespacial-satelital-y-camaras-publicas.md` | ¿Por qué se adoptó teledetección híbrida abierta (Sentinel-1/2 + NASA HLS/GIBS + cámaras de obra)? | Antes de cambiar o evaluar proveedores geoespaciales | ~1600 |
