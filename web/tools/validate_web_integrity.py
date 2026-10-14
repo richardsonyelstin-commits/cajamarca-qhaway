@@ -23,7 +23,9 @@ Verifica:
 from __future__ import annotations
 
 import json
+import re
 import sys
+from html import unescape
 from pathlib import Path
 from typing import Any
 
@@ -113,8 +115,8 @@ def validate_snapshot_integrity(snapshot_path: Path = Path("web/src/data/verifie
     for raw in budget_raw:
         try:
             b = BudgetExecutionRecord.model_validate(raw)
-            if b.source != "mef-datastore":
-                errors.append(f"Art. 10 violado: source debe ser 'mef-datastore', recibido: '{b.source}'")
+            if b.source not in {"mef-datastore", "mef-consulta-amigable"}:
+                errors.append(f"Art. 10 violado: source MEF desconocida: '{b.source}'")
             if b.entity_id not in entity_ids:
                 errors.append(f"BudgetExecution {b.execution_record_id} pertenece a entity_id ajena: {b.entity_id}")
         except Exception as exc:
@@ -168,6 +170,77 @@ def validate_snapshot_integrity(snapshot_path: Path = Path("web/src/data/verifie
     return errors
 
 
+def _static_element_text(page: Path, element_id: str) -> str:
+    source = page.read_text(encoding="utf-8")
+    match = re.search(
+        rf'<(?P<tag>[a-zA-Z][\w:-]*)\b(?=[^>]*\bid="{re.escape(element_id)}")[^>]*>(?P<body>.*?)</(?P=tag)\s*>',
+        source,
+        re.DOTALL,
+    )
+    if not match:
+        raise ValueError(f"No se encontro #{element_id} en {page}")
+    return unescape(re.sub(r"<[^>]+>", " ", match.group("body"))).strip()
+
+
+def validate_static_snapshot_metrics(
+    snapshot_path: Path = Path("web/src/data/verified-snapshot.json"),
+    web_root: Path = Path("web"),
+) -> list[str]:
+    """Comprueba que los KPIs iniciales MPA reflejen conteos de la instantánea."""
+    try:
+        metadata = json.loads(snapshot_path.read_text(encoding="utf-8"))["metadata"]
+        expected = {
+            ("index.html", "kpi-procurements-total"): str(metadata["total_procurements"]),
+            ("index.html", "index-total-procurements-badge"): str(metadata["total_procurements"]),
+            ("alertas.html", "alertas-kpi-total"): str(metadata["total_published_alerts"]),
+            ("entidades.html", "entidades-kpi-contratos"): str(metadata["total_procurements"]),
+            ("georreferenciacion.html", "kpi-total-works"): str(metadata["total_geospatial_works"]),
+        }
+        errors: list[str] = []
+        for (filename, element_id), value in expected.items():
+            actual = _static_element_text(web_root / filename, element_id)
+            if not re.search(rf"(?<!\d){re.escape(value)}(?!\d)", actual):
+                errors.append(f"Cifra estática inconsistente en {filename} #{element_id}: esperado {value}, recibido {actual!r}")
+        budget_rows = json.loads(snapshot_path.read_text(encoding="utf-8"))["budget_execution_records"]
+        latest_year = max((int(row["fiscal_year"]) for row in budget_rows), default=0)
+        latest_rows = [row for row in budget_rows if int(row["fiscal_year"]) == latest_year]
+        expected_mef: dict[tuple[str, str], str] = {}
+        if latest_rows:
+            pim = sum(float(row["budgeted_amount"]) for row in latest_rows)
+            executed = sum(float(row["executed_amount"]) for row in latest_rows)
+            if len({row["entity_id"] for row in latest_rows}) == int(metadata["total_entities"]):
+                expected_mef = {
+                    ("index.html", "kpi-pim-total"): f"S/ {pim:,.0f}",
+                    ("index.html", "kpi-devengado-pct"): f"{executed / pim * 100:.1f}%" if pim else "No calculable",
+                    ("entidades.html", "entidades-kpi-pim"): f"S/ {pim:,.0f}",
+                    ("entidades.html", "entidades-kpi-devengado"): f"S/ {executed:,.0f}",
+                    ("presupuesto.html", "kpi-pim"): f"S/ {pim:,.0f}",
+                    ("presupuesto.html", "kpi-dev"): f"S/ {executed:,.0f}",
+                }
+        if expected_mef:
+            for (filename, element_id), value in expected_mef.items():
+                actual = _static_element_text(web_root / filename, element_id)
+                if value not in actual:
+                    errors.append(
+                        f"Cifra MEF inconsistente en {filename} #{element_id}: esperado {value}, recibido {actual!r}"
+                    )
+        else:
+            for filename, element_id in (
+                ("index.html", "kpi-pim-total"),
+                ("index.html", "kpi-devengado-pct"),
+                ("entidades.html", "entidades-kpi-pim"),
+                ("entidades.html", "entidades-kpi-devengado"),
+                ("presupuesto.html", "kpi-pim"),
+                ("presupuesto.html", "kpi-dev"),
+            ):
+                actual = _static_element_text(web_root / filename, element_id).casefold()
+                if not any(token in actual for token in ("sin consolidado mef", "no consolidado", "no calculable", "sin dato mef", "cobertura mef parcial")):
+                    errors.append(f"Cifra MEF no disponible presentada como dato en {filename} #{element_id}")
+        return errors
+    except Exception as exc:
+        return [f"Error al auditar cifras MPA frente al snapshot: {exc}"]
+
+
 def run_full_web_audit(web_root: Path = Path("web")) -> bool:
     """Ejecuta la auditoria integral y reporta resultados."""
     print("=== Auditoria Integral de Plataforma Web (Cajamarca Qhaway) ===")
@@ -188,7 +261,12 @@ def run_full_web_audit(web_root: Path = Path("web")) -> bool:
     for err in snapshot_errors:
         print(f"   [ERROR] {err}")
 
-    all_errors = structure_errors + em_dash_errors + snapshot_errors
+    metric_errors = validate_static_snapshot_metrics(snapshot_path, web_root)
+    print(f"4. Cifras estáticas MPA frente al snapshot: {'PASS' if not metric_errors else 'FAIL'}")
+    for err in metric_errors:
+        print(f"   [ERROR] {err}")
+
+    all_errors = structure_errors + em_dash_errors + snapshot_errors + metric_errors
     print("================================================================")
     if not all_errors:
         print("RESULTADO GLOBAL: CONFORME (100% de verificaciones superadas)")

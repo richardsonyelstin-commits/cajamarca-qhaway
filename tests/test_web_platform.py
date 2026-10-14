@@ -16,6 +16,7 @@ from __future__ import annotations
 import io
 import json
 import threading
+import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -91,19 +92,33 @@ def test_03_snapshot_models_validation(web_snapshot):
 
     # 2. ProcurementRecord
     procurements = [ProcurementRecord.model_validate(p) for p in web_snapshot["procurement_records"]]
-    assert len(procurements) >= 5, "Debe haber registros OCDS de muestra"
+    assert len(procurements) == web_snapshot["metadata"]["total_procurements"] == 475
 
     # 3. BudgetExecutionRecord
     budget = [BudgetExecutionRecord.model_validate(b) for b in web_snapshot["budget_execution_records"]]
-    assert len(budget) >= 14, "Debe haber registros presupuestales MEF para las 14 entidades"
+    assert len(budget) == web_snapshot["metadata"]["total_budget_executions"] == 42
+    assert {
+        year: {"records": sum(item.fiscal_year == int(year) for item in budget),
+               "entities": len({item.entity_id for item in budget if item.fiscal_year == int(year)})}
+        for year in ("2024", "2025", "2026")
+    } == web_snapshot["metadata"]["budget_coverage_by_year"]
 
     # 4. RedFlag
     red_flags = [RedFlag.model_validate(f) for f in web_snapshot["red_flags"]]
-    assert len(red_flags) >= 3, "Debe haber banderas rojas candidatas detectadas"
+    assert red_flags == [], "Los candidatos internos no se exponen en el snapshot publico"
 
     # 5. Alert
     alerts = [Alert.model_validate(a) for a in web_snapshot["alerts"]]
-    assert len(alerts) >= 3, "Debe haber alertas procesadas por el panel humano"
+    assert alerts == [], "No se publican alertas sin evidencia de dictamen humano validado"
+    assert web_snapshot["metadata"]["total_candidate_red_flags"] == 473
+    assert web_snapshot["metadata"]["total_alerts"] == 8
+    assert web_snapshot["metadata"]["total_published_alerts"] == 0
+    assert web_snapshot["metadata"]["alert_status_counts"] == {"discarded": 2, "in_review": 6}
+    assert web_snapshot["metadata"]["budget_coverage_by_year"] == {
+        "2024": {"records": 14, "entities": 14},
+        "2025": {"records": 14, "entities": 14},
+        "2026": {"records": 14, "entities": 14},
+    }
 
     # 6. CitizenReport
     assert web_snapshot["citizen_reports"] == [], "Los reportes privados no deben salir en el snapshot publico"
@@ -173,26 +188,28 @@ def test_08_api_entities_endpoint(local_web_server):
 
 
 def test_09_api_alerts_public_only_published(local_web_server):
-    """Verifica que GET /api/alerts solo exponga alertas con status == 'published' (Art. 14)."""
+    """La copia pública no inventa dictámenes ni publica alertas no verificadas."""
     url = f"{local_web_server}/api/alerts"
     with urllib.request.urlopen(url) as resp:
         assert resp.status == 200
         alerts = json.loads(resp.read().decode("utf-8"))
-        assert len(alerts) > 0
-        for alert in alerts:
-            assert alert["status"] == "published", "Las alertas descartadas NO deben ser publicas"
+        assert alerts == []
 
 
 def test_10_api_red_flags_internal_endpoint(local_web_server):
-    """Verifica que GET /api/red-flags devuelva los candidatos algoritmicos para el panel."""
+    """El snapshot público no expone candidatos internos del panel revisor."""
     url = f"{local_web_server}/api/red-flags"
     with urllib.request.urlopen(url) as resp:
         assert resp.status == 200
         flags = json.loads(resp.read().decode("utf-8"))
-        assert len(flags) > 0
-        for f in flags:
-            assert "indicator_code" in f
-            assert "formula_description" in f
+        assert flags == []
+
+
+def test_review_queue_requires_veedor_session(local_web_server):
+    """La cola privada nunca entrega candidatos con la clave anónima o sin sesión."""
+    with pytest.raises(urllib.error.HTTPError) as exc:
+        urllib.request.urlopen(f"{local_web_server}/api/review/queue")
+    assert exc.value.code == 401
 
 
 def test_11_api_post_report_accepts_valid_disclaimer(local_web_server):
@@ -546,29 +563,26 @@ def test_21_vercel_wsgi_security_and_tracking():
 
 def test_22_geospatial_api_endpoints(local_web_server):
     """Verifica los endpoints REST de la Capacidad 007 (/api/geospatial/works y /api/geospatial/divergence)."""
-    # 1. GET /api/geospatial/works retorna 14 obras
+    # 1. Sin obras con CUI y coordenadas verificados, el endpoint retorna una lista vacía.
     req = urllib.request.Request(f"{local_web_server}/api/geospatial/works", method="GET")
     with urllib.request.urlopen(req) as resp:
         assert resp.status == 200
         works = json.loads(resp.read().decode("utf-8"))
-        assert len(works) == 14
-        assert any(w["site_id"] == "site-01-hospital-regional-cajamarca" for w in works)
+        assert isinstance(works, list)
+        assert works == []
 
     # 2. Filtrado por provincia
     req_chota = urllib.request.Request(f"{local_web_server}/api/geospatial/works?province=Chota", method="GET")
     with urllib.request.urlopen(req_chota) as resp:
         assert resp.status == 200
         chota_works = json.loads(resp.read().decode("utf-8"))
-        assert len(chota_works) >= 1
-        assert all(w["province"] == "Chota" for w in chota_works)
+        assert chota_works == []
 
-    # 3. Filtrado por ID individual
+    # 3. Un ID ilustrativo no se devuelve como si fuera obra verificada.
     req_single = urllib.request.Request(f"{local_web_server}/api/geospatial/works?id=site-02-av-heroes-cenepa-mp-cajamarca", method="GET")
-    with urllib.request.urlopen(req_single) as resp:
-        assert resp.status == 200
-        single_work = json.loads(resp.read().decode("utf-8"))
-        assert single_work["site_id"] == "site-02-av-heroes-cenepa-mp-cajamarca"
-        assert single_work["cui"] == "2348910"
+    with pytest.raises(urllib.error.HTTPError) as exc_single:
+        urllib.request.urlopen(req_single)
+    assert exc_single.value.code == 404
 
     # 4. ID inexistente retorna 404
     req_404 = urllib.request.Request(f"{local_web_server}/api/geospatial/works?id=site-inexistente", method="GET")
@@ -581,9 +595,8 @@ def test_22_geospatial_api_endpoints(local_web_server):
     with urllib.request.urlopen(req_div) as resp:
         assert resp.status == 200
         signals = json.loads(resp.read().decode("utf-8"))
-        assert len(signals) >= 1
-        # Verificar presencia de descargo obligatorio Art. 14
-        assert "Articulo 14" in signals[0]["disclaimer"]
+        assert isinstance(signals, list)
+        assert signals == []
 
     # 6. Filtrado de divergencia por severidad
     req_crit = urllib.request.Request(f"{local_web_server}/api/geospatial/divergence?severity=critical", method="GET")
@@ -697,7 +710,7 @@ def test_24_vercel_wsgi_geospatial_and_moderation():
     code, _, body = _stdlib_fallback_dispatch("GET", "/api/geospatial/works", {})
     assert code == 200
     works = json.loads(body.decode("utf-8"))
-    assert len(works) >= 1
+    assert isinstance(works, list)
 
     # 2. GET /api/geospatial/divergence via stdlib fallback
     code_div, _, body_div = _stdlib_fallback_dispatch("GET", "/api/geospatial/divergence", {})
