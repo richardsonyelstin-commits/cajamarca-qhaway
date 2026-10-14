@@ -24,3 +24,11 @@ test('consultas historicas explicitas conservan los tres ejercicios', async () =
   assert.equal((await dataEngine.getBudgetRecords(null, 2024)).length, 14);
   assert.equal((await dataEngine.getMacroKPIs(2024)).totalPim, 5088605186);
 });
+
+test('estadisticas institucionales usan 2026 y no inventan fuentes de financiamiento', async () => {
+  const stats = await dataEngine.getEntityBudgetStats('ce-f5f5d8fc32518855');
+  assert.equal(stats.pim, 4451746962);
+  assert.equal(stats.devengado, 3142808938);
+  assert.equal(stats.rate, 70.6);
+  assert.equal(dataEngine.getFundingComposition(), null);
+});
