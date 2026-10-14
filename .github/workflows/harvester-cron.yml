@@ -27,6 +27,8 @@ jobs:
   harvest-and-monitor:
     name: Cosecha Continua SEACE/MEF y Teledeteccion Satelital
     runs-on: ubuntu-latest
+    environment:
+      name: "Production \u2013 cajamarca-qhaway"
     timeout-minutes: 25
     env:
       SUPABASE_SESSION_POOLER_HOST: ${{ vars.SUPABASE_SESSION_POOLER_HOST }}

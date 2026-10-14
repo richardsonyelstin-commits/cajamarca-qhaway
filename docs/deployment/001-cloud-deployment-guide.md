@@ -45,6 +45,8 @@ flowchart TD
 - **Worker de Cosecha Continua (`.github/workflows/harvester-cron.yml`)**:
   1. Se ejecuta automaticamente cada 2 horas (`0 */2 * * *`) o por disparo manual.
   2. Conecta con Supabase usando `CAJAMARCA_QHAWAY_DATABASE_URL`.
+     El job usa el entorno GitHub Production del proyecto cajamarca-qhaway.
+     Su secreto de entorno tiene precedencia sobre el secreto del repositorio.
   3. Realiza la cosecha de SEACE OCDS y MEF Consulta Amigable (`harvest run --once`).
   4. Realiza la evaluacion de divergencia fisico-financiera satelital (`geospatial evaluate --sar`).
   5. Persiste cursores de ingesta en la tabla `harvest_watermarks`.
@@ -63,7 +65,9 @@ flowchart TD
 
 ### Variables de Entorno de Produccion (GitHub Secrets y Vercel Environment)
 
-Configure en la configuracion del repositorio GitHub y en el dashboard de Vercel:
+Configure en el entorno GitHub Production del proyecto cajamarca-qhaway y en Vercel Production.
+El nombre literal del entorno en YAML es `"Production \u2013 cajamarca-qhaway"`.
+El escape Unicode evita caracteres prohibidos en el archivo y conserva el entorno existente.
 
 - `CAJAMARCA_QHAWAY_DATABASE_URL`: Cadena transaccional de conexión directa o pooler de Supabase
   (`postgresql://postgres:[PASSWORD]@db.oglltrpvvifqvwmxmkjq.supabase.co:5432/postgres`).
