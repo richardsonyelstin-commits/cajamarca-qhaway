@@ -63,6 +63,10 @@ jobs:
           echo "Iniciando ciclo de recoleccion continua..."
           python -m cajamarca_qhaway.cli harvest run --source "$HARVEST_SOURCES" --once
 
+      - name: Mostrar evidencia de fuentes fallidas
+        if: ${{ failure() }}
+        run: python -m cajamarca_qhaway.cli harvest gaps --limit 10
+
       - name: Ejecutar evaluacion geoespacial satelital multi-temporal
         if: ${{ inputs.evaluate_geospatial != false }}
         env:
