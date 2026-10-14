@@ -6,7 +6,6 @@ import sqlite3
 from collections.abc import Iterator
 from contextlib import contextmanager
 from typing import Any
-from urllib.parse import unquote, urlsplit
 
 from cajamarca_qhaway.persistence.config import DatabaseConfig
 
@@ -150,9 +149,11 @@ class DatabaseManager:
         host = self.config.session_pooler_host
         if not host:
             return {}
-        parsed = urlsplit(self._dsn or "")
-        original_host = parsed.hostname or ""
-        username = unquote(parsed.username or "")
+        from psycopg.conninfo import conninfo_to_dict
+
+        params = conninfo_to_dict(self._dsn or "")
+        original_host = str(params.get("host") or "")
+        username = str(params.get("user") or "")
         if not username:
             raise ValueError("El pooler requiere un usuario PostgreSQL configurado")
         if original_host.startswith("db.") and original_host.endswith(".supabase.co"):
@@ -164,7 +165,10 @@ class DatabaseManager:
                 username += suffix
         elif not original_host.endswith(".pooler.supabase.com"):
             raise ValueError("El Session pooler solo admite un DSN Supabase")
-        return {"host": host, "port": 5432, "user": username}
+        options: dict[str, Any] = {"host": host, "port": 5432, "user": username}
+        if params.get("hostaddr"):
+            options["hostaddr"] = ""
+        return options
 
     @contextmanager
     def connection(self) -> Iterator[Any]:
