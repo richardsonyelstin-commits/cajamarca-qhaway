@@ -19,7 +19,7 @@ class SeaceHarvestConfig(BaseModel):
         description="Endpoint base verificado del feed OCDS de OECE",
     )
     user_agent: str = Field(
-        default="CajamarcaQhaway-Harvester/1.0 (+https://github.com/richardsonyelstin/cajamarca-qhaway)",
+        default="CajamarcaQhaway-Harvester/1.0 (+https://github.com/richardsonyelstin-commits/cajamarca-qhaway)",
         description="Identificador de usuario respetuoso",
     )
     max_concurrency: int = Field(default=2, ge=1, le=5, description="Semaforo maximo de peticiones simultaneas")
