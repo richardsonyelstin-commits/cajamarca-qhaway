@@ -7,13 +7,12 @@ y persistencia durable de registros canonicos.
 from __future__ import annotations
 
 import asyncio
-from collections.abc import Sequence
-from datetime import datetime, timezone
 import json
 import logging
 import os
-from pathlib import Path
 import signal
+from collections.abc import Sequence
+from pathlib import Path
 from typing import Any
 
 from cajamarca_qhaway.capabilities.entity_mapping.dataset import load_universe
@@ -22,7 +21,11 @@ from cajamarca_qhaway.capabilities.live_harvest.coverage_logger import CoverageG
 from cajamarca_qhaway.capabilities.live_harvest.mef_poller import MefPoller
 from cajamarca_qhaway.capabilities.live_harvest.seace_poller import SeacePoller
 from cajamarca_qhaway.capabilities.live_harvest.watermark_store import WatermarkStore
-from cajamarca_qhaway.models import BudgetExecutionRecord, ContractingEntity, ProcurementRecord
+from cajamarca_qhaway.models import (
+    BudgetExecutionRecord,
+    ContractingEntity,
+    ProcurementRecord,
+)
 
 logger = logging.getLogger("cajamarca_qhaway.live_harvest")
 
@@ -125,10 +128,15 @@ class HarvesterDaemon:
 
         # Sincronizacion transaccional con base de datos operativa / Supabase (Pilar 2)
         if self.sync_manager:
+            remote = getattr(getattr(self.sync_manager, "db", None), "is_postgres", False) is True
             if procurements:
-                self.sync_manager.sync_procurements(procurements)
+                result = self.sync_manager.sync_procurements(procurements)
+                if remote and result[1]:
+                    raise RuntimeError("Contrataciones pendientes en spool; cursor remoto sin avanzar")
             if executions:
-                self.sync_manager.sync_budget_executions(executions)
+                result = self.sync_manager.sync_budget_executions(executions)
+                if remote and result[1]:
+                    raise RuntimeError("Presupuestos pendientes en spool; cursor remoto sin avanzar")
 
     async def run_once(
         self, sources: Sequence[str] = ("seace", "mef")
@@ -185,11 +193,11 @@ class HarvesterDaemon:
                 if self.seace_poller.last_cycle_status != "OK":
                     logger.error("Ciclo SEACE fallido; revise la bitacora de brechas de cobertura")
             except Exception as e:
-                logger.error("Error en ciclo de SEACE: %s", e)
+                logger.error("Error en ciclo de SEACE: %s", e, exc_info=True)
 
             try:
                 await asyncio.wait_for(self.stop_event.wait(), timeout=interval)
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 pass
 
     async def _mef_loop(self) -> None:
@@ -202,11 +210,11 @@ class HarvesterDaemon:
                 if self.mef_poller.last_cycle_status != "OK":
                     logger.error("Ciclo MEF fallido; revise la bitacora de brechas de cobertura")
             except Exception as e:
-                logger.error("Error en ciclo de MEF: %s", e)
+                logger.error("Error en ciclo de MEF: %s", e, exc_info=True)
 
             try:
                 await asyncio.wait_for(self.stop_event.wait(), timeout=interval)
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 pass
 
     async def run_daemon(self, sources: Sequence[str] = ("seace", "mef")) -> None:

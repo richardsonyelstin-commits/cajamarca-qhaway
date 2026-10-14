@@ -657,3 +657,41 @@ def test_worker_connection_guard_hides_password_and_blocks_wrong_target(
     assert checks["password_placeholder"] is placeholder
     assert checks["user_project_matches"] is (project == "oglltrpvvifqvwmxmkjq")
 
+
+@pytest.mark.parametrize("source", ["mef", "seace"])
+def test_remote_spool_keeps_cursor_for_retry(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    sample_budget: BudgetExecutionRecord,
+    sample_procurement: ProcurementRecord,
+    source: str,
+) -> None:
+    config = DatabaseConfig(
+        database_url=SecretStr("postgresql://postgres:test-only@db.projectref.supabase.co/postgres"),
+        spool_dir=tmp_path / "spool",
+    )
+    manager = SyncManager(config)
+    repository = manager.budget_executions if source == "mef" else manager.procurements
+
+    def unavailable(records: object) -> int:
+        raise OSError("Sink unavailable")
+
+    monkeypatch.setattr(repository, "upsert_many", unavailable)
+    store = WatermarkStore(tmp_path / "watermarks.json")
+    harvest_config = HarvestConfig(
+        storage=StorageConfig(
+            records_storage_dir=tmp_path / "records",
+            watermark_file_path=store.file_path,
+            coverage_gap_log_path=tmp_path / "gaps.jsonl",
+        )
+    )
+    daemon = HarvesterDaemon(config=harvest_config, watermark_store=store, sync_manager=manager)
+    poller = daemon.mef_poller if source == "mef" else daemon.seace_poller
+    record = sample_budget if source == "mef" else sample_procurement
+    monkeypatch.setattr(poller, "poll_cycle", AsyncMock(return_value=[record]))
+    with pytest.raises(RuntimeError, match="spool"):
+        asyncio.run(daemon.run_once(sources=[source]))
+    assert store.state.last_mef_timestamp is None
+    assert store.state.last_seace_timestamp is None
+    assert len(manager.spooler.list_pending_files()) == 1
+

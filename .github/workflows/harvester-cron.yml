@@ -67,8 +67,23 @@ jobs:
         if: ${{ failure() }}
         run: python -m cajamarca_qhaway.cli harvest gaps --limit 10
 
-      - name: Ejecutar evaluacion geoespacial satelital multi-temporal
+      - name: Comprobar cobertura del catalogo geoespacial
+        id: geo_catalog
         if: ${{ inputs.evaluate_geospatial != false }}
+        run: |
+          python - <<'PY'
+          import os
+          from cajamarca_qhaway.capabilities.geospatial_monitoring import CAJAMARCA_PUBLIC_WORKS_CATALOG
+          count = len(CAJAMARCA_PUBLIC_WORKS_CATALOG)
+          print(f"Obras verificadas disponibles: {count}")
+          if not count:
+              print("Evaluacion satelital SIN COBERTURA: catalogo verificado vacio.")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"has_works={str(bool(count)).lower()}\n")
+          PY
+
+      - name: Ejecutar evaluacion geoespacial satelital multi-temporal
+        if: ${{ inputs.evaluate_geospatial != false && steps.geo_catalog.outputs.has_works == 'true' }}
         env:
           CAJAMARCA_QHAWAY_DATABASE_URL: ${{ secrets.CAJAMARCA_QHAWAY_DATABASE_URL }}
         run: |
@@ -81,3 +96,9 @@ jobs:
         run: |
           python -m cajamarca_qhaway.cli db status
           python -m cajamarca_qhaway.cli harvest status
+          python - <<'PY'
+          from cajamarca_qhaway.persistence.sync import SyncManager
+          status = SyncManager().get_status()
+          if not status["is_postgres"] or status["pending_spool_files"]:
+              raise SystemExit("Persistencia PostgreSQL no confirmada o spool pendiente")
+          PY
