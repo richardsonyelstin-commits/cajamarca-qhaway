@@ -2,7 +2,7 @@
 title: Certificacion operativa del corte MEF 2024-2026
 source: ai
 generator: codex-gpt-6
-generated_at: 2026-10-14T22:10:05.581654+00:00
+generated_at: 2026-10-14T22:59:05Z
 confidence: high
 verified: false
 ---
@@ -36,7 +36,7 @@ publica el corte 2026-09-30 conservado en cada fila.
 ## Verificacion local
 
 - `pytest -v`: 190 pruebas aprobadas antes del ajuste optativo de pooler.
-- Suite de corte en CI: 196 pruebas Python y 3 pruebas Node aprobadas.
+- Suite de corte en CI: 201 pruebas Python y 3 pruebas Node aprobadas.
 - Guardia de conexion: 27 pruebas locales de persistencia, incluidas cinco nuevas comprobaciones.
 - Persistencia y WSGI: 25 pruebas locales aprobadas tras corregir el parser libpq.
 - Pyright: 0 errores en extractor, exportador, oraculo y configuracion/conexion de persistencia.
@@ -69,7 +69,7 @@ El host confirmado es `aws-1-ca-central-1.pooler.supabase.com`.
 Ya esta configurado en GitHub y Vercel Production.
 El worker alcanza el pooler IPv4 y Supabase rechaza la credencial guardada.
 [Evidencia de autenticacion](https://github.com/richardsonyelstin-commits/cajamarca-qhaway/actions/runs/38646425183).
-La persona responsable debe actualizar el secreto en ambos destinos sin compartirlo por chat.
+La credencial debe validarse en ambos destinos sin compartirla por chat.
 [Supabase documenta la alternativa IPv4](https://supabase.com/docs/guides/database/connecting-to-postgres).
 Tras configurarlo se debe ejecutar otra vez el worker y cotejar sus cursores y conteos SQL.
 
@@ -83,8 +83,16 @@ Vercel se redesplego con su configuracion de produccion y termino Ready.
 [La guardia cloud](https://github.com/richardsonyelstin-commits/cajamarca-qhaway/actions/runs/38649917865)
 confirma proyecto, usuario, pooler y base de datos correctos, con `password_placeholder: true`.
 La ejecucion se detiene antes de autenticarse mientras la URL conserve el marcador de ejemplo.
-El responsable debe sustituirlo por la contrasena PostgreSQL real y codificarla para URI.
+La persona responsable sustituyo el marcador y actualizo el secreto el 2026-10-14T22:54:28Z.
 La guardia imprime exclusivamente booleanos; cinco pruebas comprueban el bloqueo y la no exposicion.
+
+[Run](https://github.com/richardsonyelstin-commits/cajamarca-qhaway/actions/runs/38650781194)
+aprobo el preflight con `password_placeholder: false` y todos los predicados de destino verdaderos.
+[Run](https://github.com/richardsonyelstin-commits/cajamarca-qhaway/actions/runs/38650973745)
+volvio a fallar con `password authentication failed` antes de iniciar la cosecha.
+La autenticacion PostgreSQL permanece pendiente de una validacion privada de la contrasena y URI.
+Los conteos y cursores SQL se conservan; Vercel se redesplego con estado Ready.
+El snapshot remoto sigue siendo identico al archivo local.
 
 ## Hidratacion del cliente MPA
 
