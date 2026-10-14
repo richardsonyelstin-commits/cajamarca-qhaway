@@ -180,7 +180,7 @@
           <span class="text-outline-variant">·</span>
           <span>MEF SIAF</span>
           <span class="text-outline-variant">·</span>
-          <span class="text-on-surface-variant font-normal">Corte Fiscal 2025</span>
+          <span class="text-on-surface-variant font-normal">Corte Fiscal 2026</span>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end pb-6 border-b border-slate-border">
           <div class="lg:col-span-8 space-y-2">
@@ -245,9 +245,9 @@
             </div>
             <div class="flex items-baseline gap-2">
               <div class="font-headline-lg text-headline-lg text-on-surface font-bold" id="kpi-exec-rate">65.7%</div>
-              <span data-pocket="execution-rate" class="civic-pocket-badge civic-status-good text-secondary">No calculable con cobertura parcial</span>
+              <span data-pocket="execution-rate" class="civic-pocket-badge civic-status-good text-secondary">S/ 66 de cada S/ 100</span>
             </div>
-            <div class="mt-1 font-caption text-caption text-secondary font-semibold">Cobertura MEF parcial; avance no calculable</div>
+            <div class="mt-1 font-caption text-caption text-secondary font-semibold">Corte MEF 2026: 14/14 entidades</div>
           </div>
           <div class="p-4 bg-slate-surface rounded border border-slate-border flex flex-col justify-between">
             <div class="flex items-center justify-between mb-1">
@@ -282,7 +282,7 @@
             <span>Riesgo Crítico (&lt;25%)</span>
           </button>
           <button data-budget-filter="moderate" class="b-filter-btn px-3 py-1.5 rounded bg-surface border border-slate-border text-on-surface-variant hover:text-on-surface text-label-sm font-label-sm whitespace-nowrap cursor-pointer">
-            Avance Regular (25%-35%)
+            Avance Regular (30%-35%)
           </button>
         </div>
       </div>
@@ -393,7 +393,7 @@
           <div class="flex items-center gap-4">
             <span class="inline-flex items-center gap-1 text-civic-emerald font-semibold">
               <span class="w-2 h-2 rounded-full bg-civic-emerald"></span>
-              Sincronización OCDS 1.1 / MEF SIAF 2025
+              Sincronización OCDS 1.1 / MEF SIAF 2026
             </span>
             <span>·</span>
             <span>Región Cajamarca (13 Provincias)</span>
@@ -431,18 +431,18 @@
       const kpiDevEl = document.getElementById('kpi-dev');
       const kpiRateEl = document.getElementById('kpi-exec-rate');
       const kpiCritEl = document.getElementById('kpi-critical-count');
-      if (kpiPimEl) kpiPimEl.textContent = dataEngine.formatMillions(kpis.totalPim);
-      if (kpiDevEl) kpiDevEl.textContent = dataEngine.formatMillions(kpis.totalDevengado);
+      if (kpiPimEl) kpiPimEl.textContent = dataEngine.formatBudgetAmount(kpis.totalPim);
+      if (kpiDevEl) kpiDevEl.textContent = dataEngine.formatBudgetAmount(kpis.totalDevengado);
       if (kpiRateEl) kpiRateEl.textContent = `${kpis.executionRate}%`;
-      const criticalEntities = entitiesWithBudget.filter(e => e.rate < 45.0);
-      if (kpiCritEl) kpiCritEl.textContent = `${criticalEntities.length} de ${entitiesWithBudget.length}`;
+      const criticalEntities = entitiesWithBudget.filter(e => e.rate < 30.0);
+      if (kpiCritEl) kpiCritEl.textContent = `${criticalEntities.length}`;
       const kpiCritSubEl = document.getElementById('kpi-critical-sub');
       if (kpiCritSubEl) {
         if (criticalEntities.length > 0) {
           const names = criticalEntities.map(e => e.province || e.name).slice(0, 2).join(', ');
-          kpiCritSubEl.textContent = `<45% de ejecución (${names}${criticalEntities.length > 2 ? '...' : ''})`;
+          kpiCritSubEl.textContent = `<30% de ejecución (${names}${criticalEntities.length > 2 ? '...' : ''})`;
         } else {
-          kpiCritSubEl.textContent = 'Ninguna entidad bajo 45%';
+          kpiCritSubEl.textContent = 'Ninguna entidad bajo 30%';
         }
       }
 
@@ -496,8 +496,8 @@
         const matchesQ = !q || name.includes(q) || prov.includes(q);
 
         let matchesFilter = true;
-        if (currentFilter === 'critical') matchesFilter = e.rate < 25.0;
-        else if (currentFilter === 'moderate') matchesFilter = e.rate >= 25.0 && e.rate <= 35.0;
+        if (currentFilter === 'critical') matchesFilter = e.rate < 30.0;
+        else if (currentFilter === 'moderate') matchesFilter = e.rate >= 30.0 && e.rate <= 35.0;
 
         return matchesQ && matchesFilter;
       });
@@ -505,7 +505,7 @@
       tbody.innerHTML = filtered.map(e => {
         let statusBadge = '';
         let barColor = 'bg-secondary';
-        if (e.rate < 25.0) {
+        if (e.rate < 30.0) {
           statusBadge = '<span class="text-caption font-label-sm text-alert-rose font-semibold flex items-center justify-center gap-1"><span class="material-symbols-outlined text-[14px]">error</span> Subejecución</span>';
           barColor = 'bg-alert-rose';
         } else if (e.rate < 35.0) {

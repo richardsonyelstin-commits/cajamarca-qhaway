@@ -46,6 +46,9 @@ jobs:
       - name: Verify pre-rendered HTML metrics against verified snapshot
         run: python scripts/audit_snapshot_parity.py
 
+      - name: Verify fiscal period after client hydration
+        run: node --test tests/budget-period.test.mjs
+
       - name: Run static accessibility and contrast checks
         run: python scripts/audit_accessibility_static.py
 

@@ -164,11 +164,12 @@ class DataEngine {
   async getBudgetRecords(entityId = null, fiscalYear = null) {
     await this.load();
     let records = this.snapshot.budget_execution_records || [];
+    const year = fiscalYear ?? Math.max(0, ...records.map(b => Number(b.fiscal_year)));
     if (entityId) {
       records = records.filter(b => b.entity_id === entityId);
     }
-    if (fiscalYear && fiscalYear !== 'all' && fiscalYear !== 'Todos') {
-      records = records.filter(b => String(b.fiscal_year) === String(fiscalYear));
+    if (year && year !== 'all' && year !== 'Todos') {
+      records = records.filter(b => String(b.fiscal_year) === String(year));
     }
     return records;
   }
@@ -187,7 +188,7 @@ class DataEngine {
     let flags = this.snapshot.red_flags || [];
     if (entityId) {
       const entityProcs = (await this.getProcurements(entityId)).map(p => p.procurement_id);
-      const entityBudgets = (await this.getBudgetRecords(entityId)).map(b => b.execution_record_id);
+      const entityBudgets = (await this.getBudgetRecords(entityId, 'all')).map(b => b.execution_record_id);
       flags = flags.filter(f =>
         (f.procurement_ids || []).some(pid => entityProcs.includes(pid)) ||
         (f.execution_record_ids || []).some(bid => entityBudgets.includes(bid))
@@ -248,10 +249,7 @@ class DataEngine {
 
   async getMacroKPIs(fiscalYear = null) {
     await this.load();
-    let budgets = this.snapshot.budget_execution_records || [];
-    if (fiscalYear && fiscalYear !== 'all' && fiscalYear !== 'Todos') {
-      budgets = budgets.filter(b => String(b.fiscal_year) === String(fiscalYear));
-    }
+    const budgets = await this.getBudgetRecords(null, fiscalYear);
 
     const procurements = await this.getProcurements(null, fiscalYear);
     const alerts = this.snapshot.alerts || [];
@@ -502,6 +500,10 @@ class DataEngine {
     if (!amount) return 'S/ 0.0 M';
     const millions = amount / 1000000;
     return `S/ ${millions.toLocaleString('es-PE', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} M`;
+  }
+
+  formatBudgetAmount(amount) {
+    return `S/ ${Number(amount).toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
   }
 
   formatCurrency(amount) {

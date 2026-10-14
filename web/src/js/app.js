@@ -957,8 +957,8 @@ export function updateSpeedometer(rate) {
 
 function hydrateGlobalKPIElements(kpis) {
   // Atributos genericos data-kpi
-  document.querySelectorAll('[data-kpi="pim-total"]').forEach(el => el.textContent = dataEngine.formatMillions(kpis.totalPim));
-  document.querySelectorAll('[data-kpi="devengado-total"]').forEach(el => el.textContent = dataEngine.formatMillions(kpis.totalDevengado));
+  document.querySelectorAll('[data-kpi="pim-total"]').forEach(el => el.textContent = dataEngine.formatBudgetAmount(kpis.totalPim));
+  document.querySelectorAll('[data-kpi="devengado-total"]').forEach(el => el.textContent = dataEngine.formatBudgetAmount(kpis.totalDevengado));
   document.querySelectorAll('[data-kpi="execution-rate"]').forEach(el => el.textContent = `${kpis.executionRate}%`);
   document.querySelectorAll('[data-kpi="procurements-total"]').forEach(el => el.textContent = `${kpis.totalProcurements.toLocaleString('es-PE')} Procesos`);
   document.querySelectorAll('[data-kpi="alerts-total"]').forEach(el => el.textContent = `${kpis.totalAlerts}`);
@@ -967,7 +967,7 @@ function hydrateGlobalKPIElements(kpis) {
 
   // IDs conocidos de index.html
   const heroPim = document.getElementById('hero-total-pim');
-  if (heroPim) heroPim.textContent = dataEngine.formatMillions(kpis.totalPim);
+  if (heroPim) heroPim.textContent = dataEngine.formatBudgetAmount(kpis.totalPim);
 
   const heroAlertsBtn = document.getElementById('hero-alerts-btn');
   if (heroAlertsBtn) heroAlertsBtn.textContent = `Ver Alertas Activas (${kpis.totalAlerts} Publicadas)`;
@@ -976,10 +976,10 @@ function hydrateGlobalKPIElements(kpis) {
   if (heroDevPct) heroDevPct.textContent = `${kpis.executionRate}%`;
 
   const heroDevMonto = document.getElementById('hero-devengado-monto');
-  if (heroDevMonto) heroDevMonto.textContent = dataEngine.formatMillions(kpis.totalDevengado);
+  if (heroDevMonto) heroDevMonto.textContent = dataEngine.formatBudgetAmount(kpis.totalDevengado);
 
   const kpiPim = document.getElementById('kpi-pim-total');
-  if (kpiPim) kpiPim.textContent = dataEngine.formatMillions(kpis.totalPim);
+  if (kpiPim) kpiPim.textContent = dataEngine.formatBudgetAmount(kpis.totalPim);
 
   const kpiDevPct = document.getElementById('kpi-devengado-pct');
   if (kpiDevPct) kpiDevPct.textContent = `${kpis.executionRate}%`;
@@ -1020,10 +1020,10 @@ function hydrateGlobalKPIElements(kpis) {
 
   // IDs conocidos de entidades.html
   const entPim = document.getElementById('entidades-kpi-pim');
-  if (entPim) entPim.textContent = dataEngine.formatMillions(kpis.totalPim);
+  if (entPim) entPim.textContent = dataEngine.formatBudgetAmount(kpis.totalPim);
 
   const entDev = document.getElementById('entidades-kpi-devengado');
-  if (entDev) entDev.textContent = dataEngine.formatMillions(kpis.totalDevengado);
+  if (entDev) entDev.textContent = dataEngine.formatBudgetAmount(kpis.totalDevengado);
 
   const entExec = document.getElementById('entidades-kpi-ejecucion');
   if (entExec) entExec.textContent = `${kpis.executionRate}%`;
