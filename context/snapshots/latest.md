@@ -2,7 +2,7 @@
 title: Estado de cajamarca-qhaway
 source: ai
 generator: codex-gpt-6
-generated_at: 2026-10-14T21:55:58.848146+00:00
+generated_at: 2026-10-14T22:59:05Z
 confidence: high
 verified: false
 ---
@@ -20,15 +20,17 @@ Cada ano 2024-2026 tiene 14 entidades; el corte oficial MEF es 2026-09-30.
 - Motor: 473 candidatos internos; alertas: 6 in_review, 2 discarded, 0 published.
 - Supabase contra spool: 0 filas presupuestales faltantes o adicionales.
 - Entidades: 14 perfiles SUNAT con payload y consulta, ademas de verified_at canonico.
-- Suite final CI: 196 pruebas Python y 2 pruebas Node aprobadas.
+- Suite final CI: 201 pruebas Python y 3 pruebas Node aprobadas.
 - Web audit: CONFORME; paridad MPA y accesibilidad estatica: PASS.
 - Pyright y Ruff del extractor y oraculo MPA: PASS.
 - CI de main y Vercel produccion Ready; PR 3, 4 y 5 integrados en commit 4764283.
 - Pooler IPv4 confirmado; 25 pruebas locales de persistencia y WSGI aprobadas.
 - Host confirmado y configurado: aws-1-ca-central-1.pooler.supabase.com.
 - Worker vinculado al entorno GitHub Production del proyecto, cuyo secreto se actualizo hoy.
-- Guardia cloud: proyecto, rol, pooler y base correctos; password_placeholder: true.
-- Falta sustituir el marcador de contrasena en GitHub Environment y Vercel Production.
+- Secreto de entorno actualizado el 2026-10-14T22:54:28Z; el marcador ya fue sustituido.
+- Guardia cloud: proyecto, rol, pooler y base correctos; password_placeholder: false.
+- Dos intentos posteriores fallan al autenticar; pendiente validacion privada de contrasena y URI.
+- Vercel redesplegado Ready; el snapshot remoto sigue siendo identico al local.
 - Persistencia: 27 pruebas locales aprobadas, incluidas cinco comprobaciones de la guardia.
 - Hidratacion MPA: corregida la suma multianual, dos pruebas Node aprobadas.
 - Navegador de produccion: PIM 5,980,488,974, devengado 3,926,357,702 y avance 65.7%.
