@@ -292,15 +292,11 @@ class DataEngine {
   }
 
   /**
-   * Desglose oficial de fuentes de financiamiento en Cajamarca
-   * @returns {object}
+   * El snapshot agregado no contiene desglose por fuente de financiamiento.
+   * @returns {null}
    */
   getFundingComposition() {
-    return {
-      canon: { label: 'Canon y Regalias', pct: 52.4 },
-      recursosOrdinarios: { label: 'Recursos Ordinarios', pct: 32.6 },
-      foncomun: { label: 'FONCOMUN / Otros', pct: 15.0 }
-    };
+    return null;
   }
 
   /**

@@ -320,8 +320,8 @@
           <!-- Filtro de Ejercicio Fiscal -->
           <div id="entidades-year-filter" class="flex items-center gap-1.5 overflow-x-auto pb-0.5 text-xs font-semibold pt-1">
             <span class="text-on-surface-variant uppercase tracking-wider text-[11px] mr-1 shrink-0">Ano Fiscal:</span>
-            <button class="year-pill px-3 py-1 rounded bg-on-surface text-on-primary whitespace-nowrap cursor-pointer transition-colors" data-year="all">Todos los anos</button>
-            <button class="year-pill px-3 py-1 rounded bg-surface text-on-surface-variant hover:text-on-surface border border-slate-border whitespace-nowrap cursor-pointer transition-colors" data-year="2026">2026</button>
+            <button class="year-pill px-3 py-1 rounded bg-on-surface text-on-primary whitespace-nowrap cursor-pointer transition-colors" data-year="2026">2026</button>
+            <button class="year-pill px-3 py-1 rounded bg-surface text-on-surface-variant hover:text-on-surface border border-slate-border whitespace-nowrap cursor-pointer transition-colors" data-year="all">Todos los anos</button>
             <button class="year-pill px-3 py-1 rounded bg-surface text-on-surface-variant hover:text-on-surface border border-slate-border whitespace-nowrap cursor-pointer transition-colors" data-year="2025">2025</button>
             <button class="year-pill px-3 py-1 rounded bg-surface text-on-surface-variant hover:text-on-surface border border-slate-border whitespace-nowrap cursor-pointer transition-colors" data-year="2024">2024</button>
           </div>
@@ -334,7 +334,7 @@
             <button class="filter-pill px-3 py-1 rounded bg-surface text-on-surface-variant hover:text-on-surface border border-slate-border whitespace-nowrap cursor-pointer transition-colors" onclick="setFilter('norte', this)">Cuenca Norte</button>
             <button class="filter-pill px-3 py-1 rounded bg-surface text-on-surface-variant hover:text-on-surface border border-slate-border whitespace-nowrap cursor-pointer transition-colors" onclick="setFilter('centrosur', this)">Centro / Sur</button>
             <button class="filter-pill px-3 py-1 rounded bg-surface text-alert-rose hover:bg-alert-rose/10 border border-slate-border whitespace-nowrap flex items-center gap-1 cursor-pointer transition-colors" onclick="setFilter('critica', this)">
-              <span class="w-1.5 h-1.5 rounded-full bg-alert-rose"></span>&lt;25% Ejecución
+              <span class="w-1.5 h-1.5 rounded-full bg-alert-rose"></span>&lt;30% Ejecución
             </button>
             <button class="filter-pill px-3 py-1 rounded bg-surface text-alert-amber hover:bg-alert-amber/10 border border-slate-border whitespace-nowrap flex items-center gap-1 cursor-pointer transition-colors" onclick="setFilter('alertas', this)">
               <span class="material-symbols-outlined text-[13px]">flag</span>Con Banderas
@@ -348,9 +348,9 @@
             Mostrando 14 de 14 entidades fiscalizadas en Fase 1
           </span>
           <div class="hidden sm:flex items-center gap-4">
-            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded bg-civic-emerald"></span> &gt;35% Óptimo</span>
-            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded bg-alert-amber"></span> 25-35% En Riesgo</span>
-            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded bg-alert-rose"></span> &lt;25% Crítico</span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded bg-civic-emerald"></span> &ge;35% Avance</span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded bg-alert-amber"></span> 30-35% Moderado</span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded bg-alert-rose"></span> &lt;30% Subejecución</span>
           </div>
         </div>
 
@@ -408,8 +408,8 @@
             <div>
               <div class="flex items-start justify-between mb-2">
                 <div>
-                  <h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Ranking de Eficiencia en Inversiones (Obras)</h3>
-                  <p class="font-body-sm text-body-sm text-on-surface-variant">Porcentaje devengado en proyectos de capital físico (caminos, agua, hospitales), excluyendo planillas.</p>
+                  <h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Avance del gasto presupuestal por entidad</h3>
+                  <p class="font-body-sm text-body-sm text-on-surface-variant">Porcentaje devengado sobre el PIM total de cada entidad en el ejercicio seleccionado.</p>
                 </div>
                 <span class="material-symbols-outlined text-outline text-[22px]">bar_chart</span>
               </div>
@@ -422,7 +422,7 @@
             </div>
             <div class="mt-4 pt-2 border-t border-slate-border text-caption font-caption text-on-surface-variant flex items-center justify-between">
               <span id="ranking-brecha-text">Brecha de ejecución: calculando...</span>
-              <span class="font-semibold text-on-surface">Rubro 18 Canon y Sobrecanon</span>
+              <span class="font-semibold text-on-surface">Presupuesto total del pliego</span>
             </div>
           </div>
 
@@ -440,14 +440,14 @@
               <!-- Gráfico Donut SVG -->
               <div class="py-4 flex flex-col sm:flex-row items-center gap-6">
                 <div class="relative w-36 h-36 shrink-0">
-                  <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36" role="img" aria-label="Distribución de fuentes de financiamiento: Canon 52%, Recursos Ordinarios 33%, FONCOMUN 15%">
+                  <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36" role="img" aria-label="Desglose por fuente de financiamiento no disponible">
                     <path class="text-surface-container" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4.5"></path>
-                    <path id="donut-slice-canon" class="text-secondary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="52.4, 100" stroke-width="4.5" style="transition: stroke-dasharray 0.8s ease-out, stroke-dashoffset 0.8s ease-out;"></path>
-                    <path id="donut-slice-ro" class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="32.6, 100" stroke-dashoffset="-52.4" stroke-width="4.5" style="transition: stroke-dasharray 0.8s ease-out, stroke-dashoffset 0.8s ease-out;"></path>
-                    <path id="donut-slice-foncomun" class="text-alert-amber" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="15.0, 100" stroke-dashoffset="-85" stroke-width="4.5" style="transition: stroke-dasharray 0.8s ease-out, stroke-dashoffset 0.8s ease-out;"></path>
+                    <path id="donut-slice-canon" class="text-secondary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="0, 100" stroke-width="4.5" style="transition: stroke-dasharray 0.8s ease-out, stroke-dashoffset 0.8s ease-out;"></path>
+                    <path id="donut-slice-ro" class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="0, 100" stroke-dashoffset="0" stroke-width="4.5" style="transition: stroke-dasharray 0.8s ease-out, stroke-dashoffset 0.8s ease-out;"></path>
+                    <path id="donut-slice-foncomun" class="text-alert-amber" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="0, 100" stroke-dashoffset="0" stroke-width="4.5" style="transition: stroke-dasharray 0.8s ease-out, stroke-dashoffset 0.8s ease-out;"></path>
                   </svg>
                   <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-                    <span id="donut-pct-text" class="font-headline-sm text-headline-sm font-semibold text-on-surface">52%</span>
+                    <span id="donut-pct-text" class="font-headline-sm text-headline-sm font-semibold text-on-surface">Sin datos</span>
                     <span class="font-caption text-caption text-on-surface-variant uppercase">Canon</span>
                   </div>
                 </div>
@@ -469,8 +469,8 @@
               </div>
 
               <div class="p-3 bg-surface-container rounded text-body-sm font-body-sm text-on-surface-variant border border-slate-border">
-                <strong class="text-on-surface font-semibold block mb-0.5">Vulnerabilidad de Gestión:</strong>
-                Hualgayoc, Celendín y Cajamarca concentran más del 68% del canon minero transferido por el MEF.
+                <strong class="text-on-surface font-semibold block mb-0.5">Cobertura del desglose:</strong>
+                La fuente agregada disponible no permite calcular porcentajes de canon ni otras fuentes.
               </div>
             </div>
             <div class="mt-4 pt-2 border-t border-slate-border flex items-center justify-between font-caption text-caption text-on-surface-variant">
@@ -559,7 +559,7 @@
             <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-celendin">M. P. de Celendín</a></li>
             <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-hualgayoc">M. P. de Hualgayoc-Bambamarca</a></li>
             <li><a class="hover:text-on-surface transition-colors" href="/entidad?id=mp-san-ignacio">M. P. de San Ignacio</a></li>
-            <li><a class="hover:text-on-surface transition-colors" href="/entidades" class="text-secondary font-medium">+ 6 Provincias y SEDACAJ →</a></li>
+            <li><a class="hover:text-on-surface transition-colors" href="/entidades" class="text-secondary font-medium">+ 6 Provincias →</a></li>
           </ul>
         </div>
 
@@ -704,7 +704,7 @@
         if (currentFilter === 'gore') matchesFilter = (zone === 'gore');
         else if (currentFilter === 'norte') matchesFilter = (zone === 'norte');
         else if (currentFilter === 'centrosur') matchesFilter = (zone === 'centrosur');
-        else if (currentFilter === 'critica') matchesFilter = (exec < 25.0);
+        else if (currentFilter === 'critica') matchesFilter = (exec < 30.0);
         else if (currentFilter === 'alertas') matchesFilter = (alerts > 0);
 
         const isVisible = matchesSearch && matchesFilter;

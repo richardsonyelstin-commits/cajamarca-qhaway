@@ -1298,18 +1298,16 @@ function renderEntityCard(ent, stats, flagsCount, procsCount, year) {
   const levelText = isGore ? 'Sede Regional · Nivel GORE' : `Provincia de ${prov} · Local`;
   const nameShort = isGore ? 'Gobierno Regional de Cajamarca' : `M. P. de ${prov}`;
   const rate = stats.rate;
-  const pimM = (stats.pim / 1e6).toFixed(1);
-  const devM = (stats.devengado / 1e6).toFixed(1);
-  const color = rate >= 45 ? 'secondary' : rate >= 25 ? 'alert-amber' : 'alert-rose';
-  const statusLabel = rate >= 45 ? 'Meta Superada (>=45%)' : rate >= 25 ? 'Moderado (25-45%)' : 'Riesgo Critico (<25%)';
+  const color = rate >= 35 ? 'secondary' : rate >= 30 ? 'alert-amber' : 'alert-rose';
+  const statusLabel = rate >= 35 ? 'Avance (>=35%)' : rate >= 30 ? 'Moderado (30-35%)' : 'Subejecucion (<30%)';
   const flagBadgeClass = flagsCount > 0 ? (flagsCount >= 4 ? 'bg-error-container text-on-error-container' : 'bg-alert-amber/10 text-alert-amber') : 'bg-surface-container text-on-surface-variant';
   const flagText = flagsCount > 0 ? `${flagsCount} Banderas` : 'Sin Banderas';
-  const yearLabel = (year && year !== 'all') ? year : 'Consolidado';
-  const observation = rate >= 45
-    ? 'Ejecucion presupuestal regular sobrepasando la meta minima del 45%.'
-    : rate >= 25
+  const yearLabel = year === 'all' ? 'Consolidado' : (year || Math.max(...dataEngine.snapshot.budgets.map(row => row.fiscal_year)));
+  const observation = rate >= 35
+    ? 'Avance del gasto sobre el presupuesto autorizado del ejercicio.'
+    : rate >= 30
     ? 'Avance moderado de gasto con seguimiento en devengados de obras.'
-    : 'Ritmo critico por debajo del 25%; atencion prioritaria requerida.';
+    : 'Devengado inferior al 30% del presupuesto autorizado del ejercicio.';
 
   return `
     <article class="entity-card bg-surface-container-lowest border border-slate-border rounded flex flex-col justify-between hover:shadow-md transition-shadow"
@@ -1317,7 +1315,7 @@ function renderEntityCard(ent, stats, flagsCount, procsCount, year) {
              data-entity-id="${ent.entity_id}"
              data-exec="${rate}"
              data-name="${ent.official_name}"
-             data-pim="${pimM}"
+             data-pim="${stats.pim}"
              data-ruc="${ent.ruc}"
              data-zone="${zone}">
       <div class="p-6 space-y-4">
@@ -1343,12 +1341,12 @@ function renderEntityCard(ent, stats, flagsCount, procsCount, year) {
         <div class="grid grid-cols-2 gap-2 bg-slate-surface p-3 rounded border border-slate-border">
           <div>
             <span class="block text-caption font-caption text-on-surface-variant uppercase">PIM ${yearLabel}</span>
-            <span data-card-pim class="font-headline-sm text-headline-sm text-on-surface font-semibold">S/ ${pimM} M</span>
+            <span data-card-pim class="font-headline-sm text-headline-sm text-on-surface font-semibold">${dataEngine.formatBudgetAmount(stats.pim)}</span>
           </div>
           <div>
             <span class="block text-caption font-caption text-on-surface-variant uppercase">Devengado (% / S/.)</span>
             <span data-card-rate class="font-headline-sm text-headline-sm text-${color} font-semibold">${rate}%</span>
-            <span data-card-dev class="block font-caption text-caption text-on-surface-variant">S/ ${devM} M</span>
+            <span data-card-dev class="block font-caption text-caption text-on-surface-variant">${dataEngine.formatBudgetAmount(stats.devengado)}</span>
           </div>
         </div>
         <div>
@@ -1385,16 +1383,14 @@ function renderEntityTableRow(ent, stats, flagsCount, procsCount, year) {
   const prov = ent.province || '';
   const levelText = isGore ? 'Nivel Regional (GORE)' : `Provincia de ${prov}`;
   const rate = stats.rate;
-  const pimM = (stats.pim / 1e6).toFixed(1);
-  const devM = (stats.devengado / 1e6).toFixed(1);
-  const color = rate >= 45 ? 'bg-secondary text-white' : rate >= 25 ? 'bg-alert-amber/20 text-alert-amber' : 'bg-error-container text-on-error-container';
+  const color = rate >= 35 ? 'bg-secondary text-white' : rate >= 30 ? 'bg-alert-amber/20 text-alert-amber' : 'bg-error-container text-on-error-container';
 
   return `
     <tr class="hover:bg-slate-surface">
       <td class="px-4 py-3 font-semibold text-on-surface">${ent.official_name}<br/><span class="font-normal font-mono text-caption text-on-surface-variant">RUC: ${ent.ruc}</span></td>
       <td class="px-4 py-3 text-on-surface-variant">${levelText}</td>
-      <td class="px-4 py-3 text-right font-medium text-on-surface">S/ ${pimM} M</td>
-      <td class="px-4 py-3 text-right text-on-surface font-medium">S/ ${devM} M</td>
+      <td class="px-4 py-3 text-right font-medium text-on-surface">${dataEngine.formatBudgetAmount(stats.pim)}</td>
+      <td class="px-4 py-3 text-right text-on-surface font-medium">${dataEngine.formatBudgetAmount(stats.devengado)}</td>
       <td class="px-4 py-3 text-center"><span class="px-2 py-0.5 rounded ${color} font-semibold">${rate}%</span></td>
       <td class="px-4 py-3 text-center font-mono">${procsCount}</td>
       <td class="px-4 py-3 text-center"><span class="${flagsCount > 0 ? 'text-alert-rose font-semibold' : 'text-on-surface-variant'}">${flagsCount > 0 ? `${flagsCount} Banderas` : '0'}</span></td>
@@ -1408,8 +1404,8 @@ function renderRankingObras(rankingItems) {
   if (!container) return;
 
   container.innerHTML = rankingItems.slice(0, 7).map((item, idx) => {
-    const bgClass = item.rate >= 45 ? 'bg-secondary' : item.rate >= 25 ? 'bg-alert-amber' : 'bg-alert-rose';
-    const textClass = item.rate >= 45 ? 'text-secondary' : item.rate >= 25 ? 'text-alert-amber' : 'text-alert-rose';
+    const bgClass = item.rate >= 35 ? 'bg-secondary' : item.rate >= 30 ? 'bg-alert-amber' : 'bg-alert-rose';
+    const textClass = item.rate >= 35 ? 'text-secondary' : item.rate >= 30 ? 'text-alert-amber' : 'text-alert-rose';
     const name = item.isGore ? 'Gobierno Regional Cajamarca (Sede Central)' : `M. P. ${item.province || item.name}`;
 
     return `
@@ -1448,7 +1444,7 @@ async function hydrateEntidadesPage(kpis) {
   const sliceRo = document.getElementById('donut-slice-ro');
   const sliceFoncomun = document.getElementById('donut-slice-foncomun');
   const donutText = document.getElementById('donut-pct-text');
-  if (sliceCanon && sliceRo && sliceFoncomun) {
+  if (funding && sliceCanon && sliceRo && sliceFoncomun) {
     sliceCanon.style.transition = 'stroke-dasharray 0.8s ease-out, stroke-dashoffset 0.8s ease-out';
     sliceRo.style.transition = 'stroke-dasharray 0.8s ease-out, stroke-dashoffset 0.8s ease-out';
     sliceFoncomun.style.transition = 'stroke-dasharray 0.8s ease-out, stroke-dashoffset 0.8s ease-out';
@@ -1458,9 +1454,9 @@ async function hydrateEntidadesPage(kpis) {
     sliceFoncomun.setAttribute('stroke-dasharray', `${funding.foncomun.pct}, 100`);
     sliceFoncomun.setAttribute('stroke-dashoffset', `-${(funding.canon.pct + funding.recursosOrdinarios.pct).toFixed(1)}`);
   }
-  if (donutText) donutText.textContent = `${Math.round(funding.canon.pct)}%`;
+  if (donutText) donutText.textContent = funding ? `${Math.round(funding.canon.pct)}%` : 'Sin datos';
 
-  async function updateEntitiesView(year = 'all') {
+  async function updateEntitiesView(year = null) {
     const updatedKpis = await dataEngine.getMacroKPIs(year);
     hydrateGlobalKPIElements(updatedKpis);
 
@@ -1504,7 +1500,7 @@ async function hydrateEntidadesPage(kpis) {
   }
 
   // Render inicial
-  await updateEntitiesView('all');
+  await updateEntitiesView();
 
   const yearFilterContainer = document.getElementById('entidades-year-filter');
   if (yearFilterContainer) {

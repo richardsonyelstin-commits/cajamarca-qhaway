@@ -80,6 +80,9 @@ Dos pruebas Node con el snapshot real verifican PIM 5,980,488,974 y devengado 3,
 El formato de los KPIs conserva importes completos antes y despues de la hidratacion.
 El navegador de produccion confirma ambos importes, 65.7% y las 14 filas del ejercicio 2026.
 San Pablo conserva 25.8%; el filtro de subejecucion usa el umbral de 30%.
+La vista Entidades inicia en 2026 y permite consultar los ejercicios anteriores explicitamente.
+Se retiraron porcentajes de canon constantes sin evidencia y la mencion a SEDACAJ del universo.
+El comparativo describe el presupuesto total disponible, sin atribuirlo solo a obras o canon.
 El fallback cloud rechaza denuncias sin persistencia confirmable con HTTP 503.
 
 ## Limite del saneamiento de Git
