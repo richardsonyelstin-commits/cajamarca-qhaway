@@ -98,7 +98,7 @@ jobs:
           python -m cajamarca_qhaway.cli harvest status
           python - <<'PY'
           from cajamarca_qhaway.persistence.sync import SyncManager
-          status = SyncManager().get_status()
+          status = SyncManager().status()
           if not status["is_postgres"] or status["pending_spool_files"]:
               raise SystemExit("Persistencia PostgreSQL no confirmada o spool pendiente")
           PY
