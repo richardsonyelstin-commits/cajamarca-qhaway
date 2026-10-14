@@ -36,7 +36,8 @@ publica el corte 2026-09-30 conservado en cada fila.
 ## Verificacion local
 
 - `pytest -v`: 190 pruebas aprobadas antes del ajuste optativo de pooler.
-- `pytest tests/test_persistence.py -q`: 21 aprobadas, incluidas tres pruebas del pooler.
+- Suite final en CI: 196 pruebas Python y 2 pruebas Node aprobadas.
+- Persistencia y WSGI: 25 pruebas locales aprobadas tras corregir el parser libpq.
 - Pyright: 0 errores en extractor, exportador, oraculo y configuracion/conexion de persistencia.
 - Ruff: sin errores en esos modulos y las nuevas pruebas del extractor.
 - `web audit`: CONFORME.
@@ -48,7 +49,9 @@ publica el corte 2026-09-30 conservado en cada fila.
 
 [PR 3 integrado](https://github.com/richardsonyelstin-commits/cajamarca-qhaway/pull/3).
 [CI de main aprobado](https://github.com/richardsonyelstin-commits/cajamarca-qhaway/actions/runs/38644855774).
-Vercel publico el commit 83e6640 en produccion con estado Ready.
+Los PR 3, 4 y 5 estan integrados en main, commit 4764283.
+[CI final aprobado](https://github.com/richardsonyelstin-commits/cajamarca-qhaway/actions/runs/38647722454).
+Vercel publico el corte en produccion, deployment dpl_BZK5tPqHMT4VKTzwcHLfBhqAELJY, Ready.
 [Plataforma publica](https://cajamarca-qhaway.vercel.app).
 Las quince rutas MPA comprobadas devuelven HTTP 200 con nosniff y X-Frame-Options DENY.
 El snapshot remoto coincide en conteos con la copia local y omite candidatos y denuncias.
@@ -75,6 +78,8 @@ El navegador mostro un cambio de 65.7% a 82.1% al sumar tres ejercicios.
 El cliente ahora selecciona 2026 por defecto y conserva consultas historicas explicitas.
 Dos pruebas Node con el snapshot real verifican PIM 5,980,488,974 y devengado 3,926,357,702.
 El formato de los KPIs conserva importes completos antes y despues de la hidratacion.
+El navegador de produccion confirma ambos importes, 65.7% y las 14 filas del ejercicio 2026.
+San Pablo conserva 25.8%; el filtro de subejecucion usa el umbral de 30%.
 El fallback cloud rechaza denuncias sin persistencia confirmable con HTTP 503.
 
 ## Limite del saneamiento de Git

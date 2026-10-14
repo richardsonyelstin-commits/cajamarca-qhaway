@@ -20,15 +20,16 @@ Cada ano 2024-2026 tiene 14 entidades; el corte oficial MEF es 2026-09-30.
 - Motor: 473 candidatos internos; alertas: 6 in_review, 2 discarded, 0 published.
 - Supabase contra spool: 0 filas presupuestales faltantes o adicionales.
 - Entidades: 14 perfiles SUNAT con payload y consulta, ademas de verified_at canonico.
-- Suite final: 190 pruebas aprobadas; 3 pruebas de exportacion tras unificar el spool SEACE.
+- Suite final CI: 196 pruebas Python y 2 pruebas Node aprobadas.
 - Web audit: CONFORME; paridad MPA y accesibilidad estatica: PASS.
 - Pyright y Ruff del extractor y oraculo MPA: PASS.
-- CI de main y Vercel produccion Ready; PR 3 integrado en commit 83e6640.
-- Worker cloud: bloqueado por host PostgreSQL directo IPv6 sin ruta en GitHub Actions.
-- Opcion Session pooler implementada y comprobada con 21 pruebas de persistencia.
+- CI de main y Vercel produccion Ready; PR 3, 4 y 5 integrados en commit 4764283.
+- Pooler IPv4 confirmado; 25 pruebas locales de persistencia y WSGI aprobadas.
 - Host confirmado y configurado: aws-1-ca-central-1.pooler.supabase.com.
 - Worker: password authentication failed; falta actualizar la credencial en GitHub y Vercel.
 - Hidratacion MPA: corregida la suma multianual, dos pruebas Node aprobadas.
+- Navegador de produccion: PIM 5,980,488,974, devengado 3,926,357,702 y avance 65.7%.
+- Denuncias cloud: HTTP 503 hasta disponer de persistencia confirmable en el adaptador.
 
 ## Decisiones confirmadas por la persona responsable
 
