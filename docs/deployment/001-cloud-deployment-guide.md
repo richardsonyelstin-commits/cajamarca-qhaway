@@ -99,16 +99,20 @@ Al no depender del entorno local:
    La fuente primaria verificable es
    [Consulta de Ejecucion del Gasto del MEF](https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2026&ap=ActProy).
 
-### Ejecución continua en Render
+### Conexion del worker desde una red IPv4
 
-El CLI admite `python -m cajamarca_qhaway.cli harvest run --daemon`, que puede ejecutarse
-como Background Worker continuo. El daemon sondea SEACE cada 5 minutos y MEF cada hora por
-defecto. Render documenta workers para tareas persistentes; son servicios con cómputo asignado.
-No se configura un segundo worker mientras el cron de GitHub Actions siga activo: ambas
-instancias podrían sondear las mismas fuentes. Primero resolver el endpoint MEF y decidir si se
-reemplaza el cron existente; cualquier worker debe usar la misma URL PostgreSQL de Supabase,
-watermarks persistentes y una sola instancia.
+El run de produccion del 2026-10-14 fallo antes de ingerir datos porque el runner no alcanza
+la direccion IPv6 del host PostgreSQL directo.
+[Evidencia del worker](https://github.com/richardsonyelstin-commits/cajamarca-qhaway/actions/runs/38644858333).
 
-La automatización no habilita por sí misma una cosecha MEF: el acceso a una fuente oficial que
-devuelva registros verificables es una condición de operación, no un problema que se resuelva
-aumentando la frecuencia del sondeo.
+Supabase recomienda su Session pooler para redes IPv4.
+[Documentacion oficial](https://supabase.com/docs/guides/database/connecting-to-postgres).
+Obtener el hostname exacto en el panel Connect del proyecto; no deducirlo de la region.
+Configurar la variable del repositorio GitHub `SUPABASE_SESSION_POOLER_HOST` con ese hostname.
+El worker conserva el secreto `CAJAMARCA_QHAWAY_DATABASE_URL` y cambia solo host, puerto 5432
+y el usuario con sufijo de proyecto para la conexion de sesion.
+La validacion admite exclusivamente hosts oficiales `.pooler.supabase.com`.
+
+Sin esa variable, la conexion conserva el DSN original y sus errores siguen siendo visibles.
+Un despliegue Vercel Ready y CI verde no acreditan por si solos que el worker haya ingerido datos.
+Despues de configurar el host, ejecutar el workflow y verificar cosecha, cursores y conteos SQL.

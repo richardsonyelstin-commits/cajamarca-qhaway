@@ -49,6 +49,41 @@ from cajamarca_qhaway.persistence.spool import LocalSpooler
 from cajamarca_qhaway.persistence.sync import SyncManager
 
 
+def test_session_pooler_preserves_secret_and_uses_project_role() -> None:
+    dsn = "postgresql://postgres:encoded%40password@db.projectref.supabase.co:5432/postgres"
+    config = DatabaseConfig(
+        database_url=SecretStr(dsn), session_pooler_host="verified.pooler.supabase.com"
+    )
+    manager = DatabaseManager(config)
+    assert manager.session_pooler_options() == {
+        "host": "verified.pooler.supabase.com", "port": 5432, "user": "postgres.projectref"
+    }
+    assert config.database_url.get_secret_value() == dsn
+    assert "encoded" not in str(manager.session_pooler_options())
+
+
+def test_session_pooler_is_opt_in_and_rejects_foreign_hosts() -> None:
+    from pydantic import ValidationError
+
+    assert DatabaseManager(DatabaseConfig(database_url=None)).session_pooler_options() == {}
+    with pytest.raises(ValidationError):
+        DatabaseConfig(session_pooler_host="credentials.example.org")
+    manager = DatabaseManager(DatabaseConfig(
+        database_url=SecretStr("postgresql://postgres:test@db.example.org/postgres"),
+        session_pooler_host="verified.pooler.supabase.com",
+    ))
+    with pytest.raises(ValueError, match="solo admite un DSN Supabase"):
+        manager.session_pooler_options()
+
+
+def test_session_pooler_does_not_duplicate_project_role_suffix() -> None:
+    manager = DatabaseManager(DatabaseConfig(
+        database_url=SecretStr("postgresql://postgres.projectref:test@db.projectref.supabase.co/postgres"),
+        session_pooler_host="verified.pooler.supabase.com",
+    ))
+    assert manager.session_pooler_options()["user"] == "postgres.projectref"
+
+
 # ============================================================================
 # Fixtures
 # ============================================================================

@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import sqlite3
+from collections.abc import Iterator
 from contextlib import contextmanager
-from typing import Any, Iterator
+from typing import Any
+from urllib.parse import unquote, urlsplit
 
 from cajamarca_qhaway.persistence.config import DatabaseConfig
 
@@ -143,6 +145,27 @@ class DatabaseManager:
             return sql.replace("?", "%s")
         return sql
 
+    def session_pooler_options(self) -> dict[str, Any]:
+        """Conserva el secreto DSN y cambia solo el destino al pooler oficial configurado."""
+        host = self.config.session_pooler_host
+        if not host:
+            return {}
+        parsed = urlsplit(self._dsn or "")
+        original_host = parsed.hostname or ""
+        username = unquote(parsed.username or "")
+        if not username:
+            raise ValueError("El pooler requiere un usuario PostgreSQL configurado")
+        if original_host.startswith("db.") and original_host.endswith(".supabase.co"):
+            project_ref = original_host.removeprefix("db.").removesuffix(".supabase.co")
+            if not project_ref.isalnum():
+                raise ValueError("Referencia de proyecto Supabase invalida")
+            suffix = f".{project_ref}"
+            if not username.endswith(suffix):
+                username += suffix
+        elif not original_host.endswith(".pooler.supabase.com"):
+            raise ValueError("El Session pooler solo admite un DSN Supabase")
+        return {"host": host, "port": 5432, "user": username}
+
     @contextmanager
     def connection(self) -> Iterator[Any]:
         """Provee un contexto transaccional para la base de datos configurada."""
@@ -154,8 +177,9 @@ class DatabaseManager:
             # Una URL PostgreSQL explicita selecciona persistencia remota. No degradar
             # silenciosamente a SQLite: una escritura local pareceria confirmada y se
             # perderia cuando termine el proceso.
-            conn = psycopg.connect(
+            conn = psycopg.Connection[dict[str, Any]].connect(
                 self._dsn,
+                **self.session_pooler_options(),
                 row_factory=dict_row,
                 connect_timeout=int(self.config.connection_timeout_seconds),
                 options=f"-c statement_timeout={int(self.config.command_timeout_seconds * 1000)}",

@@ -19,6 +19,11 @@ class DatabaseConfig(BaseModel):
         else None,
         description="DSN de Supabase; por defecto se lee de CAJAMARCA_QHAWAY_DATABASE_URL.",
     )
+    session_pooler_host: str | None = Field(
+        default_factory=lambda: os.environ.get("SUPABASE_SESSION_POOLER_HOST") or None,
+        pattern=r"^[a-z0-9][a-z0-9-]*\.pooler\.supabase\.com$",
+        description="Host real del Session pooler obtenido del panel Connect de Supabase.",
+    )
     min_pool_size: int = Field(default=1, ge=1, le=10, description="Conexiones minimas en el pool")
     max_pool_size: int = Field(default=10, ge=2, le=30, description="Conexiones maximas en el pool")
     max_idle_seconds: float = Field(default=300.0, ge=10.0, description="Tiempo de vida en reposo")
