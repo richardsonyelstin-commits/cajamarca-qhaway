@@ -1302,7 +1302,7 @@ function renderEntityCard(ent, stats, flagsCount, procsCount, year) {
   const statusLabel = rate >= 35 ? 'Avance (>=35%)' : rate >= 30 ? 'Moderado (30-35%)' : 'Subejecucion (<30%)';
   const flagBadgeClass = flagsCount > 0 ? (flagsCount >= 4 ? 'bg-error-container text-on-error-container' : 'bg-alert-amber/10 text-alert-amber') : 'bg-surface-container text-on-surface-variant';
   const flagText = flagsCount > 0 ? `${flagsCount} Banderas` : 'Sin Banderas';
-  const yearLabel = year === 'all' ? 'Consolidado' : (year || Math.max(...dataEngine.snapshot.budgets.map(row => row.fiscal_year)));
+  const yearLabel = year && year !== 'all' ? year : 'Consolidado';
   const observation = rate >= 35
     ? 'Avance del gasto sobre el presupuesto autorizado del ejercicio.'
     : rate >= 30
@@ -1465,14 +1465,15 @@ async function hydrateEntidadesPage(kpis) {
     const cardsHtml = [];
     const tableRowsHtml = [];
     const rankingItems = [];
+    const displayedYear = year || budgets[0]?.fiscal_year;
 
     for (const ent of entities) {
       const stats = await dataEngine.getEntityBudgetStats(ent.entity_id, year);
       const procs = await dataEngine.getProcurements(ent.entity_id, year);
       const flags = await dataEngine.getRedFlags(ent.entity_id);
 
-      cardsHtml.push(renderEntityCard(ent, stats, flags.length, procs.length, year));
-      tableRowsHtml.push(renderEntityTableRow(ent, stats, flags.length, procs.length, year));
+      cardsHtml.push(renderEntityCard(ent, stats, flags.length, procs.length, displayedYear));
+      tableRowsHtml.push(renderEntityTableRow(ent, stats, flags.length, procs.length, displayedYear));
       rankingItems.push({
         id: ent.entity_id,
         name: ent.official_name,
