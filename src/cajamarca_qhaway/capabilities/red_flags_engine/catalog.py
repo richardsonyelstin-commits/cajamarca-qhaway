@@ -76,8 +76,11 @@ ACTIVE_INDICATORS: dict[str, IndicatorDefinition] = {
     ),
     "mef-underspending": IndicatorDefinition(
         code="mef-underspending",
-        name="Baja ejecucion presupuestal al cierre",
-        formula_description="(PIM - devengado) / PIM para entidad, categoria y ejercicio cerrado; se activa desde 0.50",
+        name="Baja ejecucion presupuestal al corte",
+        formula_description=(
+            "(PIM - devengado) / PIM por entidad, categoria y ejercicio; "
+            "corte oficial para año abierto; se activa desde 0.50"
+        ),
         default_threshold=0.50,
         unit="ratio",
     ),

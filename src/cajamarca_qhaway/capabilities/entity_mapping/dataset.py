@@ -57,6 +57,11 @@ class EntityVerification(BaseModel):
     ruc_cross_verified: bool
     consucode_verification_note: str | None = None
     inclusion_justification: str | None = None
+    siaf_pliego: str | None = None
+    siaf_sec_ejec: str | None = None
+    ubigeo: str | None = None
+    siaf_code_source: str | None = None
+    ubigeo_source: str | None = None
 
 
 @dataclass(frozen=True)
@@ -112,6 +117,16 @@ def load_universe(path: Path | None = None) -> Universe:
     raw_entries = _load_raw(target_path)
     records: list[EntityRecord] = []
     seen_rucs: set[str] = set()
+    seen_siaf_codes: set[str] = set()
+    seen_ubigeos: set[str] = set()
+    has_siaf_metadata = any(
+        isinstance(raw.get("verification"), dict)
+        and any(
+            raw["verification"].get(field)
+            for field in ("siaf_pliego", "siaf_sec_ejec", "ubigeo")
+        )
+        for raw in raw_entries
+    )
 
     for idx, raw in enumerate(raw_entries):
         if "verification" not in raw:
@@ -137,7 +152,41 @@ def load_universe(path: Path | None = None) -> Universe:
                 "inclusion_justification -- RN-001-02 lo exige"
             )
 
+        if has_siaf_metadata:
+            if entity.entity_level == "regional":
+                if verification.siaf_pliego != "445" or verification.siaf_sec_ejec or verification.ubigeo:
+                    raise ValueError(f"{target_path}: mapeo SIAF invalido para {entity.official_name}")
+                siaf_key = verification.siaf_pliego
+            else:
+                if (
+                    not verification.siaf_sec_ejec
+                    or not verification.ubigeo
+                    or verification.siaf_pliego
+                    or not verification.siaf_code_source
+                    or not verification.ubigeo_source
+                ):
+                    raise ValueError(f"{target_path}: falta mapeo SIAF/UBIGEO para {entity.official_name}")
+                if len(verification.siaf_sec_ejec) != 6 or not verification.siaf_sec_ejec.isdigit():
+                    raise ValueError(f"{target_path}: SEC_EJEC invalido para {entity.official_name}")
+                if len(verification.ubigeo) != 6 or not verification.ubigeo.isdigit():
+                    raise ValueError(f"{target_path}: UBIGEO invalido para {entity.official_name}")
+                siaf_key = verification.siaf_sec_ejec
+            if siaf_key in seen_siaf_codes:
+                raise ValueError(f"{target_path}: SEC_EJEC/PLIEGO duplicado: {siaf_key}")
+            seen_siaf_codes.add(siaf_key)
+            if verification.ubigeo:
+                if verification.ubigeo in seen_ubigeos:
+                    raise ValueError(f"{target_path}: UBIGEO duplicado: {verification.ubigeo}")
+                seen_ubigeos.add(verification.ubigeo)
+
         records.append(EntityRecord(entity=entity, verification=verification))
+
+    if has_siaf_metadata and (
+        len(records) != REQUIRED_ENTITY_COUNT
+        or len(seen_siaf_codes) != REQUIRED_ENTITY_COUNT
+        or len(seen_ubigeos) != REQUIRED_ENTITY_COUNT - 1
+    ):
+        raise ValueError(f"{target_path}: el cruce SIAF/UBIGEO no cubre las 14 entidades")
 
     return Universe(entities=tuple(records))
 

@@ -4,13 +4,13 @@ spec: "004"
 capability: red-flags-engine
 status: draft
 created: 2026-08-20
-updated: 2026-08-20
+updated: 2026-10-14
 consumes: [ProcurementRecord, BudgetExecutionRecord]
 produces: [RedFlag]
 open_clarifications: 5
 source: ai
-generator: claude-sonnet-5
-generated_at: 2026-08-20T00:00:00Z
+generator: codex-gpt-6
+generated_at: 2026-10-14T04:02:22Z
 confidence: medium
 verified: false
 ---
@@ -114,10 +114,15 @@ en `005-review-panel` (Artículo 14 de la constitución) - esta regla es la apli
 ese artículo a esta capacidad concreta, y se repite aquí para que no se pueda alegar que
 "la spec de red-flags-engine no lo prohibía explícitamente".
 
-**RN-004-09. `mef-underspending` solo evalua ejercicios cerrados con PIM mayor que cero.**
+**RN-004-09. `mef-underspending` evalua ejercicios cerrados y cortes oficiales vencidos
+con PIM mayor que cero.**
 Para entidad, categoria presupuestal y ejercicio fiscal, calcula `(PIM - devengado) / PIM`; se
 activa cuando el resultado es al menos `0.50`. Los registros con PIM cero no generan division ni
-señal. La regla queda aprobada por ADR 0010.
+señal. Un ejercicio abierto solo se evalua si todos sus registros provienen de Consulta Amigable,
+conservan la misma `FECHA_CORTE_OFICIAL` ISO 8601, y el corte es anterior a la fecha de evaluacion
+y pertenece al ejercicio fiscal del registro. El corte permanece en `raw_payload`.
+La regla queda modificada parcialmente por ADR 0012; ADR 0010 conserva vigencia para sus demas
+decisiones.
 
 **RN-004-10. `recurrent-direct-award` cuenta procesos de modalidad directa por entidad y RUC.**
 Se activa con tres o mas adjudicaciones de modalidad confirmada al mismo RUC en una ventana
@@ -157,8 +162,10 @@ Dado el conjunto completo de salidas de esta capacidad, ninguna tiene `status ==
 ese campo pertenece exclusivamente a `Alert`, que esta capacidad no produce.
 
 **CA-004-07** · RN-004-09
-El motor calcula baja ejecucion solo con ejercicio cerrado y PIM positivo, agrupa partidas de
-igual entidad/categoria/ejercicio y deja sin señal ratios inferiores a 0.50.
+El motor calcula baja ejecucion con PIM positivo, agrupa partidas de igual
+entidad/categoria/ejercicio y deja sin señal ratios inferiores a 0.50. Para ejercicio cerrado,
+usa sus registros MEF. En el ejercicio abierto, solo evalua registros de Consulta Amigable con
+una misma `FECHA_CORTE_OFICIAL` vencida, ISO 8601 y perteneciente al ejercicio.
 
 **CA-004-08** · RN-004-10
 El motor solo agrupa adjudicaciones directas con fecha explicita y RUC, y activa al llegar a 3

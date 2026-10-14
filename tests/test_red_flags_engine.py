@@ -186,7 +186,7 @@ def test_uit_rechaza_ejercicio_sin_valor_verificado() -> None:
         uit_value(2027)
 
 
-def test_mef_underspending_solo_en_ejercicio_cerrado_y_sin_division_por_cero() -> None:
+def test_mef_underspending_evalua_ejercicio_cerrado_y_omite_pim_cero() -> None:
     engine = RedFlagsEngine()
     records = [
         BudgetExecutionRecord(
@@ -204,6 +204,46 @@ def test_mef_underspending_solo_en_ejercicio_cerrado_y_sin_division_por_cero() -
     assert set(flags[0].execution_record_ids) == {"me-close-1", "me-close-2"}
     open_year = engine.evaluate([], records, now=datetime(2025, 12, 31, tzinfo=timezone.utc))
     assert not [flag for flag in open_year if flag.indicator_code == "mef-underspending"]
+
+
+def test_mef_underspending_admite_corte_oficial_vencido_del_ejercicio_abierto() -> None:
+    engine = RedFlagsEngine()
+    record = BudgetExecutionRecord(
+        execution_record_id="me-open-official-cut",
+        entity_id="ce-test-open-year",
+        fiscal_year=2026,
+        budgeted_amount=100,
+        executed_amount=25,
+        budget_category="TOTAL",
+        source="mef-consulta-amigable",
+        raw_payload={"FECHA_CORTE_OFICIAL": "2026-09-30"},
+        retrieved_at=datetime(2026, 10, 1, tzinfo=timezone.utc),
+    )
+    flags = engine.evaluate(
+        [], [record], now=datetime(2026, 10, 14, tzinfo=timezone.utc)
+    )
+    underspending = [flag for flag in flags if flag.indicator_code == "mef-underspending"]
+    assert len(underspending) == 1
+    assert underspending[0].observed_value == 0.75
+    assert underspending[0].execution_record_ids == [record.execution_record_id]
+
+
+def test_mef_underspending_omite_ejercicio_abierto_sin_corte_oficial() -> None:
+    engine = RedFlagsEngine()
+    record = BudgetExecutionRecord(
+        execution_record_id="me-open-no-cut",
+        entity_id="ce-test-open-year",
+        fiscal_year=2026,
+        budgeted_amount=100,
+        executed_amount=25,
+        budget_category="TOTAL",
+        raw_payload={},
+        retrieved_at=datetime(2026, 10, 1, tzinfo=timezone.utc),
+    )
+    flags = engine.evaluate(
+        [], [record], now=datetime(2026, 10, 14, tzinfo=timezone.utc)
+    )
+    assert not [flag for flag in flags if flag.indicator_code == "mef-underspending"]
 
 
 def test_recurrent_direct_award_requires_confirmed_method_date_and_ruc() -> None:

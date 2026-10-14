@@ -63,6 +63,20 @@ def _rows_from_universe(universe: Universe) -> list[dict[str, object]]:
     ]
 
 
+def _mapping_summary(universe: Universe) -> str:
+    """Describe the validated SIAF mapping without adding it to the canonical entity row."""
+    regional = next(record for record in universe.entities if record.entity.entity_level == "regional")
+    provinces = [
+        record
+        for record in universe.entities
+        if record.entity.entity_level == "provincial_municipality"
+    ]
+    return (
+        f"Mapeo oficial validado: GORE PLIEGO {regional.verification.siaf_pliego}; "
+        f"{len(provinces)} municipalidades provinciales con SEC_EJEC y UBIGEO únicos."
+    )
+
+
 def seed_to_postgres(dataset_path: Path, dsn: str) -> int:
     """Siembra el dataset a PostgreSQL. Devuelve el numero de filas escritas.
 
@@ -129,6 +143,7 @@ def main(argv: list[str] | None = None) -> int:
 
     universe = load_universe(args.dataset)
     print(f"Dataset valido: {len(universe.entities)} entidades cargadas de {args.dataset}")
+    print(_mapping_summary(universe))
 
     if args.dry_run:
         print("--dry-run: no se sembro nada a PostgreSQL.")

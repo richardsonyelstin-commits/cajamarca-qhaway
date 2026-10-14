@@ -2,7 +2,7 @@
 title: Índice de documentación - cajamarca-qhaway
 status: active
 created: 2026-08-20
-updated: 2026-10-13
+updated: 2026-10-14
 source: ai
 generator: claude-sonnet-5
 confidence: high
@@ -37,6 +37,8 @@ ajustar la columna "Cargar cuando".
 | `adr/0005-monitoreo-geoespacial-satelital-y-camaras-publicas.md` | ¿Por qué se adoptó teledetección híbrida abierta (Sentinel-1/2 + NASA HLS/GIBS + cámaras de obra)? | Antes de cambiar o evaluar proveedores geoespaciales | ~1600 |
 | `adr/0008-adopcion-arquitectura-multi-pagina-y-retiro-spa.md` | ¿Por qué se adoptó MPA y se retiró el enrutador hash SPA? | Antes de alterar rutas HTML o estructura MPA | ~1500 |
 | `adr/0009-desacoplamiento-local-arquitectura-cloud-hibrida.md` | ¿Cómo se desacopla del entorno local mediante Vercel + Supabase + GitHub Actions Worker? | Antes de modificar persistencia o workers cloud | ~1800 |
+| `adr/0011-fuente-oficial-mef-consulta-amigable.md` | ¿Por qué Consulta Amigable es fuente primaria MEF y qué preserva su extractor? | Antes de modificar la ingesta presupuestal MEF | ~1200 |
+| `adr/0012-corte-oficial-para-subejecucion-mef.md` | ¿Cuándo evaluar subejecución MEF en un ejercicio abierto? | Antes de modificar `mef-underspending` | ~900 |
 | `glossary.md` | ¿Qué significa este término? | Aparece jerga del dominio | ~300 |
 | `research/2026-08-20-diseno-cajamarca-qhaway-fase1.md` | ¿Qué se investigó y diseñó para Fase 1 (Cajamarca)? Casos de uso, arquitectura propuesta, riesgos, decisiones pendientes | Antes de tocar alcance, arquitectura o roadmap | ~3500 |
 | `research/2026-08-20-verificacion-tecnica-fuentes.md` | ¿Funciona de verdad la API OCDS de OECE y hay API real en el MEF? Evidencia HTTP real, no supuesta | Antes de tocar `002-seace-ingestion` o `003-mef-ingestion` | ~2200 |

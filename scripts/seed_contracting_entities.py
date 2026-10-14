@@ -2,7 +2,7 @@
 """Punto de entrada de operador para sembrar el universo a PostgreSQL.
 
 Uso:
-    python scripts/seed_contracting_entities.py --dry-run
+    python scripts/seed_contracting_entities.py --dry-run  # valida universo + cruce SIAF/UBIGEO
     CAJAMARCA_QHAWAY_DATABASE_URL=postgresql://... python scripts/seed_contracting_entities.py
 
 La logica vive en `cajamarca_qhaway.capabilities.entity_mapping.seed`; este fichero

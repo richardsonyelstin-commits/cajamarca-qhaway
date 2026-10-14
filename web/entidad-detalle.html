@@ -211,7 +211,7 @@
             </span>
             <span class="px-2.5 py-1 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold flex items-center gap-1">
               <span class="material-symbols-outlined text-[16px]">flag</span>
-              <span id="dossier-flags-count">4 Banderas Rojas Activas</span>
+              <span id="dossier-flags-count">0 alertas publicadas</span>
             </span>
             <span class="px-2.5 py-1 rounded bg-amber-100/70 text-alert-amber font-label-sm text-label-sm font-semibold">
               Riesgo de Subejecución (&lt;25%)
@@ -321,11 +321,9 @@
           <div class="bg-surface-container-lowest p-4 rounded border border-slate-border shadow-sm flex flex-col justify-between">
             <div class="space-y-1">
               <span class="font-caption text-caption text-on-surface-variant uppercase tracking-wider block">PIM Asignado 2025</span>
-              <div class="font-headline-sm text-headline-sm font-semibold text-on-surface tracking-tight" id="kpi-pim">
-                S/ 5,351,200,000.00
-              </div>
+              <div class="font-headline-sm text-headline-sm font-semibold text-on-surface tracking-tight" id="kpi-pim">Sin dato MEF</div>
               <p class="font-caption text-caption text-on-surface-variant" id="kpi-pim-sub">
-                72.9% del presupuesto total auditado en Cajamarca.
+                No disponible del presupuesto total auditado en Cajamarca.
               </p>
             </div>
             <div class="mt-4 pt-2 border-t border-slate-border text-secondary font-label-sm text-label-sm flex items-center gap-1 font-semibold">
@@ -337,9 +335,7 @@
           <div class="bg-surface-container-lowest p-4 rounded border border-slate-border shadow-sm flex flex-col justify-between">
             <div class="space-y-1">
               <span class="font-caption text-caption text-on-surface-variant uppercase tracking-wider block">Monto Devengado</span>
-              <div class="font-headline-sm text-headline-sm font-semibold text-on-surface tracking-tight" id="kpi-devengado">
-                S/ 4,030,000,000.00
-              </div>
+              <div class="font-headline-sm text-headline-sm font-semibold text-on-surface tracking-tight" id="kpi-devengado">Sin dato MEF</div>
               <p class="font-caption text-caption text-on-surface-variant" id="kpi-devengado-sub">
                 Gastos con conformidad técnica y fase de giro completada.
               </p>
@@ -356,16 +352,14 @@
                 <span class="font-caption text-caption text-secondary uppercase tracking-wider font-semibold">Ejecución Global</span>
                 <span id="dossier-exec-badge" class="px-1.5 py-0.5 rounded bg-secondary text-white text-[10px] font-bold uppercase">Meta Superada</span>
               </div>
-              <div class="font-headline-md text-headline-md font-bold text-secondary tracking-tight" id="kpi-pct">
-                75.3%
-              </div>
+              <div class="font-headline-md text-headline-md font-bold text-secondary tracking-tight" id="kpi-pct">No calculable</div>
               <p class="font-caption text-caption text-on-surface-variant">
-                Meta Semestral: 45.0% | <strong id="dossier-gap-text">Brecha: +30.3 p.p.</strong>
+                Meta Semestral: 45.0% | <strong id="dossier-gap-text">Brecha: no calculable</strong>
               </p>
             </div>
             <div class="mt-2">
               <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
-                <div id="dossier-exec-bar" class="bg-secondary h-2 rounded-full transition-all duration-700 ease-out" style="width: 75.3%"></div>
+                <div id="dossier-exec-bar" class="bg-secondary h-2 rounded-full transition-all duration-700 ease-out" style="width: 0%"></div>
               </div>
             </div>
           </div>
@@ -373,9 +367,7 @@
           <div class="bg-surface-container-lowest p-4 rounded border border-slate-border shadow-sm flex flex-col justify-between">
             <div class="space-y-1">
               <span class="font-caption text-caption text-on-surface-variant uppercase tracking-wider block">Contrataciones SEACE</span>
-              <div class="font-headline-sm text-headline-sm font-semibold text-on-surface tracking-tight" id="kpi-procurements-count">
-                0 Procesos
-              </div>
+              <div class="font-headline-sm text-headline-sm font-semibold text-on-surface tracking-tight" id="kpi-procurements-count">Se carga desde SEACE</div>
               <p class="font-caption text-caption text-on-surface-variant" id="kpi-procurements-sub">
                 Expedientes de compras públicas fiscalizados.
               </p>
@@ -389,9 +381,7 @@
           <div class="bg-surface-container-lowest p-4 rounded border border-slate-border shadow-sm flex flex-col justify-between">
             <div class="space-y-1">
               <span class="font-caption text-caption text-on-surface-variant uppercase tracking-wider block">Monto Contratado</span>
-              <div class="font-headline-sm text-headline-sm font-semibold text-on-surface tracking-tight" id="kpi-canon-count">
-                S/ 0.0 M
-              </div>
+              <div class="font-headline-sm text-headline-sm font-semibold text-on-surface tracking-tight" id="kpi-canon-count">Sin dato MEF</div>
               <p class="font-caption text-caption text-on-surface-variant" id="kpi-canon-sub">
                 Total adjudicado en convocatorias públicas.
               </p>
@@ -413,7 +403,7 @@
               Desglose Presupuestal por Tipo de Gasto y Fuentes
             </h2>
           </div>
-          <span class="text-caption font-label-sm text-on-surface-variant">Rubros SIAF 18, 00, 09 y 19</span>
+          <span class="text-caption font-label-sm text-on-surface-variant">Rubros MEF: cobertura parcial</span>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -422,7 +412,7 @@
               Comparativa de Eficiencia: Gasto Corriente vs. Inversión Pública
             </h3>
             <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
-              Se evidencia un sesgo operativo: los recursos destinados a gasto corriente (operación y planillas) presentan mayor tracción porcentual respecto al rubro de capital y obras de impacto social directo.
+              La cobertura MEF disponible no permite comparar categorías de gasto para esta entidad.
             </p>
 
             <div class="space-y-4 pt-2">
@@ -432,14 +422,14 @@
                     <span class="material-symbols-outlined text-secondary text-[18px]">receipt_long</span>
                     Gasto Corriente (Planillas, Servicios, Operación)
                   </span>
-                  <span class="font-label-md text-label-md text-on-surface font-bold">27.1% ejecutado</span>
+                  <span class="font-label-md text-label-md text-on-surface font-bold">No disponible ejecutado</span>
                 </div>
                 <div class="flex justify-between font-caption text-caption text-on-surface-variant font-mono">
-                  <span>PIM: S/ 1,120,540,200</span>
-                  <span>Devengado: S/ 303,666,800</span>
+                  <span>PIM: Sin dato MEF</span>
+                  <span>Devengado: Sin dato MEF</span>
                 </div>
                 <div class="w-full bg-surface-container rounded-full h-2.5 overflow-hidden">
-                  <div class="bg-secondary h-2.5 rounded-full" style="width: 27.1%"></div>
+                  <div class="bg-secondary h-2.5 rounded-full" style="width: 0%"></div>
                 </div>
               </div>
 
@@ -449,14 +439,14 @@
                     <span class="material-symbols-outlined text-[18px]">construction</span>
                     Gasto de Capital / Inversiones (Hospitales, Vías, Riego)
                   </span>
-                  <span class="font-label-md text-label-md text-alert-rose font-bold">19.8% ejecutado</span>
+                  <span class="font-label-md text-label-md text-alert-rose font-bold">No disponible ejecutado</span>
                 </div>
                 <div class="flex justify-between font-caption text-caption text-on-surface-variant font-mono">
-                  <span>PIM: S/ 1,290,304,990</span>
-                  <span>Devengado: S/ 279,757,935</span>
+                  <span>PIM: Sin dato MEF</span>
+                  <span>Devengado: Sin dato MEF</span>
                 </div>
                 <div class="w-full bg-surface-container rounded-full h-2.5 overflow-hidden">
-                  <div class="bg-alert-rose h-2.5 rounded-full" style="width: 19.8%"></div>
+                  <div class="bg-alert-rose h-2.5 rounded-full" style="width: 0%"></div>
                 </div>
               </div>
             </div>
@@ -474,32 +464,32 @@
                 <div>
                   <div class="flex justify-between text-body-sm mb-1">
                     <span class="font-label-md text-label-md text-on-surface font-semibold">Canon, Sobrecanon y Regalías</span>
-                    <span class="font-bold text-on-surface font-mono">52.4%</span>
+                    <span class="font-bold text-on-surface font-mono">No disponible</span>
                   </div>
                   <div class="w-full bg-surface-container rounded-full h-2">
-                    <div class="bg-primary h-2 rounded-full" style="width: 52.4%"></div>
+                    <div class="bg-primary h-2 rounded-full" style="width: 0%"></div>
                   </div>
-                  <span class="text-caption font-caption text-outline font-mono">S/ 1,263,282,880 asignados</span>
+                  <span class="text-caption font-caption text-outline font-mono">Sin dato MEF asignados</span>
                 </div>
                 <div>
                   <div class="flex justify-between text-body-sm mb-1">
                     <span class="font-label-md text-label-md text-on-surface font-semibold">Recursos Ordinarios (Tesoro Público)</span>
-                    <span class="font-bold text-on-surface font-mono">33.1%</span>
+                    <span class="font-bold text-on-surface font-mono">No disponible</span>
                   </div>
                   <div class="w-full bg-surface-container rounded-full h-2">
-                    <div class="bg-secondary h-2 rounded-full" style="width: 33.1%"></div>
+                    <div class="bg-secondary h-2 rounded-full" style="width: 0%"></div>
                   </div>
-                  <span class="text-caption font-caption text-outline font-mono">S/ 798,012,400 asignados</span>
+                  <span class="text-caption font-caption text-outline font-mono">Sin dato MEF asignados</span>
                 </div>
                 <div>
                   <div class="flex justify-between text-body-sm mb-1">
                     <span class="font-label-md text-label-md text-on-surface font-semibold">Recursos Directamente Recaudados</span>
-                    <span class="font-bold text-on-surface font-mono">8.2%</span>
+                    <span class="font-bold text-on-surface font-mono">No disponible</span>
                   </div>
                   <div class="w-full bg-surface-container rounded-full h-2">
-                    <div class="bg-civic-teal h-2 rounded-full" style="width: 8.2%"></div>
+                    <div class="bg-civic-teal h-2 rounded-full" style="width: 0%"></div>
                   </div>
-                  <span class="text-caption font-caption text-outline font-mono">S/ 197,689,300 asignados</span>
+                  <span class="text-caption font-caption text-outline font-mono">Sin dato MEF asignados</span>
                 </div>
               </div>
             </div>
@@ -759,87 +749,87 @@
 
     const OFFICIAL_ENTITY_METADATA = {
       'ce-f5f5d8fc32518855': {
-        titular: 'Roger Guevara Rodríguez (Gobernador Regional)',
-        sede: 'Jr. Santa Teresa de Journet 351, Cajamarca',
+        titular: 'Sin dato verificado',
+        sede: 'Sede institucional no verificada',
         siaf: '445',
         nivel: 'Pliego Regional N° 445 (Sede Central)'
       },
       'ce-2caad0e1b7467492': {
-        titular: 'Joaquín Ramírez Gamarra (Alcalde Provincial)',
-        sede: 'Jr. Cruz de Piedra 613, Cajamarca',
-        siaf: '300600',
+        titular: 'Sin dato verificado',
+        sede: 'Sede institucional no verificada',
+        siaf: '300549',
         nivel: 'Municipalidad Provincial de Cajamarca'
       },
       'ce-b4a52d15b3cffe4f': {
-        titular: 'Alcaldía Provincial de Cajabamba',
-        sede: 'Jr. Alfonso Ugarte 614, Cajabamba',
-        siaf: '300601',
+        titular: 'Sin dato verificado',
+        sede: 'Sede institucional no verificada',
+        siaf: '300562',
         nivel: 'Municipalidad Provincial de Cajabamba'
       },
       'ce-2b779c1e84ff4365': {
-        titular: 'Alcaldía Provincial de Celendín',
-        sede: 'Jr. José Gálvez 601, Celendín',
-        siaf: '300602',
+        titular: 'Sin dato verificado',
+        sede: 'Sede institucional no verificada',
+        siaf: '300566',
         nivel: 'Municipalidad Provincial de Celendín'
       },
       'ce-45fad1d64ba4bf0f': {
-        titular: 'Alcaldía Provincial de Chota',
-        sede: 'Plaza de Armas s/n, Chota',
-        siaf: '300603',
+        titular: 'Sin dato verificado',
+        sede: 'Sede institucional no verificada',
+        siaf: '300578',
         nivel: 'Municipalidad Provincial de Chota'
       },
       'ce-3337df921084c80a': {
-        titular: 'Alcaldía Provincial de Contumazá',
-        sede: 'Jr. Octavio Alva 260, Contumazá',
-        siaf: '300604',
+        titular: 'Sin dato verificado',
+        sede: 'Sede institucional no verificada',
+        siaf: '300597',
         nivel: 'Municipalidad Provincial de Contumazá'
       },
       'ce-360cf7aadccadabb': {
-        titular: 'Alcaldía Provincial de Cutervo',
-        sede: 'Jr. Ramón Castilla 403, Cutervo',
+        titular: 'Sin dato verificado',
+        sede: 'Sede institucional no verificada',
         siaf: '300605',
         nivel: 'Municipalidad Provincial de Cutervo'
       },
       'ce-dfd10c914365bbe3': {
-        titular: 'Alcaldía Provincial de Hualgayoc',
-        sede: 'Jr. Bolognesi 150, Bambamarca',
-        siaf: '300606',
+        titular: 'Sin dato verificado',
+        sede: 'Sede institucional no verificada',
+        siaf: '300620',
         nivel: 'Municipalidad Provincial de Hualgayoc - Bambamarca'
       },
       'ce-1817b32570ae7027': {
-        titular: 'Alcaldía Provincial de Jaén',
-        sede: 'Calle San Martín 1371, Jaén',
-        siaf: '300607',
+        titular: 'Sin dato verificado',
+        sede: 'Sede institucional no verificada',
+        siaf: '300623',
         nivel: 'Municipalidad Provincial de Jaén'
       },
       'ce-697eb5a0a1b4e6c6': {
-        titular: 'Alcaldía Provincial de San Ignacio',
-        sede: 'Jr. San Martín 429, San Ignacio',
-        siaf: '300608',
+        titular: 'Sin dato verificado',
+        sede: 'Sede institucional no verificada',
+        siaf: '300635',
         nivel: 'Municipalidad Provincial de San Ignacio'
       },
       'ce-ad540c85ce98e1d8': {
-        titular: 'Alcaldía Provincial de San Marcos',
-        sede: 'Jr. Leoncio Prado 360, Pedro Gálvez',
-        siaf: '300609',
+        titular: 'Sin dato verificado',
+        sede: 'Sede institucional no verificada',
+        siaf: '300642',
         nivel: 'Municipalidad Provincial de San Marcos'
       },
       'ce-3511b005adba63bf': {
-        titular: 'Alcaldía Provincial de San Miguel',
-        sede: 'Jr. Miguel Grau 322, San Miguel',
-        siaf: '300610',
+        titular: 'Sin dato verificado',
+        sede: 'Sede institucional no verificada',
+        siaf: '300649',
         nivel: 'Municipalidad Provincial de San Miguel'
       },
       'ce-d7fc753b1fb5ff5b': {
-        titular: 'Alcaldía Provincial de San Pablo',
-        sede: 'Jr. Lima 440, San Pablo',
-        siaf: '300611',
+        titular: 'Sin dato verificado',
+        sede: 'Sede institucional no verificada',
+        siaf: '300662',
         nivel: 'Municipalidad Provincial de San Pablo'
       },
       'ce-f29ffd64eff3fe9a': {
-        titular: 'Alcaldía Provincial de Santa Cruz',
-        sede: 'Jr. Cutervo 420, Santa Cruz',
-        siaf: '300612',
+        titular: 'Sin dato verificado',
+        sede: 'Sede institucional no verificada',
+        siaf: '300666',
         nivel: 'Municipalidad Provincial de Santa Cruz'
       }
     };

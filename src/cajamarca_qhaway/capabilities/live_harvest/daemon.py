@@ -11,6 +11,7 @@ from collections.abc import Sequence
 from datetime import datetime, timezone
 import json
 import logging
+import os
 from pathlib import Path
 import signal
 from typing import Any
@@ -24,6 +25,44 @@ from cajamarca_qhaway.capabilities.live_harvest.watermark_store import Watermark
 from cajamarca_qhaway.models import BudgetExecutionRecord, ContractingEntity, ProcurementRecord
 
 logger = logging.getLogger("cajamarca_qhaway.live_harvest")
+
+
+def _upsert_jsonl(path: Path, records: Sequence[Any], id_field: str) -> None:
+    """Replace spool rows by their deterministic identity, using an atomic file swap."""
+    by_id: dict[str, dict[str, Any]] = {}
+    if path.exists():
+        with path.open("r", encoding="utf-8") as existing:
+            for line_number, line in enumerate(existing, start=1):
+                if not line.strip():
+                    continue
+                try:
+                    row = json.loads(line)
+                except json.JSONDecodeError as exc:
+                    raise ValueError(f"Spool JSONL invalido en {path}:{line_number}") from exc
+                identity = row.get(id_field)
+                if not identity:
+                    raise ValueError(f"Spool sin {id_field} en {path}:{line_number}")
+                by_id[str(identity)] = row
+
+    for record in records:
+        row = record.model_dump(mode="json")
+        identity = row.get(id_field)
+        if not identity:
+            raise ValueError(f"Registro sin identidad determinista {id_field}")
+        by_id[str(identity)] = row
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary_path = path.with_suffix(f".tmp.{os.getpid()}")
+    try:
+        with temporary_path.open("w", encoding="utf-8", newline="\n") as output:
+            for identity in sorted(by_id):
+                output.write(json.dumps(by_id[identity], ensure_ascii=False, sort_keys=True) + "\n")
+            output.flush()
+            os.fsync(output.fileno())
+        os.replace(temporary_path, path)
+    finally:
+        if temporary_path.exists():
+            temporary_path.unlink()
 
 
 class HarvesterDaemon:
@@ -79,18 +118,10 @@ class HarvesterDaemon:
         storage_dir.mkdir(parents=True, exist_ok=True)
 
         if procurements:
-            today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-            seace_file = storage_dir / f"procurements_{today_str}.jsonl"
-            with open(seace_file, "a", encoding="utf-8") as f:
-                for p in procurements:
-                    f.write(json.dumps(p.model_dump(mode="json"), ensure_ascii=False) + "\n")
+            _upsert_jsonl(storage_dir / "procurements_all.jsonl", procurements, "procurement_id")
 
         if executions:
-            today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-            mef_file = storage_dir / f"budget_executions_{today_str}.jsonl"
-            with open(mef_file, "a", encoding="utf-8") as f:
-                for e in executions:
-                    f.write(json.dumps(e.model_dump(mode="json"), ensure_ascii=False) + "\n")
+            _upsert_jsonl(storage_dir / "budget_executions_all.jsonl", executions, "execution_record_id")
 
         # Sincronizacion transaccional con base de datos operativa / Supabase (Pilar 2)
         if self.sync_manager:
@@ -151,6 +182,8 @@ class HarvesterDaemon:
                 records = await self.seace_poller.poll_cycle()
                 self._persist_records(records, [])
                 self.seace_poller.acknowledge_persisted()
+                if self.seace_poller.last_cycle_status != "OK":
+                    logger.error("Ciclo SEACE fallido; revise la bitacora de brechas de cobertura")
             except Exception as e:
                 logger.error("Error en ciclo de SEACE: %s", e)
 
@@ -166,6 +199,8 @@ class HarvesterDaemon:
                 records = await self.mef_poller.poll_cycle()
                 self._persist_records([], records)
                 self.mef_poller.acknowledge_persisted()
+                if self.mef_poller.last_cycle_status != "OK":
+                    logger.error("Ciclo MEF fallido; revise la bitacora de brechas de cobertura")
             except Exception as e:
                 logger.error("Error en ciclo de MEF: %s", e)
 

@@ -40,7 +40,7 @@ class BudgetExecutionRecord(BaseModel):
     executed_amount: float
     budget_category: str | None = None
     raw_payload: dict[str, Any] = Field(default_factory=dict)
-    source: Literal["mef-datastore"] = "mef-datastore"
+    source: Literal["mef-datastore", "mef-consulta-amigable"] = "mef-datastore"
     retrieved_at: datetime
 
     @model_validator(mode="after")
