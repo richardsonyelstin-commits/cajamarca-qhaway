@@ -84,6 +84,21 @@ def test_session_pooler_does_not_duplicate_project_role_suffix() -> None:
     assert manager.session_pooler_options()["user"] == "postgres.projectref"
 
 
+def test_session_pooler_accepts_libpq_hostname_brackets_and_clears_hostaddr() -> None:
+    dsn = (
+        "postgresql://postgres:test@[db.projectref.supabase.co]:5432/postgres"
+        "?hostaddr=192.0.2.1"
+    )
+    config = DatabaseConfig(
+        database_url=SecretStr(dsn), session_pooler_host="verified.pooler.supabase.com"
+    )
+    options = DatabaseManager(config).session_pooler_options()
+    assert options["host"] == "verified.pooler.supabase.com"
+    assert options["user"] == "postgres.projectref"
+    assert options["hostaddr"] == ""
+    assert config.database_url.get_secret_value() == dsn
+
+
 # ============================================================================
 # Fixtures
 # ============================================================================

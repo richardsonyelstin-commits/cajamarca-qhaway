@@ -134,6 +134,16 @@ def test_snapshot_recomputes_candidate_count_without_private_spool(tmp_path, mon
     assert not (tmp_path / "absent.jsonl").exists()
 
 
+@pytest.mark.parametrize("variable", ["VERCEL", "CAJAMARCA_QHAWAY_DATABASE_URL"])
+def test_cloud_fallback_does_not_acknowledge_volatile_reports(variable, monkeypatch):
+    from api.index import _stdlib_fallback_dispatch
+
+    monkeypatch.setenv(variable, "1")
+    status, _, body = _stdlib_fallback_dispatch("POST", "/api/reports", {})
+    assert status == 503
+    assert "persistencia" in json.loads(body)["error"]
+
+
 def test_04_article_14_human_review_invariants(web_snapshot):
     """Verifica que toda alerta publicada tenga revisor humano nominal y fecha de publicacion."""
     for raw in web_snapshot["alerts"]:

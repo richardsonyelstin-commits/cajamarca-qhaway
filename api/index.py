@@ -284,6 +284,13 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
             return 200, "application/json; charset=utf-8", json.dumps(flags).encode("utf-8")
 
         if path == "/api/reports":
+            if method == "POST" and (
+                os.environ.get("VERCEL") == "1"
+                or os.environ.get("CAJAMARCA_QHAWAY_DATABASE_URL")
+            ):
+                return 503, "application/json; charset=utf-8", json.dumps({
+                    "error": "No se puede confirmar persistencia del reporte; intente mas tarde"
+                }).encode("utf-8")
             if method == "POST":
                 try:
                     data = json.loads(body.decode("utf-8")) if body else {}
