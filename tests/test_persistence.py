@@ -11,9 +11,12 @@ Valida:
 from __future__ import annotations
 
 import asyncio
+import json
+import runpy
 from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import AsyncMock, patch
+from urllib.parse import quote
 
 import pytest
 from pydantic import SecretStr
@@ -621,4 +624,36 @@ def test_watermark_store_with_sqlite_schema(tmp_path: Path) -> None:
     assert store.is_seace_ocid_seen("ocds-1")
     assert store.is_seace_ocid_seen("ocds-2")
     assert not store.is_seace_ocid_seen("ocds-3")
+
+
+@pytest.mark.parametrize(
+    ("password", "project", "exit_code", "placeholder"),
+    [
+        ("test-only@credential", "oglltrpvvifqvwmxmkjq", 0, False),
+        ("[YOUR-PASSWORD]", "oglltrpvvifqvwmxmkjq", 1, True),
+        ("[YOUR_PASSWORD]", "oglltrpvvifqvwmxmkjq", 1, True),
+        ("[PASSWORD]", "oglltrpvvifqvwmxmkjq", 1, True),
+        ("test-only@credential", "anotherproject", 1, False),
+    ],
+)
+def test_worker_connection_guard_hides_password_and_blocks_wrong_target(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    password: str,
+    project: str,
+    exit_code: int,
+    placeholder: bool,
+) -> None:
+    encoded = quote(password, safe="")
+    dsn = f"postgresql://postgres:{encoded}@db.{project}.supabase.co:5432/postgres"
+    monkeypatch.setenv("CAJAMARCA_QHAWAY_DATABASE_URL", dsn)
+    monkeypatch.setenv("SUPABASE_SESSION_POOLER_HOST", "aws-1-ca-central-1.pooler.supabase.com")
+    script = Path(__file__).resolve().parents[1] / "scripts" / "check-worker-connection.py"
+    main = runpy.run_path(str(script))["main"]
+    assert main() == exit_code
+    output = capsys.readouterr().out
+    assert password not in output and encoded not in output and dsn not in output
+    checks = json.loads(output)
+    assert checks["password_placeholder"] is placeholder
+    assert checks["user_project_matches"] is (project == "oglltrpvvifqvwmxmkjq")
 

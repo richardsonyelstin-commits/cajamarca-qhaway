@@ -32,7 +32,7 @@ flowchart TD
     VC -->|"Rutas /api/*"| PY["Vercel Python Function (api/index.py)"]
     
     WEB -->|"Lectura directa PostgREST (anon RLS)"| SB
-    PY -->|"Persistencia transaccional de denuncias y revisiones"| SB
+    PY -->|"Adaptador persistente pendiente para denuncias y revisiones"| SB
 ```
 
 ## 2. Repositorio y Automatizacion en GitHub
@@ -88,8 +88,8 @@ El escape Unicode evita caracteres prohibidos en el archivo y conserva el entorn
 ## 5. Operacion y Monitoreo Desatendido
 
 Al no depender del entorno local:
-1. Las denuncias ciudadanas emitidas por la web se guardan de forma permanente en Supabase.
-2. Las alertas aprobadas por veedores acreditados impactan inmediatamente en la nube.
+1. El adaptador cloud de denuncias devuelve HTTP 503 hasta disponer de persistencia confirmable.
+2. Las revisiones requieren un adaptador autenticado y persistente; no se publica automaticamente.
 3. El workflow del Harvester intenta cosechar cada 2 horas. Cada fuente debe devolver una
    respuesta estructuralmente válida; el CLI termina con código distinto de cero ante fallos,
    de modo que GitHub Actions marque el ciclo fallido.
@@ -120,3 +120,8 @@ La validacion admite exclusivamente hosts oficiales `.pooler.supabase.com`.
 Sin esa variable, la conexion conserva el DSN original y sus errores siguen siendo visibles.
 Un despliegue Vercel Ready y CI verde no acreditan por si solos que el worker haya ingerido datos.
 Despues de configurar el host, ejecutar el workflow y verificar cosecha, cursores y conteos SQL.
+
+El preflight `python scripts/check-worker-connection.py` valida el destino canonico.
+Su salida contiene solo booleanos e identifica contrasenas de ejemplo sin revelarlas.
+Un resultado valido permite iniciar la cosecha; la autenticacion real se comprueba al conectar.
+Si informa `password_placeholder: true`, sustituir el marcador por la contrasena real.
