@@ -71,10 +71,10 @@ class Alert(BaseModel):
     alert_id: str
     red_flag_ids: list[str] = Field(min_length=1)
     entity_id: str
-    status: Literal["published", "discarded"]
-    reviewed_by: str
-    reviewed_at: datetime
-    review_notes: str = Field(min_length=1)
+    status: Literal["generated", "in_review", "published", "discarded"]
+    reviewed_by: str | None = None
+    reviewed_at: datetime | None = None
+    review_notes: str | None = None
     legal_disclaimer: str = Field(
         default=STANDARD_ALERT_DISCLAIMER,
         validation_alias=AliasChoices("legal_disclaimer", "disclaimer"),
@@ -91,23 +91,23 @@ class Alert(BaseModel):
         if not self.red_flag_ids:
             raise ValueError("red_flag_ids debe contener al menos un identificador")
 
-        # CA-005-02: reviewed_by no puede ser generico ni vacio
-        cleaned_reviewer = self.reviewed_by.strip().lower()
-        if not cleaned_reviewer or cleaned_reviewer in GENERIC_REVIEWERS:
-            raise ValueError(
-                f"reviewed_by debe identificar a un revisor humano valido, no admitido: '{self.reviewed_by}'"
-            )
-
-        if self.reviewed_at.utcoffset() != timedelta(0):
+        is_decision = self.status in {"published", "discarded"}
+        if is_decision and (not self.reviewed_by or not self.reviewed_at or not self.review_notes):
+            raise ValueError("published/discarded requieren revisor, fecha UTC y notas humanas")
+        if self.reviewed_by is not None:
+            cleaned_reviewer = self.reviewed_by.strip().lower()
+            if not cleaned_reviewer or cleaned_reviewer in GENERIC_REVIEWERS:
+                raise ValueError(
+                    f"reviewed_by debe identificar a un revisor humano valido, no admitido: '{self.reviewed_by}'"
+                )
+        if self.reviewed_at is not None and self.reviewed_at.utcoffset() != timedelta(0):
             raise ValueError("reviewed_at debe estar expresado en UTC")
+        if self.review_notes is not None and not self.review_notes.strip():
+            raise ValueError("review_notes no puede estar vacio cuando se proporciona")
 
-        if not self.review_notes.strip():
-            raise ValueError("review_notes es obligatorio y no puede estar vacio")
-
-        # CA-005-04: review_notes obligatorio si status == discarded
-        if self.status == "discarded":
+        if self.status in {"generated", "in_review", "discarded"}:
             if self.published_at is not None:
-                raise ValueError("published_at debe ser None cuando status == 'discarded'")
+                raise ValueError(f"published_at debe ser None cuando status == '{self.status}'")
 
         # CA-005-03: si es published, published_at es obligatorio
         evidence_ids = {item.red_flag_id for item in self.evidence}

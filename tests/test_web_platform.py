@@ -124,6 +124,16 @@ def test_03_snapshot_models_validation(web_snapshot):
     assert web_snapshot["citizen_reports"] == [], "Los reportes privados no deben salir en el snapshot publico"
 
 
+def test_snapshot_recomputes_candidate_count_without_private_spool(tmp_path, monkeypatch):
+    import cajamarca_qhaway.web.exporter as exporter
+
+    monkeypatch.setattr(exporter, "REDFLAG_SPOOL_CANDIDATES", (tmp_path / "absent.jsonl",))
+    snapshot = exporter.build_verified_web_snapshot()
+    assert snapshot["metadata"]["total_candidate_red_flags"] == 473
+    assert snapshot["red_flags"] == []
+    assert not (tmp_path / "absent.jsonl").exists()
+
+
 def test_04_article_14_human_review_invariants(web_snapshot):
     """Verifica que toda alerta publicada tenga revisor humano nominal y fecha de publicacion."""
     for raw in web_snapshot["alerts"]:

@@ -2,10 +2,10 @@
 title: Guia de Despliegue Cloud (GitHub, Supabase y Vercel)
 status: active
 created: 2026-10-12
-updated: 2026-10-13
+updated: 2026-10-14
 source: ai
-generator: infrastructure-architect
-generated_at: 2026-10-13T14:26:00-05:00
+generator: codex-gpt-6
+generated_at: 2026-10-14T21:50:27.395040+00:00
 confidence: high
 verified: false
 ---
@@ -15,6 +15,7 @@ verified: false
 Manual operativo para desplegar y operar Cajamarca Qhaway en la nube de forma 100% autonoma
 y desacoplada de la maquina local del desarrollador (ADR 0009).
 Combina GitHub Actions, Supabase PostgreSQL (`oglltrpvvifqvwmxmkjq`) y Vercel Serverless Python.
+El cron automatiza los intentos de cosecha; la disponibilidad de cada fuente se monitorea aparte.
 
 ## 1. Arquitectura de Despliegue Desacoplada
 
@@ -39,12 +40,12 @@ flowchart TD
 - **Repositorio oficial**: `https://github.com/richardsonyelstin-commits/cajamarca-qhaway`
 - **Integracion Continua (`.github/workflows/ci.yml`)**:
   1. Instala el paquete en modo editable (`pip install -e ".[dev]"`).
-  2. Ejecuta la suite de pruebas completa (143 pruebas deterministas).
+  2. Ejecuta la suite de pruebas completa (suite de pruebas completa del repositorio).
   3. Ejecuta la auditoria de integridad web (`python -m cajamarca_qhaway.cli web audit`).
 - **Worker de Cosecha Continua (`.github/workflows/harvester-cron.yml`)**:
   1. Se ejecuta automaticamente cada 2 horas (`0 */2 * * *`) o por disparo manual.
   2. Conecta con Supabase usando `CAJAMARCA_QHAWAY_DATABASE_URL`.
-  3. Realiza la cosecha de SEACE OCDS y MEF SIAF DataStore (`harvest run --once`).
+  3. Realiza la cosecha de SEACE OCDS y MEF Consulta Amigable (`harvest run --once`).
   4. Realiza la evaluacion de divergencia fisico-financiera satelital (`geospatial evaluate --sar`).
   5. Persiste cursores de ingesta en la tabla `harvest_watermarks`.
 
@@ -85,5 +86,29 @@ Configure en la configuracion del repositorio GitHub y en el dashboard de Vercel
 Al no depender del entorno local:
 1. Las denuncias ciudadanas emitidas por la web se guardan de forma permanente en Supabase.
 2. Las alertas aprobadas por veedores acreditados impactan inmediatamente en la nube.
-3. El Harvester de GitHub Actions mantiene actualizada la base de datos cada 2 horas.
-4. El observatorio opera con costo $0 USD de infraestructura mensual.
+3. El workflow del Harvester intenta cosechar cada 2 horas. Cada fuente debe devolver una
+   respuesta estructuralmente válida; el CLI termina con código distinto de cero ante fallos,
+   de modo que GitHub Actions marque el ciclo fallido.
+4. La configuración del cron no demuestra que una fuente haya entregado filas. Consultar
+   `harvest status` y `harvest gaps`; no presentar una respuesta sin filas como cobertura.
+5. El modulo mensual oficial MEF entrega 42 filas para 2024-2026, con corte 2026-09-30.
+   La cobertura se verifica por ejercicio y por entidad antes de sincronizar datos.
+   Supabase conserva 475 contrataciones, 42 presupuestos y 473 candidatos privados.
+   El snapshot publico muestra cero alertas publicadas y el total privado en metadatos.
+   Comprobar `harvest status`, `web audit` y `python scripts/audit_snapshot_parity.py`.
+   La fuente primaria verificable es
+   [Consulta de Ejecucion del Gasto del MEF](https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2026&ap=ActProy).
+
+### Ejecución continua en Render
+
+El CLI admite `python -m cajamarca_qhaway.cli harvest run --daemon`, que puede ejecutarse
+como Background Worker continuo. El daemon sondea SEACE cada 5 minutos y MEF cada hora por
+defecto. Render documenta workers para tareas persistentes; son servicios con cómputo asignado.
+No se configura un segundo worker mientras el cron de GitHub Actions siga activo: ambas
+instancias podrían sondear las mismas fuentes. Primero resolver el endpoint MEF y decidir si se
+reemplaza el cron existente; cualquier worker debe usar la misma URL PostgreSQL de Supabase,
+watermarks persistentes y una sola instancia.
+
+La automatización no habilita por sí misma una cosecha MEF: el acceso a una fuente oficial que
+devuelva registros verificables es una condición de operación, no un problema que se resuelva
+aumentando la frecuencia del sondeo.

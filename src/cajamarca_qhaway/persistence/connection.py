@@ -97,18 +97,18 @@ class DatabaseManager:
             alert_id TEXT PRIMARY KEY,
             red_flag_ids TEXT NOT NULL,
             entity_id TEXT NOT NULL REFERENCES contracting_entities(entity_id),
-            status TEXT NOT NULL CHECK (status IN ('published', 'discarded')),
-            reviewed_by TEXT NOT NULL CHECK (lower(trim(reviewed_by)) NOT IN
+            status TEXT NOT NULL CHECK (status IN ('generated', 'in_review', 'published', 'discarded')),
+            reviewed_by TEXT CHECK (reviewed_by IS NULL OR lower(trim(reviewed_by)) NOT IN
                 ('admin', 'system', 'root', 'bot', 'auto', 'automated', '')),
-            reviewed_at TEXT NOT NULL,
-            review_notes TEXT NOT NULL CHECK (length(trim(review_notes)) > 0),
+            reviewed_at TEXT,
+            review_notes TEXT CHECK (review_notes IS NULL OR length(trim(review_notes)) > 0),
             disclaimer TEXT NOT NULL,
             legal_disclaimer TEXT NOT NULL,
             evidence TEXT NOT NULL DEFAULT '[]',
             published_at TEXT,
             CHECK (status <> 'published' OR json_array_length(evidence) > 0),
             CHECK ((status = 'published' AND published_at IS NOT NULL) OR
-                   (status = 'discarded' AND published_at IS NULL))
+                   (status IN ('generated', 'in_review', 'discarded') AND published_at IS NULL))
         );
 
         CREATE TABLE IF NOT EXISTS citizen_reports (
@@ -151,13 +151,15 @@ class DatabaseManager:
             from psycopg.rows import dict_row
 
             conn = None
-            try:
-                conn = psycopg.connect(self._dsn, row_factory=dict_row)
-            except Exception:
-                # Si falla la conexion inicial remota (red o DNS), fallback controlado
-                conn = self.get_sqlite_memory_connection()
-                yield conn
-                return
+            # Una URL PostgreSQL explicita selecciona persistencia remota. No degradar
+            # silenciosamente a SQLite: una escritura local pareceria confirmada y se
+            # perderia cuando termine el proceso.
+            conn = psycopg.connect(
+                self._dsn,
+                row_factory=dict_row,
+                connect_timeout=int(self.config.connection_timeout_seconds),
+                options=f"-c statement_timeout={int(self.config.command_timeout_seconds * 1000)}",
+            )
 
             try:
                 wrapped = PostgresConnectionWrapper(conn)

@@ -360,6 +360,13 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
                 "expiresAt": session["expiresAt"],
             }).encode("utf-8")
 
+        if path == "/api/review/queue":
+            auth_header = req_headers.get("authorization", "")
+            token = auth_header[7:].strip() if auth_header.startswith("Bearer ") else ""
+            if not _verify_veedor_token_stdlib(token):
+                return 401, "application/json; charset=utf-8", json.dumps({"error": "Sesion de veedor requerida"}).encode("utf-8")
+            return 503, "application/json; charset=utf-8", json.dumps({"error": "El modo fallback no dispone de un repositorio privado de revision"}).encode("utf-8")
+
         if path == "/api/auth/login" and method == "POST":
             try:
                 data = json.loads(body.decode("utf-8")) if body else {}

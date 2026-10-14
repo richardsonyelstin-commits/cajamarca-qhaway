@@ -1,7 +1,8 @@
-"""Check that pre-rendered public HTML metrics match the verified snapshot."""
+"""Audita cifras MPA del ultimo ejercicio y metadatos de candidatos privados."""
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import re
 from pathlib import Path
@@ -18,69 +19,57 @@ def text_for_id(html: str, element_id: str) -> str:
 
 
 def require_contains(html: str, element_id: str, expected: str) -> None:
-    actual = text_for_id(html, element_id)
-    normalized = re.sub(r"\s+", " ", actual)
-    if expected not in normalized:
-        raise AssertionError(f"#{element_id}: esperado {expected!r}; recibido {normalized!r}")
-
-
-def format_millions(value: float) -> str:
-    return f"S/ {value / 1_000_000:,.1f} M"
+    actual = re.sub(r"\s+", " ", text_for_id(html, element_id))
+    if expected not in actual:
+        raise AssertionError(f"#{element_id}: esperado {expected!r}; recibido {actual!r}")
 
 
 def run() -> None:
-    snapshot = json.loads((ROOT / "web/src/data/verified-snapshot.json").read_text(encoding="utf-8"))
+    snapshot_path = ROOT / "web/src/data/verified-snapshot.json"
+    snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
     metadata = snapshot["metadata"]
     entities = snapshot["contracting_entities"]
-    procurements = snapshot["procurement_records"]
     budgets = snapshot["budget_execution_records"]
-    alerts = [item for item in snapshot["alerts"] if item.get("status") == "published"]
-    flags_by_id = {item["red_flag_id"]: item for item in snapshot["red_flags"]}
-    procurements_by_id = {item["procurement_id"]: item for item in procurements}
-    budgets_by_id = {item["execution_record_id"]: item for item in budgets}
-
-    assert metadata["total_entities"] == len(entities)
-    assert metadata["total_procurements"] == len(procurements)
+    assert metadata["total_entities"] == len(entities) == 14
+    assert metadata["total_procurements"] == len(snapshot["procurement_records"])
     assert metadata["total_budget_executions"] == len(budgets)
-    assert metadata["total_published_alerts"] == len(alerts)
-    assert len(entities) == 14
+    assert snapshot["red_flags"] == [], "Los candidatos son privados"
+    assert snapshot["citizen_reports"] == [], "Las denuncias son privadas"
 
-    pim = sum(float(item.get("budgeted_amount") or 0) for item in budgets)
-    executed = sum(float(item.get("executed_amount") or 0) for item in budgets)
-    execution_rate = round(executed / pim * 100, 1) if pim else 0.0
-    flagged_amount = 0.0
-    for alert in alerts:
-        for flag_id in alert.get("red_flag_ids", []):
-            flag = flags_by_id.get(flag_id)
-            if flag is None:
-                raise AssertionError(f"La alerta publicada referencia bandera ausente: {flag_id}")
-            for procurement_id in flag.get("procurement_ids", []):
-                record = procurements_by_id.get(procurement_id)
-                if record:
-                    flagged_amount += float(record.get("awarded_amount") or 0)
-            for budget_id in flag.get("execution_record_ids", []):
-                record = budgets_by_id.get(budget_id)
-                if record:
-                    flagged_amount += float(record.get("executed_amount") or 0)
+    tool_path = ROOT / "web/tools/validate_web_integrity.py"
+    spec = importlib.util.spec_from_file_location("validate_web_integrity", tool_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError("No se pudo cargar la auditoria canonica MPA")
+    tool = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(tool)
+    errors = tool.validate_static_snapshot_metrics(snapshot_path, ROOT / "web")
+    if errors:
+        raise AssertionError("\n".join(errors))
 
+    published = metadata["total_published_alerts"]
+    assert published == len(snapshot["alerts"])
     index = (ROOT / "web/index.html").read_text(encoding="utf-8")
-    entities_html = (ROOT / "web/entidades.html").read_text(encoding="utf-8")
-    budget_html = (ROOT / "web/presupuesto.html").read_text(encoding="utf-8")
+    require_contains(index, "kpi-alerts-total", f"{published} alertas publicadas")
+    latest_year = max(row["fiscal_year"] for row in budgets)
+    latest = [row for row in budgets if row["fiscal_year"] == latest_year]
+    pim = sum(float(row["budgeted_amount"]) for row in latest)
+    executed = sum(float(row["executed_amount"]) for row in latest)
+    rate = f"{executed / pim * 100:.1f}%" if pim else "No calculable"
+    for filename, element_id in (
+        ("entidades.html", "entidades-kpi-ejecucion"),
+        ("presupuesto.html", "kpi-exec-rate"),
+    ):
+        require_contains(
+            (ROOT / "web" / filename).read_text(encoding="utf-8"), element_id, rate
+        )
     alerts_html = (ROOT / "web/alertas.html").read_text(encoding="utf-8")
-    for html, element_id in ((index, "kpi-procurements-total"), (index, "index-total-procurements-badge")):
-        require_contains(html, element_id, str(len(procurements)))
-    for html, element_id in ((index, "kpi-alerts-total"),):
-        require_contains(html, element_id, f"{len(alerts)} Alertas")
-    for html, element_id in ((index, "kpi-pim-total"), (entities_html, "entidades-kpi-pim"), (budget_html, "kpi-pim")):
-        require_contains(html, element_id, format_millions(pim))
-    for html, element_id in ((entities_html, "entidades-kpi-devengado"), (budget_html, "kpi-dev")):
-        require_contains(html, element_id, format_millions(executed))
-    for html, element_id in ((index, "kpi-devengado-pct"), (entities_html, "entidades-kpi-ejecucion"), (budget_html, "kpi-exec-rate")):
-        require_contains(html, element_id, f"{execution_rate}%")
-    require_contains(alerts_html, "alertas-kpi-total", str(len(alerts)))
     require_contains(alerts_html, "alertas-kpi-entidades", f"/ {len(entities)}")
-    require_contains(alerts_html, "alertas-kpi-monto", format_millions(flagged_amount))
-    print("Paridad HTML-snapshot: PASS")
+    if published == 0:
+        require_contains(alerts_html, "alertas-kpi-monto", "Sin monto publicado")
+    for page in (ROOT / "web").glob("*.html"):
+        if re.search(r"href=[\"']#/", page.read_text(encoding="utf-8")):
+            raise AssertionError(f"Ruta hash SPA en {page.name}")
+    print(f"Paridad HTML-snapshot ({latest_year}, candidatos privados): PASS")
 
 
 if __name__ == "__main__":

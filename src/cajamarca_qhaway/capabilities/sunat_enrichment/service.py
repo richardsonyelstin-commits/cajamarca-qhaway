@@ -6,12 +6,13 @@ import json
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterable
 
 import yaml
 
 from cajamarca_qhaway.capabilities.sunat_enrichment.client import CodartSunatClient
 from cajamarca_qhaway.capabilities.sunat_enrichment.models import SunatRucProfile
+from cajamarca_qhaway.capabilities.sunat_enrichment.padron import download_target_profiles
 from cajamarca_qhaway.capabilities.sunat_enrichment.validator import (
     assert_constitutional_ruc_only,
     assert_ruc_not_dni,
@@ -36,9 +37,10 @@ class SunatEnrichmentService:
     ) -> None:
         self.registry_path = Path(registry_path or (PROJECT_ROOT / "data" / "sunat" / "ruc_registry.json"))
         self.universe_path = Path(universe_path or (PROJECT_ROOT / "data" / "entities" / "cajamarca-universe.yaml"))
-        self.procurements_path = Path(procurements_path or (PROJECT_ROOT / "data" / "harvested" / "procurements_2026-10-13.jsonl"))
+        self.procurements_path = Path(procurements_path or (PROJECT_ROOT / "data" / "harvested"))
         self.client = client or CodartSunatClient(cache_registry_path=self.registry_path)
         self._registry: dict[str, SunatRucProfile] = {}
+        self._invalid_supplier_ruc_count = 0
         self._load_existing_registry()
 
     def _load_existing_registry(self) -> None:
@@ -48,7 +50,11 @@ class SunatEnrichmentService:
                     data = json.load(f)
                 records = data.get("registry", {})
                 for ruc, item in records.items():
-                    if isinstance(item, dict):
+                    if (
+                        isinstance(item, dict)
+                        and item.get("source_provider") == "sunat_padron_reducido"
+                        and item.get("raw_payload", {}).get("source_url")
+                    ):
                         self._registry[ruc] = SunatRucProfile(**item)
             except Exception as exc:
                 logger.warning("Error leyendo registry existente: %s", exc)
@@ -72,98 +78,84 @@ class SunatEnrichmentService:
                     "province": ent.get("province"),
                     "department": ent.get("department", "CAJAMARCA"),
                     "es_entidad_publica": True,
-                    "estado_contribuyente": "ACTIVO",
-                    "condicion_domicilio": "HABIDO",
-                    "source_provider": "sunat_padron_oficial",
                 }
         return entities
 
     def extract_procurement_rucs(self) -> dict[str, dict[str, Any]]:
-        """Extrae RUCs y metadatos de contratistas, postores y entidades compradoras desde SEACE OCDS."""
+        """Extrae solo RUC de proveedores adjudicados que pasa el checksum SUNAT."""
         proc_rucs: dict[str, dict[str, Any]] = {}
         if not self.procurements_path.exists():
             return proc_rucs
+        self._invalid_supplier_ruc_count = 0
+        files = (
+            [self.procurements_path]
+            if self.procurements_path.is_file()
+            else sorted(self.procurements_path.rglob("procurements*.jsonl"))
+        )
+        for path in files:
+            with path.open(encoding="utf-8") as source:
+                for line in source:
+                    if not line.strip():
+                        continue
+                    try:
+                        record = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    raw = record.get("raw_payload")
+                    if not isinstance(raw, dict) or not isinstance(raw.get("awards"), list) or not raw["awards"]:
+                        continue
 
-        with open(self.procurements_path, encoding="utf-8") as f:
-            for line in f:
-                if not line.strip():
-                    continue
-                try:
-                    record = json.loads(line)
-                except Exception:
-                    continue
+                    suppliers: list[tuple[str, str | None]] = []
+                    direct_ruc = record.get("supplier_ruc")
+                    if direct_ruc:
+                        suppliers.append((str(direct_ruc), record.get("supplier_name")))
+                    for award in raw["awards"]:
+                        if not isinstance(award, dict):
+                            continue
+                        for supplier in award.get("suppliers", []):
+                            if not isinstance(supplier, dict):
+                                continue
+                            identifier = supplier.get("identifier", {})
+                            if not isinstance(identifier, dict):
+                                continue
+                            raw_id = str(identifier.get("id", "")).strip()
+                            if identifier.get("scheme") == "PE-RUC" or raw_id.startswith("PE-RUC-"):
+                                suppliers.append((raw_id, supplier.get("name") or identifier.get("legalName")))
 
-                # RUC y nombre de proveedor directo
-                supp_ruc = record.get("supplier_ruc")
-                supp_name = record.get("supplier_name")
-                if supp_ruc:
-                    c_ruc = str(supp_ruc).replace("PE-RUC-", "").strip()
-                    if len(c_ruc) == 11 and c_ruc.isdigit():
-                        if c_ruc not in proc_rucs:
-                            proc_rucs[c_ruc] = {
-                                "razon_social": supp_name or f"PROVEEDOR RUC {c_ruc}",
-                                "source_provider": "seace_ocds_verified",
-                                "es_entidad_publica": False,
-                            }
-
-                # Extraer de parties OCDS
-                raw = record.get("raw_payload", {})
-                for party in raw.get("parties", []):
-                    p_name = party.get("name") or party.get("legalName")
-                    roles = party.get("roles", [])
-                    is_buyer = "buyer" in roles or "procuringEntity" in roles
-                    addr = party.get("address", {})
-
-                    # Identificadores adicionales PE-RUC
-                    for ident in party.get("additionalIdentifiers", []):
-                        if ident.get("scheme") == "PE-RUC":
-                            ident_id = str(ident.get("id", "")).strip()
-                            if len(ident_id) == 11 and ident_id.isdigit():
-                                if ident_id not in proc_rucs:
-                                    proc_rucs[ident_id] = {
-                                        "razon_social": ident.get("legalName") or p_name or f"ENTIDAD RUC {ident_id}",
-                                        "streetAddress": addr.get("streetAddress"),
-                                        "department": addr.get("department") or "CAJAMARCA",
-                                        "province": addr.get("region"),
-                                        "distrito": addr.get("locality"),
-                                        "es_entidad_publica": is_buyer,
-                                        "source_provider": "seace_ocds_verified",
-                                    }
-
-                    # ID propio de party
-                    pid = str(party.get("id", "")).strip()
-                    if pid.startswith("PE-RUC-"):
-                        c_id = pid.replace("PE-RUC-", "").strip()
-                        if len(c_id) == 11 and c_id.isdigit():
-                            if c_id not in proc_rucs:
-                                proc_rucs[c_id] = {
-                                    "razon_social": p_name or f"PARTICIPANTE RUC {c_id}",
-                                    "streetAddress": addr.get("streetAddress"),
-                                    "department": addr.get("department") or "CAJAMARCA",
-                                    "province": addr.get("region"),
-                                    "distrito": addr.get("locality"),
-                                    "es_entidad_publica": is_buyer,
-                                    "source_provider": "seace_ocds_verified",
-                                }
+                    for raw_ruc, supplier_name in suppliers:
+                        clean_ruc = raw_ruc.replace("PE-RUC-", "").strip()
+                        if len(clean_ruc) != 11 or not clean_ruc.isdigit():
+                            continue
+                        if not validate_ruc_checksum(clean_ruc):
+                            self._invalid_supplier_ruc_count += 1
+                            continue
+                        proc_rucs.setdefault(
+                            clean_ruc,
+                            {"razon_social": supplier_name, "es_entidad_publica": False},
+                        )
 
         return proc_rucs
 
-    def enrich_all(self) -> dict[str, Any]:
-        """Ejecuta el enriquecimiento integral de entidades publicas y contratistas de Cajamarca."""
+    def enrich_all(self, additional_supplier_rucs: Iterable[str] = ()) -> dict[str, Any]:
+        """Filtra el padron oficial a entidades Cajamarca y proveedores SEACE observados."""
         universe = self.extract_universe_entities()
         procurements = self.extract_procurement_rucs()
-
-        # Combinar priorizando el universo oficial para las 14 entidades
-        combined: dict[str, dict[str, Any]] = {}
-        combined.update(procurements)
-        combined.update(universe)
-
-        for ruc, meta in combined.items():
-            profile = self.client.consultar_ruc(ruc, fallback_metadata=meta)
-            self._registry[ruc] = profile
+        additional_suppliers = {
+            assert_constitutional_ruc_only(str(ruc)) for ruc in additional_supplier_rucs
+        }
+        target_rucs = set(universe) | set(procurements) | additional_suppliers
+        profiles = download_target_profiles(
+            target_rucs=target_rucs,
+            public_entity_rucs=set(universe),
+        )
+        for profile in profiles:
+            self._registry[profile.ruc] = profile
 
         self.save_registry()
-        return self.get_registry_summary()
+        summary = self.get_registry_summary()
+        summary["invalid_supplier_ruc_rows"] = self._invalid_supplier_ruc_count
+        summary["missing_target_ruc_rows"] = len(target_rucs) - len(profiles)
+        return summary
 
     def save_registry(self) -> Path:
         """Persiste el padron consolidado de RUCs en data/sunat/ruc_registry.json."""
@@ -181,7 +173,7 @@ class SunatEnrichmentService:
                 "public_entities_count": public_count,
                 "contractors_count": contractors_count,
                 "risk_signals_count": risk_count,
-                "sources": ["codart_api", "sunat_padron_oficial", "seace_ocds_verified"],
+                "sources": ["sunat_padron_reducido"],
                 "region": "CAJAMARCA",
                 "invariants": {
                     "art_16_natural_persons_protected": True,
@@ -220,8 +212,4 @@ class SunatEnrichmentService:
         clean_ruc = assert_constitutional_ruc_only(identifier)
         if clean_ruc in self._registry:
             return self._registry[clean_ruc]
-        profile = self.client.consultar_ruc(clean_ruc)
-        if profile:
-            self._registry[clean_ruc] = profile
-            return profile
-        return None
+        raise LookupError(f"RUC {clean_ruc} no aparece en el registro filtrado de SUNAT")

@@ -32,6 +32,20 @@ from cajamarca_qhaway.capabilities.geospatial_monitoring import (
 NOW_UTC = datetime.now(timezone.utc)
 
 
+def _test_work_site() -> PublicWorkSite:
+    return PublicWorkSite(
+        site_id="site-test-01",
+        work_title="Test site in Cajamarca",
+        entity_id="ce-test-entity",
+        province="Cajamarca",
+        latitude=-7.16,
+        longitude=-78.51,
+        radius_meters=300.0,
+        cui="1234567",
+        ocid="ocds-test-001",
+    )
+
+
 def test_geo_bounding_box_valido_y_dimensiones() -> None:
     bbox = GeoBoundingBox(
         west=-78.60,
@@ -198,17 +212,13 @@ def test_catalog_urls_and_provinces() -> None:
     assert "San Ignacio" in CAJAMARCA_PROVINCES_GEO
 
     # Catalogo de obras
-    assert len(CAJAMARCA_PUBLIC_WORKS_CATALOG) == 14
-    hospital = find_work_site_by_id("site-01-hospital-regional-cajamarca")
-    assert hospital is not None
-    assert hospital.province == "Cajamarca"
-
-    chota_works = list_work_sites_by_province("Chota")
-    assert len(chota_works) >= 1
+    assert CAJAMARCA_PUBLIC_WORKS_CATALOG == []
+    assert find_work_site_by_id("site-01-hospital-regional-cajamarca") is None
+    assert list_work_sites_by_province("Chota") == []
 
 
 def test_divergence_evaluation_concordant() -> None:
-    work_site = CAJAMARCA_PUBLIC_WORKS_CATALOG[0]
+    work_site = _test_work_site()
     # Devengado financiero 45% y actividad fisica observada 40%
     obs = SatelliteObservation(
         observation_id="obs-01",
@@ -234,7 +244,7 @@ def test_divergence_evaluation_concordant() -> None:
 
 
 def test_divergence_evaluation_critical_and_red_flag_conversion() -> None:
-    work_site = CAJAMARCA_PUBLIC_WORKS_CATALOG[1]
+    work_site = _test_work_site()
     # Devengado financiero 92% y actividad fisica observada solo 12%
     obs = SatelliteObservation(
         observation_id="obs-02",
@@ -265,7 +275,7 @@ def test_divergence_evaluation_critical_and_red_flag_conversion() -> None:
 
 
 def test_weather_degradation_without_sar() -> None:
-    work_site = CAJAMARCA_PUBLIC_WORKS_CATALOG[2]
+    work_site = _test_work_site()
     # Observacion optica con 85% de nubosidad y SIN radar
     obs_cloudy = SatelliteObservation(
         observation_id="obs-cloudy",
@@ -290,7 +300,7 @@ def test_weather_degradation_without_sar() -> None:
 
 
 def test_no_satellite_observations_do_not_become_zero_activity_or_false_critical() -> None:
-    work_site = CAJAMARCA_PUBLIC_WORKS_CATALOG[0]
+    work_site = _test_work_site()
     sig = evaluate_physical_financial_divergence(
         work_site=work_site,
         financial_devengado_ratio=0.95,
@@ -303,7 +313,7 @@ def test_no_satellite_observations_do_not_become_zero_activity_or_false_critical
 
 
 def test_geospatial_signal_id_is_stable_for_same_evidence_at_different_run_times() -> None:
-    work_site = CAJAMARCA_PUBLIC_WORKS_CATALOG[0]
+    work_site = _test_work_site()
     obs = SatelliteObservation(
         observation_id="obs-stable", site_id=work_site.site_id,
         sensor=SatelliteSensor.SENTINEL_2_L2A, observation_time=NOW_UTC,
@@ -318,7 +328,7 @@ def test_geospatial_signal_id_is_stable_for_same_evidence_at_different_run_times
 
 
 def test_radar_sar_cloud_penetration_rescue() -> None:
-    work_site = CAJAMARCA_PUBLIC_WORKS_CATALOG[3]
+    work_site = _test_work_site()
     # Optico nublado (90%) pero con respaldo de radar Sentinel-1 SAR
     obs_cloudy = SatelliteObservation(
         observation_id="obs-cloudy-2",
@@ -353,7 +363,7 @@ def test_radar_sar_cloud_penetration_rescue() -> None:
 
 
 def test_camera_feed_alpr_rejection_in_divergence_evaluation() -> None:
-    work_site = CAJAMARCA_PUBLIC_WORKS_CATALOG[4]
+    work_site = _test_work_site()
     with pytest.raises(ValidationError, match="lectura automatizada de placas"):
         # La creacion del modelo falla inmediatamente por Art. 16
         PublicCameraFeed(

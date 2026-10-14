@@ -1,5 +1,5 @@
 {
-  "last_seace_timestamp": "2026-10-13T06:14:50.804321+00:00",
+  "last_seace_timestamp": "2026-10-14T01:29:34.203196+00:00",
   "seen_seace_ocids": [
     "ocds-dgv273-seacev3-1022243",
     "ocds-dgv273-seacev3-1022308",
@@ -296,6 +296,7 @@
     "ocds-dgv273-seacev3-1256556",
     "ocds-dgv273-seacev3-1256616",
     "ocds-dgv273-seacev3-1256663",
+    "ocds-dgv273-seacev3-1257047",
     "ocds-dgv273-seacev3-2024-10431-62",
     "ocds-dgv273-seacev3-2024-10431-64",
     "ocds-dgv273-seacev3-2024-10431-65",
@@ -468,7 +469,7 @@
     "ocds-dgv273-seacev3-2026-10433-16",
     "ocds-dgv273-seacev3-2026-200051-1"
   ],
-  "last_mef_timestamp": null,
+  "last_mef_timestamp": "2026-10-14T21:49:40.693339+00:00",
   "last_mef_offset": 0,
-  "updated_at": "2026-10-13T06:14:51.060158+00:00"
+  "updated_at": "2026-10-14T21:49:40.703932+00:00"
 }

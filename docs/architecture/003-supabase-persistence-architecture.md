@@ -12,6 +12,13 @@
 
 La persistencia operativa en Supabase (PostgreSQL 15+) materializa el **Pilar 2** de la arquitectura de Cajamarca Qhaway. Actúa como el sustrato transaccional centralizado para almacenar los 6 modelos canónicos (Artículo 19 de `docs/sdd/constitution.md`) asegurando idempotencia estricta, desacoplamiento de dependencias y resiliencia ante cortes de conectividad mediante spooling local transaccional.
 
+## Ajustes verificados en el cutover (2026-10-14)
+
+- Si `CAJAMARCA_QHAWAY_DATABASE_URL` configura PostgreSQL, un error de conexión no cambia silenciosamente a SQLite en memoria.
+- El watermark PostgreSQL es autoritativo cuando se configura; errores de lectura o escritura se propagan. `public.harvest_watermarks` está creado en Supabase, con RLS habilitado y sin políticas para clientes públicos.
+- El spool del harvester usa los IDs deterministas de los modelos, ordena las filas y reemplaza el JSONL mediante archivo temporal y `os.replace`. Repetir la misma cosecha actualiza la fila existente.
+- Los perfiles SUNAT filtrados viven en `public.sunat_ruc_profiles`, con RLS habilitado y sin políticas públicas. Solo se escriben filas del padrón reducido oficial.
+
 ### Invariantes Constitucionales Garantizados
 1. **Artículo 10 (Evidencia íntegra y no modificada)**: Los modelos `ProcurementRecord` y `BudgetExecutionRecord` persisten el payload JSON de origen (`raw_payload`) de manera íntegra, byte a byte, en columnas de tipo `JSONB`.
 2. **Artículo 14 (Cero alertas automáticas)**: Las tablas `red_flags` y `alerts` están estrictamente segregadas. Un candidato generado por los motores de reglas (`RedFlag`) carece de estado publicable (`CA-004-06`); únicamente la interacción humana formal registrada en `alerts` (`reviewed_by` y `reviewed_at`) habilita la visibilidad al público.

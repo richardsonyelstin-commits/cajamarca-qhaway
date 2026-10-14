@@ -1,3 +1,12 @@
+---
+title: Arquitectura Técnica Integral - Pilar 1: Cosecha Continua de Datos en Vivo
+source: ai
+generator: codex-gpt-6
+generated_at: 2026-10-14T21:50:27.395040+00:00
+confidence: high
+verified: false
+---
+
 # Arquitectura Técnica Integral - Pilar 1: Cosecha Continua de Datos en Vivo
 **Componente:** Harvester Daemon & Background Worker (`live_harvest`)  
 **Proyecto:** Cajamarca Qhaway (`c:\ws\projects\cajamarca-qhaway`)  
@@ -6,21 +15,48 @@
 **Estado:** `APPROVED_DESIGN`  
 **Alineación SDD:** Artículos 1, 2, 6, 10, 14, 15, 16, 18, 19 de `docs/sdd/constitution.md` | Specs 001, 002, 003 | Tasks TK-101 a TK-105
 
+## Verificacion operativa del corte (2026-10-14)
+
+La cosecha historica oficial devuelve 42 presupuestos: 14 entidades en cada ano 2024-2026.
+El corte publicado por el [modulo mensual MEF](https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2026&ap=ActProy) es 2026-09-30.
+Cada fila conserva las ocho columnas presupuestales, ano, corte, https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2026&ap=ActProy y ruta de navegacion.
+El extractor renueva estado WebForms y cookies; rechaza importes ausentes y filas incoherentes.
+
+El cruce provincial validado usa Cajamarca `300549`, Cajabamba `300562`, Celendin `300566`,
+Chota `300578`, Contumaza `300597`, Cutervo `300605`, Hualgayoc `300620`, Jaen `300623`,
+San Ignacio `300635`, San Marcos `300642`, San Miguel `300649`, San Pablo `300662`
+y Santa Cruz `300666`; GORE usa pliego `445`.
+La persona responsable confirmo conservar este mapa oficial el 2026-10-14.
+
+Supabase conserva 475 contrataciones; el motor genera 473 candidatos internos.
+Las seis alertas en revision y las dos descartadas conservan su estado.
+No se publican candidatos ni alertas sin dictamen humano.
+La procedencia de entidades se verifica en el dataset canonico y perfiles SUNAT.
+
+Comandos de evidencia:
+`harvest run --historical --years 2024,2025,2026 --source mef` devuelve 42 filas.
+`select fiscal_year,count(*),count(distinct entity_id) from budget_execution_records
+ group by fiscal_year;` devuelve 14/14 para cada ano.
+`python scripts/audit_snapshot_parity.py` compara el ultimo ejercicio con el DOM estatico.
+
+El diseno siguiente describe componentes del worker.
+CKAN/PNDA conserva su procedencia propia; sus fallos no invalidan una respuesta MEF mensual.
+
 ---
 
 ## 1. Visión y Fundamentos del Pilar 1
 
 El **Pilar 1: Cosecha Continua de Datos en Vivo** es el subsistema encargado de la ingesta permanente, desacoplada, resiliente y auditable de los dos flujos primarios de datos públicos para la región Cajamarca:
 1. **SEACE/OECE OCDS Feed:** Contrataciones públicas en formato Open Contracting Data Standard vía el endpoint verificado `GET https://contratacionesabiertas.oece.gob.pe/api/v1/releases` y de detalle `/api/v1/release/{ocid}`.
-2. **MEF CKAN DataStore:** Ejecución presupuestal diaria (PIA, PIM, Devengado, Girado) vía la API CKAN en `https://api.datosabiertos.mef.gob.pe/DatosAbiertos/v1/` (`datastore_search` y `datastore_search_sql`), apuntando al recurso diario canónico `35bdc5b5-017c-42c1-ba20-8820bf1248b7`.
+2. **Fuentes oficiales MEF:** CKAN/PNDA y el Módulo Oficial de Consulta de Ejecución del Gasto (`id=504`) son fuentes primarias en paridad. Consulta Amigable opera bajo `apps5.mineco.gob.pe/transparencia/Mensual/` y `/Navegador/`; el poller conserva la sesión WebForms y etiqueta cada registro con su fuente.
 
 ### Cumplimiento Invariable de la Constitución SDD
 * **Artículo 10 (Evidencia inmutable y `raw_payload`):** Los campos `ProcurementRecord.raw_payload` y `BudgetExecutionRecord.raw_payload` preservan el JSON devuelto por la fuente externa sin alteración byte a byte.
 * **Artículo 14 (Prohibición estricta de emitir `Alert` de forma automática):** El daemon y sus pollers **únicamente** producen y persisten `ProcurementRecord` y `BudgetExecutionRecord`. Jamás generan candidatos de alerta ni tocan el estado de alerta humana.
-* **Artículo 15 (Trazabilidad y procedencia obligatoria):** Todo registro generado por el Harvester lleva `retrieved_at` en ISO 8601 UTC estricto y su fuente canónica (`"seace-ocds"` o `"mef-datastore"`).
+* **Artículo 15 (Trazabilidad y procedencia obligatoria):** Todo registro generado por el Harvester lleva `retrieved_at` en ISO 8601 UTC estricto y su fuente canónica (`"seace-ocds"`, `"mef-datastore"` o `"mef-consulta-amigable"`).
 * **Artículo 16 (Prohibición de scoring/perfilamiento de personas físicas):** El Harvester indexa y procesa contratos, procesos y partidas presupuestales. Bajo ninguna circunstancia crea estructuras ni índices centrados en personas naturales.
-* **Artículo 18 (Ámbito geográfico exclusivo Cajamarca):** Restricción inviolable. El poller de SEACE descarta de inmediato cualquier release cuyo `parties[].address.department != "CAJAMARCA"` o cuyo RUC/CONSUCODE no corresponda a una entidad activa de `001-entity-mapping`. El poller de MEF aplica condición SQL / filtro `DEPARTAMENTO_EJECUTORA = '06'`.
-* **Prohibición Operativa Absoluta:** Queda terminantemente vetado cualquier raspado (scraping) o petición contra Consulta Amigable (`apps5.mineco.gob.pe`).
+* **Artículo 18 (Ámbito geográfico exclusivo Cajamarca):** Restricción inviolable. El poller de SEACE coteja la entidad y el departamento. El parser MEF acepta `NIVEL_GOBIERNO=R` y `PLIEGO=445` para el GORE; para municipalidades usa exclusivamente el cruce oficial de `SEC_EJEC` provincial y UBIGEO capital validado en `data/entities/cajamarca-universe.yaml`, con verificación de Cajamarca. No se aceptan códigos por pertenecer a un rango sin verificar entidad y provincia.
+* **Consulta Amigable:** Solo se usa el formulario oficial con campos hidden y sesión persistente. Cambios de DOM o errores de postback se registran como brecha, sin atribuir resultados parciales a otros pliegos.
 
 ---
 
@@ -49,7 +85,7 @@ class SeaceHarvestConfig(BaseModel):
 class MefHarvestConfig(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
     base_url: str = Field(default="https://api.datosabiertos.mef.gob.pe/DatosAbiertos/v1")
-    resource_id: str = Field(default="35bdc5b5-017c-42c1-ba20-8820bf1248b7", description="Gasto Diario MEF")
+    resource_id: str = Field(default="615644aa-ef73-4358-b4e0-0c20931632f3", description="Recurso oficial consultado; validar disponibilidad")
     user_agent: str = Field(default="CajamarcaQhaway-Harvester/1.0")
     poll_interval_seconds: int = Field(default=3600, description="Intervalo entre barridos (1 hora)")
     timeout_seconds: float = Field(default=30.0)
@@ -88,8 +124,8 @@ El paquete `cajamarca_qhaway.capabilities.live_harvest` se estructura en respons
    - Aplica cliente de filtrado contra `parties[].address.department == "CAJAMARCA"` y cotejo biunívoco contra el universo de `ContractingEntity` de `001-entity-mapping`.
    - Genera instancias canónicas de `ProcurementRecord` con preservación byte a byte de `raw_payload`.
 3. **`MefPoller` (Recolector MEF CKAN DataStore):**
-   - Consulta `datastore_search_sql` y fallback a `datastore_search` con filtro `DEPARTAMENTO_EJECUTORA = '06'`.
-   - Normaliza registros a `BudgetExecutionRecord` validando tipos y claves foráneas `entity_id`.
+   - Consulta `datastore_search` y valida que la respuesta contenga una lista real `records` antes de parsear.
+   - Rechaza montos PIM o devengado ausentes y coteja exclusivamente pliegos permitidos; la respuesta actual del recurso no contiene filas.
 4. **`WatermarkStore` (Cursor y Estado Atómico):**
    - Registra el cursor temporal `last_harvested_timestamp` y set/hash de `seen_ocids` para deduplicación idempotente (CA-002-04).
    - Implementa **escritura atómica garantizada en POSIX/Windows**: escribe a fichero temporal (`.tmp.PID`) con `flush()` y `os.replace` atómico, previniendo corrupción ante fallos de alimentación o SIGKILL.
@@ -238,7 +274,7 @@ tests/capabilities/live_harvest/
 | **Art. 14** | Cero alertas automáticas | Ni `HarvesterDaemon` ni los pollers importan o instancian `Alert`. Solamente persisten registros canónicos. |
 | **Art. 15** | Explicabilidad y procedencia | `retrieved_at` se estampa con timestamp UTC del momento exacto del HTTP socket return. `source` es inmutable. |
 | **Art. 16** | Prohibido ranking de personas | Ningún campo o estructura procesa o agrega personas naturales; solo RUCs de entidades y montos. |
-| **Art. 18** | Ámbito regional Cajamarca | Doble filtro SEACE (departamento + universo 001) y filtro SQL MEF `DEPARTAMENTO_EJECUTORA = '06'`. |
+| **Art. 18** | Ámbito regional Cajamarca | GORE `PLIEGO=445`; municipalidades por SEC_EJEC provincial verificado y departamento/UBIGEO Cajamarca; la cobertura MEF no pasa Gate 2. |
 | **Art. 19** | Contratos canónicos compartidos | Emplea sin alteraciones `ContractingEntity`, `ProcurementRecord` y `BudgetExecutionRecord` de `cajamarca_qhaway.models`. |
 | **Resiliencia** | Tolerancia a fallos y sin corrupción | Escritura en dos fases con fichero temporal + `os.replace` atómico y registro auditable de gaps temporales. |
 

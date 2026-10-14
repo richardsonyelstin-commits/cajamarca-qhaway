@@ -466,6 +466,7 @@
     let selectedReport = null;
     let activeToken = null;
     let activeVeedor = null;
+    let reviewQueueAvailable = false;
 
     document.addEventListener('DOMContentLoaded', async () => {
       // 1. Barrera de Seguridad Obligatoria
@@ -709,7 +710,20 @@
       const snapshot = await dataEngine.getSnapshot();
       const entities = await dataEngine.getEntities();
       const procurements = await dataEngine.getProcurements();
-      const redFlags = await dataEngine.getRedFlags();
+      let redFlags = [];
+      try {
+        const queueResponse = await fetch('/api/review/queue', {
+          headers: { 'Authorization': `Bearer ${activeToken}`, 'Accept': 'application/json' }
+        });
+        if (queueResponse.ok) {
+          redFlags = await queueResponse.json();
+          reviewQueueAvailable = true;
+        } else {
+          console.warn('Cola privada de revisión no disponible:', queueResponse.status);
+        }
+      } catch (queueError) {
+        console.warn('No se pudo cargar la cola privada de revisión:', queueError);
+      }
       const alerts = snapshot.alerts || [];
 
       const published = alerts.filter(a => a.status === 'published').length;
@@ -784,8 +798,8 @@
         document.getElementById('candidates-list').innerHTML = `
           <div class="p-6 text-center text-on-surface-variant bg-surface-container-low border border-slate-border rounded">
             <span class="material-symbols-outlined text-3xl text-civic-emerald mb-2">check_circle</span>
-            <p class="font-body-sm font-semibold text-on-surface">Todos los expedientes han sido dictaminados</p>
-            <p class="text-caption text-outline mt-1">No quedan banderas rojas pendientes de revision tecnica.</p>
+            <p class="font-body-sm font-semibold text-on-surface">${reviewQueueAvailable ? 'No hay candidatos pendientes' : 'Cola privada no disponible'}</p>
+            <p class="text-caption text-outline mt-1">${reviewQueueAvailable ? 'No quedan candidatos nuevos sin dictamen.' : 'La conexión segura al repositorio de revisión no respondió.'}</p>
           </div>
         `;
       }

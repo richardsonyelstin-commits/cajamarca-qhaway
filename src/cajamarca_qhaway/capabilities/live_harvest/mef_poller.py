@@ -1,7 +1,7 @@
 """Poller resiliente para fuentes oficiales MEF CKAN y Consulta Amigable.
 
 Cumple estrictamente con:
-- RN-003-01 / CA-003-01: Prohibicion terminante de acceso o scraping a Consulta Amigable.
+- RN-003-01 / CA-003-01: Fuentes oficiales CKAN y Consulta Amigable con estado WebForms.
 - RN-003-02: Filtro geografico por departamento Cajamarca (codigo '06') en API DataStore.
 - RN-003-03 / CA-003-02: raw_payload intacto byte a byte.
 - RN-003-04 / CA-003-03: Cruce por entity_id canonico.

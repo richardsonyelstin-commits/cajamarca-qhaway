@@ -1,6 +1,6 @@
 # El script de scaffolding renombra este archivo a .gitignore
 
-# Secretos — nunca, bajo ninguna circunstancia
+# Secretos - nunca, bajo ninguna circunstancia
 .env
 .env.*
 !.env.example
@@ -35,4 +35,10 @@ src/*.egg-info/
 
 # Datos crudos locales no publicables (Ley 29733)
 Chat de WhatsApp*/
+data/harvested/red_flags_all.jsonl
+data/harvested/live-cutover-v2/red_flags.jsonl
+data/harvested/live-cutover-v2/procurements_all.jsonl
+data/curated/
+data/state/cutover-v2-coverage-gaps.jsonl
+data/state/cutover-v2-watermarks.json
 

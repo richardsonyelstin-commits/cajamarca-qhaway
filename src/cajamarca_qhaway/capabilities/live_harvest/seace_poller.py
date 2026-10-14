@@ -14,11 +14,9 @@ from __future__ import annotations
 
 import asyncio
 from datetime import datetime, timezone
-import io
-import json
 import logging
 from typing import Any
-import zipfile
+from urllib.parse import urlparse
 
 import httpx
 
@@ -53,6 +51,8 @@ class SeacePoller:
         self._semaphore = asyncio.Semaphore(config.max_concurrency)
         self._pending_seen_ocids: set[str] = set()
         self._pending_records: dict[str, ProcurementRecord] = {}
+        self.last_cycle_status = "NOT_RUN"
+        self.last_historical_status = "NOT_RUN"
 
     def acknowledge_persisted(self) -> None:
         """Advance deduplication cursor only after durable record persistence succeeds."""
@@ -69,7 +69,7 @@ class SeacePoller:
     async def _get_client(self) -> httpx.AsyncClient:
         if self._http_client is None:
             self._http_client = httpx.AsyncClient(
-                timeout=httpx.Timeout(self.config.timeout_seconds),
+                timeout=httpx.Timeout(connect=10.0, read=30.0, write=10.0, pool=10.0),
                 headers={"User-Agent": self.config.user_agent, "Accept": "application/json"},
             )
         return self._http_client
@@ -115,6 +115,7 @@ class SeacePoller:
         Si page_limit es None o 1, realiza una sola peticion al endpoint base /releases.
         Si page_limit > 1, pagina secuencialmente desde page=1 hasta page=page_limit.
         """
+        self.last_cycle_status = "FAILED"
         effective_pages = page_limit or 1
         window_start = datetime.now(timezone.utc)
         all_harvested_records: list[ProcurementRecord] = list(self._pending_records.values())
@@ -122,11 +123,9 @@ class SeacePoller:
         total_items_received = 0
         cycle_failed = False
 
+        url = f"{self.config.base_url.rstrip('/')}/releases"
+        expected_host = urlparse(self.config.base_url).hostname
         for page_idx in range(1, effective_pages + 1):
-            if effective_pages == 1:
-                url = f"{self.config.base_url.rstrip('/')}/releases"
-            else:
-                url = f"{self.config.base_url.rstrip('/')}/releases?page={page_idx}"
 
             res = await self._fetch_url_with_retries(url)
             if not res:
@@ -182,8 +181,36 @@ class SeacePoller:
             next_link = response_payload.get("links", {}).get("next")
             if not next_link:
                 break
+            parsed_next = urlparse(next_link)
+            if (
+                parsed_next.scheme != "https"
+                or parsed_next.hostname != expected_host
+                or parsed_next.path != f"{urlparse(self.config.base_url).path.rstrip('/')}/releases"
+            ):
+                self.coverage_logger.log_incident(
+                    source="seace-ocds",
+                    attempt=page_idx,
+                    status_code=200,
+                    endpoint=url,
+                    error_message="El enlace de paginacion OCDS apunta fuera del endpoint oficial configurado",
+                )
+                cycle_failed = True
+                break
+            url = next_link
 
         window_end = datetime.now(timezone.utc)
+
+        if cycle_failed and total_items_received == 0:
+            self.coverage_logger.log_window(
+                source="seace-ocds",
+                start_time=window_start,
+                end_time=window_end,
+                items_received=0,
+                items_retained=0,
+                status="FAILED",
+                notes="La API OCDS no devolvio una pagina verificable",
+            )
+            return []
 
         if cycle_failed and not all_harvested_records:
             self.coverage_logger.log_window(
@@ -211,88 +238,26 @@ class SeacePoller:
             end_time=window_end,
             items_received=total_items_received,
             items_retained=len(all_harvested_records),
-            status="OK",
+            status="FAILED" if cycle_failed else "OK",
+            notes=("Paginacion incompleta; se conservan solo registros de paginas validas" if cycle_failed else None),
         )
+        self.last_cycle_status = "FAILED" if cycle_failed else "OK"
 
         return all_harvested_records
 
     async def harvest_monthly_batch(self, year: int, month: int) -> list[ProcurementRecord]:
         """Descarga y procesa un paquete mensual OCDS de contrataciones de OECE."""
-        url = f"{self.config.historical_batch_base_url.rstrip('/')}/{year}/{month:02d}/"
-        window_start = datetime.now(timezone.utc)
-        res = await self._fetch_url_with_retries(url)
-
-        if not res:
-            return []
-
-        harvested_records: list[ProcurementRecord] = list(self._pending_records.values())
-        new_seen_ocids: list[str] = []
-        retrieval_timestamp = datetime.now(timezone.utc)
-
-        try:
-            # Procesar archivo ZIP o JSON directo
-            if res.content.startswith(b"PK\x03\x04"):
-                with zipfile.ZipFile(io.BytesIO(res.content)) as z:
-                    for filename in z.namelist():
-                        if filename.endswith(".json"):
-                            raw_json = json.loads(z.read(filename).decode("utf-8", errors="replace"))
-                            records = raw_json.get("records", [])
-                            for rec in records:
-                                comp_rel = rec.get("compiledRelease") or (
-                                    rec.get("releases", [{}])[0] if rec.get("releases") else None
-                                )
-                                if not comp_rel:
-                                    continue
-                                ocid = comp_rel.get("ocid")
-                                if not ocid or self._has_seen(ocid):
-                                    continue
-
-                                prec = parse_ocds_release(
-                                    release=comp_rel,
-                                    entities_by_ruc=self.entities_by_ruc,
-                                    entities_by_consucode=self.entities_by_consucode,
-                                    retrieved_at=retrieval_timestamp,
-                                )
-                                if prec:
-                                    harvested_records.append(prec)
-                                    new_seen_ocids.append(ocid)
-            else:
-                data = res.json()
-                releases = data.get("releases", [])
-                for rel in releases:
-                    ocid = rel.get("ocid")
-                    if not ocid or self._has_seen(ocid):
-                        continue
-                    prec = parse_ocds_release(
-                        release=rel,
-                        entities_by_ruc=self.entities_by_ruc,
-                        entities_by_consucode=self.entities_by_consucode,
-                        retrieved_at=retrieval_timestamp,
-                    )
-                    if prec:
-                        harvested_records.append(prec)
-                        new_seen_ocids.append(ocid)
-
-            if new_seen_ocids:
-                self._pending_seen_ocids.update(new_seen_ocids)
-                self._pending_records.update(
-                    (record.ocid, record) for record in harvested_records
-                    if record.ocid in new_seen_ocids
-                )
-
-            self.coverage_logger.log_window(
-                source="seace-ocds",
-                start_time=window_start,
-                end_time=datetime.now(timezone.utc),
-                items_received=len(harvested_records),
-                items_retained=len(harvested_records),
-                status="OK",
-                notes=f"Lote mensual historico OECE {year}-{month:02d}",
-            )
-        except Exception as exc:
-            logger.error("Error al procesar lote mensual OECE %d-%02d: %s", year, month, exc)
-
-        return harvested_records
+        self.last_historical_status = "FAILED"
+        self.coverage_logger.log_window(
+            source="seace-ocds",
+            start_time=datetime.now(timezone.utc),
+            end_time=datetime.now(timezone.utc),
+            items_received=0,
+            items_retained=0,
+            status="FAILED",
+            notes=f"No se ejecuta el lote {year}-{month:02d}: endpoint historico sin verificar",
+        )
+        return []
 
     async def harvest_historical_and_recent(
         self,
@@ -301,6 +266,7 @@ class SeacePoller:
         page_limit: int = 5,
     ) -> list[ProcurementRecord]:
         """Cosecha contrataciones tanto recientes (feed en vivo) como historicas (lotes mensuales)."""
+        self.last_historical_status = "FAILED"
         harvested: list[ProcurementRecord] = []
 
         # 1. Feed reciente

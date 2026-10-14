@@ -4,55 +4,52 @@ spec: "003"
 capability: mef-ingestion
 status: draft
 created: 2026-08-20
-updated: 2026-08-20
+updated: 2026-10-14
 source: ai
-generator: claude-sonnet-5
-generated_at: 2026-08-20T00:00:00Z
-confidence: low
+generator: codex-gpt-6
+generated_at: 2026-10-14T21:53:14.441784+00:00
+confidence: high
 verified: false
 ---
 
 # Plan 003 - mef-ingestion
 
-Plan deliberadamente mínimo. Dos ambigüedades de `spec.md` (AC-003-01, `resource_id`; AC-003-02,
-esquema de columnas) bloquean casi todo el diseño técnico de esta capacidad: sin saber contra qué
-tabla y qué columnas se consulta, no hay algoritmo de filtrado, ni cruce, ni contrato de campos
-que fijar sin adivinar. Escribir un plan completo aquí violaría el Artículo 3 de la constitución
-tanto como escribirlo en la spec.
+El modulo mensual oficial permite extraer un total por entidad y ejercicio.
+La cosecha valida el universo de 14 entidades y conserva las ocho columnas de la fila fuente.
+Las ambiguedades CKAN pendientes conservan su estado y no bloquean esta ruta diferenciada.
 
-## Lo único que no depende de esas dos ambigüedades
+## Fuente y protocolo
 
-**Cliente HTTP base.** `GET https://api.datosabiertos.mef.gob.pe/DatosAbiertos/v1/datastore_search`
-con parámro `resource_id` (una vez conocido) y `limit`/`offset` para paginar - la forma de
-paginación de una API tipo CKAN DataStore es estándar y no depende del dataset concreto.
+Fuente primaria observada:
+[Consulta de Ejecucion del Gasto MEF](https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2026&ap=ActProy).
+El cliente conserva cookies y renueva los campos hidden tras cada GET y POST.
+Los botones se identifican por sus nombres y valores obtenidos en cada respuesta.
+El postback selecciona `grp1` y envia el control de dimension del formulario vigente.
 
-**Primer paso de reconocimiento, no de ingesta.** Antes de poder implementar nada de esta
-capacidad, hace falta una sesión de verificación con un navegador real (no `curl`) que:
-1. Navegue a `https://datosabiertos.mef.gob.pe/organization/presupuesto-publico`.
-2. Abra el dataset de ejecución de gasto relevante.
-3. Capture, de la pestaña de red del navegador, la petición real a
-   `api.datosabiertos.mef.gob.pe` y su `resource_id`.
-4. Ejecute `datastore_search?resource_id=<id>&limit=1` para ver el esquema de columnas real.
+## Extraccion y validacion
 
-Este reconocimiento no es parte de la implementación de la capacidad - es la verificación técnica
-que le falta a `docs/research/2026-08-20-verificacion-tecnica-fuentes.md` para que esta spec
-pueda avanzar de `draft` a `review`.
+1. Navegar por gobierno regional, sector 99 y pliego 445 para el GORE.
+2. Navegar por gobierno local, municipalidades, departamento 06 y cada provincia.
+3. Aceptar exclusivamente la ejecutora provincial del mapa canonico y su nombre provincial.
+4. Preservar columnas, codigo, nombre, ano, corte, URL y ruta en `raw_payload`.
+5. Rechazar importes ausentes, negativos o no finitos; verificar orden y porcentaje.
+6. Derivar el ID de entidad, ano y categoria TOTAL; persistir antes del watermark.
 
-## Riesgos
+El mapa confirmado conserva Cajamarca `300549` y los otros doce codigos del parser.
+La persona responsable confirmo conservar los codigos oficiales el 2026-10-14.
+El ID se obtiene con `compute_execution_record_id`, compartido con produccion.
 
-| Riesgo | Impacto | Mitigación |
-|---|---|---|
-| El `resource_id` correcto no es único (varios datasets candidatos) | Ambigüedad sobre cuál ingerir | Confirmar con el propio Portal cuál corresponde a "ejecución del gasto" por entidad |
-| El esquema no trae RUC ni código de entidad | Sin cruce estructurado con `001`/`002` | AC-003-04, sin resolver todavía |
-| `datastore_search_sql` permite inyección si se construye la consulta con texto libre del usuario | Riesgo de seguridad si se expone sin control | No implementar `datastore_search_sql` con entrada no controlada; usar `datastore_search` con filtros parametrizados donde sea posible |
+## Persistencia y pruebas
 
-## Orden de implementación
+El spool reemplaza filas por ID mediante escritura atomica.
+El puente Supabase aplica UPSERT sin borrar contratos ni crear alertas publicadas.
+Las pruebas de `tests/test_mef_consulta_amigable.py` verifican estado renovado,
+columnas originales, corte oficial, importes y coherencia presupuestal.
+La cobertura se verifica por ano y entidad, no solo por total de filas.
 
-1. Sesión de verificación con navegador real para obtener `resource_id` y esquema - **bloquea
-   todo lo demás**.
-2. Una vez resuelto: algoritmo de filtrado y cruce, siguiendo el mismo patrón de dos pasos que
-   `002-seace-ingestion` si el esquema lo permite.
-3. Persistencia - depende de `specs/pending-adrs.md`.
+## Limites
 
-No se detalla estrategia de prueba: no hay nada que probar sin el esquema real. Escribirla ahora
-produciría pruebas contra un contrato inventado.
+Un cambio de DOM o una ejecutora no reconocida produce un fallo explicito de cobertura.
+CKAN/PNDA mantiene su fuente propia y las seis aclaraciones abiertas de la spec.
+La procedencia de entidades se verifica mediante el dataset canonico y perfiles SUNAT.
+Los candidatos permanecen privados; el snapshot publico expone solo su conteo en metadatos.

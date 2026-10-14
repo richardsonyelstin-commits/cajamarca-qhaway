@@ -223,6 +223,16 @@ def test_alert_compuerta_humana_y_validaciones() -> None:
     assert alert_published.status == "published"
     assert alert_published.disclaimer == STANDARD_ALERT_DISCLAIMER
 
+    generated = Alert(
+        alert_id=alert_id,
+        red_flag_ids=["rf-123"],
+        entity_id="ce-20160759086",
+        status="generated",
+        evidence=[{"red_flag_id": "rf-123", "formula_description": "f", "observed_value": 1, "threshold_value": 1, "retrieved_at": NOW_UTC, "evidence_source": "seace"}],
+    )
+    assert generated.reviewed_by is None
+    assert generated.published_at is None
+
 
 @pytest.mark.contract
 def test_citizen_report_aviso_legal_y_moderacion() -> None:

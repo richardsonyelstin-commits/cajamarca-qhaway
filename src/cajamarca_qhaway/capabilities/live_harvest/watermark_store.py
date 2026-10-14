@@ -82,38 +82,37 @@ class WatermarkStore:
 
     def _load(self) -> WatermarkData:
         if self.db is not None and getattr(self.db, "is_postgres", False):
-            try:
-                with self.db.connection() as conn:
-                    cursor = conn.cursor()
-                    cursor.execute(
-                        "SELECT source_name, last_timestamp, last_offset, seen_ids, updated_at FROM harvest_watermarks"
+            with self.db.connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "SELECT source_name, last_timestamp, last_offset, seen_ids, updated_at FROM harvest_watermarks"
+                )
+                rows = cursor.fetchall()
+                data: dict[str, Any] = {}
+                for row in rows:
+                    source = row["source_name"]
+                    timestamp = row["last_timestamp"]
+                    timestamp_text = (
+                        timestamp.isoformat()
+                        if hasattr(timestamp, "isoformat")
+                        else (str(timestamp) if timestamp else None)
                     )
-                    rows = cursor.fetchall()
-                    if rows:
-                        data: dict[str, Any] = {}
-                        for r in rows:
-                            src = r["source_name"]
-                            ts = r["last_timestamp"]
-                            ts_str = ts.isoformat() if hasattr(ts, "isoformat") else (str(ts) if ts else None)
-                            if src == "seace":
-                                data["last_seace_timestamp"] = ts_str
-                                raw_seen = r["seen_ids"]
-                                if isinstance(raw_seen, str):
-                                    try:
-                                        data["seen_seace_ocids"] = json.loads(raw_seen)
-                                    except Exception:
-                                        data["seen_seace_ocids"] = []
-                                elif isinstance(raw_seen, (list, tuple)):
-                                    data["seen_seace_ocids"] = list(raw_seen)
-                            elif src == "mef":
-                                data["last_mef_timestamp"] = ts_str
-                                data["last_mef_offset"] = int(r["last_offset"] or 0)
-                            up_ts = r["updated_at"]
-                            if up_ts:
-                                data["updated_at"] = up_ts.isoformat() if hasattr(up_ts, "isoformat") else str(up_ts)
-                        return WatermarkData.from_dict(data)
-            except Exception:
-                pass
+                    if source == "seace":
+                        data["last_seace_timestamp"] = timestamp_text
+                        seen_ids = row["seen_ids"]
+                        if isinstance(seen_ids, str):
+                            data["seen_seace_ocids"] = json.loads(seen_ids)
+                        elif isinstance(seen_ids, (list, tuple)):
+                            data["seen_seace_ocids"] = list(seen_ids)
+                    elif source == "mef":
+                        data["last_mef_timestamp"] = timestamp_text
+                        data["last_mef_offset"] = int(row["last_offset"] or 0)
+                    updated_at = row["updated_at"]
+                    if updated_at:
+                        data["updated_at"] = (
+                            updated_at.isoformat() if hasattr(updated_at, "isoformat") else str(updated_at)
+                        )
+                return WatermarkData.from_dict(data)
 
         if not self.file_path.exists():
             return WatermarkData()
@@ -140,10 +139,9 @@ class WatermarkStore:
         os.replace(tmp_path, self.file_path)
 
         if self.db is not None and getattr(self.db, "is_postgres", False):
-            try:
-                with self.db.connection() as conn:
-                    cursor = conn.cursor()
-                    seace_sql = """
+            with self.db.connection() as conn:
+                cursor = conn.cursor()
+                seace_sql = """
                     INSERT INTO harvest_watermarks
                         (source_name, last_timestamp, last_offset, seen_ids, updated_at)
                     VALUES
@@ -152,19 +150,19 @@ class WatermarkStore:
                         last_timestamp = excluded.last_timestamp,
                         seen_ids = excluded.seen_ids,
                         updated_at = excluded.updated_at
-                    """
-                    seace_ts = (
-                        self._state.last_seace_timestamp.isoformat()
-                        if self._state.last_seace_timestamp
-                        else None
-                    )
-                    seace_seen = json.dumps(sorted(list(self._state.seen_seace_ocids)))
-                    cursor.execute(
-                        seace_sql,
-                        (seace_ts, seace_seen, self._state.updated_at.isoformat()),
-                    )
+                """
+                seace_ts = (
+                    self._state.last_seace_timestamp.isoformat()
+                    if self._state.last_seace_timestamp
+                    else None
+                )
+                seace_seen = json.dumps(sorted(self._state.seen_seace_ocids))
+                cursor.execute(
+                    seace_sql,
+                    (seace_ts, seace_seen, self._state.updated_at.isoformat()),
+                )
 
-                    mef_sql = """
+                mef_sql = """
                     INSERT INTO harvest_watermarks
                         (source_name, last_timestamp, last_offset, seen_ids, updated_at)
                     VALUES
@@ -173,19 +171,17 @@ class WatermarkStore:
                         last_timestamp = excluded.last_timestamp,
                         last_offset = excluded.last_offset,
                         updated_at = excluded.updated_at
-                    """
-                    mef_ts = (
-                        self._state.last_mef_timestamp.isoformat()
-                        if self._state.last_mef_timestamp
-                        else None
-                    )
-                    cursor.execute(
-                        mef_sql,
-                        (mef_ts, self._state.last_mef_offset, self._state.updated_at.isoformat()),
-                    )
-                    conn.commit()
-            except Exception:
-                pass
+                """
+                mef_ts = (
+                    self._state.last_mef_timestamp.isoformat()
+                    if self._state.last_mef_timestamp
+                    else None
+                )
+                cursor.execute(
+                    mef_sql,
+                    (mef_ts, self._state.last_mef_offset, self._state.updated_at.isoformat()),
+                )
+                conn.commit()
 
     def is_seace_ocid_seen(self, ocid: str) -> bool:
         return ocid in self._state.seen_seace_ocids

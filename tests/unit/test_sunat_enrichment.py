@@ -153,10 +153,16 @@ def test_codart_api_response_parsing() -> None:
     assert profile.provincia == "CAJAMARCA"
     assert profile.distrito == "CAJAMARCA"
     assert profile.tipo_contribuyente == "GOBIERNO REGIONAL"
-    assert profile.es_entidad_publica is True
+    assert profile.es_entidad_publica is False  # Este cliente no infiere el tipo de entidad por el nombre.
     assert profile.source_provider == "codart_api"
     assert profile.has_risks is False
     assert profile.raw_payload == codart_payload
+
+
+def test_sunat_lookup_without_verified_source_fails_closed(tmp_path) -> None:
+    client = CodartSunatClient(cache_registry_path=tmp_path / "empty.json", enable_remote=False)
+    with pytest.raises(LookupError, match="perfil SUNAT verificado"):
+        client.consultar_ruc("20453744168", fallback_metadata={"estado_contribuyente": "ACTIVO"})
 
 
 def test_codart_api_error_response_raises_value_error() -> None:
@@ -182,7 +188,9 @@ def test_risk_signal_detection_no_habido_and_baja_oficio() -> None:
         razon_social="PROVEEDOR DE BAJA SAC",
         estado_contribuyente="BAJA DE OFICIO",
         condicion_domicilio="HABIDO",
+        source_provider="test_fixture",
         queried_at="2026-10-13T00:00:00Z",
+        raw_payload={"fixture": True},
     )
     assert baja_profile.has_risks is True
     assert "ESTADO_NO_ACTIVO: BAJA DE OFICIO" in baja_profile.risk_signals
@@ -193,7 +201,9 @@ def test_risk_signal_detection_no_habido_and_baja_oficio() -> None:
         razon_social="PROVEEDOR NO HABIDO SRL",
         estado_contribuyente="ACTIVO",
         condicion_domicilio="NO HABIDO",
+        source_provider="test_fixture",
         queried_at="2026-10-13T00:00:00Z",
+        raw_payload={"fixture": True},
     )
     assert no_habido_profile.has_risks is True
     assert "CONDICION_IRREGULAR: NO HABIDO" in no_habido_profile.risk_signals
@@ -204,7 +214,9 @@ def test_risk_signal_detection_no_habido_and_baja_oficio() -> None:
         razon_social="CONSTRUCTORA NO HALLADA EIRL",
         estado_contribuyente="ACTIVO",
         condicion_domicilio="NO HALLADO",
+        source_provider="test_fixture",
         queried_at="2026-10-13T00:00:00Z",
+        raw_payload={"fixture": True},
     )
     assert no_hallado_profile.has_risks is True
     assert "CONDICION_IRREGULAR: NO HALLADO" in no_hallado_profile.risk_signals
@@ -215,7 +227,9 @@ def test_risk_signal_detection_no_habido_and_baja_oficio() -> None:
         razon_social="PROVEEDOR CON RUC MAL DIGITADO",
         estado_contribuyente="ACTIVO",
         condicion_domicilio="HABIDO",
+        source_provider="test_fixture",
         queried_at="2026-10-13T00:00:00Z",
+        raw_payload={"fixture": True},
     )
     assert bad_check_profile.has_risks is True
     assert "DIGITO_VERIFICADOR_INVALIDO" in bad_check_profile.risk_signals

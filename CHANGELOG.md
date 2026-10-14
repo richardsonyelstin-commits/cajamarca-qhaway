@@ -1,3 +1,12 @@
+---
+title: Changelog
+source: ai
+generator: codex-gpt-6
+generated_at: 2026-10-14T21:50:27.395040+00:00
+confidence: high
+verified: false
+---
+
 # Changelog
 
 Formato [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
@@ -9,13 +18,39 @@ Se escribe **en el PR**, no en el release: reconstruirlo después es inventarlo.
 
 ### Added
 
-- **Arquitectura Cloud Hibrida y Desacoplamiento Local (ADR 0009)**:
-  - Workflow de GitHub Actions (`.github/workflows/harvester-cron.yml`) para recoleccion continua autonoma de SEACE OCDS, MEF DataStore y teledeteccion satelital cada 2 horas (`0 */2 * * *`).
-  - Migracion `scripts/migrations/0005_harvest_watermarks.sql` y tabla `harvest_watermarks` en PostgreSQL para almacenamiento de cursores de tiempo desacoplado del filesystem local.
-  - Wrappers `PostgresConnectionWrapper` y `PostgresCursorWrapper` en `DatabaseManager` con traduccion dinamica y transparente de comodines SQL (`?` a `%s`), resolviendo la incompatibilidad con PostgreSQL y Supabase.
-  - Persistencia relacional directa para denuncias ciudadanas y decisiones de revision humana en Supabase desde `api/index.py` y `server.py`.
+- Exportación atómica del snapshot desde spools Supabase validados con Pydantic; las cifras iniciales MPA se sincronizan desde el snapshot y la auditoría las compara con metadatos.
+- Cosecha verificada de una contratación SEACE del feed oficial, con upsert en Supabase y watermark protegido por RLS.
+- Filtro de streaming del padrón reducido oficial SUNAT: solo 198 RUC objetivo (14 entidades y 184 proveedores de adjudicaciones) guardados en `data/sunat/` y sincronizados con `sunat_ruc_profiles`, con filas fuente trazables.
+- Migraciones de Supabase para `harvest_watermarks`, perfiles SUNAT filtrados y evaluación única de `auth.jwt()` en políticas de revisores.
+- **Arquitectura Cloud Híbrida (ADR 0009):** workflow de GitHub Actions para el harvester y persistencia de watermarks en PostgreSQL.
+
+### Changed
+
+- El catálogo primario del conector MEF se trasladó a PNDA; descubre los recursos de gasto 2024-2026 y prioriza sus CSV oficiales. DataStore queda como fallback y los HTTP 404 se registran como brechas sin contar la cosecha vacía como éxito.
+- La cola de alertas admite `generated`/`in_review` sin firma; seis publicaciones anteriores sin acta/dictamen verificable en Supabase se regresaron a `in_review`.
+- El catálogo geoespacial de producción queda vacío hasta verificar CUI, coordenadas y OCID de obras; se retiraron los sitios ilustrativos.
+- La cosecha MEF deja de usar recursos/URLs anuales no comprobados y rechaza importes ausentes en vez de asumir cero.
+- El spool del harvester se actualiza por ID determinista y las fallas de PostgreSQL configurado ya no se ocultan con fallback a SQLite.
+
+### Fixed
+
+- El oraculo MPA compara las cifras del ultimo ejercicio y respeta la ausencia de alertas publicadas.
+- El extractor MEF rechaza valores ausentes, no finitos o negativos, orden presupuestal invalido y avances porcentuales incoherentes.
+
+- El CLI de cosecha devuelve error cuando MEF no entrega `records` verificables o una solicitud
+  histórica no cubre los años solicitados; el cron deja de ocultar estos fallos como éxito.
+- El parser MEF ya no asigna unidades ejecutoras distritales a municipalidades provinciales por compartir provincia; exige evidencia explícita del tipo provincial cuando falta un RUC oficial.
+- Se corrigió el cruce SIAF de municipalidades provinciales con SEC_EJEC oficiales y UBIGEO de capital; se retiraron de Supabase 15 filas sintéticas y 8 filas distritales, sin modificar las contrataciones SEACE.
+- El cursor de cosecha falla de forma explícita ante errores de PostgreSQL y la paginación SEACE sigue `links.next` del paquete OCDS.
+- Los perfiles SUNAT dejan de asignar estados “ACTIVO/HABIDO” sintéticos cuando falta una respuesta verificable.
+- Se eliminó una credencial Codart escrita en el código; la credencial expuesta requiere rotación en el proveedor.
+- Se purgaron 56 filas MEF adicionales de ejecutoras distritales y se conservaron 10 filas MEF de fuente oficial junto a las 475 contrataciones SEACE sin modificarlas.
+- El exportador dejó de generar datos de muestra, publicaciones y revisiones humanas simuladas. Las 473 señales calculadas se persistieron como candidatas; la copia pública no contiene alertas sin expediente humano comprobado.
+- La nueva cosecha mensual MEF completa 42 filas oficiales: 14 entidades en cada ejercicio 2024-2026, con corte 2026-09-30.
 
 ### Removed
+
+- Los spools de candidatos y los derivados del chat dejan de versionarse en el repositorio publico; las copias locales se conservan.
 
 - Se retiro definitivamente el servidor secundario Express de Node.js (`server.js`) y su dependencia en `package.json`, consolidando el runtime canonico exclusivo en Python 3.12 (ADR 0001).
 
