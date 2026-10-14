@@ -45,6 +45,12 @@
 # `002-seace-ingestion`, cuando corra de forma continua contra el feed, ira
 # completando este campo de forma organica conforme cada entidad aparezca como buyer
 # real -- no es una tarea manual de esta ronda.
+#
+# Cruce fiscal actualizado 2026-10-14: las 13 municipales provinciales usan sus
+# `SEC_EJEC` MEF oficiales. No se asigna significado municipal a un rango entero:
+# 300605, por ejemplo, es la ejecutora provincial de Cutervo. Los códigos SEC_EJEC/UBIGEO
+# verificados se guardan bajo verification
+# para no ampliar el contrato canonico ContractingEntity (ADR 0006).
 
 entities:
   - official_name: "GOBIERNO REGIONAL DE CAJAMARCA"
@@ -56,6 +62,11 @@ entities:
     verified_at: "2026-08-20T00:00:00Z"
     active: true
     verification:
+      siaf_pliego: "445"
+      siaf_sec_ejec: null
+      ubigeo: null
+      siaf_code_source: "https://www.mef.gob.pe/dnep/reporte/2026/reporte_omisos_FCFP_022026.pdf"
+      ubigeo_source: null
       ruc_cross_verified: true
       ruc_sources:
         - name: "ruc.pe (agregador derivado del padron publico de RUC de SUNAT)"
@@ -85,6 +96,11 @@ entities:
     verified_at: "2026-08-20T00:00:00Z"
     active: true
     verification:
+      siaf_pliego: null
+      siaf_sec_ejec: "300549"
+      ubigeo: "060101"
+      siaf_code_source: "https://www.mef.gob.pe/dnep/reporte/2026/reporte_omisos_FCFP_022026.pdf"
+      ubigeo_source: "https://www.inei.gob.pe/media/MenuRecursivo/publicaciones_digitales/Est/CompDptal2025/Cajamarca2025.pdf"
       ruc_cross_verified: true
       ruc_sources:
         - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
@@ -107,6 +123,11 @@ entities:
     verified_at: "2026-08-20T00:00:00Z"
     active: true
     verification:
+      siaf_pliego: null
+      siaf_sec_ejec: "300562"
+      ubigeo: "060201"
+      siaf_code_source: "https://www.mef.gob.pe/dnep/reporte/2026/reporte_omisos_FCFP_022026.pdf"
+      ubigeo_source: "https://www.inei.gob.pe/media/MenuRecursivo/publicaciones_digitales/Est/CompDptal2025/Cajamarca2025.pdf"
       ruc_cross_verified: true
       ruc_sources:
         - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
@@ -134,6 +155,11 @@ entities:
     verified_at: "2026-08-20T00:00:00Z"
     active: true
     verification:
+      siaf_pliego: null
+      siaf_sec_ejec: "300566"
+      ubigeo: "060301"
+      siaf_code_source: "https://www.mef.gob.pe/dnep/reporte/2026/reporte_omisos_FCFP_022026.pdf"
+      ubigeo_source: "https://www.inei.gob.pe/media/MenuRecursivo/publicaciones_digitales/Est/CompDptal2025/Cajamarca2025.pdf"
       ruc_cross_verified: true
       ruc_sources:
         - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
@@ -156,6 +182,11 @@ entities:
     verified_at: "2026-08-20T00:00:00Z"
     active: true
     verification:
+      siaf_pliego: null
+      siaf_sec_ejec: "300578"
+      ubigeo: "060401"
+      siaf_code_source: "https://www.mef.gob.pe/dnep/reporte/2026/reporte_omisos_FCFP_022026.pdf"
+      ubigeo_source: "https://www.inei.gob.pe/media/MenuRecursivo/publicaciones_digitales/Est/CompDptal2025/Cajamarca2025.pdf"
       ruc_cross_verified: true
       ruc_sources:
         - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
@@ -178,6 +209,11 @@ entities:
     verified_at: "2026-08-20T00:00:00Z"
     active: true
     verification:
+      siaf_pliego: null
+      siaf_sec_ejec: "300597"
+      ubigeo: "060501"
+      siaf_code_source: "https://www.mef.gob.pe/dnep/reporte/2026/reporte_omisos_FCFP_022026.pdf"
+      ubigeo_source: "https://www.inei.gob.pe/media/MenuRecursivo/publicaciones_digitales/Est/CompDptal2025/Cajamarca2025.pdf"
       ruc_cross_verified: true
       ruc_sources:
         - name: "busqueda web (municontumaza.gob.pe / gob.pe, cruzada con datosperu.org)"
@@ -200,6 +236,11 @@ entities:
     verified_at: "2026-08-20T00:00:00Z"
     active: true
     verification:
+      siaf_pliego: null
+      siaf_sec_ejec: "300605"
+      ubigeo: "060601"
+      siaf_code_source: "https://www.mef.gob.pe/dnep/reporte/2026/reporte_omisos_FCFP_022026.pdf"
+      ubigeo_source: "https://www.inei.gob.pe/media/MenuRecursivo/publicaciones_digitales/Est/CompDptal2025/Cajamarca2025.pdf"
       ruc_cross_verified: true
       ruc_sources:
         - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
@@ -222,6 +263,11 @@ entities:
     verified_at: "2026-08-20T00:00:00Z"
     active: true
     verification:
+      siaf_pliego: null
+      siaf_sec_ejec: "300620"
+      ubigeo: "060701"
+      siaf_code_source: "https://www.mef.gob.pe/dnep/reporte/2026/reporte_omisos_FCFP_022026.pdf"
+      ubigeo_source: "https://www.inei.gob.pe/media/MenuRecursivo/publicaciones_digitales/Est/CompDptal2025/Cajamarca2025.pdf"
       ruc_cross_verified: true
       ruc_sources:
         - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
@@ -244,6 +290,11 @@ entities:
     verified_at: "2026-08-20T00:00:00Z"
     active: true
     verification:
+      siaf_pliego: null
+      siaf_sec_ejec: "300623"
+      ubigeo: "060801"
+      siaf_code_source: "https://www.mef.gob.pe/dnep/reporte/2026/reporte_omisos_FCFP_022026.pdf"
+      ubigeo_source: "https://www.inei.gob.pe/media/MenuRecursivo/publicaciones_digitales/Est/CompDptal2025/Cajamarca2025.pdf"
       ruc_cross_verified: true
       ruc_sources:
         - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
@@ -271,6 +322,11 @@ entities:
     verified_at: "2026-08-20T00:00:00Z"
     active: true
     verification:
+      siaf_pliego: null
+      siaf_sec_ejec: "300635"
+      ubigeo: "060901"
+      siaf_code_source: "https://www.mef.gob.pe/dnep/reporte/2026/reporte_omisos_FCFP_022026.pdf"
+      ubigeo_source: "https://www.inei.gob.pe/media/MenuRecursivo/publicaciones_digitales/Est/CompDptal2025/Cajamarca2025.pdf"
       ruc_cross_verified: true
       ruc_sources:
         - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
@@ -293,6 +349,11 @@ entities:
     verified_at: "2026-08-20T00:00:00Z"
     active: true
     verification:
+      siaf_pliego: null
+      siaf_sec_ejec: "300642"
+      ubigeo: "061001"
+      siaf_code_source: "https://www.mef.gob.pe/dnep/reporte/2026/reporte_omisos_FCFP_022026.pdf"
+      ubigeo_source: "https://www.inei.gob.pe/media/MenuRecursivo/publicaciones_digitales/Est/CompDptal2025/Cajamarca2025.pdf"
       ruc_cross_verified: true
       ruc_sources:
         - name: "sitio oficial munisanmarcos.gob.pe, cruzado con datosperu.org"
@@ -322,6 +383,11 @@ entities:
     verified_at: "2026-08-20T00:00:00Z"
     active: true
     verification:
+      siaf_pliego: null
+      siaf_sec_ejec: "300649"
+      ubigeo: "061101"
+      siaf_code_source: "https://www.mef.gob.pe/dnep/reporte/2026/reporte_omisos_FCFP_022026.pdf"
+      ubigeo_source: "https://www.inei.gob.pe/media/MenuRecursivo/publicaciones_digitales/Est/CompDptal2025/Cajamarca2025.pdf"
       ruc_cross_verified: true
       ruc_sources:
         - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
@@ -344,6 +410,11 @@ entities:
     verified_at: "2026-08-20T00:00:00Z"
     active: true
     verification:
+      siaf_pliego: null
+      siaf_sec_ejec: "300662"
+      ubigeo: "061201"
+      siaf_code_source: "https://www.mef.gob.pe/dnep/reporte/2026/reporte_omisos_FCFP_022026.pdf"
+      ubigeo_source: "https://www.inei.gob.pe/media/MenuRecursivo/publicaciones_digitales/Est/CompDptal2025/Cajamarca2025.pdf"
       ruc_cross_verified: true
       ruc_sources:
         - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"
@@ -366,6 +437,11 @@ entities:
     verified_at: "2026-08-20T00:00:00Z"
     active: true
     verification:
+      siaf_pliego: null
+      siaf_sec_ejec: "300666"
+      ubigeo: "061301"
+      siaf_code_source: "https://www.mef.gob.pe/dnep/reporte/2026/reporte_omisos_FCFP_022026.pdf"
+      ubigeo_source: "https://www.inei.gob.pe/media/MenuRecursivo/publicaciones_digitales/Est/CompDptal2025/Cajamarca2025.pdf"
       ruc_cross_verified: true
       ruc_sources:
         - name: "datosperu.org (agregador derivado del padron publico de RUC de SUNAT)"

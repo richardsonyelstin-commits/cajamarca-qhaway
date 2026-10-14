@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 import unicodedata
 from collections import defaultdict
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
 from cajamarca_qhaway.capabilities.red_flags_engine.catalog import ACTIVE_INDICATORS, uit_value
@@ -406,17 +406,20 @@ class RedFlagsEngine:
     def _eval_mef_underspending(
         self, executions: list[BudgetExecutionRecord], now: datetime
     ) -> list[RedFlag]:
-        """Detects candidate underspending only after the fiscal year has closed."""
+        """Detect underspending in closed years or at a past official MEF cutoff."""
         ind = self.catalog["mef-underspending"]
+        current_year = now.astimezone(timezone.utc).year
         grouped: dict[tuple[str, int, str], list[BudgetExecutionRecord]] = defaultdict(list)
         for record in executions:
-            if record.fiscal_year >= now.astimezone(timezone.utc).year:
+            if record.fiscal_year > current_year:
                 continue
             category = (record.budget_category or "general").strip().casefold()
             grouped[(record.entity_id, record.fiscal_year, category)].append(record)
 
         results: list[RedFlag] = []
         for (entity_id, fiscal_year, category), records in grouped.items():
+            if fiscal_year == current_year and not self._has_elapsed_official_cut(records, now):
+                continue
             pim = sum(record.budgeted_amount for record in records)
             devengado = sum(record.executed_amount for record in records)
             if pim <= 0:
@@ -436,12 +439,36 @@ class RedFlagsEngine:
                     observed_value=round(ratio, 6),
                     procurement_ids=[],
                     execution_record_ids=ids,
-                    evidence_source="mef-datastore",
+                    evidence_source=records[0].source,
                     retrieved_at=retrieved_at,
                     generated_at=now,
                 )
             )
         return results
+
+    @staticmethod
+    def _has_elapsed_official_cut(
+        records: list[BudgetExecutionRecord], now: datetime
+    ) -> bool:
+        """Open-year evaluation needs one consistent, elapsed official MEF cut date."""
+        cut_dates: set[date] = set()
+        for record in records:
+            if record.source != "mef-consulta-amigable":
+                return False
+            value = record.raw_payload.get("FECHA_CORTE_OFICIAL")
+            if not isinstance(value, str):
+                return False
+            try:
+                cut_dates.add(date.fromisoformat(value))
+            except ValueError:
+                return False
+        if len(cut_dates) != 1:
+            return False
+        cutoff = next(iter(cut_dates))
+        return (
+            cutoff < now.astimezone(timezone.utc).date()
+            and cutoff.year == records[0].fiscal_year
+        )
 
     def _eval_recurrent_direct_award(
         self, procurements: list[ProcurementRecord], now: datetime

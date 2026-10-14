@@ -294,6 +294,55 @@ def test_seace_poller_failure_logs_coverage_incident(
     asyncio.run(_test())
 
 
+def test_seace_poller_marks_partial_pagination_as_failed(
+    watermark_store: WatermarkStore,
+    coverage_logger: CoverageGapLogger,
+    test_entities: tuple,
+):
+    import asyncio
+
+    async def _test():
+        by_ruc, by_consucode, _ = test_entities
+        package = {
+            "releases": [
+                {
+                    "ocid": "ocds-dgv273-2026-CAJ-partial",
+                    "tender": {"title": "Contrato Cajamarca", "value": {"amount": 1000}},
+                    "parties": [
+                        {
+                            "id": "PE-CONSUCODE-200701",
+                            "name": "MUNICIPALIDAD PROVINCIAL DE CAJAMARCA",
+                            "identifier": {"id": "20143623042", "scheme": "PE-RUC"},
+                            "address": {"department": "CAJAMARCA"},
+                            "roles": ["buyer", "procuringEntity"],
+                        }
+                    ],
+                }
+            ],
+            "links": {"next": "https://untrusted.invalid/api/v1/releases?page=2"},
+        }
+        client = httpx.AsyncClient(
+            transport=httpx.MockTransport(lambda request: httpx.Response(200, json=package))
+        )
+        poller = SeacePoller(
+            config=SeaceHarvestConfig(),
+            watermark_store=watermark_store,
+            coverage_logger=coverage_logger,
+            entities_by_ruc=by_ruc,
+            entities_by_consucode=by_consucode,
+            http_client=client,
+        )
+
+        records = await poller.poll_cycle()
+        assert len(records) == 1
+        assert poller.last_cycle_status == "FAILED"
+        windows = [entry for entry in coverage_logger.read_records() if entry.get("type") == "coverage_window"]
+        assert windows[-1]["status"] == "FAILED"
+        await poller.aclose()
+
+    asyncio.run(_test())
+
+
 # ============================================================================
 # 5. MefPoller Tests (CA-003-01 a CA-003-05)
 # ============================================================================
@@ -307,8 +356,8 @@ def test_mef_poller_rejects_consulta_amigable_url(
     by_ruc, _, by_id = test_entities
     forbidden_cfg = MefHarvestConfig(base_url="https://apps5.mineco.gob.pe/transparencia/Navegador/default.aspx")
 
-    # CA-003-01: Prohibicion absoluta a Consulta Amigable
-    with pytest.raises(ValueError, match="RN-003-01 / CA-003-01"):
+    # La URL CKAN no puede confundirse con la página HTML de Consulta Amigable.
+    with pytest.raises(ValueError, match="URL CKAN"):
         MefPoller(
             config=forbidden_cfg,
             watermark_store=watermark_store,
@@ -329,22 +378,20 @@ def test_mef_poller_harvests_budget_execution(
         by_ruc, _, by_id = test_entities
 
         mock_ckan_response = {
-            "success": True,
-            "result": {
-                "resource_id": "35bdc5b5-017c-42c1-ba20-8820bf1248b7",
-                "records": [
-                    {
-                        "_id": 1,
-                        "ano_eje": 2026,
-                        "mes_eje": 10,
-                        "ruc": "20143623042",
-                        "pliego_nombre": "MUNICIPALIDAD PROVINCIAL DE CAJAMARCA",
-                        "monto_pim": 150000000.0,
-                        "monto_devengado": 82000000.0,
-                        "departamento_ejecutora": "06",
-                    }
-                ],
-            },
+            "sucess": "true",
+            "resource_id": "35bdc5b5-017c-42c1-ba20-8820bf1248b7",
+            "records": [
+                {
+                    "_id": 1,
+                    "ano_eje": 2026,
+                    "mes_eje": 10,
+                    "ruc": "20143623042",
+                    "pliego_nombre": "MUNICIPALIDAD PROVINCIAL DE CAJAMARCA",
+                    "monto_pim": 150000000.0,
+                    "monto_devengado": 82000000.0,
+                    "departamento_ejecutora": "06",
+                }
+            ],
         }
 
         def mock_handler(request: httpx.Request) -> httpx.Response:
@@ -366,6 +413,7 @@ def test_mef_poller_harvests_budget_execution(
         records = await poller.poll_cycle(limit=10)
 
         # CA-003-02 & CA-003-04
+        assert poller.last_cycle_status == "OK"
         assert len(records) == 1
         assert records[0].fiscal_year == 2026
         assert records[0].budgeted_amount == 150000000.0
@@ -378,6 +426,37 @@ def test_mef_poller_harvests_budget_execution(
         poller.acknowledge_persisted()
         assert watermark_store.state.last_mef_offset == 1
 
+        await poller.aclose()
+
+    asyncio.run(_test())
+
+
+def test_mef_poller_marks_null_records_as_failed(
+    watermark_store: WatermarkStore,
+    coverage_logger: CoverageGapLogger,
+    test_entities: tuple,
+):
+    import asyncio
+
+    async def _test():
+        by_ruc, _, by_id = test_entities
+        response = {"sucess": "true", "records": None, "result": {"records_format": "objects"}}
+        client = httpx.AsyncClient(
+            transport=httpx.MockTransport(lambda request: httpx.Response(200, json=response))
+        )
+        poller = MefPoller(
+            config=MefHarvestConfig(max_retries=1),
+            watermark_store=watermark_store,
+            coverage_logger=coverage_logger,
+            entities_by_ruc=by_ruc,
+            entities_by_id=by_id,
+            http_client=client,
+        )
+
+        assert await poller.poll_cycle() == []
+        assert poller.last_cycle_status == "FAILED"
+        windows = [entry for entry in coverage_logger.read_records() if entry.get("type") == "coverage_window"]
+        assert windows[-1]["status"] == "FAILED"
         await poller.aclose()
 
     asyncio.run(_test())
@@ -446,9 +525,8 @@ def test_harvester_daemon_run_once_persists_records(tmp_harvest_dir: Path):
         assert len(executions) == 1
 
         # Verificar persistencia en fichero JSONL en disco
-        today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-        seace_file = tmp_harvest_dir / "data" / "harvested" / f"procurements_{today_str}.jsonl"
-        mef_file = tmp_harvest_dir / "data" / "harvested" / f"budget_executions_{today_str}.jsonl"
+        seace_file = tmp_harvest_dir / "data" / "harvested" / "procurements_all.jsonl"
+        mef_file = tmp_harvest_dir / "data" / "harvested" / "budget_executions_all.jsonl"
 
         assert seace_file.exists()
         assert mef_file.exists()

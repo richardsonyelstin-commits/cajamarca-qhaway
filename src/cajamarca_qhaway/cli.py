@@ -170,12 +170,20 @@ def main() -> int:
 
     elif args.command == "harvest":
         cfg = HarvestConfig()
+        if args.harvest_command == "run":
+            cfg = cfg.model_copy(
+                update={
+                    "mef": cfg.mef.model_copy(update={"enable_consulta_amigable": True})
+                }
+            )
         if args.harvest_command == "status":
             store = WatermarkStore(cfg.storage.watermark_file_path)
             state = store.state
             print("\n--- Estado de Cursores de Cosecha (WatermarkStore) ---")
+            print(f"Fuente SEACE: {'ACTIVA' if state.last_seace_timestamp else 'SIN COSECHA'}")
             print(f"Ultimo sondeo SEACE: {state.last_seace_timestamp or 'Nunca'}")
             print(f"Total OCIDs vistos SEACE: {len(state.seen_seace_ocids)}")
+            print(f"Fuente MEF: {'ACTIVA' if state.last_mef_timestamp else 'SIN COSECHA'}")
             print(f"Ultimo sondeo MEF: {state.last_mef_timestamp or 'Nunca'}")
             print(f"Offset actual MEF: {state.last_mef_offset}")
             print(f"Ultima actualizacion: {state.updated_at}\n")
@@ -226,6 +234,14 @@ def main() -> int:
                 )
                 print(f"Contratos cosechados (Cajamarca): {len(procurements)}")
                 print(f"Registros presupuestales cosechados: {len(executions)}")
+                statuses = {
+                    "seace": daemon.seace_poller.last_historical_status,
+                    "mef": daemon.mef_poller.last_historical_status,
+                }
+                failed_sources = [source for source in sources if statuses[source] != "OK"]
+                if failed_sources:
+                    print(f"Fuentes con cobertura historica incompleta o fallida: {failed_sources}\n")
+                    return 1
                 print("Extraccion historica y reciente completada con exito.\n")
                 return 0
             else:
@@ -233,6 +249,14 @@ def main() -> int:
                 procurements, executions = asyncio.run(daemon.run_once(sources=sources))
                 print(f"Contratos cosechados (Cajamarca): {len(procurements)}")
                 print(f"Registros presupuestales cosechados: {len(executions)}")
+                statuses = {
+                    "seace": daemon.seace_poller.last_cycle_status,
+                    "mef": daemon.mef_poller.last_cycle_status,
+                }
+                failed_sources = [source for source in sources if statuses[source] != "OK"]
+                if failed_sources:
+                    print(f"Fuentes con ciclo fallido: {failed_sources}; revise las brechas registradas.\n")
+                    return 1
                 print("Corrida completada con exito.\n")
                 return 0
         else:
