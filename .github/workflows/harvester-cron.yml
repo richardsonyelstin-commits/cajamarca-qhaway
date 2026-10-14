@@ -28,6 +28,8 @@ jobs:
     name: Cosecha Continua SEACE/MEF y Teledeteccion Satelital
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    env:
+      SUPABASE_SESSION_POOLER_HOST: ${{ vars.SUPABASE_SESSION_POOLER_HOST }}
 
     steps:
       - name: Checkout repositorio

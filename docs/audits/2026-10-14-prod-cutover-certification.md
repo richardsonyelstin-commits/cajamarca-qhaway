@@ -1,0 +1,72 @@
+---
+title: Certificacion operativa del corte MEF 2024-2026
+source: ai
+generator: codex-gpt-6
+generated_at: 2026-10-14T22:10:05.581654+00:00
+confidence: high
+verified: false
+---
+
+# Certificacion operativa del corte MEF 2024-2026
+
+El corte presupuestal y la paridad de datos estan verificados.
+CI y el sitio de produccion estan en verde; el worker cloud requiere corregir su destino IPv6.
+No se declara certificacion global PASS mientras esa compuerta siga fallida.
+
+## Datos verificados
+
+| Predicado | Resultado | Evidencia ejecutada |
+|---|---|---|
+| Entidades | 14 | Consulta contracting_entities y cruce con sunat_ruc_profiles |
+| Contrataciones preservadas | 475 | COUNT procurement_records y spool canonico |
+| Presupuestos | 42 | COUNT budget_execution_records |
+| Cobertura por ano | 14/14 en 2024, 2025 y 2026 | GROUP BY fiscal_year |
+| Paridad de presupuestos | 0 diferencias | EXCEPT bidireccional con jsonb_populate_recordset |
+| Candidatos | 473 | Motor local, UPSERT y EXCEPT contra Supabase |
+| Paridad de candidatos | 0 diferencias en 473 filas | Verificacion de todos los lotes |
+| Huerfanos | 0 | Referencias presupuestales JSONB contra tabla fuente |
+| Alertas | 6 in_review, 2 discarded, 0 published | GROUP BY status |
+| Linaje de entidades | 14 perfiles oficiales completos | RUC, verified_at, raw_payload, queried_at |
+
+La persona responsable confirmo el mapa oficial MEF y la procedencia existente de entidades.
+Cajamarca provincial usa SEC_EJEC 300549; los IDs y RUC canonicos se conservan.
+El [modulo mensual MEF](https://apps5.mineco.gob.pe/transparencia/Mensual/)
+publica el corte 2026-09-30 conservado en cada fila.
+
+## Verificacion local
+
+- `pytest -v`: 190 pruebas aprobadas antes del ajuste optativo de pooler.
+- `pytest tests/test_persistence.py -q`: 21 aprobadas, incluidas tres pruebas del pooler.
+- Pyright: 0 errores en extractor, exportador, oraculo y configuracion/conexion de persistencia.
+- Ruff: sin errores en esos modulos y las nuevas pruebas del extractor.
+- `web audit`: CONFORME.
+- `audit_snapshot_parity.py`: PASS para el ultimo ejercicio, sin sumar tres presupuestos anuales.
+- `audit_accessibility_static.py`: PASS en 16 paginas.
+- Antislop: 0 U+2014 en el arbol versionable; `git diff --check` limpio.
+
+## GitHub y Vercel
+
+[PR 3 integrado](https://github.com/richardsonyelstin-commits/cajamarca-qhaway/pull/3).
+[CI de main aprobado](https://github.com/richardsonyelstin-commits/cajamarca-qhaway/actions/runs/38644855774).
+Vercel publico el commit 83e6640 en produccion con estado Ready.
+[Plataforma publica](https://cajamarca-qhaway.vercel.app).
+Las quince rutas MPA comprobadas devuelven HTTP 200 con nosniff y X-Frame-Options DENY.
+El snapshot remoto coincide en conteos con la copia local y omite candidatos y denuncias.
+Las tres ramas anteriores se retiraron despues de comprobar que sus commits estaban en main.
+
+## Compuerta pendiente
+
+[Worker fallido](https://github.com/richardsonyelstin-commits/cajamarca-qhaway/actions/runs/38644858333):
+`psycopg.OperationalError`, conexion IPv6, Network is unreachable.
+El fallo sucede antes de la cosecha; no se oculta ni se sustituye por SQLite.
+
+La opcion `SUPABASE_SESSION_POOLER_HOST` usa el secreto DSN existente sin imprimirlo.
+Falta el hostname real del Session pooler del panel Connect del proyecto.
+[Supabase documenta la alternativa IPv4](https://supabase.com/docs/guides/database/connecting-to-postgres).
+Tras configurarlo se debe ejecutar otra vez el worker y cotejar sus cursores y conteos SQL.
+
+## Limite del saneamiento de Git
+
+Los spools de candidatos y los derivados del chat dejaron de estar en el arbol versionado.
+Las copias locales se conservan e ignoran; el snapshot publico contiene solo metadatos de conteo.
+El historial previo no se reescribio y sigue conservando los archivos antes publicados.
