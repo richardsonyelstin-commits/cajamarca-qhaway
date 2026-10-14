@@ -26,7 +26,10 @@ Cada ano 2024-2026 tiene 14 entidades; el corte oficial MEF es 2026-09-30.
 - CI de main y Vercel produccion Ready; PR 3, 4 y 5 integrados en commit 4764283.
 - Pooler IPv4 confirmado; 25 pruebas locales de persistencia y WSGI aprobadas.
 - Host confirmado y configurado: aws-1-ca-central-1.pooler.supabase.com.
-- Worker: password authentication failed; falta actualizar la credencial en GitHub y Vercel.
+- Worker vinculado al entorno GitHub Production del proyecto, cuyo secreto se actualizo hoy.
+- Guardia cloud: proyecto, rol, pooler y base correctos; password_placeholder: true.
+- Falta sustituir el marcador de contrasena en GitHub Environment y Vercel Production.
+- Persistencia: 27 pruebas locales aprobadas, incluidas cinco comprobaciones de la guardia.
 - Hidratacion MPA: corregida la suma multianual, dos pruebas Node aprobadas.
 - Navegador de produccion: PIM 5,980,488,974, devengado 3,926,357,702 y avance 65.7%.
 - Denuncias cloud: HTTP 503 hasta disponer de persistencia confirmable en el adaptador.

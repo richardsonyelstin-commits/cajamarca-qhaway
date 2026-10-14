@@ -36,7 +36,8 @@ publica el corte 2026-09-30 conservado en cada fila.
 ## Verificacion local
 
 - `pytest -v`: 190 pruebas aprobadas antes del ajuste optativo de pooler.
-- Suite final en CI: 196 pruebas Python y 2 pruebas Node aprobadas.
+- Suite de corte en CI: 196 pruebas Python y 3 pruebas Node aprobadas.
+- Guardia de conexion: 27 pruebas locales de persistencia, incluidas cinco nuevas comprobaciones.
 - Persistencia y WSGI: 25 pruebas locales aprobadas tras corregir el parser libpq.
 - Pyright: 0 errores en extractor, exportador, oraculo y configuracion/conexion de persistencia.
 - Ruff: sin errores en esos modulos y las nuevas pruebas del extractor.
@@ -71,6 +72,19 @@ El worker alcanza el pooler IPv4 y Supabase rechaza la credencial guardada.
 La persona responsable debe actualizar el secreto en ambos destinos sin compartirlo por chat.
 [Supabase documenta la alternativa IPv4](https://supabase.com/docs/guides/database/connecting-to-postgres).
 Tras configurarlo se debe ejecutar otra vez el worker y cotejar sus cursores y conteos SQL.
+
+### Credencial de entorno y diagnostico seguro
+
+El 2026-10-14T22:40:17Z se actualizo el secreto del entorno GitHub Production del proyecto.
+El secreto del repositorio permanecia actualizado al 2026-10-13T19:38:12Z.
+El worker ahora referencia el entorno existente para seleccionar la credencial vigente.
+Vercel se redesplego con su configuracion de produccion y termino Ready.
+
+[La guardia cloud](https://github.com/richardsonyelstin-commits/cajamarca-qhaway/actions/runs/38649917865)
+confirma proyecto, usuario, pooler y base de datos correctos, con `password_placeholder: true`.
+La ejecucion se detiene antes de autenticarse mientras la URL conserve el marcador de ejemplo.
+El responsable debe sustituirlo por la contrasena PostgreSQL real y codificarla para URI.
+La guardia imprime exclusivamente booleanos; cinco pruebas comprueban el bloqueo y la no exposicion.
 
 ## Hidratacion del cliente MPA
 

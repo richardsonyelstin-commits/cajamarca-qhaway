@@ -32,7 +32,7 @@ flowchart TD
     VC -->|"Rutas /api/*"| PY["Vercel Python Function (api/index.py)"]
     
     WEB -->|"Lectura directa PostgREST (anon RLS)"| SB
-    PY -->|"Persistencia transaccional de denuncias y revisiones"| SB
+    PY -->|"Adaptador persistente pendiente para denuncias y revisiones"| SB
 ```
 
 ## 2. Repositorio y Automatizacion en GitHub
@@ -45,6 +45,8 @@ flowchart TD
 - **Worker de Cosecha Continua (`.github/workflows/harvester-cron.yml`)**:
   1. Se ejecuta automaticamente cada 2 horas (`0 */2 * * *`) o por disparo manual.
   2. Conecta con Supabase usando `CAJAMARCA_QHAWAY_DATABASE_URL`.
+     El job usa el entorno GitHub Production del proyecto cajamarca-qhaway.
+     Su secreto de entorno tiene precedencia sobre el secreto del repositorio.
   3. Realiza la cosecha de SEACE OCDS y MEF Consulta Amigable (`harvest run --once`).
   4. Realiza la evaluacion de divergencia fisico-financiera satelital (`geospatial evaluate --sar`).
   5. Persiste cursores de ingesta en la tabla `harvest_watermarks`.
@@ -63,7 +65,9 @@ flowchart TD
 
 ### Variables de Entorno de Produccion (GitHub Secrets y Vercel Environment)
 
-Configure en la configuracion del repositorio GitHub y en el dashboard de Vercel:
+Configure en el entorno GitHub Production del proyecto cajamarca-qhaway y en Vercel Production.
+El nombre literal del entorno en YAML es `"Production \u2013 cajamarca-qhaway"`.
+El escape Unicode evita caracteres prohibidos en el archivo y conserva el entorno existente.
 
 - `CAJAMARCA_QHAWAY_DATABASE_URL`: Cadena transaccional de conexión directa o pooler de Supabase
   (`postgresql://postgres:[PASSWORD]@db.oglltrpvvifqvwmxmkjq.supabase.co:5432/postgres`).
@@ -84,8 +88,8 @@ Configure en la configuracion del repositorio GitHub y en el dashboard de Vercel
 ## 5. Operacion y Monitoreo Desatendido
 
 Al no depender del entorno local:
-1. Las denuncias ciudadanas emitidas por la web se guardan de forma permanente en Supabase.
-2. Las alertas aprobadas por veedores acreditados impactan inmediatamente en la nube.
+1. El adaptador cloud de denuncias devuelve HTTP 503 hasta disponer de persistencia confirmable.
+2. Las revisiones requieren un adaptador autenticado y persistente; no se publica automaticamente.
 3. El workflow del Harvester intenta cosechar cada 2 horas. Cada fuente debe devolver una
    respuesta estructuralmente válida; el CLI termina con código distinto de cero ante fallos,
    de modo que GitHub Actions marque el ciclo fallido.
@@ -116,3 +120,8 @@ La validacion admite exclusivamente hosts oficiales `.pooler.supabase.com`.
 Sin esa variable, la conexion conserva el DSN original y sus errores siguen siendo visibles.
 Un despliegue Vercel Ready y CI verde no acreditan por si solos que el worker haya ingerido datos.
 Despues de configurar el host, ejecutar el workflow y verificar cosecha, cursores y conteos SQL.
+
+El preflight `python scripts/check-worker-connection.py` valida el destino canonico.
+Su salida contiene solo booleanos e identifica contrasenas de ejemplo sin revelarlas.
+Un resultado valido permite iniciar la cosecha; la autenticacion real se comprueba al conectar.
+Si informa `password_placeholder: true`, sustituir el marcador por la contrasena real.
