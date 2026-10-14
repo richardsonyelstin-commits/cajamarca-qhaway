@@ -1,0 +1,11 @@
+data/curated/
+data/harvested/red_flags_all.jsonl
+data/harvested/live-cutover-v2/
+data/state/cutover-v2-coverage-gaps.jsonl
+data/state/cutover-v2-watermarks.json
+Chat de WhatsApp*/
+.env
+.env.*
+secrets/
+*.pem
+*.key

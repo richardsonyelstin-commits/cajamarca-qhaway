@@ -22,8 +22,8 @@ class SunatRucProfile(BaseModel):
 
     ruc: str = Field(description="Numero de RUC de 11 digitos validado")
     razon_social: str = Field(description="Razon social o denominacion oficial registrada en SUNAT")
-    estado_contribuyente: str = Field(default="ACTIVO", description="Estado del contribuyente (ACTIVO, BAJA DE OFICIO, etc.)")
-    condicion_domicilio: str = Field(default="HABIDO", description="Condicion de domicilio fiscal (HABIDO, NO HABIDO, etc.)")
+    estado_contribuyente: str = Field(description="Estado del contribuyente informado por SUNAT")
+    condicion_domicilio: str = Field(description="Condicion de domicilio fiscal informada por SUNAT")
     tipo_contribuyente: str | None = Field(default=None, description="Tipo de contribuyente segun clasificacion SUNAT")
     direccion_fiscal: str | None = Field(default=None, description="Direccion fiscal registrada")
     ubigeo: str | None = Field(default=None, description="Codigo ubigeo INEI de 6 digitos")
@@ -32,9 +32,9 @@ class SunatRucProfile(BaseModel):
     distrito: str | None = Field(default=None, description="Distrito del domicilio fiscal")
     es_entidad_publica: bool = Field(default=False, description="True si corresponde a una entidad estatal de Cajamarca")
     risk_signals: tuple[str, ...] = Field(default=(), description="Alertas objetivas sobre estado tributario o identificacion")
-    source_provider: str = Field(default="sunat_padron_oficial", description="Fuente (codart_api, sunat_padron_oficial, seace_ocds_verified)")
+    source_provider: str = Field(description="Identificador de la fuente verificable")
     queried_at: str = Field(description="Fecha y hora de enriquecimiento en formato ISO 8601 UTC")
-    raw_payload: dict[str, Any] = Field(default_factory=dict, description="Payload integro de origen para auditoria (Art. 10)")
+    raw_payload: dict[str, Any] = Field(description="Payload integro de origen para auditoria (Art. 10)")
 
     @model_validator(mode="before")
     @classmethod

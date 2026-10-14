@@ -1,4 +1,4 @@
-"""Cliente HTTP y fallback determinista para consulta SUNAT RUC inspirado en codart-api."""
+"""Cliente optativo de consulta tributaria de terceros; no sustituye la fuente oficial SUNAT."""
 
 from __future__ import annotations
 
@@ -20,18 +20,11 @@ from cajamarca_qhaway.capabilities.sunat_enrichment.validator import (
 
 logger = logging.getLogger("cajamarca_qhaway.sunat_enrichment.client")
 
-CODART_DEFAULT_TOKEN = "vSJR6tai39CnDrdZ4EOamF3Dzi172ktDBfO46B2E81wVB78RSHx925rydyRW"
 CODART_DEFAULT_BASE_URL = "https://api-codart.cgrt.org/api/v1"
 
 
 class CodartSunatClient:
-    """Cliente resiliente multi-nivel para consulta de RUC SUNAT (Art. 16).
-
-    Estrategia de 3 niveles:
-    1. Cache local verificada (data/sunat/ruc_registry.json).
-    2. API Codart remota (https://api-codart.cgrt.org/api/v1/consultas/sunat/ruc/{ruc}).
-    3. Fallback determinista local basado en universo verificado de 14 entidades y SEACE OCDS.
-    """
+    """Cliente de terceros desactivado por defecto y con errores de datos fail-closed."""
 
     def __init__(
         self,
@@ -39,9 +32,9 @@ class CodartSunatClient:
         base_url: str | None = None,
         cache_registry_path: Path | str | None = None,
         timeout: float = 5.0,
-        enable_remote: bool = True,
+        enable_remote: bool = False,
     ) -> None:
-        self.token = token or os.getenv("CAJAMARCA_QHAWAY_CODART_TOKEN", CODART_DEFAULT_TOKEN)
+        self.token = token or os.getenv("CAJAMARCA_QHAWAY_CODART_TOKEN")
         self.base_url = (base_url or os.getenv("CAJAMARCA_QHAWAY_CODART_BASE_URL", CODART_DEFAULT_BASE_URL)).rstrip("/")
         self.timeout = timeout
         self.enable_remote = enable_remote
@@ -57,7 +50,11 @@ class CodartSunatClient:
                     data = json.load(f)
                 records = data.get("registry", {})
                 for ruc, item in records.items():
-                    if isinstance(item, dict):
+                    if (
+                        isinstance(item, dict)
+                        and item.get("source_provider") == "sunat_padron_reducido"
+                        and item.get("raw_payload", {}).get("source_url")
+                    ):
                         self._memory_cache[ruc] = SunatRucProfile(**item)
             except Exception as exc:
                 logger.warning("No se pudo cargar la cache local de RUC: %s", exc)
@@ -84,10 +81,14 @@ class CodartSunatClient:
             result.get("razon_social")
             or result.get("nombre")
             or result.get("razonSocial")
-            or f"CONTRIBUYENTE RUC {ruc}"
-        ).strip()
-        estado = (result.get("estado") or result.get("estado_contribuyente") or "ACTIVO").strip().upper()
-        condicion = (result.get("condicion") or result.get("condicion_domicilio") or "HABIDO").strip().upper()
+        )
+        estado = result.get("estado") or result.get("estado_contribuyente")
+        condicion = result.get("condicion") or result.get("condicion_domicilio")
+        if not all(isinstance(value, str) and value.strip() for value in (razon_social, estado, condicion)):
+            raise ValueError("La respuesta del proveedor carece de campos SUNAT verificables")
+        razon_social = razon_social.strip()
+        estado = estado.strip().upper()
+        condicion = condicion.strip().upper()
         direccion = result.get("direccion") or result.get("direccion_fiscal")
         ubigeo = result.get("ubigeo")
         departamento = result.get("departamento")
@@ -106,7 +107,7 @@ class CodartSunatClient:
             departamento=departamento,
             provincia=provincia,
             distrito=distrito,
-            es_entidad_publica=ruc.startswith("20") and ("GOBIERNO" in razon_social or "MUNICIPALIDAD" in razon_social),
+            es_entidad_publica=False,
             source_provider="codart_api",
             queried_at=now_iso,
             raw_payload=payload,
@@ -126,16 +127,13 @@ class CodartSunatClient:
             return self._memory_cache[clean_ruc]
 
         # Nivel 2: Intento con API Codart si remoto habilitado y circuito cerrado
-        if self.enable_remote and not self._circuit_broken:
+        if self.enable_remote and self.token and not self._circuit_broken:
             api_profile = self._query_codart_api(clean_ruc)
             if api_profile:
                 self._memory_cache[clean_ruc] = api_profile
                 return api_profile
 
-        # Nivel 3: Fallback determinista
-        fallback_profile = self._create_deterministic_fallback(clean_ruc, fallback_metadata)
-        self._memory_cache[clean_ruc] = fallback_profile
-        return fallback_profile
+        raise LookupError(f"No existe un perfil SUNAT verificado en cache para el RUC {clean_ruc}")
 
     def _query_codart_api(self, ruc: str) -> SunatRucProfile | None:
         url = f"{self.base_url}/consultas/sunat/ruc/{ruc}"
@@ -154,52 +152,8 @@ class CodartSunatClient:
                 elif response.status_code in (401, 403, 422, 429):
                     # Desactivar API temporalmente si token es invalido o rate-limited
                     self._circuit_broken = True
-                    logger.info("Codart API no disponible (status %d). Conmutando a fallback local.", response.status_code)
+                    logger.info("Codart API no disponible (status %d). No se usaran datos de sustitucion.", response.status_code)
         except Exception as exc:
             self._circuit_broken = True
             logger.debug("Error conectando con Codart API: %s", exc)
         return None
-
-    def _create_deterministic_fallback(
-        self,
-        ruc: str,
-        metadata: dict[str, Any] | None = None,
-    ) -> SunatRucProfile:
-        metadata = metadata or {}
-        now_iso = datetime.now(timezone.utc).isoformat()
-
-        razon_social = (
-            metadata.get("official_name")
-            or metadata.get("name")
-            or metadata.get("legalName")
-            or metadata.get("razon_social")
-            or f"ENTIDAD/CONTRATISTA RUC {ruc}"
-        )
-        es_publica = (
-            metadata.get("entity_level") is not None
-            or metadata.get("es_entidad_publica", False)
-            or "GOBIERNO REGIONAL" in razon_social
-            or "MUNICIPALIDAD" in razon_social
-        )
-        source = metadata.get("source_provider") or (
-            "sunat_padron_oficial" if es_publica else "seace_ocds_verified"
-        )
-        estado = metadata.get("estado_contribuyente", "ACTIVO")
-        condicion = metadata.get("condicion_domicilio", "HABIDO")
-
-        return SunatRucProfile(
-            ruc=ruc,
-            razon_social=razon_social,
-            estado_contribuyente=estado,
-            condicion_domicilio=condicion,
-            tipo_contribuyente=metadata.get("tipo_contribuyente"),
-            direccion_fiscal=metadata.get("direccion_fiscal") or metadata.get("streetAddress"),
-            ubigeo=metadata.get("ubigeo"),
-            departamento=metadata.get("department") or metadata.get("departamento") or "CAJAMARCA",
-            provincia=metadata.get("province") or metadata.get("provincia"),
-            distrito=metadata.get("distrito") or metadata.get("locality"),
-            es_entidad_publica=es_publica,
-            source_provider=source,
-            queried_at=now_iso,
-            raw_payload=metadata,
-        )

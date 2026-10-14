@@ -7,7 +7,8 @@ Sirve la plataforma web estatica y expone los endpoints JSON REST de la platafor
 - GET /api/procurements
 - GET /api/budget
 - GET /api/alerts (solo status == 'published' en vista publica, Art. 14)
-- GET /api/red-flags (restringido a panel de revision humana)
+- GET /api/red-flags (solo banderas enlazadas a alertas publicadas)
+- GET /api/review/queue (candidatos internos; requiere sesion de veedor)
 - GET /api/reports
 - POST /api/reports (valida legal_disclaimer_shown == True, CA-006-01)
 - POST /api/review (valida reviewed_by no generico y review_notes si status == 'discarded', Art. 14)
@@ -423,6 +424,26 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 "veedor": session["veedor"],
                 "expiresAt": session["expiresAt"],
             })
+
+        if path == "/api/review/queue":
+            auth_header = req_headers.get("authorization", "")
+            if not auth_header.startswith("Bearer "):
+                return cls._json_bytes({"error": "Sesion de veedor requerida"}, status_code=401)
+            if not _verify_veedor_token(auth_header[7:].strip()):
+                return cls._json_bytes({"error": "Sesion de veedor invalida o expirada"}, status_code=401)
+            if _red_flag_repo is None or _alert_repo is None:
+                return cls._json_bytes({"error": "Repositorio privado de revision no disponible"}, status_code=503)
+            reviewed_ids = {
+                flag_id
+                for alert in _alert_repo.list_all()
+                for flag_id in alert.red_flag_ids
+            }
+            queue = [
+                flag.model_dump(mode="json")
+                for flag in _red_flag_repo.list_all()
+                if flag.red_flag_id not in reviewed_ids
+            ]
+            return cls._json_bytes(queue)
 
         if path == "/api/snapshot":
             public_snapshot = dict(snapshot)

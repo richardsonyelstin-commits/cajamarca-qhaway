@@ -11,6 +11,12 @@ verified: false
 
 # Estudio de Factibilidad y Arquitectura: Monitoreo Geoespacial Satelital y Camaras Publicas para Obras Publicas en Cajamarca
 
+## Estado de verificación para Etapa 2 (2026-10-14)
+
+El catálogo de obras de producción está vacío hasta contar con CUI, coordenadas y OCID verificables en fuentes oficiales. Se retiraron los 14 sitios ilustrativos que antes aparecían como obras reales. No se ejecuta evaluación satelital con coordenadas o CUI inventados. El catálogo contiene constructores de URL NASA, pero aún no implementa una cosecha STAC ni una observación física real; esa integración sigue pendiente.
+
+La fuente SEACE consultada hoy sí incluye un `projectID` de siete dígitos en un proceso de 2026, pero no aporta geometría. Ese dato aislado no basta para evaluar una obra ni para afirmar correspondencia con el MEF.
+
 ## 1. Resumen Ejecutivo y Marco de Referencia
 
 El presente estudio analiza en profundidad la viabilidad tecnica, arquitectonica y legal de incorporar capacidades de teledeteccion satelital multi-temporal y alimentacion de camaras de vigilancia publica al sistema de fiscalizacion civica `cajamarca-qhaway`.

@@ -104,7 +104,10 @@ class ReviewPanelService:
         self._decisions[alert.alert_id] = alert
         return alert
 
-    def list_alerts(self, status: Literal["published", "discarded"] | None = None) -> list[Alert]:
+    def list_alerts(
+        self,
+        status: Literal["generated", "in_review", "published", "discarded"] | None = None,
+    ) -> list[Alert]:
         """Retorna las alertas decididas, opcionalmente filtradas por estado."""
         if status is None:
             return list(self._decisions.values())

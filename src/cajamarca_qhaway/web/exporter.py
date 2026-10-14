@@ -8,13 +8,15 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import datetime, timezone
+from collections.abc import Sequence
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, TypeVar
+from typing import Any
 
 from pydantic import BaseModel
 
 from cajamarca_qhaway.capabilities.entity_mapping.dataset import load_universe
+from cajamarca_qhaway.capabilities.red_flags_engine.engine import RedFlagsEngine
 from cajamarca_qhaway.models import (
     Alert,
     BudgetExecutionRecord,
@@ -26,8 +28,8 @@ from cajamarca_qhaway.models import (
 
 DEFAULT_SNAPSHOT_PATH = Path("web/src/data/verified-snapshot.json")
 PROCUREMENT_SPOOL_CANDIDATES = (
-    Path("data/harvested/live-cutover-v2/procurements_all.jsonl"),
     Path("data/harvested/procurements_all.jsonl"),
+    Path("data/harvested/live-cutover-v2/procurements_all.jsonl"),
 )
 BUDGET_SPOOL_CANDIDATES = (
     Path("data/harvested/budget_executions_all.jsonl"),
@@ -39,7 +41,6 @@ REDFLAG_SPOOL_CANDIDATES = (
     Path("data/harvested/live-cutover-v2/red_flags.jsonl"),
 )
 ALERT_SUMMARY_CANDIDATES = (Path("data/harvested/alerts_summary.json"),)
-ModelT = TypeVar("ModelT", bound=BaseModel)
 
 
 def _first_existing(paths: tuple[Path, ...]) -> Path:
@@ -49,7 +50,7 @@ def _first_existing(paths: tuple[Path, ...]) -> Path:
     raise FileNotFoundError(f"No se encontro un spool requerido: {paths}")
 
 
-def _read_jsonl(path: Path, model: type[ModelT]) -> list[ModelT]:
+def _read_jsonl[ModelT: BaseModel](path: Path, model: type[ModelT]) -> list[ModelT]:
     records: list[ModelT] = []
     for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
         if not line.strip():
@@ -58,10 +59,10 @@ def _read_jsonl(path: Path, model: type[ModelT]) -> list[ModelT]:
             value = json.loads(line)
             retrieved_at = value.get("retrieved_at")
             if isinstance(retrieved_at, str):
-                parsed = datetime.fromisoformat(retrieved_at.replace("Z", "+00:00"))
+                parsed = datetime.fromisoformat(retrieved_at)
                 if parsed.tzinfo is None:
                     raise ValueError("retrieved_at no incluye zona horaria")
-                value["retrieved_at"] = parsed.astimezone(timezone.utc)
+                value["retrieved_at"] = parsed.astimezone(UTC)
             record = model.model_validate(value)
             if isinstance(record, BudgetExecutionRecord) and not record.raw_payload:
                 raise ValueError("raw_payload esta vacio")
@@ -71,16 +72,16 @@ def _read_jsonl(path: Path, model: type[ModelT]) -> list[ModelT]:
     return records
 
 
-def _model_dump(records: list[BaseModel]) -> list[dict[str, Any]]:
+def _model_dump(records: Sequence[BaseModel]) -> list[dict[str, Any]]:
     return [record.model_dump(mode="json") for record in records]
 
 
 def build_verified_web_snapshot(now: datetime | None = None) -> dict[str, Any]:
     """Construye un snapshot usando solo las filas reales disponibles en los spools."""
-    generated_at = now or datetime.now(timezone.utc)
+    generated_at = now or datetime.now(UTC)
     if generated_at.tzinfo is None:
         raise ValueError("generated_at debe incluir zona horaria")
-    generated_at = generated_at.astimezone(timezone.utc)
+    generated_at = generated_at.astimezone(UTC)
 
     entities = [ContractingEntity.model_validate(item) for item in load_universe().contracting_entities]
     if len(entities) != 14 or len({entity.entity_id for entity in entities}) != 14:
@@ -106,6 +107,8 @@ def build_verified_web_snapshot(now: datetime | None = None) -> dict[str, Any]:
         if path.is_file():
             red_flags = _read_jsonl(path, RedFlag)
             break
+    else:
+        red_flags = RedFlagsEngine().evaluate(procurements, budgets, now=generated_at)
     candidate_count = len(red_flags)
     alert_summary_path = next((path for path in ALERT_SUMMARY_CANDIDATES if path.is_file()), None)
     alert_summary = json.loads(alert_summary_path.read_text(encoding="utf-8")) if alert_summary_path else {}
