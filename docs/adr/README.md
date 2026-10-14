@@ -35,3 +35,7 @@ reconstruir el porque cuesta dias.
 | [0006](0006-persistencia-universo-contracting-entity.md) | Universo de `ContractingEntity` como dataset versionado, sembrado a PostgreSQL | `accepted` | 2026-08-20 |
 | [0007](0007-arquitectura-plataforma-web-hibrida.md) | Arquitectura de plataforma web hibrida (HTML5/CSS3/Bootstrap 5/JS ES6+ con Supabase y respaldo local) | `proposed` | 2026-10-12 |
 | [0008](0008-adopcion-arquitectura-multi-pagina-y-retiro-spa.md) | Adopcion de Arquitectura Multi-Pagina (MPA) y Retiro de Enrutador SPA Residual | `proposed` | 2026-10-13 |
+| [0009](0009-desacoplamiento-local-arquitectura-cloud-hibrida.md) | Desacoplamiento local y arquitectura cloud híbrida | `proposed` | 2026-10-13 |
+| [0010](0010-alert-trazabilidad-y-candidatos-004.md) | Trazabilidad reforzada de Alert y fórmulas candidatas del motor | `accepted` | 2026-10-13 |
+| [0011](0011-fuente-oficial-mef-consulta-amigable.md) | Consulta Amigable del MEF como fuente primaria de ejecución presupuestal | `accepted` | 2026-10-13 |
+| [0012](0012-corte-oficial-para-subejecucion-mef.md) | Corte oficial para evaluar subejecución MEF en el ejercicio abierto | `accepted` | 2026-10-14 |

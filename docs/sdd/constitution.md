@@ -130,6 +130,19 @@ implementación, y se repite aquí porque es la defensa legal y periodística de
 **Comprobación:** la spec nombra el campo de procedencia (`source`, `retrieved_at`,
 `raw_payload_ref`) que rellena cada capacidad. Si no lo nombra, no está terminada.
 
+Para los registros de la Consulta de Ejecución del Gasto Presupuestal del MEF (`id=504`),
+`BudgetExecutionRecord.raw_payload` conserva la fila completa mostrada por el módulo mensual,
+incluidos `codigo_entidad`, `nombre_entidad`, `PIA`, `PIM`, `CERTIFICACION`,
+`COMPROMISO_ANUAL`, `ATENCION_COMPROMISO_MENSUAL`, `DEVENGADO`, `GIRADO`, `AVANCE_PCT`,
+`ANO_EJE`, `FECHA_CORTE_OFICIAL`, `FUENTE_URL` y `ruta_navegacion`. El objeto fuente se conserva
+sin mutaciones y cada dato normalizado se deriva por separado.
+
+El módulo oficial verificable comprende el enlace del MEF `id=504`,
+`apps5.mineco.gob.pe/transparencia/Mensual/` y su navegación en
+`apps5.mineco.gob.pe/transparencia/Navegador/`; es fuente primaria en paridad con el catálogo
+CKAN/PNDA. Su automatización usa una sesión persistente, conserva cookies y renueva los campos
+WebForms ocultos en cada postback.
+
 ## Artículo 11. Simplicidad deliberada
 
 Se especifica lo que la capacidad debe hacer en Fase 1, acotada a Cajamarca, no lo que podría
@@ -280,8 +293,8 @@ confirmar por completo (ver ambigüedades abiertas de esa spec). Forma prelimina
 | `budgeted_amount` | number | Presupuesto institucional modificado (PIM) u homólogo - `[NECESITA ACLARACIÓN: campo exacto, spec 003]` |
 | `executed_amount` | number | Monto devengado o ejecutado - `[NECESITA ACLARACIÓN: campo exacto, spec 003]` |
 | `budget_category` | string \| null | Genérica de gasto o categoría presupuestal, si el dataset la expone |
-| `raw_payload` | objeto | El registro tal como lo devuelve la API del MEF, sin transformar |
-| `source` | string | Fijo: `"mef-datastore"` |
+| `raw_payload` | objeto | Fila fuente íntegra de CKAN/PNDA o Consulta Amigable |
+| `source` | string | `"mef-datastore"` o `"mef-consulta-amigable"` |
 | `retrieved_at` | ISO 8601 UTC | Cuándo se obtuvo este registro |
 
 ### `RedFlag`

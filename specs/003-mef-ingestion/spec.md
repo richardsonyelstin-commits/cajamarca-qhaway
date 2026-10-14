@@ -4,7 +4,7 @@ spec: "003"
 capability: mef-ingestion
 status: draft
 created: 2026-08-20
-updated: 2026-08-20
+updated: 2026-10-13
 consumes: [ContractingEntity]
 produces: [BudgetExecutionRecord]
 open_clarifications: 6
@@ -17,28 +17,24 @@ verified: false
 
 # Spec 003 - mef-ingestion
 
-Ingiere ejecución presupuestal desde el Portal de Datos Abiertos del MEF, filtrada al universo de
-`001-entity-mapping`, cruzada por entidad con `002-seace-ingestion`. Fundamentada en la
-verificación técnica real (`docs/research/2026-08-20-verificacion-tecnica-fuentes.md`, §2), que
-corrige una suposición del diseño de producto original: **Consulta Amigable** y el **Portal de
-Datos Abiertos del MEF** no son la misma cosa técnica, y esta spec solo cubre lo segundo.
+Ingiere ejecución presupuestal desde las fuentes oficiales verificables del MEF, filtrada al
+universo de `001-entity-mapping` y cruzada por entidad con `002-seace-ingestion`. El catálogo
+CKAN/PNDA y la Consulta de Ejecución del Gasto Presupuestal (`id=504`) son fuentes primarias en
+paridad; sus registros conservan su fuente y payload diferenciados.
 
 ## Problema
 
-El diseño de producto trataba "MEF Consulta Amigable / datos abiertos" como una sola fuente. La
-verificación técnica encontró dos sistemas distintos:
+La verificación técnica identifica dos sistemas oficiales distintos, ahora tratados como fuentes
+primarias en paridad:
 
-1. **Consulta Amigable** (`apps5.mineco.gob.pe/transparencia/Navegador/`): una aplicación ASP.NET
-   WebForms clásica, con `<frameset>` y postback de formulario - sin ninguna API confirmable, y
-   sin indicio de que pueda tenerla.
-2. **Portal de Datos Abiertos del MEF** (`datosabiertos.mef.gob.pe`): una SPA Angular que, según
-   su propio código compilado, consume una API real en `api.datosabiertos.mef.gob.pe` con
-   acciones tipo CKAN DataStore (`datastore_search`, `datastore_search_sql`, `dump`), confirmada
-   viva (responde `409` con un error de SQL cuando se llama sin parámetros, no `404`).
+1. **Consulta Amigable** (`apps5.mineco.gob.pe/transparencia/Mensual/` y `/Navegador/`): módulo
+   ASP.NET WebForms con sesión, campos hidden y postbacks. Su enlace oficial de catálogo tiene
+   `id=504`.
+2. **Portal de Datos Abiertos del MEF** (`datosabiertos.mef.gob.pe`): portal con API CKAN DataStore
+   (`datastore_search`, `datastore_search_sql`, `dump`) y recursos anuales publicados.
 
-Esta spec se especifica sobre el sistema (2), porque es el único con evidencia real de API. No se
-sabe todavía si el Portal de Datos Abiertos republica el mismo dato que Consulta Amigable, un
-subconjunto, o algo distinto - es la ambigüedad más importante que deja abierta.
+Los valores conservan fuente, fecha y granularidad propias. No se combinan como si ambas
+publicaciones tuvieran el mismo esquema o corte.
 
 ## Usuarios e intención
 
@@ -59,19 +55,19 @@ subconjunto, o algo distinto - es la ambigüedad más importante que deja abiert
 
 ## Salidas
 
-Un conjunto de `BudgetExecutionRecord` (contrato canónico, Artículo 19), uno por entidad y
-periodo fiscal disponible en el dataset, con el registro crudo devuelto por la API en
-`raw_payload`.
+Un `BudgetExecutionRecord` por pliego y ejercicio para los 14 pliegos Cajamarca cuando Consulta
+Amigable publique la fila, y registros CKAN según la granularidad de su dataset. La fila y
+procedencia de cada fuente se conservan en `raw_payload`.
 
 **Ubicación.** `[NECESITA ACLARACIÓN: depende del stack - ver specs/pending-adrs.md]`
 
 ## Reglas de negocio
 
-**RN-003-01. Solo se consulta la API confirmada, nunca Consulta Amigable.**
-Esta capacidad no automatiza `apps5.mineco.gob.pe` en ninguna forma (ni scraping de formularios
-con postback): la evidencia técnica no sustenta que sea una fuente automatizable de forma
-sostenible, y el diseño del proyecto prioriza fuentes con API estructurada sobre scraping frágil
-(`docs/research/2026-08-20-diseno-cajamarca-qhaway-fase1.md`, §3.3).
+**RN-003-01. Solo se consultan fuentes oficiales verificadas del MEF.**
+La fuente Consulta Amigable es el módulo `id=504` bajo
+`apps5.mineco.gob.pe/transparencia/Mensual/` y `/Navegador/`. Su formulario ASP.NET se navega
+con una sesión persistente, cookies y valores hidden frescos por respuesta. El catálogo CKAN/PNDA
+se mantiene como fuente primaria paritaria; no se mezclan silenciosamente registros entre fuentes.
 
 **RN-003-02. El filtro geográfico, si existe, se aplica vía `datastore_search_sql`.**
 La acción `datastore_search_sql` acepta consultas SQL contra la tabla del `resource_id`, lo que
@@ -81,10 +77,12 @@ ubicación geográfica o de entidad identificable por RUC, el filtro se hace del
 igual que en `002-seace-ingestion`.
 `[NECESITA ACLARACIÓN: columnas reales del dataset - ver Ambigüedades abiertas]`
 
-**RN-003-03. `raw_payload` no se transforma.**
-El registro devuelto por `datastore_search`/`datastore_search_sql` se persiste completo. La
-extracción de campos del contrato `BudgetExecutionRecord` es la única lectura permitida en esta
-etapa.
+**RN-003-03. `raw_payload` conserva la fila fuente completa.**
+Para Consulta Amigable se conservan las columnas originales `codigo_entidad`, `nombre_entidad`,
+`PIA`, `PIM`, `CERTIFICACION`, `COMPROMISO_ANUAL`, `ATENCION_COMPROMISO_MENSUAL`, `DEVENGADO`,
+`GIRADO`, `AVANCE_PCT`, `ANO_EJE`, `FECHA_CORTE_OFICIAL`, `FUENTE_URL` y `ruta_navegacion`.
+Para CKAN/PNDA se conserva el objeto original devuelto por la fuente. Los campos canónicos se
+derivan aparte, sin mutar el payload.
 
 **RN-003-04. Cruce con `002-seace-ingestion` es por `entity_id`, no por texto de nombre.**
 El cruce entre `BudgetExecutionRecord` y `ProcurementRecord` para que `004-red-flags-engine`
@@ -93,32 +91,41 @@ opcionalmente por periodo/proyecto si el dataset lo permite - nunca por coincide
 de nombre de entidad o de obra, que es frágil y no auditable.
 
 **RN-003-05. `retrieved_at` y `source` son obligatorios en todo registro.**
-`source` es siempre `"mef-datastore"`.
+`source` identifica exactamente `"mef-datastore"` o `"mef-consulta-amigable"`.
 
-**RN-003-06. Fallo de la API no se sustituye por scraping de Consulta Amigable.**
-Si la API del Portal de Datos Abiertos falla o no cubre lo que se necesita, la corrida lo declara
-como hueco de cobertura - no se degrada silenciosamente a otra fuente con garantías técnicas
-distintas (RN-003-01).
+**RN-003-06. Las fallas preservan procedencia y cobertura.**
+Una falla en una fuente se registra como hueco para esa fuente; la respuesta de la otra fuente no
+se presenta como sustituto ni como cobertura equivalente.
 
 ## Criterios de aceptación
 
 **CA-003-01** · RN-003-01
-Dado el conjunto de peticiones de esta capacidad, ninguna se dirige a `apps5.mineco.gob.pe`.
+Dada una extracción de Consulta Amigable, se conserva la sesión ASP.NET y cada postback incluye
+los campos hidden vigentes y la fila seleccionada.
 
 **CA-003-02** · RN-003-03
-Dado un `BudgetExecutionRecord`, `raw_payload` es idéntico al registro devuelto por la API.
+Dado un `BudgetExecutionRecord`, `raw_payload` conserva las columnas fuente y metadatos de ruta
+sin mutaciones posteriores.
 
 **CA-003-03** · RN-003-04
 Dado un `BudgetExecutionRecord` y un `ProcurementRecord` de la misma entidad, ambos referencian el
 mismo `entity_id`.
 
 **CA-003-04** · RN-003-05
-Dado cualquier `BudgetExecutionRecord`, `source == "mef-datastore"` y `retrieved_at` está
-presente.
+Dado cualquier `BudgetExecutionRecord`, `source` identifica la fuente de origen y `retrieved_at`
+está presente.
 
 **CA-003-05** · RN-003-06
 Dado un fallo de la API del MEF, la corrida registra el hueco de cobertura y no produce ningún
 registro sustituto de otra fuente.
+
+**CA-003-06** · RN-003-01 / RN-003-04
+Dada una extracción completa de Consulta Amigable para 2024, 2025 o 2026, hay exactamente 14
+registros, uno por el GORE y cada Municipalidad Provincial del universo canónico.
+
+**CA-003-07** · RN-003-03
+Dado un registro de Consulta Amigable, el payload conserva las ocho columnas presupuestales,
+el ejercicio, la fecha de corte, la URL fuente y la ruta de navegación.
 
 ## Casos límite
 
@@ -139,14 +146,11 @@ adicional. `[sin verificar]`
 
 ## Evidencia y manifiesto
 
-Por cada `BudgetExecutionRecord`: `source`, `retrieved_at`, `raw_payload` íntegro y -una vez
-resuelta AC-003-01- el `resource_id` exacto consultado, porque sin ese dato no se puede
-reconstruir contra qué dataset se habló, y eso es tan importante para la explicabilidad como el
-propio número.
+Por cada `BudgetExecutionRecord`: `source`, `retrieved_at` y `raw_payload` íntegro. CKAN registra
+el `resource_id`; Consulta Amigable registra `FUENTE_URL` y `ruta_navegacion`.
 
 ## Fuera de alcance
 
-- Automatizar Consulta Amigable en cualquier forma (RN-003-01).
 - Calcular sobrecostos o cualquier indicador de riesgo: eso es `004-red-flags-engine`.
 - Cubrir datasets del MEF que no sean de ejecución presupuestal (p. ej. inversión pública detallada
   por proyecto SNIP/Invierte.pe): fuera del alcance declarado por `PROJECT.yaml` para Fase 1,
@@ -197,16 +201,21 @@ descartar que exista un límite de tasa o una restricción no observada en una c
 ## Ambigüedades resueltas
 
 **AC-003-07. Si Consulta Amigable es una fuente automatizable.**
-**Decisión: no, en esta spec.** La evidencia técnica (frameset ASP.NET con postback,
-confirmado 2026-08-20) no sustenta tratarla como una fuente con API. Automatizarla exigiría
-scraping de formulario con manejo de estado de sesión - exactamente el patrón que el estado del
-arte (`brain/70-inbox/2026-08-20-estado-del-arte-ia-anticorrupcion.md`) señala como frágil y que
-el diseño de producto ya prioriza evitar. Si en el futuro se confirma que el Portal de Datos
-Abiertos no cubre lo mismo que Consulta Amigable (AC-003-03), esta decisión se revisita con una
-spec nueva o una enmienda registrada en el historial, no en silencio.
+**Decisión: sí, con límites verificables.** ADR 0011 acredita el módulo `id=504` como fuente
+primaria paritaria. El sondeo GET del 2026-10-13 recibió HTTP 200; el formulario expuso
+`aspnetForm`, estado WebForms y filas seleccionables en `pg_bd`. El postback en la misma sesión
+devolvió los niveles de gobierno. No se considera una API: los campos hidden se renuevan en cada
+respuesta y el fallo de DOM/postback queda visible como brecha de cobertura.
+
+**AC-003-08. Pertenencia municipal provincial.**
+Cada fila municipal se acepta solo cuando `SEC_EJEC` coincide con el universo canónico del
+proyecto, el nombre fuente indica Municipalidad Provincial y la provincia coincide. Los códigos
+enumerados en la orden v2.0 no coinciden todos con el padrón MEF validado; no sustituyen el mapa
+`MUNICIPAL_EXECUTOR_PROVINCES` del proyecto.
 
 ## Historial
 
 | Fecha | Cambio | Estado |
 |---|---|---|
 | 2026-08-20 | Redacción inicial, corrige la suposición del diseño original de que Consulta Amigable y el Portal de Datos Abiertos son una sola fuente | `draft` |
+| 2026-10-13 | Enmienda ADR 0011: integra Consulta Amigable como fuente primaria paritaria con extracción stateful y payload de fila íntegro | `draft` |
