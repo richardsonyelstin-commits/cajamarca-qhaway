@@ -10,7 +10,7 @@ verified: false
 # Certificacion operativa del corte MEF 2024-2026
 
 El corte presupuestal y la paridad de datos estan verificados.
-CI y el sitio de produccion estan en verde; el worker cloud requiere corregir su destino IPv6.
+CI y el sitio de produccion estan en verde; el worker cloud requiere actualizar la credencial PostgreSQL guardada.
 No se declara certificacion global PASS mientras esa compuerta siga fallida.
 
 ## Datos verificados
@@ -61,9 +61,21 @@ Las tres ramas anteriores se retiraron despues de comprobar que sus commits esta
 El fallo sucede antes de la cosecha; no se oculta ni se sustituye por SQLite.
 
 La opcion `SUPABASE_SESSION_POOLER_HOST` usa el secreto DSN existente sin imprimirlo.
-Falta el hostname real del Session pooler del panel Connect del proyecto.
+El host confirmado es `aws-1-ca-central-1.pooler.supabase.com`.
+Ya esta configurado en GitHub y Vercel Production.
+El worker alcanza el pooler IPv4 y Supabase rechaza la credencial guardada.
+[Evidencia de autenticacion](https://github.com/richardsonyelstin-commits/cajamarca-qhaway/actions/runs/38646425183).
+La persona responsable debe actualizar el secreto en ambos destinos sin compartirlo por chat.
 [Supabase documenta la alternativa IPv4](https://supabase.com/docs/guides/database/connecting-to-postgres).
 Tras configurarlo se debe ejecutar otra vez el worker y cotejar sus cursores y conteos SQL.
+
+## Hidratacion del cliente MPA
+
+El navegador mostro un cambio de 65.7% a 82.1% al sumar tres ejercicios.
+El cliente ahora selecciona 2026 por defecto y conserva consultas historicas explicitas.
+Dos pruebas Node con el snapshot real verifican PIM 5,980,488,974 y devengado 3,926,357,702.
+El formato de los KPIs conserva importes completos antes y despues de la hidratacion.
+El fallback cloud rechaza denuncias sin persistencia confirmable con HTTP 503.
 
 ## Limite del saneamiento de Git
 

@@ -26,7 +26,9 @@ Cada ano 2024-2026 tiene 14 entidades; el corte oficial MEF es 2026-09-30.
 - CI de main y Vercel produccion Ready; PR 3 integrado en commit 83e6640.
 - Worker cloud: bloqueado por host PostgreSQL directo IPv6 sin ruta en GitHub Actions.
 - Opcion Session pooler implementada y comprobada con 21 pruebas de persistencia.
-- Falta el hostname exacto del panel Connect para configurar SUPABASE_SESSION_POOLER_HOST.
+- Host confirmado y configurado: aws-1-ca-central-1.pooler.supabase.com.
+- Worker: password authentication failed; falta actualizar la credencial en GitHub y Vercel.
+- Hidratacion MPA: corregida la suma multianual, dos pruebas Node aprobadas.
 
 ## Decisiones confirmadas por la persona responsable
 
