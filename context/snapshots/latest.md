@@ -1,26 +1,42 @@
-# Estado de projects/cajamarca-qhaway
+---
+title: Estado de cajamarca-qhaway
+source: ai
+generator: codex-gpt-6
+generated_at: 2026-10-14T21:55:58.848146+00:00
+confidence: high
+verified: false
+---
 
-Generado automaticamente el 2026-10-13 18:01. No editar a mano: lo reescriben los hooks de memoria.
+# Estado de cajamarca-qhaway
 
-- Rama: `main`
-- HEAD: `cedde50 fix(ui): eliminate static data flash by aligning initial html metrics with verified snapshot (39 minutes ago)`
-- Arbol de trabajo: 2 archivo(s) con cambios.
-    M README.md
-     M context/snapshots/latest.md
+Rama de trabajo: `agent/codex/prod-cutover-v2`.
+Supabase y spool conservan 14 entidades, 475 contrataciones y 42 presupuestos oficiales.
+Cada ano 2024-2026 tiene 14 entidades; el corte oficial MEF es 2026-09-30.
 
-## Ultimos commits
+## Estado de verificacion
 
-- `cedde50 fix(ui): eliminate static data flash by aligning initial html metrics with verified snapshot`
-- `90d37a4 merge: solucionar error 404 en /georreferenciacion, desatascar panel de revisor y traducir titulos de alertas tecnicas`
-- `92cc1b4 fix(prod): resolve vercel 404 for /georreferenciacion, fix admin-revision dom crash and civic indicator titles`
-- `27f6cdc merge: remediacion integral de frontend, consistencia de footers, rucs y sesion de veedores`
-- `b199dab fix(ui): eradicate mock visual audit, repair auth session, format osce rucs and homogenize footers`
-- `3728be3 docs: update latest snapshot`
+- Cosecha historica MEF: 42 filas, codigo 0.
+- Corrida puntual SEACE+MEF: 0 contratos nuevos y 14 presupuestos, codigo 0.
+- Motor: 473 candidatos internos; alertas: 6 in_review, 2 discarded, 0 published.
+- Supabase contra spool: 0 filas presupuestales faltantes o adicionales.
+- Entidades: 14 perfiles SUNAT con payload y consulta, ademas de verified_at canonico.
+- Suite final: 190 pruebas aprobadas; 3 pruebas de exportacion tras unificar el spool SEACE.
+- Web audit: CONFORME; paridad MPA y accesibilidad estatica: PASS.
+- Pyright y Ruff del extractor y oraculo MPA: PASS.
+- Verificacion remota de la nueva rama y despliegue: pendiente.
 
-## Por donde entrar
+## Decisiones confirmadas por la persona responsable
 
-- `docs/INDEX.md` — mapa de la documentacion
-- `AGENTS.md` — reglas del proyecto
-- `PROJECT.yaml` — alcance y contexto
+Se conservan los codigos MEF observados, incluido Cajamarca provincial SEC_EJEC 300549.
+La procedencia de entidades se verifica con el contrato existente y perfiles SUNAT.
+Las banderas internas quedan en Supabase y spool local ignorado por Git.
+El snapshot publico omite candidatos, alertas sin dictamen y denuncias.
 
-## Pruebas: `.venv/Scripts/python -m pytest -q` o `npm test`
+## Evidencia reproducible
+
+`harvest run --historical --years 2024,2025,2026 --source mef`
+`harvest run --once --source seace,mef`
+`python -m cajamarca_qhaway.cli web audit`
+`python scripts/audit_snapshot_parity.py`
+`select fiscal_year,count(*),count(distinct entity_id) from budget_execution_records
+ group by fiscal_year;`

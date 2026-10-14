@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from html.parser import HTMLParser
 import re
-from typing import Any
+from dataclasses import dataclass, field
+from datetime import UTC, datetime
+from decimal import Decimal, InvalidOperation
+from html.parser import HTMLParser
+from itertools import pairwise
+from typing import Any, Self
 
 import httpx
 
@@ -59,7 +61,7 @@ class _WebFormsParser(HTMLParser):
         if tag == "form" and a.get("id") == "aspnetForm":
             self._form = True
         if self._form and tag == "input" and a.get("name"):
-            name, value = a["name"], a.get("value", "") or ""
+            name, value = a["name"] or "", a.get("value", "") or ""
             if a.get("type") == "hidden":
                 self.hidden[name] = value
             elif a.get("type") == "submit":
@@ -109,7 +111,27 @@ def _parse_page(content: str) -> _WebFormsParser:
 
 def _amount(value: str) -> float:
     normalized = value.replace(",", "").strip()
-    return float(normalized) if normalized else 0.0
+    try:
+        amount = Decimal(normalized)
+    except InvalidOperation as exc:
+        raise ValueError(f"Importe MEF invalido: {value!r}") from exc
+    if not amount.is_finite() or amount < 0:
+        raise ValueError(f"Importe MEF fuera de rango: {value!r}")
+    return float(amount)
+
+
+def _validate_budget_values(raw_payload: dict[str, Any]) -> None:
+    columns = ("PIM", "CERTIFICACION", "COMPROMISO_ANUAL", "DEVENGADO", "GIRADO")
+    values = [_amount(str(raw_payload[column])) for column in columns]
+    if any(left < right for left, right in pairwise(values)):
+        raise ValueError(
+            "Fila MEF incumple PIM >= certificacion >= compromiso >= devengado >= girado"
+        )
+    _amount(str(raw_payload["PIA"]))
+    _amount(str(raw_payload["ATENCION_COMPROMISO_MENSUAL"]))
+    advance = _amount(str(raw_payload["AVANCE_PCT"]))
+    if values[0] > 0 and abs(round(values[3] / values[0] * 100, 1) - advance) > 0.100001:
+        raise ValueError("Avance MEF inconsistente con devengado / PIM")
 
 
 def _row_payload(
@@ -168,7 +190,7 @@ class MefConsultaAmigableClient:
         self._client = http_client
         self._owns_client = http_client is None
 
-    async def __aenter__(self) -> MefConsultaAmigableClient:
+    async def __aenter__(self) -> Self:
         if self._client is None:
             self._client = httpx.AsyncClient(
                 headers={
@@ -262,7 +284,6 @@ class MefConsultaAmigableClient:
             ("M: MUNICIPALIDADES", "Departamento"),
             ("06: CAJAMARCA", "Provincia"),
         ):
-            navigation.append(selection)
             content, url = await self._navigate(content, url, selection, button)
         province_rows = _parse_page(content).rows
         province_items = list(MUNICIPALITY_LABELS.items())
@@ -323,6 +344,7 @@ def _to_record(
     cut_date: str | None,
 ) -> BudgetExecutionRecord:
     raw_payload = _row_payload(row, year, page_url, navigation, cut_date)
+    _validate_budget_values(raw_payload)
     category = "TOTAL"
     return BudgetExecutionRecord(
         execution_record_id=compute_execution_record_id(entity.entity_id, year, category),
@@ -333,5 +355,5 @@ def _to_record(
         budget_category=category,
         raw_payload=raw_payload,
         source=SOURCE,
-        retrieved_at=datetime.now(timezone.utc),
+        retrieved_at=datetime.now(UTC),
     )

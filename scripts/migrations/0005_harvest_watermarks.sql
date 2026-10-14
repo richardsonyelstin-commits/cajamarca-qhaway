@@ -10,5 +10,7 @@ CREATE TABLE IF NOT EXISTS harvest_watermarks (
     updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+ALTER TABLE harvest_watermarks ENABLE ROW LEVEL SECURITY;
+
 COMMENT ON TABLE harvest_watermarks IS
-    'Estado persistente de cursores de recoleccion (SEACE OCDS, MEF SIAF y Satelite).';
+    'Estado persistente interno de cursores de recoleccion. Sin politicas RLS publicas; solo workers confiables deben actualizarlo.';

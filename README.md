@@ -1,8 +1,8 @@
 ---
 title: Cajamarca Qhaway - Contexto Integral y Documentacion Tecnica del Proyecto
 source: ai
-generator: antigravity-deepmind
-generated_at: 2026-10-13T17:58:00-05:00
+generator: codex-gpt-6
+generated_at: 2026-10-14T21:50:27.395040+00:00
 confidence: high
 verified: false
 ---
@@ -40,7 +40,7 @@ El desarrollo del proyecto se rige por la **Constitucion del Metodo** (`docs/sdd
 
 ### Invariantes No Negociables
 1. **Articulo 10 (Fuentes Oficiales Inmutables y Trazabilidad Cruda):**
-   Todo dato presentado proviene de fuentes oficiales comprobables (API OCDS del SEACE y CKAN DataStore del MEF). El sistema conserva de manera estricta el `raw_payload` original recibido del Estado para garantizar respaldo legal en caso de controversia.
+   Todo dato presentado proviene de fuentes oficiales comprobables (API OCDS del SEACE y dataset del MEF publicado en la Plataforma Nacional de Datos Abiertos). El catálogo PNDA es la referencia primaria de recursos MEF; DataStore queda como fallback. El sistema conserva estrictamente el `raw_payload` original recibido del Estado.
 2. **Articulo 14 (Separacion de Deteccion y Publicacion - Invariante 01):**
    Ninguna bandera roja tecnica (`RedFlag`) calculada por algoritmos se publica directamente como alerta al publico. Las senales son candidatos internos que deben ser validados, calificados o descartados por un **Panel Revisor Humano Colegiado** (`reviewed_by`, `reviewed_at`) con firma nominal acreditada.
 3. **Articulo 15 (Explicabilidad Algoritmica Estricta - Art. 15 Ley 27806):**
@@ -60,22 +60,42 @@ El desarrollo del proyecto se rige por la **Constitucion del Metodo** (`docs/sdd
 
 El observatorio monitorea la totalidad del presupuesto y contrataciones asignadas al nivel departamental y provincial de Cajamarca:
 
-| ID Canonico | RUC Oficial | Entidad Fiscalizada | Nivel | Codigo SIAF | Ambito Territorial |
+| ID Canonico | RUC Oficial | Entidad Fiscalizada | Nivel | Identificador SIAF | UBIGEO capital |
 |---|---|---|---|---|---|
 | `ce-f5f5d8fc32518855` | `20453744168` | Gobierno Regional de Cajamarca | Regional | 445 | Departamental (13 Provincias) |
-| `ce-2caad0e1b7467492` | `20143623042` | Municipalidad Provincial de Cajamarca | Provincial | 300601 | Provincia de Cajamarca |
-| `ce-b4a52d15b3cffe4f` | `20148288853` | Municipalidad Provincial de Cajabamba | Provincial | 300602 | Provincia de Cajabamba |
-| `ce-2b779c1e84ff4365` | `20148289825` | Municipalidad Provincial de Celendin | Provincial | 300603 | Provincia de Celendin |
-| `ce-45fad1d64ba4bf0f` | `20220499767` | Municipalidad Provincial de Chota | Provincial | 300604 | Provincia de Chota |
-| `ce-3337df921084c80a` | `20191657447` | Municipalidad Provincial de Contumaza | Provincial | 300605 | Provincia de Contumaza |
-| `ce-360cf7aadccadabb` | `20174691267` | Municipalidad Provincial de Cutervo | Provincial | 300606 | Provincia de Cutervo |
-| `ce-dfd10c914365bbe3` | `20148260843` | Municipalidad Provincial de Hualgayoc - Bambamarca | Provincial | 300607 | Provincia de Hualgayoc |
-| `ce-1817b32570ae7027` | `20201987297` | Municipalidad Provincial de Jaen | Provincial | 300608 | Provincia de Jaen |
-| `ce-697eb5a0a1b4e6c6` | `20148261572` | Municipalidad Provincial de San Ignacio | Provincial | 300609 | Provincia de San Ignacio |
-| `ce-ad540c85ce98e1d8` | `20175083937` | Municipalidad Provincial de San Marcos | Provincial | 300610 | Provincia de San Marcos |
-| `ce-3511b005adba63bf` | `20143625843` | Municipalidad Provincial de San Miguel | Provincial | 300611 | Provincia de San Miguel |
-| `ce-d7fc753b1fb5ff5b` | `20172446800` | Municipalidad Provincial de San Pablo | Provincial | 300612 | Provincia de San Pablo |
-| `ce-f29ffd64eff3fe9a` | `20200367376` | Municipalidad Provincial de Santa Cruz | Provincial | 300613 | Provincia de Santa Cruz |
+| `ce-2caad0e1b7467492` | `20143623042` | Municipalidad Provincial de Cajamarca | Provincial | SEC_EJEC `300549` | `060101` |
+| `ce-b4a52d15b3cffe4f` | `20148288853` | Municipalidad Provincial de Cajabamba | Provincial | SEC_EJEC `300562` | `060201` |
+| `ce-2b779c1e84ff4365` | `20148289825` | Municipalidad Provincial de Celendin | Provincial | SEC_EJEC `300566` | `060301` |
+| `ce-45fad1d64ba4bf0f` | `20220499767` | Municipalidad Provincial de Chota | Provincial | SEC_EJEC `300578` | `060401` |
+| `ce-3337df921084c80a` | `20191657447` | Municipalidad Provincial de Contumaza | Provincial | SEC_EJEC `300597` | `060501` |
+| `ce-360cf7aadccadabb` | `20174691267` | Municipalidad Provincial de Cutervo | Provincial | SEC_EJEC `300605` | `060601` |
+| `ce-dfd10c914365bbe3` | `20148260843` | Municipalidad Provincial de Hualgayoc - Bambamarca | Provincial | SEC_EJEC `300620` | `060701` |
+| `ce-1817b32570ae7027` | `20201987297` | Municipalidad Provincial de Jaen | Provincial | SEC_EJEC `300623` | `060801` |
+| `ce-697eb5a0a1b4e6c6` | `20148261572` | Municipalidad Provincial de San Ignacio | Provincial | SEC_EJEC `300635` | `060901` |
+| `ce-ad540c85ce98e1d8` | `20175083937` | Municipalidad Provincial de San Marcos | Provincial | SEC_EJEC `300642` | `061001` |
+| `ce-3511b005adba63bf` | `20143625843` | Municipalidad Provincial de San Miguel | Provincial | SEC_EJEC `300649` | `061101` |
+| `ce-d7fc753b1fb5ff5b` | `20172446800` | Municipalidad Provincial de San Pablo | Provincial | SEC_EJEC `300662` | `061201` |
+| `ce-f29ffd64eff3fe9a` | `20200367376` | Municipalidad Provincial de Santa Cruz | Provincial | SEC_EJEC `300666` | `061301` |
+
+### Estado operativo del corte (2026-10-14)
+
+Supabase conserva 14 entidades, 475 contrataciones y 42 presupuestos oficiales.
+Cada ejercicio 2024, 2025 y 2026 tiene exactamente 14 entidades.
+El [modulo mensual oficial del MEF](https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2026&ap=ActProy) publica el corte 2026-09-30.
+La cosecha historica devolvio 42 filas y el motor evaluo esas filas junto a 475 contratos.
+El cruce municipal usa los codigos observados en el MEF, incluido Cajamarca `300549`.
+
+Hay 473 candidatos internos, seis alertas `in_review` y dos `discarded`.
+No hay alertas publicadas ni denuncias expuestas en el snapshot publico.
+Los candidatos se cotejan contra los metadatos y el spool privado.
+La procedencia de entidades permanece en `data/entities/*.yaml`, `verified_at` y SUNAT.
+Estos criterios fueron confirmados por la persona responsable el 2026-10-14.
+
+Verificacion reproducible:
+`select fiscal_year, count(*), count(distinct entity_id) from budget_execution_records
+ group by fiscal_year;` devuelve 14/14 en cada ejercicio.
+`python -m cajamarca_qhaway.cli web audit` y `python scripts/audit_snapshot_parity.py`
+verifican las cifras MPA del ultimo ejercicio; no suman presupuestos de tres anos.
 
 ---
 
@@ -192,6 +212,35 @@ Representa a una institucion publica fiscalizada del universo dorado.
 - `entity_level`: `'regional'` o `'provincial_municipality'`.
 - `province`: Nombre de la provincia (`null` para el GORE).
 - `raw_payload`: Registro fuente original.
+
+El cruce administrativo SIAF/UBIGEO se conserva en `verification` de
+`data/entities/cajamarca-universe.yaml`, separado del contrato canónico. El código del
+MEF es el SEC_EJEC de cada municipalidad provincial, no `30` + UBIGEO ni una asignación
+por rango. El SEC_EJEC `300605` sí corresponde a Cutervo; los códigos se validan uno a uno
+contra el padrón oficial
+MEF y el reporte de omisos 2026; los UBIGEO corresponden al distrito capital de cada
+provincia según INEI.
+
+| Entidad provincial | SEC_EJEC MEF | UBIGEO capital |
+|---|---:|---:|
+| Cajamarca | `300549` | `060101` |
+| Cajabamba | `300562` | `060201` |
+| Celendín | `300566` | `060301` |
+| Chota | `300578` | `060401` |
+| Contumazá | `300597` | `060501` |
+| Cutervo | `300605` | `060601` |
+| Hualgayoc (Bambamarca) | `300620` | `060701` |
+| Jaén | `300623` | `060801` |
+| San Ignacio | `300635` | `060901` |
+| San Marcos | `300642` | `061001` |
+| San Miguel | `300649` | `061101` |
+| San Pablo | `300662` | `061201` |
+| Santa Cruz | `300666` | `061301` |
+
+El GORE se identifica por `NIVEL_GOBIERNO = 'R'` y `PLIEGO = '445'`. El padrón MEF
+consultado está en [ejecutoras municipales](https://www.mef.gob.pe/contenidos/tesoro_pub/home/ejecutoras_munic.pdf)
+y el [reporte MEF 2026](https://www.mef.gob.pe/dnep/reporte/2026/reporte_omisos_FCFP_022026.pdf);
+el listado geográfico oficial es el [Compendio Estadístico Cajamarca 2025 del INEI](https://www.inei.gob.pe/media/MenuRecursivo/publicaciones_digitales/Est/CompDptal2025/Cajamarca2025.pdf).
 
 ### 2. `ProcurementRecord` (`procurement_record.py`)
 Contratacion publica extraida del SEACE bajo el estandar OCDS 1.1.

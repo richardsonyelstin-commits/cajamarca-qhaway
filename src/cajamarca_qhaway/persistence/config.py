@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict, Field, SecretStr
@@ -13,8 +14,10 @@ class DatabaseConfig(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True, str_strip_whitespace=True)
 
     database_url: SecretStr | None = Field(
-        default=None,
-        description="DSN de conexion a Supabase (PostgreSQL). Leido desde env o configuracion.",
+        default_factory=lambda: SecretStr(value)
+        if (value := os.environ.get("CAJAMARCA_QHAWAY_DATABASE_URL"))
+        else None,
+        description="DSN de Supabase; por defecto se lee de CAJAMARCA_QHAWAY_DATABASE_URL.",
     )
     min_pool_size: int = Field(default=1, ge=1, le=10, description="Conexiones minimas en el pool")
     max_pool_size: int = Field(default=10, ge=2, le=30, description="Conexiones maximas en el pool")
