@@ -192,8 +192,8 @@ class HarvesterDaemon:
                 self.seace_poller.acknowledge_persisted()
                 if self.seace_poller.last_cycle_status != "OK":
                     logger.error("Ciclo SEACE fallido; revise la bitacora de brechas de cobertura")
-            except Exception as e:
-                logger.error("Error en ciclo de SEACE: %s", e, exc_info=True)
+            except Exception:
+                logger.exception("Error en ciclo de SEACE")
 
             try:
                 await asyncio.wait_for(self.stop_event.wait(), timeout=interval)
@@ -209,8 +209,8 @@ class HarvesterDaemon:
                 self.mef_poller.acknowledge_persisted()
                 if self.mef_poller.last_cycle_status != "OK":
                     logger.error("Ciclo MEF fallido; revise la bitacora de brechas de cobertura")
-            except Exception as e:
-                logger.error("Error en ciclo de MEF: %s", e, exc_info=True)
+            except Exception:
+                logger.exception("Error en ciclo de MEF")
 
             try:
                 await asyncio.wait_for(self.stop_event.wait(), timeout=interval)
