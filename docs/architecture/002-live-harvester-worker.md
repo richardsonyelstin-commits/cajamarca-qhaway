@@ -2,7 +2,7 @@
 title: Arquitectura Técnica Integral - Pilar 1: Cosecha Continua de Datos en Vivo
 source: ai
 generator: codex-gpt-6
-generated_at: 2026-10-14T21:50:27.395040+00:00
+generated_at: 2026-10-15T02:57:17.357830Z
 confidence: high
 verified: false
 ---
@@ -39,6 +39,17 @@ Comandos de evidencia:
  group by fiscal_year;` devuelve 14/14 para cada ano.
 `python scripts/audit_snapshot_parity.py` compara el ultimo ejercicio con el DOM estatico.
 
+El worker cloud MEF completo 14 filas con PostgreSQL confirmado y cero spool pendiente.
+Evidencia: run GitHub Actions 38654058445.
+SEACE devuelve HTTP 403 en GitHub Linux y Windows; localmente responde HTTP 200.
+Evidencia: runs 38654365121 y 38673139299; brecha registrada, causa remota no determinada.
+El cron combinado conserva el fallo de fuente en su codigo de salida.
+
+Si PostgreSQL falla y SyncManager usa spool de emergencia, no se confirma el cursor remoto.
+Dos pruebas en tests/test_persistence.py comprueban ese predicado con un error de repositorio.
+El workflow exige PostgreSQL y cero archivos spool pendientes en la verificacion final.
+El catalogo de obras verificado esta vacio; la evaluacion se omite con SIN COBERTURA.
+
 El diseno siguiente describe componentes del worker.
 CKAN/PNDA conserva su procedencia propia; sus fallos no invalidan una respuesta MEF mensual.
 
@@ -72,7 +83,7 @@ from pydantic import BaseModel, ConfigDict, Field, HttpUrl
 class SeaceHarvestConfig(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
     base_url: str = Field(default="https://contratacionesabiertas.oece.gob.pe/api/v1")
-    user_agent: str = Field(default="CajamarcaQhaway-Harvester/1.0 (+https://github.com/richardsonyelstin/cajamarca-qhaway)")
+    user_agent: str = Field(default="CajamarcaQhaway-Harvester/1.0 (+https://github.com/richardsonyelstin-commits/cajamarca-qhaway)")
     max_concurrency: int = Field(default=2, description="Máx 2 peticiones paralelas en semáforo")
     rate_limit_per_second: float = Field(default=3.0, description="Máx 3 req/segundo")
     poll_interval_seconds: int = Field(default=300, description="Intervalo entre barridos (5 min)")
@@ -274,7 +285,7 @@ tests/capabilities/live_harvest/
 | **Art. 14** | Cero alertas automáticas | Ni `HarvesterDaemon` ni los pollers importan o instancian `Alert`. Solamente persisten registros canónicos. |
 | **Art. 15** | Explicabilidad y procedencia | `retrieved_at` se estampa con timestamp UTC del momento exacto del HTTP socket return. `source` es inmutable. |
 | **Art. 16** | Prohibido ranking de personas | Ningún campo o estructura procesa o agrega personas naturales; solo RUCs de entidades y montos. |
-| **Art. 18** | Ámbito regional Cajamarca | GORE `PLIEGO=445`; municipalidades por SEC_EJEC provincial verificado y departamento/UBIGEO Cajamarca; la cobertura MEF no pasa Gate 2. |
+| **Art. 18** | Ámbito regional Cajamarca | GORE `PLIEGO=445`; municipalidades por SEC_EJEC provincial verificado y departamento/UBIGEO Cajamarca; cobertura verificada de 14 entidades por ano en 2024-2026. |
 | **Art. 19** | Contratos canónicos compartidos | Emplea sin alteraciones `ContractingEntity`, `ProcurementRecord` y `BudgetExecutionRecord` de `cajamarca_qhaway.models`. |
 | **Resiliencia** | Tolerancia a fallos y sin corrupción | Escritura en dos fases con fichero temporal + `os.replace` atómico y registro auditable de gaps temporales. |
 

@@ -13,7 +13,7 @@ from __future__ import annotations
 import asyncio
 import json
 import runpy
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import AsyncMock, patch
 from urllib.parse import quote
@@ -22,7 +22,11 @@ import pytest
 from pydantic import SecretStr
 
 from cajamarca_qhaway.capabilities.entity_mapping.dataset import load_universe
-from cajamarca_qhaway.capabilities.live_harvest import CoverageGapLogger, HarvesterDaemon, WatermarkStore
+from cajamarca_qhaway.capabilities.live_harvest import (
+    CoverageGapLogger,
+    HarvesterDaemon,
+    WatermarkStore,
+)
 from cajamarca_qhaway.capabilities.live_harvest.config import (
     HarvestConfig,
     MefHarvestConfig,
@@ -32,6 +36,7 @@ from cajamarca_qhaway.capabilities.live_harvest.config import (
 from cajamarca_qhaway.cli import main as cli_main
 from cajamarca_qhaway.models import (
     Alert,
+    AlertEvidence,
     BudgetExecutionRecord,
     CitizenReport,
     ContractingEntity,
@@ -61,6 +66,7 @@ def test_session_pooler_preserves_secret_and_uses_project_role() -> None:
     assert manager.session_pooler_options() == {
         "host": "verified.pooler.supabase.com", "port": 5432, "user": "postgres.projectref"
     }
+    assert config.database_url is not None
     assert config.database_url.get_secret_value() == dsn
     assert "encoded" not in str(manager.session_pooler_options())
 
@@ -99,6 +105,7 @@ def test_session_pooler_accepts_libpq_hostname_brackets_and_clears_hostaddr() ->
     assert options["host"] == "verified.pooler.supabase.com"
     assert options["user"] == "postgres.projectref"
     assert options["hostaddr"] == ""
+    assert config.database_url is not None
     assert config.database_url.get_secret_value() == dsn
 
 
@@ -143,7 +150,7 @@ def sample_entity() -> ContractingEntity:
         ruc="20167389201",
         consucode_id="060401",
         department="CAJAMARCA",
-        verified_at=datetime.now(timezone.utc),
+        verified_at=datetime.now(UTC),
         active=True,
     )
 
@@ -163,7 +170,7 @@ def sample_procurement(sample_entity: ContractingEntity) -> ProcurementRecord:
         supplier_ruc="20456789123",
         source="seace-ocds",
         raw_payload={"ocid": "ocds-dgv273-0012345", "tag": ["tender"]},
-        retrieved_at=datetime.now(timezone.utc),
+        retrieved_at=datetime.now(UTC),
     )
 
 
@@ -178,7 +185,7 @@ def sample_budget(sample_entity: ContractingEntity) -> BudgetExecutionRecord:
         budget_category="Gasto de Capital",
         source="mef-datastore",
         raw_payload={"ANO_EJE": 2026, "MONTO_PIA": 12500000.0},
-        retrieved_at=datetime.now(timezone.utc),
+        retrieved_at=datetime.now(UTC),
     )
 
 
@@ -234,11 +241,13 @@ def test_local_spooler_operations(
 
     # Spool de compras
     file_p = spooler.spool_procurements([sample_procurement])
+    assert file_p is not None
     assert file_p.exists()
     assert "procurements_" in file_p.name
 
     # Spool de ejecuciones presupuestales
     file_b = spooler.spool_budget_executions([sample_budget])
+    assert file_b is not None
     assert file_b.exists()
     assert "budget_executions_" in file_b.name
 
@@ -354,13 +363,13 @@ def test_red_flag_repository(
         red_flag_id="flag-single-bidder-001",
         indicator_code="single-bidder",
         formula_description="Contratacion directa o competitiva con postor unico",
-        threshold="<= 1 postor",
+        threshold_value="<= 1 postor",
         observed_value="1 postor",
         procurement_ids=[sample_procurement.procurement_id],
         execution_record_ids=[],
         evidence_source="seace-ocds",
-        evidence_retrieved_at=datetime.now(timezone.utc),
-        generated_at=datetime.now(timezone.utc),
+        retrieved_at=datetime.now(UTC),
+        generated_at=datetime.now(UTC),
     )
 
     count = flag_repo.insert_candidates([flag])
@@ -385,11 +394,18 @@ def test_alert_repository(
         entity_id=sample_entity.entity_id,
         status="published",
         reviewed_by="auditor_cajamarca",
-        reviewed_at=datetime.now(timezone.utc),
+        reviewed_at=datetime.now(UTC),
         review_notes="Verificado conforme a ley",
-        evidence=[{"red_flag_id": "flag-single-bidder-001", "formula_description": "Licitación con un postor", "observed_value": 1, "threshold_value": 1, "retrieved_at": datetime.now(timezone.utc), "evidence_source": "seace-ocds"}],
-        disclaimer="Indicador de riesgo automatizado, no constituye prueba ni acusación formal de corrupción.",
-        published_at=datetime.now(timezone.utc),
+        evidence=[AlertEvidence(
+            red_flag_id="flag-single-bidder-001",
+            formula_description="Licitación con un postor",
+            observed_value=1,
+            threshold_value=1,
+            retrieved_at=datetime.now(UTC),
+            evidence_source="seace-ocds",
+        )],
+        legal_disclaimer="Indicador de riesgo automatizado, no constituye prueba ni acusación formal de corrupción.",
+        published_at=datetime.now(UTC),
     )
 
     alert_repo.save(alert)
@@ -412,7 +428,7 @@ def test_citizen_report_repository(
     report_repo = CitizenReportRepository(db_manager)
     report = CitizenReport(
         report_id="rep-wh-001",
-        submitted_at=datetime.now(timezone.utc),
+        submitted_at=datetime.now(UTC),
         channel="whatsapp",
         raw_text="Sobrevaloracion de combustible en Chota",
         related_entity_id=sample_entity.entity_id,
@@ -508,7 +524,7 @@ def test_harvester_daemon_with_sync_manager(
 
         # Simular poller responses con AsyncMock
         universe = load_universe()
-        chota_entity = [e.entity for e in universe.entities if e.entity.province == "CHOTA"][0]
+        chota_entity = next(e.entity for e in universe.entities if e.entity.province == "CHOTA")
 
         sample_proc = ProcurementRecord(
             procurement_id="pr-daemon-001",
@@ -523,7 +539,7 @@ def test_harvester_daemon_with_sync_manager(
             supplier_ruc="20123456789",
             source="seace-ocds",
             raw_payload={"id": "test"},
-            retrieved_at=datetime.now(timezone.utc),
+            retrieved_at=datetime.now(UTC),
         )
 
         daemon.seace_poller.poll_cycle = AsyncMock(return_value=[sample_proc])  # type: ignore[method-assign]
@@ -572,12 +588,11 @@ def test_cli_db_sync(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixt
 
 
 def test_postgres_cursor_wrapper_and_adapt_sql() -> None:
+
     from cajamarca_qhaway.persistence.connection import (
         DatabaseManager,
-        PostgresConnectionWrapper,
         PostgresCursorWrapper,
     )
-    from pydantic import SecretStr
 
     mgr = DatabaseManager()
     assert mgr.adapt_sql("SELECT * FROM t WHERE a = ? AND b = ?") == "SELECT * FROM t WHERE a = ? AND b = ?"
@@ -619,7 +634,7 @@ def test_watermark_store_with_sqlite_schema(tmp_path: Path) -> None:
     mgr = DatabaseManager()
     store_file = tmp_path / "watermarks.json"
     store = WatermarkStore(store_file, db_manager=mgr)
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     store.update_seace_cursor(now, ["ocds-1", "ocds-2"])
     assert store.is_seace_ocid_seen("ocds-1")
     assert store.is_seace_ocid_seen("ocds-2")
