@@ -12,8 +12,10 @@ import httpx
 
 from cajamarca_qhaway.capabilities.entity_mapping.dataset import load_universe
 from cajamarca_qhaway.capabilities.live_harvest.coverage_logger import CoverageGapLogger
+from cajamarca_qhaway.capabilities.live_harvest.official_source_probe import (
+    probe_public_source,
+)
 from cajamarca_qhaway.capabilities.seace_ingestion.official_sources import (
-    CAPTCHARequired,
     OECEPentahoClient,
     SEACEBuscadorPublicoClient,
     link_procurement_evidence,
@@ -84,11 +86,11 @@ async def main() -> None:
                                   endpoint=resource.url, error_message=str(error))
                 print(json.dumps({"file": filename, "status": "FAILED", "type": type(error).__name__}), flush=True)
     async with SEACEBuscadorPublicoClient(coverage_logger=gaps) as client:
-        try:
-            records = await client.search(entities[0], 2026)
-            print(json.dumps({"source": "seace-public", "records": len(records)}), flush=True)
-        except CAPTCHARequired:
-            print(json.dumps({"source": "seace-public", "status": "CAPTCHA_REQUIRED"}), flush=True)
+        probe = await probe_public_source(client, entities[0], 2026)
+        if repository and probe.records:
+            repository.upsert_many(link_procurement_evidence(probe.records, procurements))
+        print(json.dumps({"source": "seace-public", "status": probe.status,
+                          "records": len(probe.records)}), flush=True)
     if database:
         with database.connection() as connection:
             cursor = connection.cursor()

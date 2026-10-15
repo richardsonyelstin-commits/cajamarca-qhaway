@@ -64,8 +64,8 @@ Esta evidencia no sustituye una certificacion externa exhaustiva de WCAG.
 | Compuerta | Evidencia | Resultado |
 |---|---|---|
 | Tipos | Pyright, 12 archivos del contrato, clientes y repositorios | 0 errores |
-| Lint | Ruff, 30 archivos Python modificados o nuevos | 0 infracciones |
-| Pruebas | pytest y Node | 216 Python y 12 Node pasadas |
+| Lint | Ruff, 31 archivos Python modificados o nuevos | 0 infracciones |
+| Pruebas | pytest y Node | 220 Python y 12 Node pasadas |
 | Web | web audit, paridad y accesibilidad estatica | CONFORME / PASS |
 | Texto | Inventario Git, texto fuera de rutas prohibidas | 0 U+2013/U+2014 |
 | Git | git diff --check | Sin errores de espacios |

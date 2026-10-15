@@ -26,8 +26,8 @@ Cierre GitHub/Vercel en curso sobre agent/codex/budget-dual-sources-identity.
 
 ## Verificacion y alcance
 
-- 216 pruebas Python y 12 Node; web audit CONFORME y auditorias de paridad/accesibilidad PASS.
-- Pyright sin errores en 12 archivos tipados; Ruff sin infracciones en 30 archivos modificados.
+- 220 pruebas Python y 12 Node; web audit CONFORME y auditorias de paridad/accesibilidad PASS.
+- Pyright sin errores en 12 archivos tipados; Ruff sin infracciones en 31 archivos modificados.
 - Rutas verificadas a 320/768/1440 px, fuentes oficiales locales y Escape con retorno de foco.
 - JSF real: reCAPTCHA requerido; no se afirma cobertura de una consulta protegida completa.
 - OCDS cloud: HTTP 403 observado en runners anteriores; OECE Pentaho aporta evidencia adicional.

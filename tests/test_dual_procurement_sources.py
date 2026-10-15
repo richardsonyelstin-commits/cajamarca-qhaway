@@ -167,3 +167,38 @@ def test_jsf_pagination_uses_fresh_state_and_explicit_process_identity() -> None
             assert {row.official_process_id for row in rows} == {"1255481", "1255482"}
             assert client.view_state == "state-3"
     asyncio.run(scenario())
+
+
+@pytest.mark.parametrize("status", [403, 429, 503])
+def test_jsf_http_denial_is_recorded_without_erasing_primary_source(tmp_path: Path, status: int) -> None:
+    from cajamarca_qhaway.capabilities.seace_ingestion.official_sources import (
+        OfficialSourceUnavailable,
+    )
+    entity = load_universe().entities[0].entity
+    gaps = CoverageGapLogger(tmp_path / "jsf-gaps.jsonl")
+    async def scenario() -> None:
+        async with httpx.AsyncClient(transport=httpx.MockTransport(
+            lambda request: httpx.Response(status, text="Access unavailable")
+        )) as http, SEACEBuscadorPublicoClient(http, coverage_logger=gaps) as client:
+            with pytest.raises(OfficialSourceUnavailable, match=f"HTTP_{status}"):
+                await client.search(entity, 2026)
+    asyncio.run(scenario())
+    incident = gaps.read_records()[0]
+    assert incident["status_code"] == status
+    assert incident["error_message"] == f"HTTP_{status}"
+
+
+def test_live_probe_reports_http_denial_as_a_coverage_gap(tmp_path: Path) -> None:
+    from cajamarca_qhaway.capabilities.live_harvest.official_source_probe import (
+        probe_public_source,
+    )
+    entity = load_universe().entities[0].entity
+    gaps = CoverageGapLogger(tmp_path / "probe-gaps.jsonl")
+    async def scenario() -> None:
+        async with httpx.AsyncClient(transport=httpx.MockTransport(
+            lambda request: httpx.Response(403, text="Forbidden")
+        )) as http, SEACEBuscadorPublicoClient(http, coverage_logger=gaps) as client:
+            probe = await probe_public_source(client, entity, 2026)
+            assert probe.status == "HTTP_403" and probe.records == []
+    asyncio.run(scenario())
+    assert gaps.read_records()[0]["status_code"] == 403

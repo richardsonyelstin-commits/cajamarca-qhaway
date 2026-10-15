@@ -12,7 +12,7 @@ from collections.abc import AsyncIterator, Iterator, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from html.parser import HTMLParser
-from typing import IO, NoReturn, Self
+from typing import IO, Any, NoReturn, Self
 from urllib.parse import parse_qs, urljoin, urlparse
 from zipfile import ZipFile
 
@@ -29,7 +29,11 @@ JSF_FORM = "tbBuscador:idFormBuscarProceso"
 XLSX_NS = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
 
 
-class CAPTCHARequired(RuntimeError):
+class OfficialSourceUnavailable(RuntimeError):
+    """La fuente no permite completar una consulta oficial verificable."""
+
+
+class CAPTCHARequired(OfficialSourceUnavailable):
     """La fuente exige un desafio humano que el adaptador no evade."""
 
 
@@ -333,20 +337,31 @@ class SEACEBuscadorPublicoClient(_PublicClient):
         self.coverage_logger = coverage_logger
         self.view_state = ""
 
-    def _challenge(self, message: str) -> NoReturn:
+    def _challenge(self, message: str, status_code: int | None = None) -> NoReturn:
         if self.coverage_logger:
             self.coverage_logger.log_incident(
-                source="seace-buscador-publico", attempt=1, status_code=None,
+                source="seace-buscador-publico", attempt=1, status_code=status_code,
                 endpoint=SEACE_PUBLIC_URL, error_message=message,
             )
-        raise CAPTCHARequired(message)
+        if "CAPTCHA" in message:
+            raise CAPTCHARequired(message)
+        raise OfficialSourceUnavailable(message)
+
+    async def _request(self, method: str, **kwargs: Any) -> httpx.Response:
+        assert self.http is not None
+        try:
+            response = await self.http.request(method, SEACE_PUBLIC_URL, **kwargs)
+            response.raise_for_status()
+        except httpx.HTTPError as error:
+            status = getattr(getattr(error, "response", None), "status_code", None)
+            self._challenge(f"HTTP_{status}" if status else "NETWORK_UNAVAILABLE", status)
+        return response
 
     async def search(
         self, entity: ContractingEntity, year: int, *, captcha_token: str | None = None,
     ) -> list[ProcurementSourceRecord]:
         assert self.http is not None
-        response = await self.http.get(SEACE_PUBLIC_URL)
-        response.raise_for_status()
+        response = await self._request("GET")
         parser = _JSFParser()
         parser.feed(response.text)
         self.view_state = parser.view_state
@@ -371,13 +386,10 @@ class SEACEBuscadorPublicoClient(_PublicClient):
         page_size = 15
         while True:
             fields["javax.faces.ViewState"] = self.view_state
-            response = await self.http.post(SEACE_PUBLIC_URL, data=fields, headers={
+            response = await self._request("POST", data=fields, headers={
                 "Faces-Request": "partial/ajax",
                 "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
             })
-            if response.status_code in (403, 429):
-                self._challenge(f"ACCESS_LIMIT_{response.status_code}")
-            response.raise_for_status()
             try:
                 root = ET.fromstring(response.text)
             except ET.ParseError:

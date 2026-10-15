@@ -61,3 +61,11 @@ Las tablas de evidencia tienen RLS y no exponen escrituras ni lectura anónima d
 Los procesos públicos incluyen únicamente su evidencia oficial vinculada.
 Una nueva descarga OCDS conserva la evidencia existente cuando no aporta reemplazo.
 Las banderas requieren revisión colegiada antes de convertirse en alertas publicadas.
+
+## Disponibilidad del buscador desde el worker
+
+`live_harvest/official_source_probe.py` separa disponibilidad JSF y captura primaria OECE.
+El cliente registra HTTP 403/429/503 y fallos de red con su codigo real en CoverageGapLogger.
+El sondeo devuelve esos estados como brechas explicitas y conserva la evidencia OECE persistida.
+No denomina CAPTCHA a una denegacion HTTP ni afirma haber ejecutado la consulta protegida.
+Cuando recibe filas verificables, el worker las vincula y persiste con la misma identidad canonica.
