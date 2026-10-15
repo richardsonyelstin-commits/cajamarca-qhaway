@@ -2,7 +2,7 @@
 title: Estado de cajamarca-qhaway
 source: ai
 generator: codex-gpt-6
-generated_at: 2026-10-15T02:57:17.357830Z
+generated_at: 2026-10-15T03:02:47.317893Z
 confidence: high
 verified: false
 ---
@@ -40,4 +40,8 @@ El historial Git previo conserva archivos privados antiguos; no hubo reescritura
 
 Consultar docs/audits/2026-10-14-prod-cutover-certification.md para consultas y ejecuciones.
 CI ejecuta 203 pruebas Python, 3 Node, auditoria web, paridad, accesibilidad y Antislop.
-Las compuertas finales y el despliegue se verifican sobre el commit integrado.
+PR 10 integrado en main b30c754; CI 38674032583 PASS, 203 Python y 3 Node.
+Vercel dpl_3g3n7Ga2E5L47kS6tXwSLPQWCjTK Ready; alias publico confirmado.
+Produccion: 20 rutas 200 con cabeceras, snapshot identico byte a byte y arrays privados vacios.
+Pyright y Ruff PASS en live_harvest/config.py, daemon.py y tests/test_persistence.py.
+Git limpio tras integrar; el unico fallo de fuente cloud pendiente es SEACE HTTP 403.
