@@ -5,7 +5,7 @@ created: 2026-10-12
 updated: 2026-10-14
 source: ai
 generator: codex-gpt-6
-generated_at: 2026-10-14T21:50:27.395040+00:00
+generated_at: 2026-10-15T02:57:17.357830Z
 confidence: high
 verified: false
 ---
@@ -25,13 +25,13 @@ flowchart TD
     GH -->|"Cron cada 2h / Dispatch"| GA_WORKER["Harvester Worker (.github/workflows/harvester-cron.yml)"]
     GH -->|"CD Deploy automatico"| VC["Vercel Platform (vercel.json)"]
     
-    GA_WORKER -->|"Cosecha SEACE/MEF + Sentinel-1/2"| SB["Supabase PostgreSQL (oglltrpvvifqvwmxmkjq)"]
+    GA_WORKER -->|"Cosecha oficial SEACE/MEF"| SB["Supabase PostgreSQL (oglltrpvvifqvwmxmkjq)"]
     GA_WORKER -->|"Cursores de tiempo"| WM["Tabla harvest_watermarks"]
     
     VC -->|"Frontend MPA Estatico"| WEB["Vistas Web (web/*.html)"]
     VC -->|"Rutas /api/*"| PY["Vercel Python Function (api/index.py)"]
     
-    WEB -->|"Lectura directa PostgREST (anon RLS)"| SB
+    WEB -->|"API publica y snapshot verificado"| PY
     PY -->|"Adaptador persistente pendiente para denuncias y revisiones"| SB
 ```
 
@@ -48,8 +48,16 @@ flowchart TD
      El job usa el entorno GitHub Production del proyecto cajamarca-qhaway.
      Su secreto de entorno tiene precedencia sobre el secreto del repositorio.
   3. Realiza la cosecha de SEACE OCDS y MEF Consulta Amigable (`harvest run --once`).
-  4. Realiza la evaluacion de divergencia fisico-financiera satelital (`geospatial evaluate --sar`).
-  5. Persiste cursores de ingesta en la tabla `harvest_watermarks`.
+  4. Comprueba el catalogo geoespacial; con cero obras informa SIN COBERTURA y omite la evaluacion.
+  5. Persiste cursores en harvest_watermarks solo despues de confirmar la persistencia de registros.
+  6. Exige PostgreSQL activo y cero archivos spool pendientes; muestra brechas si falla una fuente.
+
+El dispatch admite sources=mef o sources=seace para aislar fallos.
+La opcion runner admite ubuntu-latest y windows-latest con shell bash.
+El cron conserva ubuntu-latest y las dos fuentes.
+El ciclo MEF cloud esta aprobado: run 38654058445, 14 presupuestos y cero spool pendiente.
+SEACE falla con HTTP 403 en ambos runners: runs 38654365121 y 38673139299.
+Localmente recibe HTTP 200 y 20 releases; la causa del rechazo cloud sigue sin determinarse.
 
 ## 3. Base de Datos y Persistencia en Supabase
 
@@ -69,7 +77,7 @@ Configure en el entorno GitHub Production del proyecto cajamarca-qhaway y en Ver
 El nombre literal del entorno en YAML es `"Production \u2013 cajamarca-qhaway"`.
 El escape Unicode evita caracteres prohibidos en el archivo y conserva el entorno existente.
 
-- `CAJAMARCA_QHAWAY_DATABASE_URL`: Cadena transaccional de conexión directa o pooler de Supabase
+- `CAJAMARCA_QHAWAY_DATABASE_URL`: Cadena de conexión directa o Session pooler de Supabase
   (`postgresql://postgres:[PASSWORD]@db.oglltrpvvifqvwmxmkjq.supabase.co:5432/postgres`).
 - `SUPABASE_URL`: `https://oglltrpvvifqvwmxmkjq.supabase.co`
 - `SUPABASE_ANON_KEY`: Llave publica `anon` protegida por politicas RLS.
@@ -125,3 +133,6 @@ El preflight `python scripts/check-worker-connection.py` valida el destino canon
 Su salida contiene solo booleanos e identifica contrasenas de ejemplo sin revelarlas.
 Un resultado valido permite iniciar la cosecha; la autenticacion real se comprueba al conectar.
 Si informa `password_placeholder: true`, sustituir el marcador por la contrasena real.
+
+La credencial vigente ya autentica en PostgreSQL; el fallo actual del ciclo combinado es SEACE.
+Los resultados del corte estan en docs/audits/2026-10-14-prod-cutover-certification.md.

@@ -2,7 +2,7 @@
 title: Changelog
 source: ai
 generator: codex-gpt-6
-generated_at: 2026-10-14T21:50:27.395040+00:00
+generated_at: 2026-10-15T02:57:17.357830Z
 confidence: high
 verified: false
 ---
@@ -34,6 +34,12 @@ Se escribe **en el PR**, no en el release: reconstruirlo después es inventarlo.
 
 ### Fixed
 
+- El daemon conserva el cursor remoto cuando PostgreSQL falla y deriva registros al spool.
+- El worker selecciona el secreto del entorno Production y comprueba destino sin revelar valores.
+- El worker expone las brechas de fuente y exige PostgreSQL confirmado y cero spool pendiente.
+- El catalogo geoespacial vacio se informa como SIN COBERTURA y omite la evaluacion.
+- El dispatch admite runners Linux y Windows; SEACE devuelve 403 en ambos, MEF cloud aprobado.
+- Se concilian los 42 presupuestos y 473 candidatos con SQL tras la ultima extraccion MEF cloud.
 - El oraculo MPA compara las cifras del ultimo ejercicio y respeta la ausencia de alertas publicadas.
 - El extractor MEF rechaza valores ausentes, no finitos o negativos, orden presupuestal invalido y avances porcentuales incoherentes.
 

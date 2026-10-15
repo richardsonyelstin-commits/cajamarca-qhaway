@@ -2,7 +2,7 @@
 title: Cajamarca Qhaway - Contexto Integral y Documentacion Tecnica del Proyecto
 source: ai
 generator: codex-gpt-6
-generated_at: 2026-10-14T21:50:27.395040+00:00
+generated_at: 2026-10-15T02:57:17.357830Z
 confidence: high
 verified: false
 ---
@@ -40,7 +40,9 @@ El desarrollo del proyecto se rige por la **Constitucion del Metodo** (`docs/sdd
 
 ### Invariantes No Negociables
 1. **Articulo 10 (Fuentes Oficiales Inmutables y Trazabilidad Cruda):**
-   Todo dato presentado proviene de fuentes oficiales comprobables (API OCDS del SEACE y dataset del MEF publicado en la Plataforma Nacional de Datos Abiertos). El catálogo PNDA es la referencia primaria de recursos MEF; DataStore queda como fallback. El sistema conserva estrictamente el `raw_payload` original recibido del Estado.
+   Los registros provienen de la API OCDS del SEACE y del modulo oficial MEF Consulta Amigable.
+   El extractor mensual conserva sus ocho columnas, corte y ruta de navegacion en raw_payload.
+   CKAN/PNDA mantiene su procedencia propia cuando entrega recursos verificables (ADR 0011).
 2. **Articulo 14 (Separacion de Deteccion y Publicacion - Invariante 01):**
    Ninguna bandera roja tecnica (`RedFlag`) calculada por algoritmos se publica directamente como alerta al publico. Las senales son candidatos internos que deben ser validados, calificados o descartados por un **Panel Revisor Humano Colegiado** (`reviewed_by`, `reviewed_at`) con firma nominal acreditada.
 3. **Articulo 15 (Explicabilidad Algoritmica Estricta - Art. 15 Ley 27806):**
@@ -440,7 +442,7 @@ cajamarca-qhaway/
 |   `-- pipeline.py                      # Orquestador del pipeline integral
 |-- tests/                               # Suite de pruebas automatizadas
 |   |-- test_web_platform.py             # Pruebas integrales de la plataforma web
-|   `-- ...                              # Pruebas unitarias de las capacidades (143 tests)
+|   `-- ...                              # Pruebas unitarias de las capacidades (203 tests)
 |-- web/                                 # Plataforma web frontend (MPA)
 |   |-- css/                             # Estilos CSS compilados y tokens
 |   |-- media/                           # Logotipos vectoriales SVG y emblemas
@@ -475,6 +477,17 @@ cajamarca-qhaway/
 
 ---
 
+## Corte operativo MEF 2024-2026
+
+Supabase y snapshot conservan 14 entidades, 475 contrataciones y 42 presupuestos oficiales.
+Hay 14 entidades por ano y 473 candidatos privados; ninguna alerta esta publicada.
+PIM 2026: S/ 5,980,488,974; devengado: S/ 3,926,357,702; avance: 65.7% al 2026-09-30.
+PostgreSQL autentica y MEF completa su ciclo cloud con cero spool pendiente.
+SEACE responde HTTP 403 en GitHub Linux y Windows; localmente responde HTTP 200.
+La certificacion global queda pendiente de resolver ese acceso remoto.
+El catalogo geoespacial no tiene obras verificadas y el adaptador cloud de denuncias devuelve 503.
+Consultar [evidencia del corte](docs/audits/2026-10-14-prod-cutover-certification.md).
+
 ## 13. Guia de Instalacion, Pruebas y Operacion CLI
 
 ### 13.1 Instalacion en Entorno Local
@@ -498,7 +511,7 @@ pip install -e ".[dev]"
 ```
 
 ### 13.2 Ejecucion de la Suite de Pruebas
-El proyecto cuenta con 143 pruebas automatizadas deterministas:
+El corte ejecuta 203 pruebas Python y 3 pruebas Node deterministas:
 
 ```bash
 # Ejecutar todas las pruebas con reporte resumido
