@@ -9,7 +9,7 @@ verified: false
 # Verificacion de presupuesto, evidencia dual e identidad Qhaway
 El corte diario 2026-10-14 contiene las 14 entidades y conserva sus momentos oficiales.
 Las 475 identidades OCDS originales permanecen, con evidencia OECE por identidad exacta.
-Las comprobaciones locales pasaron; el cierre de despliegue se registra por SHA y URL.
+Las comprobaciones locales y cloud pasaron; las brechas de JSF se registran expresamente.
 
 ## Datos y criterios matematicos
 
@@ -63,7 +63,7 @@ Esta evidencia no sustituye una certificacion externa exhaustiva de WCAG.
 
 | Compuerta | Evidencia | Resultado |
 |---|---|---|
-| Tipos | Pyright, 12 archivos del contrato, clientes y repositorios | 0 errores |
+| Tipos | Pyright, 14 archivos del contrato, clientes y repositorios | 0 errores |
 | Lint | Ruff, 31 archivos Python modificados o nuevos | 0 infracciones |
 | Pruebas | pytest y Node | 220 Python y 12 Node pasadas |
 | Web | web audit, paridad y accesibilidad estatica | CONFORME / PASS |
@@ -86,3 +86,22 @@ El diseno conserva estados informativos para esas coberturas.
 [OECE Pentaho](https://bi.seace.gob.pe/pentaho/api/repos/%3Apublic%3Aportal%3Adatosabiertos.html/content?userid=public&password=key).
 [SEACE publico](https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorPublico.xhtml).
 [HTTPX: sesiones y streaming](https://github.com/encode/httpx/tree/0.28.1/docs).
+
+## Cierre productivo observado
+
+[PR 12 integrado](https://github.com/richardsonyelstin-commits/cajamarca-qhaway/pull/12).
+[CI de la correccion HTTP](https://github.com/richardsonyelstin-commits/cajamarca-qhaway/actions/runs/38742975598):
+220 pruebas Python, 12 Node y auditorias completas PASS.
+[Worker OECE](https://github.com/richardsonyelstin-commits/cajamarca-qhaway/actions/runs/38742975918):
+77,981 filas persistidas, 438 vinculadas y JSF HTTP_403 registrado como brecha.
+
+[Produccion](https://cajamarca-qhaway.vercel.app/presupuesto): Vercel Ready.
+Se verificaron 16 rutas 200, 10 activos iguales y snapshot estatico identico byte a byte.
+La API y el snapshot coinciden en los 42 presupuestos y 475 contrataciones,
+comparados mediante modelos tipados que normalizan timestamps UTC sin alterar raw_payload.
+El staging operativo devuelve HTTP 404 desde el dominio publico.
+
+Vercel MCP devolvio 403 de alcance; la CLI autorizada verifico el mismo equipo y proyecto.
+Los asesores Supabase solo muestran INFO por tablas privadas sin politicas de lectura publica.
+[Descripcion del aviso RLS](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy).
+La nueva tabla de evidencia tiene RLS y permisos anon/authenticated revocados.
