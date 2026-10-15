@@ -2,7 +2,7 @@
 title: Certificacion operativa del corte MEF 2024-2026
 source: ai
 generator: codex-gpt-6
-generated_at: 2026-10-15T02:57:17.357830Z
+generated_at: 2026-10-15T03:02:47.317893Z
 confidence: high
 verified: false
 ---
@@ -73,7 +73,25 @@ El workflow muestra brechas ante fallos y exige PostgreSQL y cero spool al verif
 - web audit: CONFORME; audit_snapshot_parity.py: PASS.
 - audit_accessibility_static.py: PASS en 16 paginas; audit_antislop.py: PASS.
 - git diff --check verifica el diff antes de integrar.
-- Las compuertas finales y el despliegue se reportan con las ejecuciones finales.
+- CI de main PASS: run 38674032583, commit b30c7543a218e5fdd12a97e23fc053e76936850e.
+- Vercel Ready: deployment dpl_3g3n7Ga2E5L47kS6tXwSLPQWCjTK, alias publico confirmado.
+- Produccion: 20 rutas HTML devuelven 200 con nosniff y X-Frame-Options DENY.
+- Snapshot publico identico byte a byte al archivo conciliado; arrays privados vacios.
+- API health 200, GET reports 401 y GET red-flags 200 con lista vacia.
+
+[PR 10 integrado](https://github.com/richardsonyelstin-commits/cajamarca-qhaway/pull/10).
+[CI de main](https://github.com/richardsonyelstin-commits/cajamarca-qhaway/actions/runs/38674032583).
+SHA-256 del snapshot: cdfd27eb2288cae5a098afeb8035db156997cc5848820d6ed93497571ec8008f.
+
+| Compuerta | Herramienta | Comando ejecutado | Resultado | Alcance |
+|---|---|---|---|---|
+| Tipos | Pyright | pyright --pythonpath .venv/Scripts/python.exe | PASS | config, daemon, pruebas |
+| Lint | Ruff | ruff check | PASS | Los mismos tres archivos |
+| Tests | Pytest / Node | pytest -v; node --test tests/budget-period.test.mjs | PASS | 203 + 3 |
+| Git | Git CLI | git status --short; git diff --check | PASS | Arbol limpio, diff valido |
+
+Pyright y Ruff recibieron explicitamente config.py y daemon.py de live_harvest,
+ademas de tests/test_persistence.py; el resultado no acredita analisis estatico de todo el repo.
 
 El cliente MPA inicia en 2026 y conserva selecciones historicas explicitas.
 PIM y devengado se muestran completos; el avance regional es 65.7%.
