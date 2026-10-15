@@ -6,6 +6,13 @@ on:
     - cron: "0 */2 * * *"
   workflow_dispatch:
     inputs:
+      runner:
+        description: "Runner hospedado para verificar las fuentes oficiales"
+        type: choice
+        options:
+          - ubuntu-latest
+          - windows-latest
+        default: ubuntu-latest
       sources:
         description: "Fuentes a cosechar separadas por coma"
         required: false
@@ -23,10 +30,14 @@ concurrency:
   group: harvester-worker
   cancel-in-progress: false
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   harvest-and-monitor:
     name: Cosecha Continua SEACE/MEF y Teledeteccion Satelital
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
     environment:
       name: "Production \u2013 cajamarca-qhaway"
     timeout-minutes: 25
