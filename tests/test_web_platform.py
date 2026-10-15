@@ -13,12 +13,12 @@ Cubre:
 
 from __future__ import annotations
 
+import importlib.util
 import io
 import json
 import threading
 import urllib.error
 import urllib.request
-from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
@@ -26,15 +26,15 @@ import pytest
 from cajamarca_qhaway.models import (
     Alert,
     BudgetExecutionRecord,
-    CitizenReport,
     ContractingEntity,
     ProcurementRecord,
     RedFlag,
 )
 from cajamarca_qhaway.models.alert import GENERIC_REVIEWERS, STANDARD_ALERT_DISCLAIMER
-from cajamarca_qhaway.web.exporter import build_verified_web_snapshot, export_verified_snapshot
-from cajamarca_qhaway.web.server import CLEAN_PAGE_ROUTES, WebApiHandler, run_server
-import importlib.util
+from cajamarca_qhaway.web.exporter import (
+    build_verified_web_snapshot,
+)
+from cajamarca_qhaway.web.server import CLEAN_PAGE_ROUTES, run_server
 
 _tool_path = Path("web/tools/validate_web_integrity.py").resolve()
 _spec = importlib.util.spec_from_file_location("validate_web_integrity", _tool_path)
@@ -110,7 +110,7 @@ def test_03_snapshot_models_validation(web_snapshot):
     # 5. Alert
     alerts = [Alert.model_validate(a) for a in web_snapshot["alerts"]]
     assert alerts == [], "No se publican alertas sin evidencia de dictamen humano validado"
-    assert web_snapshot["metadata"]["total_candidate_red_flags"] == 473
+    assert web_snapshot["metadata"]["total_candidate_red_flags"] == 471
     assert web_snapshot["metadata"]["total_alerts"] == 8
     assert web_snapshot["metadata"]["total_published_alerts"] == 0
     assert web_snapshot["metadata"]["alert_status_counts"] == {"discarded": 2, "in_review": 6}
@@ -125,11 +125,11 @@ def test_03_snapshot_models_validation(web_snapshot):
 
 
 def test_snapshot_recomputes_candidate_count_without_private_spool(tmp_path, monkeypatch):
-    import cajamarca_qhaway.web.exporter as exporter
+    from cajamarca_qhaway.web import exporter
 
     monkeypatch.setattr(exporter, "REDFLAG_SPOOL_CANDIDATES", (tmp_path / "absent.jsonl",))
     snapshot = exporter.build_verified_web_snapshot()
-    assert snapshot["metadata"]["total_candidate_red_flags"] == 473
+    assert snapshot["metadata"]["total_candidate_red_flags"] == 471
     assert snapshot["red_flags"] == []
     assert not (tmp_path / "absent.jsonl").exists()
 
@@ -317,8 +317,9 @@ def test_14_api_post_review_requires_notes_for_discarded(local_web_server):
 
 def test_15_cli_export_snapshot_and_audit():
     """Verifica que los comandos CLI export-snapshot y audit se ejecuten con codigo de salida 0."""
-    from cajamarca_qhaway.cli import main
     import sys
+
+    from cajamarca_qhaway.cli import main
 
     # Simular: cajamarca-qhaway web export-snapshot
     test_args = ["cajamarca-qhaway", "web", "export-snapshot", "--output", "web/src/data/verified-snapshot.json"]
@@ -526,7 +527,7 @@ def test_21_vercel_wsgi_security_and_tracking():
     """Verifica la paridad de proteccion y tracking en api/index.py (WSGI fallback)."""
     from api.index import app as vercel_wsgi_app
 
-    def call_wsgi(method: str, path: str, query: str = "", body: bytes = b"", headers: dict = None):
+    def call_wsgi(method: str, path: str, query: str = "", body: bytes = b"", headers: dict | None = None):
         captured = {}
         headers = headers or {}
 
@@ -571,11 +572,11 @@ def test_21_vercel_wsgi_security_and_tracking():
 
     # 5. Probar directamente _stdlib_fallback_dispatch para certificar el fallback estricto
     from api.index import _stdlib_fallback_dispatch
-    s_code, _, s_body = _stdlib_fallback_dispatch("GET", "/api/reports", {}, req_headers={})
+    s_code, _, _s_body = _stdlib_fallback_dispatch("GET", "/api/reports", {}, req_headers={})
     assert s_code == 401
     from api.index import _ACCREDITED_VEEDORES_STDLIB, _issue_veedor_token_stdlib
     stdlib_token, _ = _issue_veedor_token_stdlib(_ACCREDITED_VEEDORES_STDLIB[0])
-    s_code_ok, _, s_body_ok = _stdlib_fallback_dispatch(
+    s_code_ok, _, _s_body_ok = _stdlib_fallback_dispatch(
         "GET", "/api/reports", {}, req_headers={"authorization": f"Bearer {stdlib_token}"}
     )
     assert s_code_ok == 200

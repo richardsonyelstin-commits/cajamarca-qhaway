@@ -1,3 +1,11 @@
+---
+source: ai
+generator: codex
+generated_at: 2026-10-15T03:40:00Z
+confidence: high
+verified: false
+---
+
 # Napkin Runbook
 
 ## Curation Rules
@@ -19,5 +27,5 @@
    Do instead: enforce access in the API as well as Supabase RLS.
 
 ## User Directives
-1. **[2026-10-13] This audit authorizes Antislop edits to accepted ADRs.**
-   Do instead: preserve ADR meaning and metadata while replacing prohibited dash characters.
+1. **[2026-10-15] Accepted ADRs are immutable.**
+   Do instead: write a new proposed ADR with supersedes when a decision needs to change.

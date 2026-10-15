@@ -106,3 +106,35 @@ def test_geographic_department_is_never_posted() -> None:
             await client._postback(html, "https://official.test", "M:", "Departamento")
 
     asyncio.run(scenario())
+
+
+def test_printed_rounding_never_relaxes_pim_partition() -> None:
+    from cajamarca_qhaway.models.budget_breakdown import Moments
+    from cajamarca_qhaway.models.budget_reconciliation import _assert_partition
+
+    parent = Moments.model_validate(moments(100, 50))
+    children = [Moments.model_validate(moments(20, 10)) for _ in range(5)]
+    parent = parent.model_copy(update={"monthly_commitment_amount": 48})
+    _assert_partition(parent, children, "fuentes")
+    parent = parent.model_copy(update={"budgeted_amount": 102})
+    with pytest.raises(ValueError, match="budgeted_amount"):
+        _assert_partition(parent, children, "fuentes")
+
+
+def test_canonical_budget_repository_preserves_all_nested_moments() -> None:
+    import json
+    from pathlib import Path
+
+    from cajamarca_qhaway.persistence.connection import DatabaseManager
+    from cajamarca_qhaway.persistence.repositories.budget_execution_repository import (
+        BudgetExecutionRepository,
+    )
+
+    snapshot = json.loads(Path("web/src/data/verified-snapshot.json").read_text(encoding="utf-8"))
+    record = BudgetExecutionRecord.model_validate(snapshot["budget_execution_records"][0])
+    assert record.is_canonical_total
+    repository = BudgetExecutionRepository(DatabaseManager())
+    repository.upsert_many([record])
+    assert repository.get_by_id(record.execution_record_id) == record
+    repository.upsert_many([record])
+    assert repository.count() == 1

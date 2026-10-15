@@ -74,7 +74,14 @@ window.alert = function(msg) {
 /**
  * Drawer / Modal Universal para Evidencia OCDS Cruda (Art. 10)
  */
+let rawPayloadReturnFocus = null;
+function closeRawPayloadDrawer() {
+  document.getElementById('global-raw-payload-modal')?.classList.add('hidden');
+  rawPayloadReturnFocus?.focus?.();
+}
+
 export function openRawPayloadDrawer(payloadObj, title = 'Evidencia Original OCDS (Art. 10)') {
+  rawPayloadReturnFocus = document.activeElement;
   let modalEl = document.getElementById('global-raw-payload-modal');
   if (!modalEl) {
     modalEl = document.createElement('div');
@@ -139,11 +146,9 @@ export function openRawPayloadDrawer(payloadObj, title = 'Evidencia Original OCD
       viewCard.classList.add('hidden');
     });
 
-    modalEl.querySelector('#global-raw-payload-close-btn').addEventListener('click', () => {
-      modalEl.classList.add('hidden');
-    });
+    modalEl.querySelector('#global-raw-payload-close-btn').addEventListener('click', closeRawPayloadDrawer);
     modalEl.addEventListener('click', (e) => {
-      if (e.target === modalEl) modalEl.classList.add('hidden');
+      if (e.target === modalEl) closeRawPayloadDrawer();
     });
     modalEl.querySelector('#global-raw-payload-copy-btn').addEventListener('click', () => {
       const code = modalEl.querySelector('#global-raw-payload-code').textContent;
@@ -153,7 +158,7 @@ export function openRawPayloadDrawer(payloadObj, title = 'Evidencia Original OCD
     });
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !modalEl.classList.contains('hidden')) {
-        modalEl.classList.add('hidden');
+        closeRawPayloadDrawer();
       }
     });
   }
@@ -166,69 +171,40 @@ export function openRawPayloadDrawer(payloadObj, title = 'Evidencia Original OCD
   if (codeEl) codeEl.textContent = JSON.stringify(payloadObj || {}, null, 2);
 
   if (cardContentEl) {
-    const alerta = payloadObj?.alerta || {};
-    const flag = payloadObj?.bandera_roja || {};
-    cardContentEl.innerHTML = `
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="p-4 rounded-lg bg-surface-container-low border border-slate-border">
-          <span class="text-[11px] font-semibold text-secondary uppercase font-mono block mb-1">Identificador de Alerta</span>
-          <div class="text-base font-bold text-on-surface">${alerta.alert_id || 'ID Pendiente'}</div>
-          <div class="text-xs text-on-surface-variant mt-1">Estado de Publicación: <strong class="text-civic-emerald uppercase">${alerta.status || 'Publicado'}</strong></div>
-        </div>
-
-        <div class="p-4 rounded-lg bg-surface-container-low border border-slate-border">
-          <span class="text-[11px] font-semibold text-secondary uppercase font-mono block mb-1">Entidad Auditada</span>
-          <div class="text-base font-bold text-on-surface">${alerta.entity_id || 'Pliego Regional'}</div>
-          <div class="text-xs text-on-surface-variant mt-1">Publicado el: <span class="font-mono">${alerta.published_at || alerta.reviewed_at || '2026'}</span></div>
-        </div>
-      </div>
-
-      <div class="p-4 rounded-lg bg-surface-container-low border border-slate-border space-y-3">
-        <div class="flex items-center justify-between border-b border-slate-border pb-2">
-          <span class="text-xs font-semibold text-on-surface uppercase tracking-wider">Métrica Auditada</span>
-          <span class="font-mono text-xs px-2 py-0.5 rounded bg-secondary-container/30 text-secondary font-bold">${flag.rule_code || 'FLAG-CU5'}</span>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-          <div>
-            <span class="text-outline block mb-0.5">Fórmula Algorítmica:</span>
-            <div class="font-mono font-medium text-on-surface">${flag.formula_description || 'Algoritmo determinista de detección de desvíos.'}</div>
-          </div>
-          <div>
-            <span class="text-outline block mb-0.5">Umbral vs Valor Observado:</span>
-            <div class="font-mono font-bold text-on-surface">Umbral: ${flag.threshold ?? 1} | Observado: <span class="text-alert-rose">${flag.observed_value ?? 1}</span></div>
-          </div>
-        </div>
-
-        <div class="text-xs pt-2 border-t border-slate-border">
-          <span class="text-outline block mb-0.5">Fuente Oficial del Dato:</span>
-          <span class="font-mono font-semibold text-secondary uppercase">${flag.evidence_source || 'SEACE OCDS / MEF SIAF'}</span>
-        </div>
-      </div>
-
-      <div class="p-4 rounded-lg bg-surface-container-low border border-slate-border space-y-2 text-xs">
-        <div class="text-xs font-semibold text-on-surface uppercase tracking-wider border-b border-slate-border pb-1.5 flex items-center gap-1.5">
-          <span class="material-symbols-outlined text-secondary text-[16px]">verified_user</span>
-          <span>Dictamen de Veeduría Humana (Art. 14)</span>
-        </div>
-        <div>
-          <span class="text-outline block mb-0.5">Revisor Colegiado Nominal:</span>
-          <span class="font-semibold text-on-surface">${alerta.reviewed_by || 'Panel de Veedores Acreditados'}</span>
-        </div>
-        <div>
-          <span class="text-outline block mb-0.5">Fundamento del Dictamen:</span>
-          <p class="text-on-surface leading-relaxed">${alerta.review_notes || 'Verificación conforme de concordancia entre fuente oficial OCDS/MEF y umbral de alerta.'}</p>
-        </div>
-      </div>
-
-      <div class="p-3 rounded bg-surface border border-alert-amber/30 text-xs text-on-surface-variant leading-relaxed">
-        <strong class="font-semibold text-on-surface block mb-0.5">Aviso Constitucional (Art. 14 y 15):</strong>
-        Esta evidencia técnica refleja datos del registro público oficial. No constituye sentencia judicial, imputación penal ni calificación de personas naturales.
-      </div>
-    `;
+    cardContentEl.replaceChildren();
+    const heading = document.createElement('h4');
+    heading.textContent = 'Procedencia del registro';
+    const note = document.createElement('p');
+    note.textContent = payloadObj?.alerta?.status === 'published'
+      ? 'El expediente incluye un dictamen publicado. Sus campos originales constan en Microdatos JSON.'
+      : 'Registro oficial sin dictamen humano publicado asociado. Esta evidencia no es una alerta publicada.';
+    const definition = document.createElement('dl');
+    definition.className = 'qh-moments';
+    for (const [key, value] of Object.entries(payloadObj || {})) {
+      if (value == null || typeof value === 'object') continue;
+      const row = document.createElement('div');
+      const term = document.createElement('dt');
+      const content = document.createElement('dd');
+      term.textContent = key;
+      content.textContent = String(value);
+      row.append(term, content);
+      definition.append(row);
+    }
+    const help = document.createElement('p');
+    help.textContent = 'Microdatos JSON conserva las filas originales, fuentes y fechas de extraccion. Una senal tecnica requiere contexto y revision humana.';
+    cardContentEl.append(heading, note, definition, help);
   }
 
   modalEl.classList.remove('hidden');
+  modalEl.querySelector('#global-raw-payload-close-btn')?.focus();
+  modalEl.onkeydown = event => {
+    if (event.key !== 'Tab') return;
+    const controls = [...modalEl.querySelectorAll('button,a[href],input,select,textarea,[tabindex="0"]')]
+      .filter(element => element.getBoundingClientRect().height && !element.disabled);
+    const first = controls[0], last = controls.at(-1);
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+  };
 }
 
 window.openRawPayloadModal = openRawPayloadDrawer;
@@ -314,6 +290,7 @@ export function initGlobalControls() {
 
 function applyTheme(theme) {
   const isDark = theme === 'dark';
+  document.documentElement.dataset.tema = isDark ? 'noche' : 'dia';
   if (isDark) {
     document.documentElement.classList.add('dark');
     document.documentElement.setAttribute('data-bs-theme', 'dark');
@@ -445,7 +422,7 @@ export function formatCitizenPocketMoney(percentage) {
     solesPer100,
     remaining,
     badge: `S/ ${solesPer100} de cada S/ 100`,
-    narrative: `De cada 100 soles recibidos para obras este año, se han gastado ${solesPer100} soles y faltan gastar ${remaining} soles.`,
+    narrative: `De cada S/ 100 del PIM elegido, S/ ${solesPer100} corresponden a gasto reconocido y S/ ${remaining} siguen sin devengar.`,
     statusClass,
     statusIcon,
     statusLabel
@@ -484,6 +461,7 @@ export function toggleLanguageMode() {
 export function applyLanguageMode(mode, notify = false) {
   const isCitizen = mode === 'ciudadano';
   document.documentElement.setAttribute('data-lang-mode', mode);
+  document.body.dataset.modo = mode;
   localStorage.setItem(STORAGE_KEYS.LANG_MODE, mode);
   localStorage.setItem('cq_lang_mode', mode);
   localStorage.setItem('cajamarca_qhaway_lang_mode', mode);
@@ -955,7 +933,7 @@ export function updateSpeedometer(rate) {
   }
 }
 
-function hydrateGlobalKPIElements(kpis) {
+export function hydrateGlobalKPIElements(kpis) {
   // Atributos genericos data-kpi
   document.querySelectorAll('[data-kpi="pim-total"]').forEach(el => el.textContent = dataEngine.formatBudgetAmount(kpis.totalPim));
   document.querySelectorAll('[data-kpi="devengado-total"]').forEach(el => el.textContent = dataEngine.formatBudgetAmount(kpis.totalDevengado));
@@ -1502,6 +1480,7 @@ async function hydrateEntidadesPage(kpis) {
 
   // Render inicial
   await updateEntitiesView();
+  document.addEventListener('qh-budget-view-change', () => updateEntitiesView(dataEngine.budgetView.year));
 
   const yearFilterContainer = document.getElementById('entidades-year-filter');
   if (yearFilterContainer) {
@@ -1513,7 +1492,13 @@ async function hydrateEntidadesPage(kpis) {
         });
         btn.className = 'year-pill px-3 py-1 rounded bg-on-surface text-on-primary whitespace-nowrap cursor-pointer transition-colors';
         const year = btn.dataset.year;
+        if (year === 'all' || year === 'Todos') {
+          document.dispatchEvent(new CustomEvent('qh-budget-compare-request'));
+          return;
+        }
+        dataEngine.budgetView.year = Number(year);
         await updateEntitiesView(year);
+        document.dispatchEvent(new CustomEvent('qh-budget-controls-change'));
       });
     });
   }

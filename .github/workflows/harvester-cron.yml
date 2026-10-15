@@ -79,7 +79,7 @@ jobs:
         if: ${{ inputs.sources == 'oece' }}
         env:
           CAJAMARCA_QHAWAY_DATABASE_URL: ${{ secrets.CAJAMARCA_QHAWAY_DATABASE_URL }}
-        run: python scripts/harvest-dual-sources.py --persist
+        run: python scripts/harvest-dual-sources.py --persist --current
 
       - name: Mostrar evidencia de fuentes fallidas
         if: ${{ failure() }}

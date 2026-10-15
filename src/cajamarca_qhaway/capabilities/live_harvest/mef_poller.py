@@ -13,12 +13,12 @@ from __future__ import annotations
 
 import asyncio
 import csv
-from datetime import datetime, timezone
-from html.parser import HTMLParser
 import io
 import logging
 import re
 import tempfile
+from datetime import UTC, datetime
+from html.parser import HTMLParser
 from typing import Any
 from urllib.parse import urlparse
 
@@ -27,10 +27,10 @@ import httpx
 from cajamarca_qhaway.capabilities.live_harvest.backoff import calculate_jitter_delay
 from cajamarca_qhaway.capabilities.live_harvest.config import MefHarvestConfig
 from cajamarca_qhaway.capabilities.live_harvest.coverage_logger import CoverageGapLogger
-from cajamarca_qhaway.capabilities.live_harvest.watermark_store import WatermarkStore
 from cajamarca_qhaway.capabilities.live_harvest.mef_consulta_amigable import (
     MefConsultaAmigableClient,
 )
+from cajamarca_qhaway.capabilities.live_harvest.watermark_store import WatermarkStore
 from cajamarca_qhaway.capabilities.mef_ingestion.parser import (
     MUNICIPAL_EXECUTOR_PROVINCES,
     parse_mef_record,
@@ -57,7 +57,7 @@ class _PndaResourceParser(HTMLParser):
         values = {key: value or "" for key, value in attrs}
         classes = set(values.get("class", "").split())
         if "heading" in classes and values.get("title"):
-            match = re.search(r"/resource/([0-9a-f-]{36})", values.get("href", ""), re.I)
+            match = re.search(r"/resource/([0-9a-f-]{36})", values.get("href", ""), re.IGNORECASE)
             self._resource = {
                 "title": values["title"],
                 "resource_id": match.group(1) if match else "",
@@ -203,7 +203,7 @@ class MefPoller:
         """Ejecuta una corrida de recoleccion contra CKAN DataStore."""
         self.last_cycle_status = "FAILED"
         if self.config.enable_consulta_amigable:
-            started = datetime.now(timezone.utc)
+            started = datetime.now(UTC)
             year = started.year
             try:
                 records = await self._collect_consulta_amigable_records([year])
@@ -219,7 +219,7 @@ class MefPoller:
                 return []
             self.coverage_logger.log_window(
                 source="mef-consulta-amigable", start_time=started,
-                end_time=datetime.now(timezone.utc), items_received=len(records),
+                end_time=datetime.now(UTC), items_received=len(records),
                 items_retained=len(records), status="OK" if len(records) == 14 else "FAILED",
                 notes=f"Consulta Amigable MEF: {len(records)}/14 pliegos para {year}",
             )
@@ -235,7 +235,7 @@ class MefPoller:
             "offset": current_offset,
         }
 
-        window_start = datetime.now(timezone.utc)
+        window_start = datetime.now(UTC)
         response_payload: dict[str, Any] | None = None
 
         for attempt in range(self.config.max_retries):
@@ -245,7 +245,7 @@ class MefPoller:
                     try:
                         response_payload = res.json()
                         break
-                    except Exception as json_err:
+                    except (ValueError, TypeError, KeyError) as json_err:
                         self.coverage_logger.log_incident(
                             source="mef-datastore",
                             attempt=attempt + 1,
@@ -279,7 +279,7 @@ class MefPoller:
                 )
                 await asyncio.sleep(delay)
 
-        window_end = datetime.now(timezone.utc)
+        window_end = datetime.now(UTC)
 
         # Si datastore_search falla, registrar incidente de brecha
         records_data: Any = None
@@ -296,7 +296,7 @@ class MefPoller:
             fallback_records = []
             if self.config.enable_open_data_fallback:
                 fallback_records = await self._collect_open_data_records(
-                    [datetime.now(timezone.utc).year], targeted_queries=False
+                    [datetime.now(UTC).year], targeted_queries=False
                 )
             if fallback_records:
                 self._pending_records.update(
@@ -305,7 +305,7 @@ class MefPoller:
                 self.coverage_logger.log_window(
                     source="mef-datastore",
                     start_time=window_start,
-                    end_time=datetime.now(timezone.utc),
+                    end_time=datetime.now(UTC),
                     items_received=len(fallback_records),
                     items_retained=len(fallback_records),
                     status="OK",
@@ -337,7 +337,7 @@ class MefPoller:
         total_received = len(records_data)
         harvested_records: list[BudgetExecutionRecord] = list(self._pending_records.values())
         retained_this_page = 0
-        retrieval_timestamp = datetime.now(timezone.utc)
+        retrieval_timestamp = datetime.now(UTC)
 
         for row in records_data:
             if not isinstance(row, dict):
@@ -474,7 +474,7 @@ class MefPoller:
                 )
                 return
 
-            started = datetime.now(timezone.utc)
+            started = datetime.now(UTC)
             params = {"resource_id": resource_id, "q": code, "limit": 100, "offset": 0}
             try:
                 async with semaphore:
@@ -527,7 +527,7 @@ class MefPoller:
                     self.coverage_logger.log_window(
                         source="mef-datastore",
                         start_time=started,
-                        end_time=datetime.now(timezone.utc),
+                        end_time=datetime.now(UTC),
                         items_received=0,
                         items_retained=0,
                         status="FAILED",
@@ -535,7 +535,7 @@ class MefPoller:
                     )
                     return
 
-                retrieved_at = datetime.now(timezone.utc)
+                retrieved_at = datetime.now(UTC)
                 retained = 0
                 for row in raw_records:
                     if not isinstance(row, dict):
@@ -557,7 +557,7 @@ class MefPoller:
                 self.coverage_logger.log_window(
                     source="mef-datastore",
                     start_time=started,
-                    end_time=datetime.now(timezone.utc),
+                    end_time=datetime.now(UTC),
                     items_received=len(raw_records),
                     items_retained=retained,
                     status="OK" if retained else "FAILED",
@@ -574,7 +574,7 @@ class MefPoller:
                 self.coverage_logger.log_window(
                     source="mef-datastore",
                     start_time=started,
-                    end_time=datetime.now(timezone.utc),
+                    end_time=datetime.now(UTC),
                     items_received=0,
                     items_retained=0,
                     status="FAILED",
@@ -601,7 +601,7 @@ class MefPoller:
             await self._discover_official_csv_urls(missing_years) if missing_years else {}
         )
         urls_by_year = {**discovered, **configured}
-        retrieved_at = datetime.now(timezone.utc)
+        retrieved_at = datetime.now(UTC)
         by_record_id: dict[str, BudgetExecutionRecord] = {}
 
         for year in years:
@@ -648,7 +648,7 @@ class MefPoller:
         target_years = years or [2024, 2025, 2026]
         all_records: list[BudgetExecutionRecord] = []
         seen_record_ids: set[str] = set()
-        window_start = datetime.now(timezone.utc)
+        window_start = datetime.now(UTC)
 
         if self.config.enable_consulta_amigable:
             try:
@@ -664,7 +664,7 @@ class MefPoller:
             self.last_historical_status = "OK" if success else "FAILED"
             self.coverage_logger.log_window(
                 source="mef-consulta-amigable", start_time=window_start,
-                end_time=datetime.now(timezone.utc), items_received=len(all_records),
+                end_time=datetime.now(UTC), items_received=len(all_records),
                 items_retained=len(all_records), status="OK" if success else "FAILED",
                 notes=(
                     f"Consulta Amigable años {target_years}: "
@@ -687,7 +687,7 @@ class MefPoller:
                     seen_record_ids.add(record.execution_record_id)
                     all_records.append(record)
 
-        window_end = datetime.now(timezone.utc)
+        window_end = datetime.now(UTC)
         success = all(
             any(record.fiscal_year == year for record in all_records) for year in target_years
         )

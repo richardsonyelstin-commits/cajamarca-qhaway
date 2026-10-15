@@ -1,0 +1,119 @@
+/* Cajamarca Qhaway - tokens de diseno v1.0
+   Principio: marca fria, alertas calidas. Los tonos calidos (cochinilla, achiote, retama) solo significan severidad.
+   Contraste verificado WCAG 2.1 AA (texto 4.5:1, componentes 3:1). Sin guion largo (R-02). */
+:root{
+  /* Primitivos */
+  --anil-950:#071428;
+  --anil-900:#0B1F3A;
+  --anil-800:#112E55;
+  --anil-700:#1A4278;
+  --anil-600:#24589C;
+  --anil-500:#3A74BD;
+  --anil-300:#8FB1DB;
+  --anil-100:#DCE7F5;
+  --anil-50:#EEF3FA;
+  --jalca-900:#06352D;
+  --jalca-800:#0A4F43;
+  --jalca-700:#0C6553;
+  --jalca-600:#0E7C66;
+  --jalca-500:#17A184;
+  --jalca-400:#38D1B8;
+  --jalca-200:#A6EBDD;
+  --jalca-100:#D3F6EE;
+  --jalca-50:#EAFBF7;
+  --cal-50:#FBF9F4;
+  --cal-100:#F5F2E9;
+  --cal-200:#ECE7DA;
+  --cal-300:#DCD5C2;
+  --piedra-400:#8A8576;
+  --piedra-500:#6A665A;
+  --piedra-600:#4F4C43;
+  --piedra-700:#37352F;
+  --piedra-800:#24231F;
+  --cochinilla-700:#9B1236;
+  --cochinilla-600:#B3173F;
+  --cochinilla-100:#FBE3E9;
+  --achiote-700:#9F3F08;
+  --achiote-600:#B94A0B;
+  --achiote-100:#FCE8D8;
+  --retama-700:#765300;
+  --retama-500:#E8B010;
+  --retama-100:#FDF1C9;
+  --neblina-700:#36546F;
+  --neblina-500:#5F83A8;
+  --neblina-100:#E3ECF5;
+  --kiwicha-700:#6E2F83;
+  --kiwicha-500:#9A58B0;
+  --kiwicha-100:#F1E4F6;
+
+  /* Tipografia */
+  --f-titulo:"Fraunces","Fraunces Respaldo",Georgia,"Times New Roman",serif;
+  --f-texto:"Public Sans","Public Sans Respaldo",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --f-dato:"JetBrains Mono","JetBrains Mono Respaldo",ui-monospace,"Cascadia Code",Consolas,monospace;
+
+  /* Escala tipografica (cuerpo 17 px, razon 1.25, fluida desde la mitad superior) */
+  --fs-1:.8125rem; --fs-2:.9375rem; --fs-3:1.0625rem; --fs-4:1.3125rem; --fs-5:1.625rem;
+  --fs-6:clamp(1.875rem,1.5rem + 1.5vw,2.5rem);
+  --fs-7:clamp(2.25rem,1.6rem + 2.6vw,3.5rem);
+  --fs-8:clamp(2.75rem,1.7rem + 4.2vw,5rem);
+  --lh-texto:1.55; --lh-titulo:1.12; --medida:62ch;
+
+  /* Espaciado (base 4 px) */
+  --sp-1:.25rem; --sp-2:.5rem; --sp-3:.75rem; --sp-4:1rem; --sp-5:1.5rem; --sp-6:2rem; --sp-7:3rem; --sp-8:4rem; --sp-9:6rem; --sp-10:8rem;
+
+  /* Forma y capas */
+  --r-1:2px; --r-2:4px; --r-3:8px;
+  --sombra-flotante:0 8px 24px rgba(7,20,40,.22), 0 1px 3px rgba(7,20,40,.2);
+  --contenedor:72rem; --gutter:clamp(1rem,.5rem + 2vw,2rem);
+  --z-cabecera:100; --z-menu:200; --z-modal:300; --z-aviso:400;
+
+  /* Movimiento */
+  --t-1:120ms; --t-2:200ms; --ease:cubic-bezier(.2,.7,.2,1);
+
+  /* Visualizacion de datos (sin tonos de severidad) */
+  --viz-1:var(--anil-600); --viz-2:var(--jalca-500); --viz-3:var(--kiwicha-500); --viz-4:var(--piedra-500); --viz-5:var(--anil-300); --viz-6:var(--jalca-200);
+  --seq-1:var(--anil-50); --seq-2:var(--anil-100); --seq-3:var(--anil-300); --seq-4:var(--anil-500); --seq-5:var(--anil-700); --seq-6:var(--anil-900);
+  --div-neg:var(--anil-600); --div-0:var(--cal-200); --div-pos:var(--achiote-600);
+
+  /* Semanticos: tema dia (por defecto) */
+  --c-fondo:var(--cal-100); --c-superficie:var(--cal-50); --c-superficie-2:var(--cal-200);
+  --c-borde:var(--cal-300); --c-borde-fuerte:var(--piedra-400);
+  --c-texto:var(--anil-900); --c-texto-2:var(--piedra-600); --c-texto-3:var(--piedra-500);
+  --c-marca:var(--anil-900); --c-accion:var(--jalca-600); --c-accion-hover:var(--jalca-700); --c-accion-texto:#fff;
+  --c-enlace:var(--anil-600); --c-enlace-hover:var(--anil-800); --c-foco:var(--anil-600); --c-realce:var(--jalca-100); --c-info:var(--anil-50);
+
+  --sev-critica:var(--cochinilla-600); --sev-critica-texto:#fff; --sev-critica-suave:var(--cochinilla-100); --sev-critica-suave-texto:var(--cochinilla-700);
+  --sev-alta:var(--achiote-600);       --sev-alta-texto:#fff;    --sev-alta-suave:var(--achiote-100);       --sev-alta-suave-texto:var(--achiote-700);
+  --sev-media:var(--retama-500);       --sev-media-texto:#2B1F00;--sev-media-suave:var(--retama-100);       --sev-media-suave-texto:var(--retama-700);
+  --sev-baja:var(--neblina-700);       --sev-baja-texto:#fff;    --sev-baja-suave:var(--neblina-100);       --sev-baja-suave-texto:var(--neblina-700);
+  --est-rectificado:var(--kiwicha-700);--est-rectificado-suave:var(--kiwicha-100); --est-rectificado-suave-texto:var(--kiwicha-700);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-tema="dia"]){
+  --c-fondo:var(--anil-950); --c-superficie:var(--anil-900); --c-superficie-2:var(--anil-800);
+  --c-borde:var(--anil-700); --c-borde-fuerte:var(--anil-500);
+  --c-texto:var(--cal-100); --c-texto-2:var(--anil-300); --c-texto-3:var(--anil-300);
+  --c-marca:var(--cal-100); --c-accion:var(--jalca-400); --c-accion-hover:var(--jalca-200); --c-accion-texto:var(--anil-900);
+  --c-enlace:var(--jalca-200); --c-enlace-hover:#fff; --c-foco:var(--jalca-400); --c-realce:var(--jalca-800); --c-info:var(--anil-800);
+  --sev-critica-suave:#3D1322; --sev-critica-suave-texto:#FFC2D0;
+  --sev-alta-suave:#3F200D; --sev-alta-suave-texto:#FFC9A3;
+  --sev-media-suave:#3A2D07; --sev-media-suave-texto:#FFE08A;
+  --sev-baja-suave:#1B2E42; --sev-baja-suave-texto:#B9D2EA;
+  --est-rectificado-suave:#2E1838; --est-rectificado-suave-texto:#E6C3F2;
+  color-scheme:dark;
+  }
+}
+[data-tema="noche"]{
+  --c-fondo:var(--anil-950); --c-superficie:var(--anil-900); --c-superficie-2:var(--anil-800);
+  --c-borde:var(--anil-700); --c-borde-fuerte:var(--anil-500);
+  --c-texto:var(--cal-100); --c-texto-2:var(--anil-300); --c-texto-3:var(--anil-300);
+  --c-marca:var(--cal-100); --c-accion:var(--jalca-400); --c-accion-hover:var(--jalca-200); --c-accion-texto:var(--anil-900);
+  --c-enlace:var(--jalca-200); --c-enlace-hover:#fff; --c-foco:var(--jalca-400); --c-realce:var(--jalca-800); --c-info:var(--anil-800);
+  --sev-critica-suave:#3D1322; --sev-critica-suave-texto:#FFC2D0;
+  --sev-alta-suave:#3F200D; --sev-alta-suave-texto:#FFC9A3;
+  --sev-media-suave:#3A2D07; --sev-media-suave-texto:#FFE08A;
+  --sev-baja-suave:#1B2E42; --sev-baja-suave-texto:#B9D2EA;
+  --est-rectificado-suave:#2E1838; --est-rectificado-suave-texto:#E6C3F2;
+  color-scheme:dark;
+}

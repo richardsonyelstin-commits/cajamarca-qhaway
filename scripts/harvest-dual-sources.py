@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+from datetime import UTC, datetime
 from pathlib import Path
 
 import httpx
@@ -29,6 +30,7 @@ from cajamarca_qhaway.web.exporter import _read_jsonl
 async def main() -> None:
     arguments = argparse.ArgumentParser()
     arguments.add_argument("--persist", action="store_true")
+    arguments.add_argument("--current", action="store_true")
     options = arguments.parse_args()
     database = DatabaseManager() if options.persist else None
     if database and not database.is_postgres:
@@ -50,7 +52,10 @@ async def main() -> None:
         procurements = _read_jsonl(Path("data/harvested/procurements_all.jsonl"), ProcurementRecord)
     failed: list[str] = []
     async with OECEPentahoClient() as client:
-        resources = await client.discover([2024, 2025, 2026])
+        resources = await client.discover([datetime.now(UTC).year] if options.current else [2024, 2025, 2026])
+        if options.current:
+            last_order = next((item for item in reversed(resources) if item.dataset == "ordenes"), None)
+            resources = [item for item in resources if item.dataset != "ordenes" or item == last_order]
         for resource in resources:
             filename = resource.url.rsplit("/", 1)[-1].replace(".xlsx", ".jsonl")
             path = directory / filename

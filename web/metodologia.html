@@ -1,19 +1,64 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta http-equiv="refresh" content="0; url=/acerca#metodologia"/>
-  <script>window.location.replace('/acerca#metodologia');</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Redirigiendo a Metodologia - Cajamarca Qhaway</title>
-  <link rel="stylesheet" href="/src/css/tokens.css"/>
-  <link rel="stylesheet" href="/src/css/main.css"/>
-  <link rel="stylesheet" href="/src/css/components.css"/>
+  <meta name="description" content="Presupuesto y contrataciones oficiales de Cajamarca.">
+  <meta name="theme-color" content="#0B1F3A">
+  <meta property="og:image" content="/media/social/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="preload" href="/fonts/PublicSans-variable.woff2" as="font" type="font/woff2" crossorigin>
+  <script src="/src/js/brand-init.js"></script>
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/fonts.css">
+  <link rel="stylesheet" href="/css/brand.css">
+  <link id="tailwind-config" rel="stylesheet" href="/css/utilities.css">
+  <link rel="stylesheet" href="/css/application.css">
+  <link rel="stylesheet" href="/css/evidence.css">
 </head>
-<body class="bg-surface font-sans text-on-surface p-8 text-center">
-  <main aria-live="polite">
+<body class="bg-surface font-sans text-on-surface p-8 text-center" data-modo="ciudadano"><a class="skip-link" href="#main-content">Saltar al contenido</a><header class="qh-header">
+  <div class="qh-header-top">
+    <a class="qh-brand" href="/" aria-label="Cajamarca Qhaway, inicio">
+      <img src="/media/logo/logo-horizontal-negativo.svg" alt="Cajamarca Qhaway" width="220" height="55">
+    </a>
+    <div class="qh-header-actions">
+      <button id="lang-mode-toggle" data-action="toggle-lang-mode" type="button" aria-pressed="true">
+        <span class="qh-icono qh-ico--modo-ciudadano" aria-hidden="true"></span>
+        <span class="lang-mode-label" id="lang-mode-label">Modo Ciudadano</span>
+      </button>
+      <button data-action="open-civic-dict" type="button">
+        <span class="qh-icono qh-ico--diccionario" aria-hidden="true"></span><span>Diccionario</span>
+      </button>
+      <button id="rural-toggle" data-action="toggle-rural" type="button" aria-label="Modo de ahorro de datos" aria-pressed="false">
+        <span class="rural-label">Ahorro de datos</span><span class="rural-badge hidden">Activo</span>
+      </button>
+      <button id="theme-toggle" data-action="toggle-theme" type="button" aria-label="Cambiar tema claro u oscuro" aria-pressed="false">
+        <span class="qh-theme-symbol" aria-hidden="true"></span><span class="qh-sr-only">Tema</span>
+      </button>
+      <a href="/login" id="header-veedor-btn" class="qh-veedor">Acceso veedor</a>
+      <button id="mobile-menu-btn" class="qh-menu-button" type="button" aria-controls="mobile-menu" aria-expanded="false">Menu</button>
+    </div>
+  </div>
+  <div class="qh-header-bottom"><nav aria-label="Navegacion principal"><a href="/">Panel</a><a href="/entidades">Entidades</a><a href="/contrataciones">Contrataciones</a><a href="/presupuesto">Presupuesto</a><a href="/alertas">Alertas</a><a href="/proveedores">Proveedores</a><a href="/georreferenciacion">Territorio</a></nav>
+    <p class="qh-source-cut" data-source-cut>MEF 2026: diario 2026-10-14. SEACE extraido: 2026-10-14.</p></div>
+  <nav id="mobile-menu" class="qh-mobile-menu hidden" aria-label="Navegacion movil"><a href="/">Panel</a><a href="/entidades">Entidades</a><a href="/contrataciones">Contrataciones</a><a href="/presupuesto">Presupuesto</a><a href="/alertas">Alertas</a><a href="/proveedores">Proveedores</a><a href="/georreferenciacion">Territorio</a>
+    <a href="/denuncia">Comunicar un hecho</a><a href="/transparencia">Fuentes y descargas</a>
+    <a href="/acerca">Acerca de Qhaway</a><a href="/admin/revision">Panel revisor</a>
+  </nav>
+</header>
+  <main aria-live="polite" id="main-content" class="qh-main">
     <h1 class="text-2xl font-bold">Metodología del observatorio</h1>
   <p>Redirigiendo a la <a class="text-secondary font-bold underline" href="/acerca#metodologia">Metodologia y Principios del Observatorio</a>...</p>
   </main>
-</body>
+<footer class="qh-footer"><div><img src="/media/logo/logo-horizontal-color.svg"
+      alt="Cajamarca Qhaway" width="200" height="50"><p>Mirar para cuidar.</p>
+      <p>Datos oficiales, contexto y revision humana antes de publicar alertas.</p></div>
+      <nav aria-label="Informacion institucional"><a href="/transparencia">Fuentes y microdatos</a>
+      <a href="/metodologia">Metodologia</a><a href="/denuncia">Comunicar un hecho</a>
+      <a href="/acerca">Acerca de Qhaway</a></nav></footer><script type="module" src="/src/js/app.js"></script><script type="module" src="/src/js/brand-shell.js"></script></body>
 </html>

@@ -137,3 +137,33 @@ def test_orders_from_the_same_supplier_keep_distinct_official_numbers() -> None:
     second = _source_record({**row, "orden": "O/C-2-2024"}, entity, resource, "oece_pentaho_bi")
     assert first.source_evidence_id != second.source_evidence_id
     assert first.official_process_id is None and second.official_process_id is None
+
+
+def test_jsf_pagination_uses_fresh_state_and_explicit_process_identity() -> None:
+    entity = load_universe().entities[0].entity
+    form = "tbBuscador:idFormBuscarProceso"
+    table = form + ":dtProcesos"
+    posted = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.method == "GET":
+            return httpx.Response(200, text=f'<form id="{form}"><input name="javax.faces.ViewState" value="state-1"></form>')
+        values = parse_qs(request.content.decode())
+        posted.append(values)
+        page = len(posted)
+        if page == 2:
+            assert values["javax.faces.ViewState"] == ["state-2"]
+            assert values[table + "_first"] == ["1"]
+            assert values[table + "_rows"] == ["1"]
+        fragment = (f'<table><tbody class="ui-datatable-data"><tr data-codigoconvocatoria="125548{page}">'
+                    f'<td>Proceso oficial {page}</td></tr></tbody></table>'
+                    f'<script>id:"{table}",paginator:{{rows:1,rowCount:2}}</script>')
+        return httpx.Response(200, text=f'<partial-response><changes><update id="results"><![CDATA[{fragment}]]></update>'
+                              f'<update id="javax.faces.ViewState">state-{page + 1}</update></changes></partial-response>')
+
+    async def scenario() -> None:
+        async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http, SEACEBuscadorPublicoClient(http) as client:
+            rows = await client.search(entity, 2026)
+            assert {row.official_process_id for row in rows} == {"1255481", "1255482"}
+            assert client.view_state == "state-3"
+    asyncio.run(scenario())

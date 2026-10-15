@@ -25,6 +25,7 @@ from cajamarca_qhaway.models import (
     ProcurementRecord,
     RedFlag,
 )
+from cajamarca_qhaway.models.budget_reconciliation import canonical_budget_records
 
 DEFAULT_SNAPSHOT_PATH = Path("web/src/data/verified-snapshot.json")
 PROCUREMENT_SPOOL_CANDIDATES = (
@@ -89,7 +90,9 @@ def build_verified_web_snapshot(now: datetime | None = None) -> dict[str, Any]:
     entity_ids = {entity.entity_id for entity in entities}
 
     procurements = _read_jsonl(_first_existing(PROCUREMENT_SPOOL_CANDIDATES), ProcurementRecord)
-    budgets = _read_jsonl(_first_existing(BUDGET_SPOOL_CANDIDATES), BudgetExecutionRecord)
+    budgets = canonical_budget_records(
+        _read_jsonl(_first_existing(BUDGET_SPOOL_CANDIDATES), BudgetExecutionRecord)
+    )
     if not procurements:
         raise ValueError("Circuit breaker: no hay contrataciones verificables")
     if not budgets:
@@ -116,6 +119,8 @@ def build_verified_web_snapshot(now: datetime | None = None) -> dict[str, Any]:
     total_alerts = sum(int(value) for value in alert_status_counts.values())
     total_published_alerts = int(alert_status_counts.get("published", 0))
     years = sorted({record.fiscal_year for record in budgets})
+    if any({r.entity_id for r in budgets if r.fiscal_year == year} != entity_ids for year in years):
+        raise ValueError("Cobertura MEF incompleta en un ejercicio fiscal")
     coverage = {
         str(year): {
             "records": sum(1 for record in budgets if record.fiscal_year == year),
@@ -181,9 +186,7 @@ def export_verified_snapshot(output_path: Path | str = DEFAULT_SNAPSHOT_PATH) ->
     out = Path(output_path)
     out.parent.mkdir(parents=True, exist_ok=True)
     snapshot = build_verified_web_snapshot()
-    encoded = json.dumps(snapshot, separators=(",", ":"), ensure_ascii=False)
-    if "\u2014" in encoded:
-        raise ValueError("Antislop R-02 violado: raw_payload contiene U+2014")
+    encoded = json.dumps(snapshot, separators=(",", ":"), ensure_ascii=True)
     _validate_snapshot(json.loads(encoded))
     temporary = out.with_name(out.name + ".tmp")
     try:

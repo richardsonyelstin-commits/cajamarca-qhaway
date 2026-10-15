@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -12,9 +13,15 @@ FORBIDDEN = {"\u2013", "\u2014"}
 
 def main() -> int:
     violations: list[str] = []
-    scoped_paths = [root for name in SCOPED_ROOTS if (root := ROOT / name).exists()]
-    for path in (item for root in scoped_paths for item in root.rglob("*")):
-        if not path.is_file() or any(part in EXCLUDED for part in path.relative_to(ROOT).parts):
+    inventory = subprocess.run(["git", "ls-files", "-co", "--exclude-standard", "-z"],
+                               cwd=ROOT, check=True, capture_output=True).stdout.decode("utf-8")
+    for relative in sorted(set(inventory.split("\0")) - {""}):
+        path = ROOT / relative
+        if not path.is_file() or not path.resolve().is_relative_to(ROOT):
+            continue
+        if any(part in {"secrets", *EXCLUDED} for part in path.relative_to(ROOT).parts):
+            continue
+        if path.name == ".env" or path.name.startswith(".env.") or path.suffix in {".pem", ".key"}:
             continue
         try:
             content = path.read_text(encoding="utf-8")

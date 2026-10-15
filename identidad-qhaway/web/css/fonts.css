@@ -1,0 +1,9 @@
+/* Tipografias autoalojadas (OFL). Total aproximado: 83 KB. Sin solicitudes a terceros, compatible con la CSP.
+   Los subconjuntos cubren espanol y simbolos de datos; el guion largo U+2014 no esta incluido a proposito (R-02). */
+@font-face{font-family:"Public Sans";src:url("../fonts/PublicSans-variable.woff2") format("woff2");font-weight:400 800;font-style:normal;font-display:swap}
+@font-face{font-family:"Fraunces";src:url("../fonts/Fraunces-titulos.woff2") format("woff2");font-weight:600 900;font-style:normal;font-display:swap}
+@font-face{font-family:"JetBrains Mono";src:url("../fonts/JetBrainsMono-variable.woff2") format("woff2");font-weight:400 700;font-style:normal;font-display:swap}
+/* Respaldos con metricas ajustadas: evitan el salto de maquetacion (CLS) y el parpadeo al cargar */
+@font-face{font-family:"Public Sans Respaldo";src:local("Arial");size-adjust:103.1%;ascent-override:92.15%;descent-override:21.82%;line-gap-override:0.0%}
+@font-face{font-family:"Fraunces Respaldo";src:local("Times New Roman");size-adjust:112.47%;ascent-override:86.96%;descent-override:22.67%;line-gap-override:0.0%}
+@font-face{font-family:"JetBrains Mono Respaldo";src:local("Courier New");size-adjust:99.98%;ascent-override:102.02%;descent-override:30.0%;line-gap-override:0.0%}

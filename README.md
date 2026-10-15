@@ -2,7 +2,7 @@
 title: Cajamarca Qhaway - Contexto Integral y Documentacion Tecnica del Proyecto
 source: ai
 generator: codex-gpt-6
-generated_at: 2026-10-15T02:57:17.357830Z
+generated_at: 2026-10-15T13:13:04.483243+00:00
 confidence: high
 verified: false
 ---
@@ -87,7 +87,7 @@ El [modulo mensual oficial del MEF](https://apps5.mineco.gob.pe/transparencia/Me
 La cosecha historica devolvio 42 filas y el motor evaluo esas filas junto a 475 contratos.
 El cruce municipal usa los codigos observados en el MEF, incluido Cajamarca `300549`.
 
-Hay 473 candidatos internos, seis alertas `in_review` y dos `discarded`.
+Hay 471 candidatos internos, seis alertas `in_review` y dos `discarded`.
 No hay alertas publicadas ni denuncias expuestas en el snapshot publico.
 Los candidatos se cotejan contra los metadatos y el spool privado.
 La procedencia de entidades permanece en `data/entities/*.yaml`, `verified_at` y SUNAT.
@@ -442,7 +442,7 @@ cajamarca-qhaway/
 |   `-- pipeline.py                      # Orquestador del pipeline integral
 |-- tests/                               # Suite de pruebas automatizadas
 |   |-- test_web_platform.py             # Pruebas integrales de la plataforma web
-|   `-- ...                              # Pruebas unitarias de las capacidades (203 tests)
+|   `-- ...                              # Pruebas unitarias de las capacidades (216 tests)
 |-- web/                                 # Plataforma web frontend (MPA)
 |   |-- css/                             # Estilos CSS compilados y tokens
 |   |-- media/                           # Logotipos vectoriales SVG y emblemas
@@ -480,13 +480,33 @@ cajamarca-qhaway/
 ## Corte operativo MEF 2024-2026
 
 Supabase y snapshot conservan 14 entidades, 475 contrataciones y 42 presupuestos oficiales.
-Hay 14 entidades por ano y 473 candidatos privados; ninguna alerta esta publicada.
-PIM 2026: S/ 5,980,488,974; devengado: S/ 3,926,357,702; avance: 65.7% al 2026-09-30.
-PostgreSQL autentica y MEF completa su ciclo cloud con cero spool pendiente.
-SEACE responde HTTP 403 en GitHub Linux y Windows; localmente responde HTTP 200.
-La certificacion global queda pendiente de resolver ese acceso remoto.
-El catalogo geoespacial no tiene obras verificadas y el adaptador cloud de denuncias devuelve 503.
-Consultar [evidencia del corte](docs/audits/2026-10-14-prod-cutover-certification.md).
+Hay 14 entidades por ano y 471 candidatos privados; ninguna alerta esta publicada.
+PIM 2026: S/ 6,011,280,694; devengado: S/ 4,006,118,779; avance: 66.6% al 2026-10-14.
+El maestro diario conserva ocho momentos, modificaciones y avance.
+Proyecto, Actividad y fuentes/rubros se consultan como partes del maestro, sin doble conteo.
+El corte mensual 2026-09-30 se ofrece como comparacion separada.
+El cierre fiscal 2024/2025 conserva la fecha real observada en el portal (2026-10-13).
+
+OECE Pentaho aporto 77,981 filas filtradas de 43 recursos oficiales 2024-2026.
+Hay 438 filas vinculadas por identidad oficial a 191 de los 475 procesos OCDS preexistentes.
+Las ordenes sin codigo de convocatoria se conservan como evidencia independiente.
+El buscador JSF devuelve reCAPTCHA v3: la cobertura registra `CAPTCHA_REQUIRED`.
+El acceso OCDS desde GitHub dio HTTP 403 en la verificacion anterior.
+Estos estados no se presentan como consultas protegidas exitosas.
+
+La identidad utiliza Anil, Jalca y Cal, con Fraunces, Public Sans y JetBrains Mono locales.
+Las 16 paginas conservan sus IDs funcionales y los 88 activos web de la identidad entregada.
+El explorador permite elegir ejercicio, ambito, rubro y corte; cada cambio sustituye la vista.
+El visor JSON conserva la procedencia sin inventar un dictamen de revision humana.
+
+El catalogo geoespacial sigue sin obras verificadas.
+El adaptador cloud de denuncias conserva su respuesta 503 cuando no puede persistir.
+El diseno no convierte esos estados en cobertura real.
+
+Fuentes: [MEF](https://apps5.mineco.gob.pe/transparencia/Navegador/Navegar_6.aspx?y=2026&ap=ActProy),
+[OECE](https://bi.seace.gob.pe/pentaho/api/repos/%3Apublic%3Aportal%3Adatosabiertos.html/content?userid=public&password=key)
+y [SEACE publico](https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorPublico.xhtml).
+
 
 ## 13. Guia de Instalacion, Pruebas y Operacion CLI
 
@@ -511,7 +531,7 @@ pip install -e ".[dev]"
 ```
 
 ### 13.2 Ejecucion de la Suite de Pruebas
-El corte ejecuta 203 pruebas Python y 3 pruebas Node deterministas:
+El corte ejecuta 216 pruebas Python y 12 pruebas Node deterministas:
 
 ```bash
 # Ejecutar todas las pruebas con reporte resumido

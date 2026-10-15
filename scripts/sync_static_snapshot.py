@@ -4,7 +4,11 @@ from __future__ import annotations
 
 import json
 import re
+import runpy
 from pathlib import Path
+
+from cajamarca_qhaway.models import BudgetExecutionRecord
+from cajamarca_qhaway.models.budget_reconciliation import canonical_budget_records
 
 ROOT = Path(__file__).resolve().parents[1]
 SNAPSHOT = ROOT / "web" / "src" / "data" / "verified-snapshot.json"
@@ -41,7 +45,9 @@ def sync_static_snapshot() -> list[Path]:
     published_alerts = int(metadata["total_published_alerts"])
     entities = int(metadata["total_entities"])
     works = int(metadata["total_geospatial_works"])
-    budgets = data.get("budget_execution_records", [])
+    budgets = [row.model_dump(mode="json") for row in canonical_budget_records([
+        BudgetExecutionRecord.model_validate(row) for row in data.get("budget_execution_records", [])
+    ])]
     current_year = max((int(row["fiscal_year"]) for row in budgets), default=0)
     current_budget = [row for row in budgets if int(row["fiscal_year"]) == current_year]
     current_entities = len({row["entity_id"] for row in current_budget})
@@ -193,7 +199,7 @@ def sync_static_snapshot() -> list[Path]:
             }
             html = re.sub(
                 r"(siaf:\s*')([0-9]+)(')",
-                lambda match: match.group(1) + siaf_corrections.get(match.group(2), match.group(2)) + match.group(3),
+                lambda match, corrections=siaf_corrections: match.group(1) + corrections.get(match.group(2), match.group(2)) + match.group(3),
                 html,
             )
             html = re.sub(r"titular:\s*'[^']*'", "titular: 'Sin dato verificado'", html)
@@ -217,6 +223,23 @@ def sync_static_snapshot() -> list[Path]:
                 html = re.sub(r'width:\s*\d+(?:\.\d+)?%', 'width: 0%', html)
         path.write_text(html, encoding="utf-8", newline="")
         updated_paths.append(path)
+    cuts = sorted({row.get("official_cut_date") or row["raw_payload"].get("FECHA_CORTE_OFICIAL", "") for row in current_budget})
+    cut_name = "diario" if current_budget[0].get("cut_type") == "daily" else "mensual"
+    seace_dates = sorted(row["retrieved_at"][:10] for row in data["procurement_records"])
+    source_text = f"MEF {current_year}: {cut_name} {', '.join(cuts)}. SEACE extraido: {seace_dates[-1]}."
+    for path in sorted((ROOT / "web").glob("*.html")):
+        html = path.read_text(encoding="utf-8")
+        html = re.sub(r'(<p[^>]*\bdata-source-cut[^>]*>).*?(</p>)',
+                      lambda match: match[1] + source_text + match[2], html, flags=re.DOTALL)
+        for selector, value in (("data-review-candidates", metadata["total_candidate_red_flags"]),
+                                ("data-review-pending", metadata["alert_status_counts"].get("in_review", 0)),
+                                ("data-review-published", metadata["total_published_alerts"])):
+            html = re.sub(r'(<strong ' + selector + r'>).*?(</strong>)',
+                          lambda match, current=value: match[1] + str(current) + match[2], html)
+        path.write_text(html.rstrip() + "\n", encoding="utf-8")
+        if path not in updated_paths:
+            updated_paths.append(path)
+    runpy.run_path(str(ROOT / "scripts/render-budget-panels.py"))["main"]()
     return updated_paths
 
 

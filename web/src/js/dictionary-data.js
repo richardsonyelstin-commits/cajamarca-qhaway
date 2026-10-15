@@ -19,7 +19,7 @@ export const CIVIC_DICTIONARY = [
     category: 'presupuesto',
     short_def: 'La plata total real que la institución tiene para gastar en el año, tras ajustes y transferencias oficiales.',
     pocket_example: 'Como tu sueldo mensual mas los cachuelos extras que confirmaste en el camino.',
-    why_it_matters: 'Te dice cuánta plata de verdad tiene tu alcalde o gobernador para hacer obras en tu pueblo.'
+    why_it_matters: 'Permite consultar el presupuesto vigente de la entidad para actividades y proyectos, segun el ambito elegido.'
   },
   {
     id: 'pia',
@@ -40,34 +40,34 @@ export const CIVIC_DICTIONARY = [
   {
     id: 'devengado',
     term: 'Devengado (Ejecución de Gasto)',
-    alias_ciudadano: 'Dinero ya pagado oficialmente',
+    alias_ciudadano: 'Gasto con obligacion de pago reconocida',
     categoria: 'presupuesto',
     definicion_simple: 'La plata que la entidad ya autorizó pagar al contratista porque ya entregó productos o avances de obra verificados.',
     ejemplo_cotidiano: 'Como cuando el maestro albañil levantó la pared y tú le firmas el visto bueno para pagarle su jornal.',
-    pregunta_clave: '¿Cuánto dinero ya se entregó a los contratistas por obras realmente recibidas?',
+    pregunta_clave: '¿Cuanto gasto tiene una obligacion de pago reconocida?',
     explore_url: '/presupuesto',
     term_official: 'Devengado (Ejecución de Gasto)',
-    term_citizen: 'Dinero ya pagado oficialmente',
+    term_citizen: 'Gasto con obligacion de pago reconocida',
     category: 'presupuesto',
     short_def: 'La plata que la entidad ya autorizó pagar al contratista porque ya entregó productos o avances de obra verificados.',
     pocket_example: 'Como cuando el maestro albañil levantó la pared y tú le firmas el visto bueno para pagarle su jornal.',
-    why_it_matters: 'Si una obra tiene 0% de devengado, significa que el Estado todavía no ha pagado nada porque la obra no rinde cuentas o no avanza.'
+    why_it_matters: 'El devengado mide gasto reconocido. Por si solo no acredita pago bancario ni avance fisico de una obra.'
   },
   {
     id: 'girado',
     term: 'Girado',
-    alias_ciudadano: 'Dinero transferido al banco',
+    alias_ciudadano: 'Orden de pago registrada',
     categoria: 'presupuesto',
-    definicion_simple: 'El momento exacto en que el dinero sale de la cuenta del Estado y entra a la cuenta bancaria del contratista.',
-    ejemplo_cotidiano: 'El dinero contante y sonante saliendo por ventanilla o por transferencia electrónica.',
-    pregunta_clave: '¿El pago ya salió efectivamente de las arcas públicas hacia el proveedor?',
+    definicion_simple: 'Registro de una orden de pago posterior al devengado. Por si solo no confirma que el beneficiario recibio el dinero en su banco.',
+    ejemplo_cotidiano: 'Como emitir una orden de transferencia: todavia hay que distinguir su registro del abono bancario.',
+    pregunta_clave: '¿Que monto tiene una orden de pago registrada al corte oficial?',
     explore_url: '/presupuesto',
-    term_official: 'Girado (Desembolso Bancario)',
-    term_citizen: 'Dinero transferido al banco',
+    term_official: 'Girado (Orden de Pago)',
+    term_citizen: 'Orden de pago registrada',
     category: 'presupuesto',
-    short_def: 'El momento exacto en que el dinero sale de la cuenta del Estado y entra a la cuenta bancaria del contratista.',
-    pocket_example: 'El dinero contante y sonante saliendo por ventanilla o por transferencia electrónica.',
-    why_it_matters: 'Confirma que los fondos públicos ya fueron desembolsados de forma irreversible al contratista.'
+    short_def: 'Registro de una orden de pago posterior al devengado. Por si solo no confirma que el beneficiario recibio el dinero en su banco.',
+    pocket_example: 'Como emitir una orden de transferencia: todavia hay que distinguir su registro del abono bancario.',
+    why_it_matters: 'Distingue la orden de pago del gasto reconocido y del pago bancario confirmado.'
   },
   {
     id: 'compromiso-anual',
@@ -388,7 +388,71 @@ export const CIVIC_DICTIONARY = [
     short_def: 'Dinero extra que la empresa constructora pide después de firmado el contrato porque surgieron imprevistos.',
     pocket_example: 'Como cuando el maestro de obra te dice a mitad de construcción que los cimientos costarán más dinero.',
     why_it_matters: 'Es una de las vías frecuentes de encarecimiento y retraso en proyectos de infraestructura.'
-  }
+  },
+{
+  "id": "budget-certification",
+  "term": "Certificación presupuestal",
+  "alias_ciudadano": "Crédito disponible reservado",
+  "categoria": "presupuesto",
+  "definicion_simple": "La certificación acredita que existe crédito presupuestario disponible para atender un gasto. No es un pago ni equivale a un contrato ejecutado.",
+  "ejemplo_cotidiano": "Como verificar que hay dinero disponible antes de asumir un compromiso.",
+  "pregunta_clave": "Permite distinguir disponibilidad de crédito, compromiso y ejecución.",
+  "explore_url": "/presupuesto",
+  "term_official": "Certificación presupuestal",
+  "term_citizen": "Crédito disponible reservado",
+  "category": "presupuesto",
+  "short_def": "La certificación acredita que existe crédito presupuestario disponible para atender un gasto. No es un pago ni equivale a un contrato ejecutado.",
+  "pocket_example": "Como verificar que hay dinero disponible antes de asumir un compromiso.",
+  "why_it_matters": "Permite distinguir disponibilidad de crédito, compromiso y ejecución."
+},
+{
+  "id": "budget-modifications",
+  "term": "Modificaciones presupuestales",
+  "alias_ciudadano": "Cambios al presupuesto inicial",
+  "categoria": "presupuesto",
+  "definicion_simple": "Es la diferencia entre el presupuesto vigente (PIM) y el presupuesto inicial (PIA). Puede incluir aumentos o reducciones por distintas causas.",
+  "ejemplo_cotidiano": "Si el plan inicial era 100 y el vigente es 120, la modificación neta es 20.",
+  "pregunta_clave": "Una modificación no se atribuye automáticamente al canon: hay que revisar sus fuentes.",
+  "explore_url": "/presupuesto",
+  "term_official": "Modificaciones presupuestales",
+  "term_citizen": "Cambios al presupuesto inicial",
+  "category": "presupuesto",
+  "short_def": "Es la diferencia entre el presupuesto vigente (PIM) y el presupuesto inicial (PIA). Puede incluir aumentos o reducciones por distintas causas.",
+  "pocket_example": "Si el plan inicial era 100 y el vigente es 120, la modificación neta es 20.",
+  "why_it_matters": "Una modificación no se atribuye automáticamente al canon: hay que revisar sus fuentes."
+},
+{
+  "id": "budget-scope",
+  "term": "Ámbito presupuestal",
+  "alias_ciudadano": "Qué parte del presupuesto estás mirando",
+  "categoria": "presupuesto",
+  "definicion_simple": "ActProy es el total institucional. Proyecto y Actividad son sus partes. Los tres no se suman juntos. Proyecto no significa que toda inversión sea una obra física.",
+  "ejemplo_cotidiano": "Un total de 100 puede contener 40 de proyectos y 60 de actividades. Sigue siendo 100.",
+  "pregunta_clave": "Evita el doble conteo y permite comparar entidades con el mismo ámbito.",
+  "explore_url": "/presupuesto",
+  "term_official": "Ámbito presupuestal",
+  "term_citizen": "Qué parte del presupuesto estás mirando",
+  "category": "presupuesto",
+  "short_def": "ActProy es el total institucional. Proyecto y Actividad son sus partes. Los tres no se suman juntos. Proyecto no significa que toda inversión sea una obra física.",
+  "pocket_example": "Un total de 100 puede contener 40 de proyectos y 60 de actividades. Sigue siendo 100.",
+  "why_it_matters": "Evita el doble conteo y permite comparar entidades con el mismo ámbito."
+},
+{
+  "id": "official-cut",
+  "term": "Fecha de corte oficial",
+  "alias_ciudadano": "Hasta cuándo llega el dato",
+  "categoria": "presupuesto",
+  "definicion_simple": "Es la fecha de actualización que publica el MEF. El corte diario y el mensual pueden mostrar importes distintos. La fecha de extracción indica cuándo se consultó la fuente.",
+  "ejemplo_cotidiano": "Una consulta hecha el 15 puede mostrar una actualización oficial del 14 o un cierre mensual del 30 anterior.",
+  "pregunta_clave": "Permite repetir una comparación con el mismo ejercicio, ámbito y fecha.",
+  "explore_url": "/presupuesto",
+  "term_official": "Fecha de corte oficial",
+  "term_citizen": "Hasta cuándo llega el dato",
+  "category": "presupuesto",
+  "short_def": "Es la fecha de actualización que publica el MEF. El corte diario y el mensual pueden mostrar importes distintos. La fecha de extracción indica cuándo se consultó la fuente.",
+  "pocket_example": "Una consulta hecha el 15 puede mostrar una actualización oficial del 14 o un cierre mensual del 30 anterior.",
+  "why_it_matters": "Permite repetir una comparación con el mismo ejercicio, ámbito y fecha."
+}
 ];
 
 export const CIVIC_DICTIONARY_MAP = new Map(

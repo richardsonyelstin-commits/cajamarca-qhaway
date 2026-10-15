@@ -1,45 +1,74 @@
-# Andean Civic Observatory: Design System Specification
+---
+title: Sistema de diseno Qhaway
+source: ai
+generator: codex-stitch-design-taste
+generated_at: 2026-10-15T03:40:00Z
+confidence: high
+verified: false
+---
 
-## Brand & Style
+# Sistema de diseno Qhaway
 
-This design system elevates regional public oversight into an authoritative, investigative journalism standard. Rooted in institutional clarity and civic rigor, it balances high-density open contracting metrics with the refined visual dignity of an independent watchdog publication. 
+La identidad entregada es la referencia visual: marca fria y alertas calidas.
+El portal combina lectura ciudadana, cifras oficiales y expedientes para especialistas.
+La regeneracion conserva anclajes DOM y usa activos locales sin fuentes remotas.
 
-The aesthetic is **Modern Institutional Journalism**: deliberate, structured, and sober. It avoids sterile government bureaucracy and flashy tech startup tropes, adopting instead the understated gravitas of investigative data desks like ProPublica or ICIJ. Visual elements communicate trust, algorithmic neutrality, and unyielding accuracy through precise borders, meticulous metric callouts, and clean micro-interactions.
+## Atmosfera y lectura visual
 
-## Colors
+Densidad 6, variacion 3, movimiento 1; ENERGY 2, RHYTHM 2, MOTION 1.
+El foco de la portada es dinero vigente frente a devengado con fecha y ambito visibles.
+El motivo de andenes divide bloques; no decora cada tarjeta.
+La lupa oficial representa observacion civica, sin iconografia de vigilancia personal.
 
-The palette is anchored by deep Andean slates and structured civic emeralds, establishing a hierarchy based on verifiable facts and analytical restraint.
+## Paleta y funciones
 
-- **Primary (`#0f172a` / `#000000`)**: Deep Andean Slate anchors headlines, critical data labels, and formal borders, conveying institutional weight and uncompromising focus.
-- **Secondary (`#006a63` / `#0f766e`)**: Civic Teal signals verification, official database synchronicity, and active audit points.
-- **Named Accents**:
-  - `civic-emerald` (`#047857`): Denotes clean procurement pipelines, compliant budgets, and healthy transparency indices.
-  - `alert-amber` (`#b45309`) and `alert-rose` (`#e11d48`): Highlight statistical outliers, single-bidder procurement warnings, and discrepancy alerts without resorting to sensationalist alarms.
-  - `slate-surface` (`#f8fafc`) and `slate-border` (`#e2e8f0`): Create high-contrast editorial surfaces that separate metric modules cleanly on varied display densities.
+Cal 100 #F5F2E9: fondo; Cal 50 #FBF9F4: superficie; Cal 300 #DCD5C2: bordes.
+Anil 900 #0B1F3A: texto y cabecera; Anil 600 #24589C: enlaces y foco.
+Jalca 600 #0E7C66: acciones; Laguna/Jalca 400 #38D1B8: contraste en tema nocturno.
+Cochinilla #B3173F, Achiote #B94A0B, Retama #E8B010 y Neblina #36546F:
+solo severidad y siempre con texto e icono.
+Proporcion de referencia del manual: Cal 55%, Anil 30%, Jalca 10%, Laguna 5%.
+Los tokens se copian sin reinterpretar su valor.
 
-## Typography
+## Tipografia
 
-The typography system pairs the intellectual editorial authority of **Newsreader** with the high-legibility, precision engineering of **Hanken Grotesk**.
+Fraunces 600-900 para titulos; Public Sans 400-800 para lectura de 17 px.
+JetBrains Mono 400-700 para importes, identificadores y fechas.
+Escala 1.25, interlineado 1.55, ancho maximo de lectura 62 caracteres.
+Los tres archivos WOFF2 se alojan localmente con respaldos de metricas ajustadas.
+El manual de marca prevalece sobre la prohibicion generica de serif en dashboards de Stitch.
 
-- **Editorial Headlines (Newsreader)**: Used for investigation titles, observatory statements, section headers, and qualitative summaries. Its transitional serifs bring gravitas, reinforcing the investigative mission of civic monitoring.
-- **Data & Administrative Engine (Hanken Grotesk)**: Powers tables, OCDS metrics, navigation, filters, status pills, and body analysis. Its clean apertures guarantee immediate legibility across dense financial disclosures and low-bandwidth rural mobile interfaces.
-- **Data Tables & Codes (JetBrains Mono / Tabular Numerals)**: Strict vertical alignment for figures in Soles (PEN), RUC numbers, and OCDS OCID identifiers.
+## Componentes
 
-## Layout & Spacing
+Cabecera Anil con logo negativo, navegacion activa, modo de lectura y diccionario.
+Controles de ano, ambito y corte visibles antes de cualquier cifra.
+Momentos presupuestales en secuencia; modificaciones pueden ser negativas.
+Devengado se rotula como ejecucion y girado como pago, sin intercambiar ambos.
+Fuentes y rubros forman una matriz con nombres oficiales y procedencia consultable.
+Bordes de 1 px, radios 2/4/8 px y sombra solo en menus, modales y avisos.
+Campos con etiqueta visible, errores proximos y acciones de 44 px.
+Estados vacios explican cobertura o revision humana; no presentan cifras ilustrativas.
 
-A structured 12-column grid system governs desktop interfaces, collapsing to 8 columns on tablet and 4 columns on mobile. 
+## Maquetacion y adaptacion
 
-The layout follows an analytical cadence: ample outer margins frame high-density internal data blocks. Whitespace is deliberate, never ornamental. Sectional content breaks using subtle horizontal grid rules instead of dramatic vertical gaps, preserving page rhythm while retaining an orderly, newspaper-like density of information.
+Contenedor 72 rem, gutter fluido 16-32 px.
+Rejilla de 4 columnas movil, 8 desde 48 em y 12 desde 64 em.
+La portada combina lectura introductoria y cuadro presupuestal.
+Los expedientes ordenan identidad, presupuesto, procesos y procedencia con jerarquia propia.
+Las tablas se convierten en listas legibles en pantallas estrechas.
+Ninguna vista genera desbordamiento horizontal a 320 px.
 
-## Elevation & Depth
+## Movimiento y accesibilidad
 
-Visual hierarchy is maintained primarily through structured 1px hairline borders (`#e2e8f0`) and subtle tonal shifts rather than heavy drop shadows. 
+Transiciones funcionales de 120/200 ms, sin bucles perpetuos ni entrada escalonada.
+Respetar prefers-reduced-motion y colores forzados.
+Foco de 3 px con offset 3 px; navegacion completa con teclado y retorno de foco en modales.
+Contraste WCAG 2.2 AA y estados comunicados mediante texto, forma y color.
 
-- **Surface Elevation**: Ground-level views rest on pure white (`#ffffff`) or subdued civic slate (`#f8fafc`). Elevated cards and inspector sidebars rely on micro-borders paired with a whisper-light ambient blur (`0 1px 3px rgba(15, 23, 42, 0.04)`), preventing visual noise during prolonged audit tasks.
-- **Overlay & Modals**: Critical alerts or modal dialogs use an institutional backdrop scrim (`rgba(15, 23, 42, 0.4)`) with an anchor elevation of `0 12px 24px -4px rgba(15, 23, 42, 0.08)`, prioritizing crisp contrast over heavy layering.
+## Patrones excluidos
 
-## Shapes
-
-The design system employs a soft, geometric radius of `0.25rem` (`rounded` / `rounded-lg`). 
-
-Cards, badges, tables, and form inputs utilize disciplined, near-sharp corners that evoke index cards, legal briefs, and structured public ledgers. Buttons and metric pills adopt this subtle radius to feel modern and touchable while resisting the overly playful, consumer-app appearance of larger pill shapes.
+Sin porcentajes ficticios, financiacion inferida ni sellos de revision sin acta.
+Sin fuentes de terceros, fotos de relleno, degradados genericos o sombras de tarjetas.
+Sin bento decorativo: cada bloque responde una pregunta de datos.
+Sin atribuir todo el presupuesto institucional a obras, canon o gasto pagado.
+Sin U+2014 ni U+2013 en textos versionados.

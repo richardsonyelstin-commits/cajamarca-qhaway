@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Sequence
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from cajamarca_qhaway.models import ProcurementRecord
@@ -90,7 +90,7 @@ class ProcurementRepository:
         if isinstance(retrieved_at, str):
             retrieved_at = datetime.fromisoformat(retrieved_at)
         if retrieved_at.tzinfo is None:
-            retrieved_at = retrieved_at.replace(tzinfo=timezone.utc)
+            retrieved_at = retrieved_at.replace(tzinfo=UTC)
 
         return ProcurementRecord(
             procurement_id=row["procurement_id"],

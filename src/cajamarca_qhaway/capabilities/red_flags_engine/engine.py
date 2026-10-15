@@ -12,11 +12,19 @@ from __future__ import annotations
 import json
 import unicodedata
 from collections import defaultdict
-from datetime import date, datetime, timedelta, timezone
+from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
-from cajamarca_qhaway.capabilities.red_flags_engine.catalog import ACTIVE_INDICATORS, uit_value
-from cajamarca_qhaway.models import BudgetExecutionRecord, ProcurementRecord, RedFlag, compute_red_flag_id
+from cajamarca_qhaway.capabilities.red_flags_engine.catalog import (
+    ACTIVE_INDICATORS,
+    uit_value,
+)
+from cajamarca_qhaway.models import (
+    BudgetExecutionRecord,
+    ProcurementRecord,
+    RedFlag,
+    compute_red_flag_id,
+)
 
 
 class RedFlagsEngine:
@@ -41,14 +49,14 @@ class RedFlagsEngine:
         for candidate in candidates:
             if isinstance(candidate, str) and candidate.strip():
                 try:
-                    parsed = datetime.fromisoformat(candidate.replace("Z", "+00:00"))
+                    parsed = datetime.fromisoformat(candidate)
                 except ValueError:
                     continue
                 if parsed.tzinfo is None:
-                    parsed = parsed.replace(tzinfo=timezone.utc)
-                return parsed.astimezone(timezone.utc)
+                    parsed = parsed.replace(tzinfo=UTC)
+                return parsed.astimezone(UTC)
         retrieved = procurement.retrieved_at
-        return retrieved.astimezone(timezone.utc) if retrieved.tzinfo else retrieved.replace(tzinfo=timezone.utc)
+        return retrieved.astimezone(UTC) if retrieved.tzinfo else retrieved.replace(tzinfo=UTC)
 
     @staticmethod
     def _award_date(procurement: ProcurementRecord) -> datetime | None:
@@ -61,12 +69,12 @@ class RedFlagsEngine:
             if not isinstance(raw_date, str) or not raw_date.strip():
                 continue
             try:
-                parsed = datetime.fromisoformat(raw_date.replace("Z", "+00:00"))
+                parsed = datetime.fromisoformat(raw_date)
             except ValueError:
                 continue
             if parsed.tzinfo is None:
-                parsed = parsed.replace(tzinfo=timezone.utc)
-            return parsed.astimezone(timezone.utc)
+                parsed = parsed.replace(tzinfo=UTC)
+            return parsed.astimezone(UTC)
         return None
 
     @staticmethod
@@ -92,12 +100,22 @@ class RedFlagsEngine:
         now: datetime | None = None,
     ) -> list[RedFlag]:
         """Ejecuta los indicadores activos sobre los registros y retorna los RedFlag disparados."""
-        current_time = now or datetime.now(timezone.utc)
+        current_time = now or datetime.now(UTC)
         if current_time.tzinfo is None:
-            current_time = current_time.replace(tzinfo=timezone.utc)
+            current_time = current_time.replace(tzinfo=UTC)
 
         flags: list[RedFlag] = []
         exec_list = executions or []
+        from cajamarca_qhaway.models.budget_reconciliation import (
+            canonical_budget_records,
+        )
+        masters = canonical_budget_records(exec_list)
+        if masters:
+            keys = {(record.entity_id, record.fiscal_year) for record in masters}
+            master_ids = {record.execution_record_id for record in masters}
+            exec_list = [record for record in exec_list
+                         if (record.entity_id, record.fiscal_year) not in keys
+                         or record.execution_record_id in master_ids]
 
         # 1. Indicador single-bidder
         flags.extend(self._eval_single_bidder(procurements, current_time))
@@ -254,8 +272,8 @@ class RedFlagsEngine:
             end_str = tender_period.get("endDate")
             if start_str and end_str:
                 try:
-                    start_dt = datetime.fromisoformat(start_str.replace("Z", "+00:00"))
-                    end_dt = datetime.fromisoformat(end_str.replace("Z", "+00:00"))
+                    start_dt = datetime.fromisoformat(start_str)
+                    end_dt = datetime.fromisoformat(end_str)
                     duration_days = (end_dt - start_dt).total_seconds() / 86400.0
                     if 0 <= duration_days < float(ind.default_threshold):
                         rf_id = compute_red_flag_id(ind.code, p.procurement_id, p.retrieved_at.isoformat())
@@ -408,7 +426,7 @@ class RedFlagsEngine:
     ) -> list[RedFlag]:
         """Detect underspending in closed years or at a past official MEF cutoff."""
         ind = self.catalog["mef-underspending"]
-        current_year = now.astimezone(timezone.utc).year
+        current_year = now.astimezone(UTC).year
         grouped: dict[tuple[str, int, str], list[BudgetExecutionRecord]] = defaultdict(list)
         for record in executions:
             if record.fiscal_year > current_year:
@@ -466,7 +484,7 @@ class RedFlagsEngine:
             return False
         cutoff = next(iter(cut_dates))
         return (
-            cutoff < now.astimezone(timezone.utc).date()
+            cutoff < now.astimezone(UTC).date()
             and cutoff.year == records[0].fiscal_year
         )
 
