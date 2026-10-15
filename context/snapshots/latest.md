@@ -1,47 +1,41 @@
 ---
 title: Estado de cajamarca-qhaway
 source: ai
-generator: codex-gpt-6
-generated_at: 2026-10-15T03:02:47.317893Z
+generator: codex-gpt-6.1-sol
+generated_at: 2026-10-15T13:14:03.866704+00:00
 confidence: high
 verified: false
 ---
-
 # Estado de cajamarca-qhaway
+Presupuesto institucional por momentos implementado y sincronizado para 2024-2026.
+Identidad Qhaway aplicada a 16 vistas con activos locales y anclajes conservados.
+Cierre GitHub/Vercel en curso sobre agent/codex/budget-dual-sources-identity.
 
-El worker MEF autentica en PostgreSQL y completa el ciclo cloud con persistencia confirmada.
-Supabase y spool conservan 14 entidades, 475 contrataciones y 42 presupuestos oficiales.
-SEACE falla con HTTP 403 desde GitHub Linux y Windows; no hay certificacion global PASS.
+## Datos e invariantes
 
-## Estado operativo
+- 42 maestros de 14 entidades; Proyecto y Actividad anidados, sin doble conteo.
+- 2026: corte diario 2026-10-14; PIM 6,011,280,694 y devengado 4,006,118,779.
+- 2024/2025: cierres verificados con actualizacion del portal 2026-10-13.
+- Corte mensual 2026-09-30 disponible solo como comparacion independiente.
+- 475 procesos OCDS preservados; 77,981 filas OECE independientes.
+- 438 filas vinculadas a 191 procesos por identidad oficial, sin emparejamientos difusos.
+- 471 candidatos privados; 6 expedientes en revision, 2 descartados, 0 publicados.
+- Ninguna alerta se publica automaticamente ni se fabrican dictamenes en el visor JSON.
+- Codigos MEF oficiales y procedencia existente de entidades aprobados por el usuario.
+- Credencial PostgreSQL resuelta: no pedir otra contrasena ni leer archivos de secretos.
 
-- Rama de trabajo: agent/codex/prod-cutover-v2.
-- Cobertura MEF: 14 entidades por ano en 2024, 2025 y 2026; corte abierto 2026-09-30.
-- Ultima extraccion MEF conciliada: 2026-10-15T00:20:22.607943Z.
-- Paridad SQL/spool: cero diferencias en todos los campos de los 42 presupuestos.
-- Motor y SQL: 473 candidatos privados con IDs conservados y cero diferencias completas.
-- Alertas: 6 in_review, 2 discarded, 0 published; snapshot publico sin filas privadas.
-- PIM 2026: S/ 5,980,488,974; devengado: S/ 3,926,357,702; avance: 65.7%.
-- Pooler IPv4 y credencial confirmados por ingesta real; no pedir otra contrasena.
-- MEF cloud PASS: run 38654058445, 14 filas y cero spool pendiente.
-- SEACE cloud HTTP 403: runs 38654365121 (Linux) y 38673139299 (Windows).
-- SEACE local HTTP 200: 20 releases recibidos y cero contratos nuevos retenidos.
-- Catalogo geoespacial vacio: evaluacion omitida como SIN COBERTURA.
-- Denuncias cloud: HTTP 503; adaptador persistente de denuncias/revisiones pendiente.
+## Verificacion y alcance
 
-## Decisiones confirmadas
+- 216 pruebas Python y 12 Node; web audit CONFORME y auditorias de paridad/accesibilidad PASS.
+- Pyright sin errores en 12 archivos tipados; Ruff sin infracciones en 30 archivos modificados.
+- Rutas verificadas a 320/768/1440 px, fuentes oficiales locales y Escape con retorno de foco.
+- JSF real: reCAPTCHA requerido; no se afirma cobertura de una consulta protegida completa.
+- OCDS cloud: HTTP 403 observado en runners anteriores; OECE Pentaho aporta evidencia adicional.
+- Catalogo geoespacial sin obras verificadas; denuncias cloud no simula persistencia.
 
-Se conservan los codigos MEF oficiales, incluido Cajamarca provincial SEC_EJEC 300549.
-La procedencia de entidades usa el contrato existente, YAML y perfiles SUNAT.
-Los candidatos permanecen privados; ninguna alerta se publica sin dictamen humano.
-El historial Git previo conserva archivos privados antiguos; no hubo reescritura del historial.
+## Arquitectura
 
-## Evidencia
-
-Consultar docs/audits/2026-10-14-prod-cutover-certification.md para consultas y ejecuciones.
-CI ejecuta 203 pruebas Python, 3 Node, auditoria web, paridad, accesibilidad y Antislop.
-PR 10 integrado en main b30c754; CI 38674032583 PASS, 203 Python y 3 Node.
-Vercel dpl_3g3n7Ga2E5L47kS6tXwSLPQWCjTK Ready; alias publico confirmado.
-Produccion: 20 rutas 200 con cabeceras, snapshot identico byte a byte y arrays privados vacios.
-Pyright y Ruff PASS en live_harvest/config.py, daemon.py y tests/test_persistence.py.
-Git limpio tras integrar; el unico fallo de fuente cloud pendiente es SEACE HTTP 403.
+ADR 0013 permanece proposed; ningun ADR aceptado fue editado.
+Las migraciones ampliaron los contratos sin cambiar IDs canonicos.
+La evidencia de fuentes tiene RLS y solo se incorpora publicamente al proceso enlazado.
+La referencia visual es web/DESIGN.md y la fuente original identidad-qhaway/.

@@ -108,6 +108,46 @@
     {
       "source": "/media/(.*)",
       "destination": "/web/media/$1"
+    },
+    {
+      "source": "/css/(.*)",
+      "destination": "/web/css/$1"
+    },
+    {
+      "source": "/fonts/(.*)",
+      "destination": "/web/fonts/$1"
+    },
+    {
+      "source": "/favicon.ico",
+      "destination": "/web/favicon.ico"
+    },
+    {
+      "source": "/favicon.svg",
+      "destination": "/web/favicon.svg"
+    },
+    {
+      "source": "/apple-touch-icon.png",
+      "destination": "/web/apple-touch-icon.png"
+    },
+    {
+      "source": "/icon-192.png",
+      "destination": "/web/icon-192.png"
+    },
+    {
+      "source": "/icon-512.png",
+      "destination": "/web/icon-512.png"
+    },
+    {
+      "source": "/icon-maskable-512.png",
+      "destination": "/web/icon-maskable-512.png"
+    },
+    {
+      "source": "/safari-pinned-tab.svg",
+      "destination": "/web/safari-pinned-tab.svg"
+    },
+    {
+      "source": "/site.webmanifest",
+      "destination": "/web/site.webmanifest"
     }
   ],
   "headers": [

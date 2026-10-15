@@ -1,0 +1,169 @@
+from __future__ import annotations
+
+import asyncio
+from datetime import UTC, datetime
+from io import BytesIO
+from pathlib import Path
+from urllib.parse import parse_qs
+from zipfile import ZipFile
+
+import httpx
+import pytest
+
+from cajamarca_qhaway.capabilities.entity_mapping.dataset import load_universe
+from cajamarca_qhaway.capabilities.live_harvest.coverage_logger import CoverageGapLogger
+from cajamarca_qhaway.capabilities.seace_ingestion.official_sources import (
+    CAPTCHARequired,
+    DownloadResource,
+    OECEPentahoClient,
+    SEACEBuscadorPublicoClient,
+    _source_record,
+    link_procurement_evidence,
+)
+from cajamarca_qhaway.models import ProcurementRecord
+from cajamarca_qhaway.models.procurement_source_record import ProcurementSourceRecord
+
+
+def workbook(ruc: str) -> bytes:
+    output = BytesIO()
+    rows = [
+        ["ENTIDAD_RUC", "CODIGOCONVOCATORIA", "CODIGOITEM", "DESCRIPCION_PROCESO"],
+        [ruc, "1255489", "1", "Ejecucion de obra CUI 1234567"],
+        ["20182786935", "999", "1", "Entidad fuera del universo"],
+    ]
+    xml = '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>'
+    for index, row in enumerate(rows, 1):
+        xml += f'<row r="{index}">'
+        for column, value in zip("ABCD", row, strict=True):
+            xml += f'<c r="{column}{index}" t="inlineStr"><is><t>{value}</t></is></c>'
+        xml += '</row>'
+    xml += '</sheetData></worksheet>'
+    with ZipFile(output, "w") as archive:
+        archive.writestr("xl/worksheets/sheet1.xml", xml)
+    return output.getvalue()
+
+
+def test_pentaho_session_discovery_and_ruc_filter() -> None:
+    entity = load_universe().entities[0].entity
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.host == "bi.seace.gob.pe":
+            if request.url.path.endswith('/content'):
+                return httpx.Response(200, text='<script src="/catalog.js"></script>',
+                                      headers={"set-cookie": "JSESSIONID=public-session; Path=/"})
+            assert "JSESSIONID=public-session" in request.headers["cookie"]
+            return httpx.Response(200, text='''const DOMAIN = "https://conosce.osce.gob.pe";
+                const BASEPATH = "/buscador/assets/official/reportes";
+                const template = `/convocatorias/CONOSCE_CONVOCATORIAS${y}_0.xlsx`;''')
+        return httpx.Response(200, content=workbook(entity.ruc))
+
+    async def scenario() -> list[ProcurementSourceRecord]:
+        async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http, OECEPentahoClient(http) as client:
+            resources = await client.discover([2026], datasets=("convocatorias",))
+            assert len(resources) == 1
+            return [record async for record in client.records(resources[0], [entity])]
+
+    records = asyncio.run(scenario())
+    assert len(records) == 1
+    assert records[0].official_process_id == "1255489"
+    assert records[0].cui == "1234567"
+    assert records[0].raw_payload["source_system"] == "oece_pentaho_bi"
+    assert records[0].raw_payload["record"]["ENTIDAD_RUC"] == entity.ruc
+
+
+def test_jsf_rotates_viewstate_and_reports_challenge(tmp_path: Path) -> None:
+    entity = load_universe().entities[0].entity
+    form = 'tbBuscador:idFormBuscarProceso'
+    html = f'''<form id="{form}"><input type="hidden" name="javax.faces.ViewState" value="state-1">
+        <input name="{form}:hddNumeroRuc" value=""><select name="{form}:anioConvocatoria_input">
+        <option value="2026" selected>2026</option></select></form>'''
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.method == "GET":
+            return httpx.Response(200, text=html, headers={"set-cookie": "JSESSIONID=jsf-session"})
+        values = parse_qs(request.content.decode())
+        assert request.headers['faces-request'] == 'partial/ajax'
+        assert values['javax.faces.ViewState'] == ['state-1']
+        assert values[form + ':hddNumeroRuc'] == [entity.ruc]
+        return httpx.Response(200, text='''<partial-response><changes>
+          <update id="javax.faces.ViewState"><![CDATA[state-2]]></update>
+          <update id="results"><![CDATA[<table><tbody class="ui-datatable-data">
+          <tr data-ri="0"><td>1255489</td><td>Obra CUI 1234567</td></tr>
+          </tbody></table>]]></update></changes></partial-response>''')
+
+    async def scenario() -> None:
+        async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http, SEACEBuscadorPublicoClient(http) as client:
+            records = await client.search(entity, 2026)
+            assert len(records) == 1
+            assert client.view_state == 'state-2'
+        async with httpx.AsyncClient(transport=httpx.MockTransport(
+            lambda request: httpx.Response(200, text=html + '<script src="recaptcha/api.js"></script>')
+        )) as http:
+            gaps = CoverageGapLogger(tmp_path / 'gaps.jsonl')
+            async with SEACEBuscadorPublicoClient(http, coverage_logger=gaps) as client:
+                with pytest.raises(CAPTCHARequired):
+                    await client.search(entity, 2026)
+            assert gaps.read_records()[0]['error_message'] == 'CAPTCHA_REQUIRED'
+
+    asyncio.run(scenario())
+
+
+def test_cross_source_identity_preserves_procurement() -> None:
+    entity = load_universe().entities[0].entity
+    procurement = ProcurementRecord(
+        procurement_id="pr-preserved", ocid="ocds-dgv273-seacev3-1255489",
+        entity_id=entity.entity_id, title="Proceso oficial",
+        raw_payload={"tender": {"id": "1255489"}}, retrieved_at=datetime.now(UTC),
+    )
+    evidence = ProcurementSourceRecord.model_validate({
+        "source_evidence_id": "pe-one", "source_system": "oece_pentaho_bi",
+        "dataset": "convocatorias", "fiscal_year": 2026, "entity_id": entity.entity_id,
+        "source_record_id": "1255489:1", "official_process_id": "1255489",
+        "source_url": "https://conosce.osce.gob.pe/dataset.xlsx",
+        "retrieved_at": datetime.now(UTC), "raw_payload": {"record": {"CODIGOCONVOCATORIA": "1255489"}},
+    })
+    linked = link_procurement_evidence([evidence, evidence], [procurement])
+    assert len(linked) == 1 and linked[0].procurement_id == procurement.procurement_id
+    assert procurement.raw_payload == {"tender": {"id": "1255489"}}
+    foreign = evidence.model_copy(update={"entity_id": "ce-another"})
+    assert link_procurement_evidence([foreign], [procurement])[0].procurement_id is None
+
+
+def test_orders_from_the_same_supplier_keep_distinct_official_numbers() -> None:
+    entity = load_universe().entities[0].entity
+    resource = DownloadResource("ordenes", 2024, "https://conosce.osce.gob.pe/orders.xlsx")
+    row = {"ruc_entidad": entity.ruc, "ruc_contratista": "20100000001", "orden": "O/C-1-2024"}
+    first = _source_record(row, entity, resource, "oece_pentaho_bi")
+    second = _source_record({**row, "orden": "O/C-2-2024"}, entity, resource, "oece_pentaho_bi")
+    assert first.source_evidence_id != second.source_evidence_id
+    assert first.official_process_id is None and second.official_process_id is None
+
+
+def test_jsf_pagination_uses_fresh_state_and_explicit_process_identity() -> None:
+    entity = load_universe().entities[0].entity
+    form = "tbBuscador:idFormBuscarProceso"
+    table = form + ":dtProcesos"
+    posted = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.method == "GET":
+            return httpx.Response(200, text=f'<form id="{form}"><input name="javax.faces.ViewState" value="state-1"></form>')
+        values = parse_qs(request.content.decode())
+        posted.append(values)
+        page = len(posted)
+        if page == 2:
+            assert values["javax.faces.ViewState"] == ["state-2"]
+            assert values[table + "_first"] == ["1"]
+            assert values[table + "_rows"] == ["1"]
+        fragment = (f'<table><tbody class="ui-datatable-data"><tr data-codigoconvocatoria="125548{page}">'
+                    f'<td>Proceso oficial {page}</td></tr></tbody></table>'
+                    f'<script>id:"{table}",paginator:{{rows:1,rowCount:2}}</script>')
+        return httpx.Response(200, text=f'<partial-response><changes><update id="results"><![CDATA[{fragment}]]></update>'
+                              f'<update id="javax.faces.ViewState">state-{page + 1}</update></changes></partial-response>')
+
+    async def scenario() -> None:
+        async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http, SEACEBuscadorPublicoClient(http) as client:
+            rows = await client.search(entity, 2026)
+            assert {row.official_process_id for row in rows} == {"1255481", "1255482"}
+            assert client.view_state == "state-3"
+    asyncio.run(scenario())

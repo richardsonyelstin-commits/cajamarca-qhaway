@@ -14,9 +14,9 @@ test('presupuesto predeterminado conserva un solo ejercicio oficial', async () =
   assert.equal(rows.length, 14);
   assert.deepEqual([...new Set(rows.map(row => row.fiscal_year))], [2026]);
   const kpis = await dataEngine.getMacroKPIs();
-  assert.equal(kpis.totalPim, 5980488974);
-  assert.equal(kpis.totalDevengado, 3926357702);
-  assert.equal(kpis.executionRate, 65.7);
+  assert.equal(kpis.totalPim, 6011280694);
+  assert.equal(kpis.totalDevengado, 4006118779);
+  assert.equal(kpis.executionRate, 66.6);
 });
 
 test('consultas historicas explicitas conservan los tres ejercicios', async () => {
@@ -27,8 +27,10 @@ test('consultas historicas explicitas conservan los tres ejercicios', async () =
 
 test('estadisticas institucionales usan 2026 y no inventan fuentes de financiamiento', async () => {
   const stats = await dataEngine.getEntityBudgetStats('ce-f5f5d8fc32518855');
-  assert.equal(stats.pim, 4451746962);
-  assert.equal(stats.devengado, 3142808938);
-  assert.equal(stats.rate, 70.6);
-  assert.equal(dataEngine.getFundingComposition(), null);
+  assert.equal(stats.pim, 4477794240);
+  assert.equal(stats.devengado, 3192237299);
+  assert.equal(stats.rate, 71.3);
+  const funding = dataEngine.getFundingComposition();
+  assert.equal(funding.rubros.reduce((sum, row) => sum + row.pim, 0), 6011280694);
+  assert.equal(funding.rubros.find(row => row.code === '18').pim, 902419147);
 });

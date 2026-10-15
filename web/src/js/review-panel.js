@@ -1,12 +1,12 @@
 /**
  * review-panel.js: Panel Interno de Revision Humana y Moderacion (005-review-panel + ADR 0005)
- * Rutas: #/admin/login, #/admin/revision, #/admin/denuncias, #/admin/auditoria
+ * Rutas: /login, /admin/revision, /admin/revision, /admin/revision
  *
  * Restricciones:
  * - Antislop R-02: Cero rayas em-dash en todo el archivo.
  * - Prohibicion estricta de revisores genericos (admin, system, root, bot, etc.).
  * - Justificacion obligatoria al descartar banderas (CA-005-04 / CA-304-05).
- * - Proteccion de rutas no autenticadas con redireccion a #/admin/login (CA-304-03).
+ * - Proteccion de rutas no autenticadas con redireccion a /login (CA-304-03).
  */
 
 import { GENERIC_REVIEWERS, CANONICAL_INDICATORS } from './config.js';
@@ -29,7 +29,7 @@ export function isAuthenticatedReviewer() {
  * Renderiza la pantalla de inicio de sesion (ADR 0005 Google OAuth & Sesion Nominal)
  */
 export function renderLoginView() {
-  const oauthGoogleUrl = supabaseClient.initiateGoogleOAuth('#/admin/revision');
+  const oauthGoogleUrl = supabaseClient.initiateGoogleOAuth('/admin/revision');
 
   return `
     <div class="admin-login-view max-w-600 mx-auto py-4">
@@ -152,7 +152,7 @@ export function setupLoginEvents() {
       authenticated_at: new Date().toISOString()
     });
 
-    window.location.hash = '#/admin/revision';
+    window.location.assign('/admin/revision');
   });
 }
 
@@ -173,13 +173,13 @@ function renderAdminSubnav(activeTab = 'revision') {
 
       <div class="d-flex align-items-center gap-2">
         <div class="btn-group btn-group-sm" role="group" aria-label="Navegacion de administracion">
-          <a href="#/admin/revision" class="btn ${activeTab === 'revision' ? 'btn-primary' : 'btn-outline-secondary'}">
+          <a href="/admin/revision" class="btn ${activeTab === 'revision' ? 'btn-primary' : 'btn-outline-secondary'}">
             Banderas Rojas Pendientes
           </a>
-          <a href="#/admin/denuncias" class="btn ${activeTab === 'denuncias' ? 'btn-primary' : 'btn-outline-secondary'}">
+          <a href="/admin/revision" class="btn ${activeTab === 'denuncias' ? 'btn-primary' : 'btn-outline-secondary'}">
             Moderacion de Denuncias
           </a>
-          <a href="#/admin/auditoria" class="btn ${activeTab === 'auditoria' ? 'btn-primary' : 'btn-outline-secondary'}">
+          <a href="/admin/revision" class="btn ${activeTab === 'auditoria' ? 'btn-primary' : 'btn-outline-secondary'}">
             Bitacora de Auditoria
           </a>
         </div>
@@ -192,7 +192,7 @@ function renderAdminSubnav(activeTab = 'revision') {
 }
 
 /**
- * Renderiza la bandeja de revision de banderas rojas (#/admin/revision)
+ * Renderiza la bandeja de revision de banderas rojas (/admin/revision)
  */
 export function renderAdminRevisionView() {
   if (!isAuthenticatedReviewer()) {
@@ -340,7 +340,7 @@ export function renderAdminRevisionView() {
 }
 
 /**
- * Renderiza la bandeja de moderacion de denuncias (#/admin/denuncias)
+ * Renderiza la bandeja de moderacion de denuncias (/admin/revision)
  */
 export function renderAdminDenunciasView() {
   if (!isAuthenticatedReviewer()) {
@@ -423,7 +423,7 @@ export function renderAdminDenunciasView() {
 }
 
 /**
- * Renderiza la bitacora inmutable de auditoria (#/admin/auditoria)
+ * Renderiza la bitacora inmutable de auditoria (/admin/revision)
  */
 export function renderAdminAuditoriaView() {
   if (!isAuthenticatedReviewer()) {
@@ -491,7 +491,7 @@ export function setupAdminEvents() {
   if (btnLogout) {
     btnLogout.addEventListener('click', () => {
       store.clearReviewerSession();
-      window.location.hash = '#/admin/login';
+      window.location.assign('/login');
     });
   }
 
@@ -505,7 +505,18 @@ export function setupAdminEvents() {
       const notes = notesEl ? notesEl.value.trim() : '';
 
       const session = store.getState().reviewerSession;
-      if (!session) return;
+      if (!session || !isAuthenticatedReviewer()) return;
+      if (!notes) {
+        if (notesEl) {
+          notesEl.setAttribute('aria-invalid', 'true');
+          notesEl.setCustomValidity('Escribe el fundamento real del dictamen antes de publicar.');
+          notesEl.reportValidity();
+          notesEl.focus();
+        }
+        return;
+      }
+      notesEl?.removeAttribute('aria-invalid');
+      notesEl?.setCustomValidity('');
 
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Publicando...';
@@ -516,7 +527,7 @@ export function setupAdminEvents() {
           entity_id: entityId,
           status: 'published',
           reviewed_by: session.email,
-          review_notes: notes || 'Alerta verificada y aprobada para conocimiento de la ciudadania.'
+          review_notes: notes
         });
 
         // Actualizar estado
@@ -530,7 +541,7 @@ export function setupAdminEvents() {
           card.innerHTML = `
             <div class="card-body bg-success-subtle text-success-emphasis p-3 text-center">
               <strong>Alerta Publicada con Exito (ID: ${escapeHtml(res.alert.alert_id)})</strong>
-              <div class="small mt-1">Ya es visible en el explorador ciudadano (#/alertas).</div>
+              <div class="small mt-1">Ya es visible en el explorador ciudadano (/alertas).</div>
             </div>
           `;
         }
@@ -624,7 +635,7 @@ export function setupAdminEvents() {
         if (card) {
           card.classList.add(targetStatus === 'accepted_as_lead' ? 'border-success' : 'border-secondary');
         }
-        window.location.hash = '#/admin/denuncias';
+        window.location.assign('/admin/revision');
       } catch (err) {
         alert(`Error en moderacion: ${err.message}`);
       }

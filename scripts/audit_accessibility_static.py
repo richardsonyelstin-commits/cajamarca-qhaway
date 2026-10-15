@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
+import re
 from html.parser import HTMLParser
 from pathlib import Path
-import re
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -83,20 +83,39 @@ def main() -> int:
             if target not in parser.ids:
                 errors.append(prefix + f"{attribute} refiere a ID inexistente: {target}")
 
-    tokens = (ROOT / "web/src/css/tokens.css").read_text(encoding="utf-8")
-    light = re.search(r":root,\s*\[data-bs-theme=\"light\"\]\s*\{(?P<body>.*?)\n\}", tokens, flags=re.DOTALL)
-    dark = re.search(r"\.dark,\s*\[data-bs-theme=\"dark\"\]\s*\{(?P<body>.*?)\n\}", tokens, flags=re.DOTALL)
-    if not light or not dark:
-        errors.append("No se pudieron resolver los tokens de color claro y oscuro")
-    else:
-        for name, background, block in (
-            ("tema claro", "#fcf8fa", light.group("body")),
-            ("tema oscuro", "#0c111d", dark.group("body")),
-        ):
-            for token in ("color-civic-emerald", "color-alert-amber"):
-                match = re.search(rf"--{token}:\s*(#[0-9a-fA-F]{{6}})", block)
-                if not match or relative_contrast(match.group(1), background) < 4.5:
-                    errors.append(f"Contraste menor a 4.5:1 para {token} en {name}")
+    tokens = (ROOT / "web/css/tokens.css").read_text(encoding="utf-8")
+    def block(selector: str) -> dict[str, str]:
+        start = tokens.index(selector) + len(selector)
+        body = tokens[start:tokens.index("}", start)]
+        return dict(re.findall(r"--([\w-]+):\s*([^;{}]+)", body))
+
+    base = block(":root{")
+    for name, overrides in (("dia", {}), ("noche", block('[data-tema="noche"]{'))):
+        values = base | overrides
+        def color(key: str, palette: dict[str, str] = values) -> str:
+            value = palette[key].strip()
+            visited = {key}
+            while value.startswith("var(--"):
+                target = value[6:-1]
+                if target in visited:
+                    raise ValueError("Token circular")
+                visited.add(target)
+                value = palette[target].strip()
+            return "#" + "".join(character * 2 for character in value[1:]) if len(value) == 4 else value
+
+        pairs = [(foreground, background) for foreground in ("c-texto", "c-texto-2", "c-texto-3", "c-enlace")
+                 for background in ("c-fondo", "c-superficie")]
+        pairs.append(("c-accion-texto", "c-accion"))
+        pairs.extend((f"sev-{severity}-suave-texto", f"sev-{severity}-suave")
+                     for severity in ("critica", "alta", "media", "baja"))
+        for foreground, background in pairs:
+            ratio = relative_contrast(color(foreground), color(background))
+            if ratio < 4.5:
+                errors.append(f"Contraste {ratio:.2f}:1 para {foreground}/{background} en {name}")
+    for page in pages:
+        html = page.read_text(encoding="utf-8")
+        if 'href="/css/tokens.css"' not in html:
+            errors.append(f"{page.name}: no carga los tokens oficiales auditados")
 
     if errors:
         print("Auditoría estática de accesibilidad: FAIL")

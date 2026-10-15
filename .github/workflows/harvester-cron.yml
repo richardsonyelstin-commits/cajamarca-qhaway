@@ -14,7 +14,7 @@ on:
           - windows-latest
         default: ubuntu-latest
       sources:
-        description: "Fuentes a cosechar separadas por coma"
+        description: "Fuentes separadas por coma, o oece para evidencia Pentaho y disponibilidad JSF"
         required: false
         default: "seace,mef"
       evaluate_geospatial:
@@ -40,7 +40,7 @@ jobs:
     runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
     environment:
       name: "Production \u2013 cajamarca-qhaway"
-    timeout-minutes: 25
+    timeout-minutes: 55
     env:
       SUPABASE_SESSION_POOLER_HOST: ${{ vars.SUPABASE_SESSION_POOLER_HOST }}
 
@@ -65,6 +65,7 @@ jobs:
         run: python scripts/check-worker-connection.py
 
       - name: Ejecutar cosecha en vivo (SEACE OCDS y MEF DataStore)
+        if: ${{ inputs.sources != 'oece' }}
         env:
           CAJAMARCA_QHAWAY_DATABASE_URL: ${{ secrets.CAJAMARCA_QHAWAY_DATABASE_URL }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -73,6 +74,12 @@ jobs:
         run: |
           echo "Iniciando ciclo de recoleccion continua..."
           python -m cajamarca_qhaway.cli harvest run --source "$HARVEST_SOURCES" --once
+
+      - name: Persistir evidencia oficial OECE y registrar disponibilidad JSF
+        if: ${{ inputs.sources == 'oece' }}
+        env:
+          CAJAMARCA_QHAWAY_DATABASE_URL: ${{ secrets.CAJAMARCA_QHAWAY_DATABASE_URL }}
+        run: python scripts/harvest-dual-sources.py --persist --current
 
       - name: Mostrar evidencia de fuentes fallidas
         if: ${{ failure() }}

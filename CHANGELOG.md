@@ -18,6 +18,12 @@ Se escribe **en el PR**, no en el release: reconstruirlo después es inventarlo.
 
 ### Added
 
+- Presupuesto por momentos con corte diario, comparacion mensual y desgloses de ambito y rubro.
+- Evidencia OECE Pentaho en tabla independiente, enlace exacto a OCDS y cliente JSF con brechas CAPTCHA.
+- Identidad Qhaway aplicada a 16 vistas, 88 activos locales y fuentes sin dependencias de CDN.
+- Selectores de ano, ambito, rubro y corte, visor de procedencia y filtros contractuales multianuales.
+- Pruebas de ortogonalidad, persistencia anidada, fuente/rubro, sesiones JSF y conservacion del DOM.
+
 - Exportación atómica del snapshot desde spools Supabase validados con Pydantic; las cifras iniciales MPA se sincronizan desde el snapshot y la auditoría las compara con metadatos.
 - Cosecha verificada de una contratación SEACE del feed oficial, con upsert en Supabase y watermark protegido por RLS.
 - Filtro de streaming del padrón reducido oficial SUNAT: solo 198 RUC objetivo (14 entidades y 184 proveedores de adjudicaciones) guardados en `data/sunat/` y sincronizados con `sunat_ruc_profiles`, con filas fuente trazables.

@@ -1,0 +1,188 @@
+{
+  "source": "ai",
+  "generator": "codex-gpt-6.1-sol",
+  "generated_at": "2026-10-15T13:11:24.318950+00:00",
+  "confidence": "high",
+  "verified": false,
+  "project_id": "oglltrpvvifqvwmxmkjq",
+  "resources": [
+    {
+      "file": "CONOSCE_ADJUDICACIONES2024_0.jsonl",
+      "records": 574
+    },
+    {
+      "file": "CONOSCE_ADJUDICACIONES2025_0.jsonl",
+      "records": 585
+    },
+    {
+      "file": "CONOSCE_ADJUDICACIONES2026_0.jsonl",
+      "records": 378
+    },
+    {
+      "file": "CONOSCE_CONTRATOS2024_0.jsonl",
+      "records": 95
+    },
+    {
+      "file": "CONOSCE_CONTRATOS2025_0.jsonl",
+      "records": 104
+    },
+    {
+      "file": "CONOSCE_CONTRATOS2026_0.jsonl",
+      "records": 25
+    },
+    {
+      "file": "CONOSCE_CONVOCATORIAS2024_0.jsonl",
+      "records": 553
+    },
+    {
+      "file": "CONOSCE_CONVOCATORIAS2025_0.jsonl",
+      "records": 563
+    },
+    {
+      "file": "CONOSCE_CONVOCATORIAS2026_0.jsonl",
+      "records": 363
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAABRIL2024_0.jsonl",
+      "records": 1863
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAABRIL2025_0.jsonl",
+      "records": 1355
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAABRIL2026_0.jsonl",
+      "records": 2514
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAAGOSTO2024_0.jsonl",
+      "records": 3091
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAAGOSTO2025_0.jsonl",
+      "records": 1228
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAAGOSTO2026_0.jsonl",
+      "records": 2871
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRADICIEMBRE2024_0.jsonl",
+      "records": 4169
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRADICIEMBRE2025_0.jsonl",
+      "records": 2483
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAENERO2024_0.jsonl",
+      "records": 1659
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAENERO2025_0.jsonl",
+      "records": 3075
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAENERO2026_0.jsonl",
+      "records": 2770
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAFEBRERO2024_0.jsonl",
+      "records": 726
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAFEBRERO2025_0.jsonl",
+      "records": 1006
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAFEBRERO2026_0.jsonl",
+      "records": 940
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAJULIO2024_0.jsonl",
+      "records": 2759
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAJULIO2025_0.jsonl",
+      "records": 1949
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAJULIO2026_0.jsonl",
+      "records": 3253
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAJUNIO2024_0.jsonl",
+      "records": 4833
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAJUNIO2025_0.jsonl",
+      "records": 873
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAJUNIO2026_0.jsonl",
+      "records": 1243
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAMARZO2024_0.jsonl",
+      "records": 1451
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAMARZO2025_0.jsonl",
+      "records": 2770
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAMARZO2026_0.jsonl",
+      "records": 1481
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAMAYO2024_0.jsonl",
+      "records": 2312
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAMAYO2025_0.jsonl",
+      "records": 1684
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAMAYO2026_0.jsonl",
+      "records": 2009
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRANOVIEMBRE2024_0.jsonl",
+      "records": 2920
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRANOVIEMBRE2025_0.jsonl",
+      "records": 4289
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAOCTUBRE2024_0.jsonl",
+      "records": 1751
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAOCTUBRE2025_0.jsonl",
+      "records": 1749
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRAOCTUBRE2026_0.jsonl",
+      "records": 0
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRASEPTIEMBRE2024_0.jsonl",
+      "records": 2496
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRASEPTIEMBRE2025_0.jsonl",
+      "records": 2011
+    },
+    {
+      "file": "CONOSCE_ORDENESCOMPRASEPTIEMBRE2026_0.jsonl",
+      "records": 3158
+    }
+  ],
+  "total_evidence_records": 77981,
+  "linked_rows": 438,
+  "enriched_procurements": 191,
+  "preserved_procurements": 475,
+  "source_key_duplicates": 0,
+  "seace_public_status": "CAPTCHA_REQUIRED"
+}

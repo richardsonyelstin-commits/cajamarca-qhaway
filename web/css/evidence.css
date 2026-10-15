@@ -1,0 +1,7 @@
+.qh-procurement-filters { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,12rem),1fr)); gap:var(--sp-4); margin-block:var(--sp-5); }
+.qh-procurement-filters label { display:grid; gap:var(--sp-2); font-size:var(--fs-2); }
+.qh-procurement-filters select,.qh-procurement-filters input { width:100%; padding:.5rem; }
+.qh-source-evidence { display:flex; flex-wrap:wrap; align-items:center; gap:var(--sp-3); margin-top:var(--sp-4); padding-top:var(--sp-4); border-top:1px solid var(--c-borde); font-size:var(--fs-2); }
+.qh-source-evidence a { color:var(--c-enlace); }
+.qh-source-tag { padding:.25rem .5rem; border:1px solid var(--c-borde-fuerte); border-radius:var(--r-1); }
+.qh-source-evidence button { padding:.5rem; background:var(--c-superficie); color:var(--c-texto); border:1px solid var(--c-borde-fuerte); }

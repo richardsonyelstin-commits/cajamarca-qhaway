@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ProcurementSourceRecord",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "source_evidence_id",
+    "source_system",
+    "dataset",
+    "fiscal_year",
+    "entity_id",
+    "source_record_id",
+    "source_url",
+    "retrieved_at",
+    "raw_payload"
+  ],
+  "properties": {
+    "source_evidence_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_system": {
+      "type": "string",
+      "enum": [
+        "oece_pentaho_bi",
+        "seace_buscador_publico"
+      ]
+    },
+    "dataset": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fiscal_year": {
+      "type": "integer",
+      "minimum": 2024,
+      "maximum": 2026
+    },
+    "entity_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_record_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "official_process_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
+    },
+    "procurement_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
+    },
+    "cui": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9]{7}$",
+      "default": null
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "retrieved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "raw_payload": {
+      "type": "object"
+    }
+  }
+}

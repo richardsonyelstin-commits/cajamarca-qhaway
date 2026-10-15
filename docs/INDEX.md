@@ -2,7 +2,7 @@
 title: Índice de documentación - cajamarca-qhaway
 status: active
 created: 2026-08-20
-updated: 2026-10-14
+updated: 2026-10-15
 source: ai
 generator: claude-sonnet-5
 confidence: high
@@ -22,6 +22,10 @@ ajustar la columna "Cargar cuando".
 
 | Documento | Responde a | Cargar cuando | Tokens |
 |---|---|---|---|
+| `architecture/006-budget-and-procurement-evidence.md` | Modelo presupuestal y evidencia oficial dual | Cambiar ingesta, persistencia o fuentes | ~900 |
+| `adr/0013-presupuesto-institucional-conectores-duales-e-identidad.md` | Decision propuesta de presupuesto, conectores e identidad | Revisar el contrato ampliado | ~700 |
+| `audits/2026-10-15-mef-control-table.md` | Cifras oficiales de 14 entidades y tres ejercicios | Reconciliar los importes presupuestales | ~2200 |
+| `../web/DESIGN.md` | Tokens oficiales, composicion y criterio visual | Modificar la interfaz Qhaway | ~700 |
 | `architecture/overview.md` | ¿Cómo está construido? | Cambio estructural, módulo nuevo | ~1800 |
 | `architecture/002-live-harvester-worker.md` | ¿Cómo opera la cosecha continua SEACE/MEF (Pilar 1)? | Antes de tocar `live_harvest` | ~2200 |
 | `architecture/003-supabase-persistence-architecture.md` | ¿Cómo opera la persistencia relacional en Supabase y el spool local (Pilar 2)? | Antes de tocar `persistence` o migraciones SQL | ~2400 |

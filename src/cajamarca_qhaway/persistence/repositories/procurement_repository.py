@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Sequence
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from cajamarca_qhaway.models import ProcurementRecord
@@ -57,41 +57,19 @@ class ProcurementRepository:
         if not records:
             return 0
 
-        sql = """
-        INSERT INTO procurement_records
-            (procurement_id, ocid, entity_id, title, procurement_method, awarded_amount,
-             executed_amount, number_of_bidders, supplier_name, supplier_ruc, raw_payload,
-             source, retrieved_at)
-        VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT (procurement_id) DO UPDATE SET
-            awarded_amount = excluded.awarded_amount,
-            executed_amount = excluded.executed_amount,
-            number_of_bidders = excluded.number_of_bidders,
-            supplier_name = excluded.supplier_name,
-            supplier_ruc = excluded.supplier_ruc,
-            raw_payload = excluded.raw_payload,
-            retrieved_at = excluded.retrieved_at
-        """
-
-        params = [
-            (
-                r.procurement_id,
-                r.ocid,
-                r.entity_id,
-                r.title,
-                r.procurement_method,
-                r.awarded_amount,
-                r.executed_amount,
-                r.number_of_bidders,
-                r.supplier_name,
-                r.supplier_ruc,
-                json.dumps(r.raw_payload, ensure_ascii=False) if isinstance(r.raw_payload, dict) else str(r.raw_payload),
-                r.source,
-                r.retrieved_at.isoformat(),
-            )
-            for r in records
-        ]
+        columns = tuple(ProcurementRecord.model_fields)
+        updates = ", ".join(f"{key} = excluded.{key}" for key in columns
+                            if key not in ("procurement_id", "ocid", "entity_id", "source_evidence"))
+        updates += ", source_evidence = CASE WHEN excluded.source_evidence = '[]' THEN procurement_records.source_evidence ELSE excluded.source_evidence END"
+        sql = (f"INSERT INTO procurement_records ({', '.join(columns)}) "
+               f"VALUES ({', '.join('?' for _ in columns)}) "
+               f"ON CONFLICT (procurement_id) DO UPDATE SET {updates}")
+        params = []
+        for record in records:
+            values = record.model_dump(mode="json")
+            for key in ("raw_payload", "source_evidence"):
+                values[key] = json.dumps(values[key], ensure_ascii=True)
+            params.append(tuple(values[key] for key in columns))
 
         with self.db.connection() as conn:
             cursor = conn.cursor()
@@ -112,7 +90,7 @@ class ProcurementRepository:
         if isinstance(retrieved_at, str):
             retrieved_at = datetime.fromisoformat(retrieved_at)
         if retrieved_at.tzinfo is None:
-            retrieved_at = retrieved_at.replace(tzinfo=timezone.utc)
+            retrieved_at = retrieved_at.replace(tzinfo=UTC)
 
         return ProcurementRecord(
             procurement_id=row["procurement_id"],
@@ -128,4 +106,5 @@ class ProcurementRepository:
             raw_payload=raw_payload,
             source=row["source"],
             retrieved_at=retrieved_at,
+            source_evidence=json.loads(row["source_evidence"]) if isinstance(row["source_evidence"], str) else row["source_evidence"],
         )

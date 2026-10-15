@@ -24,6 +24,7 @@ import base64
 import hashlib
 import hmac
 import json
+import logging
 import mimetypes
 import os
 import posixpath
@@ -31,7 +32,7 @@ import secrets
 import time
 import urllib.parse
 import urllib.request
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -39,9 +40,15 @@ from typing import Any
 
 from cajamarca_qhaway.capabilities.denuncia_intake import DenunciaIntakeService
 from cajamarca_qhaway.capabilities.review_panel import ReviewPanelService
+from cajamarca_qhaway.models import BudgetExecutionRecord
 from cajamarca_qhaway.models.alert import GENERIC_REVIEWERS
+from cajamarca_qhaway.models.budget_reconciliation import canonical_budget_records
 from cajamarca_qhaway.models.citizen_report import CitizenReport
-from cajamarca_qhaway.web.exporter import build_verified_web_snapshot, export_verified_snapshot
+from cajamarca_qhaway.web.exporter import (
+    build_verified_web_snapshot,
+)
+
+logger = logging.getLogger(__name__)
 
 try:
     from cajamarca_qhaway.persistence.connection import DatabaseManager
@@ -54,7 +61,8 @@ try:
     _alert_repo = AlertRepository(_db_manager)
     _report_repo = CitizenReportRepository(_db_manager)
     _red_flag_repo = RedFlagRepository(_db_manager)
-except Exception:
+except Exception as error:
+    logger.exception("Fallo controlado del adaptador web (%s)", type(error).__name__, exc_info=False)
     _db_manager = None
     _alert_repo = None
     _report_repo = None
@@ -177,7 +185,8 @@ def _verify_veedor_token(token: str | None) -> dict[str, Any] | None:
     try:
         raw = base64.urlsafe_b64decode(b64_payload + padding)
         data = json.loads(raw.decode("utf-8"))
-    except Exception:
+    except Exception as error:
+        logger.exception("Fallo controlado del adaptador web (%s)", type(error).__name__, exc_info=False)
         return None
     if int(time.time() * 1000) > int(data.get("expiresAt", 0)):
         return None
@@ -190,28 +199,34 @@ class WebApiHandler(BaseHTTPRequestHandler):
     # Directorio base absoluto por defecto para servir estaticos
     web_dir: Path = PROJECT_ROOT / "web"
     snapshot_cache: dict[str, Any] | None = None
+    snapshot_cache_time: float = 0
+    snapshot_cache_mtime: int = 0
     denuncia_service: DenunciaIntakeService = DenunciaIntakeService()
     review_service: ReviewPanelService = ReviewPanelService()
 
     @classmethod
     def get_snapshot(cls) -> dict[str, Any]:
         """Obtiene el snapshot canonico, leyendolo del disco o generandolo."""
-        if cls.snapshot_cache is not None:
+        snapshot_file = Path(cls.web_dir) / "src" / "data" / "verified-snapshot.json"
+        mtime = snapshot_file.stat().st_mtime_ns if snapshot_file.exists() else 0
+        if (cls.snapshot_cache is not None and mtime == cls.snapshot_cache_mtime
+                and time.monotonic() - cls.snapshot_cache_time < 30):
             return cls.snapshot_cache
+        cls.snapshot_cache_time = time.monotonic()
+        cls.snapshot_cache_mtime = mtime
 
         live_snapshot = cls._fetch_live_snapshot()
         if live_snapshot is not None:
             cls.snapshot_cache = live_snapshot
             return live_snapshot
 
-        snapshot_file = Path(cls.web_dir) / "src" / "data" / "verified-snapshot.json"
         if snapshot_file.exists():
             try:
                 data = json.loads(snapshot_file.read_text(encoding="utf-8"))
                 cls.snapshot_cache = data
                 return data
-            except Exception:
-                pass
+            except Exception as error:
+                logger.exception("Fallo controlado del adaptador web (%s)", type(error).__name__, exc_info=False)
 
         # Si no existe en disco, generar inmediatamente en memoria
         data = build_verified_web_snapshot()
@@ -251,7 +266,17 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 if not isinstance(rows, list):
                     return None
                 result[table] = rows
-        except Exception:
+            masters = canonical_budget_records([
+                BudgetExecutionRecord.model_validate(row) for row in result["budget_execution_records"]
+            ])
+            entity_ids = {row["entity_id"] for row in result["contracting_entities"]}
+            years = {row.fiscal_year for row in masters}
+            if any({row.entity_id for row in masters if row.fiscal_year == year} != entity_ids
+                   for year in years):
+                return None
+            result["budget_execution_records"] = [row.model_dump(mode="json") for row in masters]
+        except Exception as error:
+            logger.exception("Fallo controlado del adaptador web (%s)", type(error).__name__, exc_info=False)
             return None
 
         fallback = cls._snapshot_from_disk()
@@ -274,8 +299,8 @@ class WebApiHandler(BaseHTTPRequestHandler):
         if snapshot_file.exists():
             try:
                 return json.loads(snapshot_file.read_text(encoding="utf-8"))
-            except Exception:
-                pass
+            except Exception as error:
+                logger.exception("Fallo controlado del adaptador web (%s)", type(error).__name__, exc_info=False)
         return {}
 
     @classmethod
@@ -292,7 +317,9 @@ class WebApiHandler(BaseHTTPRequestHandler):
     @classmethod
     def get_sunat_service(cls) -> Any:
         if cls._sunat_service is None:
-            from cajamarca_qhaway.capabilities.sunat_enrichment.service import SunatEnrichmentService
+            from cajamarca_qhaway.capabilities.sunat_enrichment.service import (
+                SunatEnrichmentService,
+            )
             cls._sunat_service = SunatEnrichmentService()
         return cls._sunat_service
 
@@ -331,7 +358,8 @@ class WebApiHandler(BaseHTTPRequestHandler):
             try:
                 data = json.loads(body_bytes.decode("utf-8"))
             except Exception as exc:
-                return cls._error_bytes(f"JSON invalido: {str(exc)}", 400)
+                logger.exception("Fallo controlado del adaptador web (%s)", type(exc).__name__, exc_info=False)
+                return cls._error_bytes(f"JSON invalido: {exc!s}", 400)
 
             if path == "/api/auth/login":
                 return cls._dispatch_post_login(data, req_headers)
@@ -568,8 +596,8 @@ class WebApiHandler(BaseHTTPRequestHandler):
                     db_report = _report_repo.get_by_tracking_token_hash(token_hash)
                     if db_report:
                         matched = db_report.model_dump(mode="json")
-                except Exception:
-                    pass
+                except Exception as error:
+                    logger.exception("Fallo controlado del adaptador web (%s)", type(error).__name__, exc_info=False)
 
             if not matched:
                 return cls._error_bytes("Expediente de denuncia no encontrado", 404)
@@ -772,6 +800,7 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 try:
                     _report_repo.save(report)
                 except Exception as exc:
+                    logger.exception("Fallo controlado del adaptador web (%s)", type(exc).__name__, exc_info=False)
                     logger.exception("No se pudo persistir la denuncia antes de confirmar su recepcion")
                     return cls._error_bytes(
                         f"No se pudo guardar la denuncia: {type(exc).__name__}", 503
@@ -788,7 +817,8 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 status_code=201,
             )
         except Exception as exc:
-            return cls._error_bytes(f"Error al procesar denuncia: {str(exc)}", 400)
+            logger.exception("Fallo controlado del adaptador web (%s)", type(exc).__name__, exc_info=False)
+            return cls._error_bytes(f"Error al procesar denuncia: {exc!s}", 400)
 
     @classmethod
     def _dispatch_post_reports_moderate(
@@ -831,7 +861,7 @@ class WebApiHandler(BaseHTTPRequestHandler):
         reports = snapshot.setdefault("citizen_reports", [])
         matched = next((r for r in reports if r.get("report_id") == report_id), None)
 
-        now_utc = datetime.now(timezone.utc)
+        now_utc = datetime.now(UTC)
         now_iso = now_utc.isoformat()
 
         # Si no esta en el servicio en memoria pero si en snapshot o DB, sincronizarlo
@@ -871,8 +901,8 @@ class WebApiHandler(BaseHTTPRequestHandler):
             if _report_repo is not None:
                 try:
                     _report_repo.save(updated)
-                except Exception:
-                    pass
+                except Exception as error:
+                    logger.exception("Fallo controlado del adaptador web (%s)", type(error).__name__, exc_info=False)
 
             return cls._json_bytes({
                 "success": True,
@@ -884,7 +914,9 @@ class WebApiHandler(BaseHTTPRequestHandler):
             }, status_code=200)
 
         except Exception as exc:
-            return cls._error_bytes(f"Error al moderar denuncia: {str(exc)}", 400)
+
+            logger.exception("Fallo controlado del adaptador web (%s)", type(exc).__name__, exc_info=False)
+            return cls._error_bytes(f"Error al moderar denuncia: {exc!s}", 400)
 
     @classmethod
     def _dispatch_post_review(
@@ -967,11 +999,13 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 try:
                     _alert_repo.save(alert)
                 except Exception as exc:
+                    logger.exception("Fallo controlado del adaptador web (%s)", type(exc).__name__, exc_info=False)
                     return cls._error_bytes(f"No se pudo persistir la alerta: {exc}", 503)
 
             return cls._json_bytes({**payload, "alert": payload}, status_code=201)
         except Exception as exc:
-            return cls._error_bytes(f"Error al procesar decision: {str(exc)}", 400)
+            logger.exception("Fallo controlado del adaptador web (%s)", type(exc).__name__, exc_info=False)
+            return cls._error_bytes(f"Error al procesar decision: {exc!s}", 400)
 
     @classmethod
     def _resolve_static(cls, path: str) -> tuple[int, str, bytes]:
@@ -1020,7 +1054,8 @@ class WebApiHandler(BaseHTTPRequestHandler):
             content = file_path.read_bytes()
             return 200, content_type_header, content
         except Exception as exc:
-            return cls._error_bytes(f"Error al leer archivo: {str(exc)}", 500)
+            logger.exception("Fallo controlado del adaptador web (%s)", type(exc).__name__, exc_info=False)
+            return cls._error_bytes(f"Error al leer archivo: {exc!s}", 500)
 
     def _set_headers(
         self,
@@ -1149,7 +1184,7 @@ def run_server(port: int = 8080, web_dir: Path | str | None = None) -> Threading
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))
+    port = int(os.environ.get("PORT", "8080"))
     httpd = run_server(port=port)
     print(f"Servidor Cajamarca Qhaway escuchando en http://localhost:{port}")
     try:

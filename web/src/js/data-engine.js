@@ -20,6 +20,7 @@ class DataEngine {
     this.loaded = false;
     this.loadPromise = null;
     this.sunatCache = new Map();
+    this.budgetView = { year: null, scope: 'ActProy', cutType: null, funding: 'all' };
   }
 
   async _fetch(url, options = {}, timeoutMs = 3500) {
@@ -149,11 +150,19 @@ class DataEngine {
     if (fiscalYear && fiscalYear !== 'all' && fiscalYear !== 'Todos') {
       const yearStr = String(fiscalYear);
       records = records.filter(p => {
-        const dateStr = p.retrieved_at || p.date || (p.raw_payload && p.raw_payload.date) || '';
-        return dateStr.includes(yearStr) || (p.ocid && p.ocid.includes(yearStr));
+        return String(this.getProcurementYear(p) || '') === yearStr;
       });
     }
     return records;
+  }
+
+  getProcurementYear(record) {
+    const raw = record.raw_payload || {};
+    const date = raw.tender?.tenderPeriod?.startDate || raw.publishedDate || raw.tender?.datePublished;
+    if (date && /^\d{4}-/.test(date)) return Number(date.slice(0, 4));
+    const years = [...new Set((record.source_evidence || [])
+      .filter(e => e.dataset === 'convocatorias').map(e => Number(e.fiscal_year)))];
+    return years.length === 1 ? years[0] : null;
   }
 
   async getProcurementByOcid(ocid) {
@@ -163,8 +172,15 @@ class DataEngine {
 
   async getBudgetRecords(entityId = null, fiscalYear = null) {
     await this.load();
-    let records = this.snapshot.budget_execution_records || [];
-    const year = fiscalYear ?? Math.max(0, ...records.map(b => Number(b.fiscal_year)));
+    let records = (this.snapshot.budget_execution_records || []).filter(b =>
+      b.is_canonical_total === true || ['TOTAL', 'TOTAL_INSTITUCIONAL_ACTPROY'].includes(b.budget_category));
+    const seen = new Set();
+    for (const record of records) {
+      const key = `${record.entity_id}:${record.fiscal_year}`;
+      if (seen.has(key)) throw new Error(`Maestro presupuestal duplicado: ${key}`);
+      seen.add(key);
+    }
+    const year = fiscalYear ?? this.budgetView.year ?? Math.max(0, ...records.map(b => Number(b.fiscal_year)));
     if (entityId) {
       records = records.filter(b => b.entity_id === entityId);
     }
@@ -172,6 +188,72 @@ class DataEngine {
       records = records.filter(b => String(b.fiscal_year) === String(year));
     }
     return records;
+  }
+
+  _viewRecord(record, scope, cutType) {
+    const currentCut = record.cut_type || record.raw_payload?.CUT_TYPE || 'monthly';
+    if (cutType && cutType !== currentCut) {
+      const comparison = (record.comparison_cuts || []).find(cut => cut.cut_type === cutType);
+      if (!comparison || scope !== 'ActProy') return null;
+      return { ...record, ...comparison.total.moments, cut_type: cutType,
+        official_cut_date: comparison.total.official_cut_date,
+        breakdown_by_funding_source: comparison.total.breakdown_by_funding_source,
+        raw_payload: comparison.total.raw_payload, selected_scope: 'ActProy' };
+    }
+    if (scope === 'ActProy') return { ...record, selected_scope: scope, cut_type: currentCut };
+    const detail = record.breakdown_by_scope?.[scope];
+    if (!detail) return null;
+    return { ...record, ...detail.moments, official_cut_date: detail.official_cut_date,
+      breakdown_by_funding_source: detail.breakdown_by_funding_source,
+      raw_payload: detail.raw_payload, selected_scope: scope, cut_type: currentCut };
+  }
+
+  _fundingView(record) {
+    const code = this.budgetView.funding || 'all';
+    if (code === 'all') return record;
+    const sources = record.breakdown_by_funding_source || [];
+    if (!sources.length) throw new Error('Este corte no conserva el desglose de financiamiento');
+    const matches = sources.flatMap(source => source.rubros || []).filter(rubro => rubro.code === code);
+    if (matches.length > 1) throw new Error('Rubro duplicado en las fuentes de financiamiento');
+    const fields = ['pia_amount','modification_amount','budgeted_amount','certified_amount',
+      'committed_annual_amount','monthly_commitment_amount','executed_amount','paid_amount','execution_pct'];
+    const moments = Object.fromEntries(fields.map(field => [field, matches.length ? matches[0].moments[field] ?? null : 0]));
+    return { ...record, ...moments, selected_funding: code, funding_absent: !matches.length,
+      raw_payload: matches.length ? matches[0].raw_payload : record.raw_payload };
+  }
+
+  async getBudgetView(entityId = null, fiscalYear = null, scope = null, cutType = null) {
+    const records = await this.getBudgetRecords(entityId, fiscalYear);
+    const expected = this.snapshot.contracting_entities || [];
+    if (expected.length && !records.length) throw new Error('No hay cobertura MEF para la seleccion');
+    if (!entityId && expected.length) {
+      for (const year of new Set(records.map(record => record.fiscal_year))) {
+        const covered = new Set(records.filter(record => record.fiscal_year === year).map(record => record.entity_id));
+        if (expected.some(entity => !covered.has(entity.entity_id))) throw new Error('Cobertura MEF parcial para el ejercicio elegido');
+      }
+    }
+    const selectedScope = scope || this.budgetView.scope;
+    const selectedCut = cutType || this.budgetView.cutType;
+    const views = records.map(record => this._viewRecord(record, selectedScope, selectedCut));
+    if (views.some(record => !record)) throw new Error('Desglose no disponible para el ambito y corte elegidos');
+    return views.map(record => this._fundingView(record));
+  }
+
+  async getBudgetSummary(entityId = null, fiscalYear = null, scope = null, cutType = null) {
+    const rows = await this.getBudgetView(entityId, fiscalYear, scope, cutType);
+    const years = new Set(rows.map(row => Number(row.fiscal_year)));
+    if (years.size > 1) throw new Error('El comparativo debe presentar cada ejercicio por separado');
+    const fields = ['pia_amount', 'modification_amount', 'budgeted_amount', 'certified_amount',
+      'committed_annual_amount', 'monthly_commitment_amount', 'executed_amount', 'paid_amount'];
+    const moments = {};
+    for (const field of fields) {
+      moments[field] = rows.length && rows.every(row => row[field] != null && Number.isFinite(Number(row[field])))
+        ? rows.reduce((sum, row) => sum + Number(row[field]), 0) : null;
+    }
+    moments.execution_pct = moments.budgeted_amount > 0
+      ? Number((moments.executed_amount / moments.budgeted_amount * 100).toFixed(1)) : 0;
+    return { rows, moments, officialCutDates: [...new Set(rows.map(row => row.official_cut_date ||
+      row.raw_payload?.FECHA_CORTE_OFICIAL).filter(Boolean))] };
   }
 
   async getAlerts(entityId = null) {
@@ -249,7 +331,8 @@ class DataEngine {
 
   async getMacroKPIs(fiscalYear = null) {
     await this.load();
-    const budgets = await this.getBudgetRecords(null, fiscalYear);
+    const singleYear = ['all', 'Todos'].includes(fiscalYear) ? null : fiscalYear;
+    const budgets = await this.getBudgetView(null, singleYear);
 
     const procurements = await this.getProcurements(null, fiscalYear);
     const alerts = this.snapshot.alerts || [];
@@ -279,7 +362,8 @@ class DataEngine {
    * @returns {Promise<object>}
    */
   async getEntityBudgetStats(entityId, fiscalYear = null) {
-    const budgets = await this.getBudgetRecords(entityId, fiscalYear);
+    const singleYear = ['all', 'Todos'].includes(fiscalYear) ? null : fiscalYear;
+    const budgets = await this.getBudgetView(entityId, singleYear);
     const pim = budgets.reduce((acc, b) => acc + (Number(b.budgeted_amount) || 0), 0);
     const devengado = budgets.reduce((acc, b) => acc + (Number(b.executed_amount) || 0), 0);
     const rate = pim > 0 ? Number(((devengado / pim) * 100).toFixed(1)) : 0.0;
@@ -291,12 +375,36 @@ class DataEngine {
     };
   }
 
-  /**
-   * El snapshot agregado no contiene desglose por fuente de financiamiento.
-   * @returns {null}
-   */
-  getFundingComposition() {
-    return null;
+  /** Suma rubros del ambito elegido sin agregar sus fuentes padre. */
+  getFundingComposition(entityId = null, fiscalYear = null) {
+    const all = this.snapshot?.budget_execution_records || [];
+    const year = fiscalYear ?? this.budgetView.year ?? Math.max(0, ...all.map(row => Number(row.fiscal_year)));
+    const records = all.filter(row => Number(row.fiscal_year) === Number(year) &&
+      (!entityId || row.entity_id === entityId) &&
+      (row.is_canonical_total || ['TOTAL', 'TOTAL_INSTITUCIONAL_ACTPROY'].includes(row.budget_category)));
+    const bases = records.map(row => this._viewRecord(row, this.budgetView.scope, this.budgetView.cutType));
+    const views = bases.map(row => row ? this._fundingView(row) : null);
+    if (!views.length || views.some(row => !row?.breakdown_by_funding_source?.length)) return null;
+    const rubros = new Map();
+    let total = 0;
+    for (const view of views) {
+      total += Number(view.budgeted_amount);
+      for (const source of view.breakdown_by_funding_source) {
+        for (const rubro of source.rubros || []) {
+          if (this.budgetView.funding && this.budgetView.funding !== 'all' && rubro.code !== this.budgetView.funding) continue;
+          const current = rubros.get(rubro.code) || { code: rubro.code, label: rubro.label,
+            pim: 0, devengado: 0, girado: 0, sourceCode: source.code };
+          current.pim += Number(rubro.moments.budgeted_amount);
+          current.devengado += Number(rubro.moments.executed_amount);
+          current.girado += Number(rubro.moments.paid_amount);
+          rubros.set(rubro.code, current);
+        }
+      }
+    }
+    const component = code => ({ amount: rubros.get(code)?.pim || 0,
+      pct: total ? Number(((rubros.get(code)?.pim || 0) / total * 100).toFixed(1)) : 0 });
+    return { total, rubros: [...rubros.values()], canon: component('18'),
+      recursosOrdinarios: component('00'), foncomun: component('07'), rdr: component('09') };
   }
 
   /**

@@ -1,0 +1,33 @@
+name: Evidencia oficial OECE y disponibilidad SEACE
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: official-source-evidence
+  cancel-in-progress: false
+jobs:
+  harvest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    environment:
+      name: "Production \u2013 cajamarca-qhaway"
+    env:
+      SUPABASE_SESSION_POOLER_HOST: ${{ vars.SUPABASE_SESSION_POOLER_HOST }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[db]"
+      - name: Capturar y persistir sin revelar credenciales
+        env:
+          CAJAMARCA_QHAWAY_DATABASE_URL: ${{ secrets.CAJAMARCA_QHAWAY_DATABASE_URL }}
+        run: python scripts/harvest-dual-sources.py --persist --current
+      - name: Conservar evidencia de cobertura
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: official-source-coverage
+          path: data/state/dual-source-gaps.jsonl
+          if-no-files-found: ignore

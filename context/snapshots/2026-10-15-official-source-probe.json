@@ -1,0 +1,6270 @@
+{
+  "source": "ai",
+  "generator": "codex",
+  "verified": false,
+  "retrieved_at": "2026-10-15T03:33:27.785242+00:00",
+  "results": [
+    {
+      "url": "https://apps5.mineco.gob.pe/transparencia/Navegador/Navegar_6.aspx?y=2024&ap=ActProy",
+      "status": 200,
+      "final_url": "https://apps5.mineco.gob.pe/transparencia/Navegador/Navegar_6.aspx?y=2024&ap=ActProy",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 43645,
+      "session_cookie_present": true,
+      "official_cut_date": "2026-10-13",
+      "forms": [
+        {
+          "id": "aspnetForm",
+          "action": "Navegar_6.aspx?y=2024&ap=ActProy",
+          "method": "post"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "__VIEWSTATE",
+          "id": "__VIEWSTATE",
+          "type": "hidden"
+        },
+        {
+          "name": "__EVENTVALIDATION",
+          "id": "__EVENTVALIDATION",
+          "type": "hidden"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTipoGobierno",
+          "id": "ctl00_CPH1_BtnTipoGobierno",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnProgramaPpto",
+          "id": "ctl00_CPH1_BtnProgramaPpto",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuncion",
+          "id": "ctl00_CPH1_BtnFuncion",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuenteAgregada",
+          "id": "ctl00_CPH1_BtnFuenteAgregada",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnRubro",
+          "id": "ctl00_CPH1_BtnRubro",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnGenerica",
+          "id": "ctl00_CPH1_BtnGenerica",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnDepartamentoMeta",
+          "id": "ctl00_CPH1_BtnDepartamentoMeta",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTrimestre",
+          "id": "ctl00_CPH1_BtnTrimestre",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnMes",
+          "id": "ctl00_CPH1_BtnMes",
+          "type": "submit"
+        },
+        {
+          "name": "grp1",
+          "id": "",
+          "type": "radio"
+        }
+      ],
+      "options": [
+        {
+          "value": "1999",
+          "selected": ""
+        },
+        {
+          "value": "2000",
+          "selected": ""
+        },
+        {
+          "value": "2001",
+          "selected": ""
+        },
+        {
+          "value": "2002",
+          "selected": ""
+        },
+        {
+          "value": "2003",
+          "selected": ""
+        },
+        {
+          "value": "2004",
+          "selected": ""
+        },
+        {
+          "value": "2005",
+          "selected": ""
+        },
+        {
+          "value": "2006",
+          "selected": ""
+        },
+        {
+          "value": "2007",
+          "selected": ""
+        },
+        {
+          "value": "2008",
+          "selected": ""
+        },
+        {
+          "value": "2009",
+          "selected": ""
+        },
+        {
+          "value": "2010",
+          "selected": ""
+        },
+        {
+          "value": "2011",
+          "selected": ""
+        },
+        {
+          "value": "2012",
+          "selected": ""
+        },
+        {
+          "value": "2013",
+          "selected": ""
+        },
+        {
+          "value": "2014",
+          "selected": ""
+        },
+        {
+          "value": "2015",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "2017",
+          "selected": ""
+        },
+        {
+          "value": "2018",
+          "selected": ""
+        },
+        {
+          "value": "2019",
+          "selected": ""
+        },
+        {
+          "value": "2020",
+          "selected": ""
+        },
+        {
+          "value": "2021",
+          "selected": ""
+        },
+        {
+          "value": "2022",
+          "selected": ""
+        },
+        {
+          "value": "2023",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": "selected"
+        },
+        {
+          "value": "2025",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": ""
+        },
+        {
+          "value": "ActProy",
+          "selected": "selected"
+        },
+        {
+          "value": "Actividad",
+          "selected": ""
+        },
+        {
+          "value": "Proyecto",
+          "selected": ""
+        }
+      ],
+      "buttons": {
+        "ctl00$CPH1$BtnTipoGobierno": "Nivel de Gobierno",
+        "ctl00$CPH1$BtnProgramaPpto": "Categoría Presupuestal",
+        "ctl00$CPH1$BtnFuncion": "Función",
+        "ctl00$CPH1$BtnFuenteAgregada": "Fuente",
+        "ctl00$CPH1$BtnRubro": "Rubro",
+        "ctl00$CPH1$BtnGenerica": "Genérica",
+        "ctl00$CPH1$BtnDepartamentoMeta": "Departamento",
+        "ctl00$CPH1$BtnTrimestre": "Trimestre",
+        "ctl00$CPH1$BtnMes": "Mes"
+      },
+      "selected": {
+        "ctl00$CPH1$DrpYear": "2024",
+        "ctl00$CPH1$DrpActProy": "ActProy"
+      },
+      "first_rows": [
+        {
+          "label": "TOTAL",
+          "cells": [
+            "",
+            "TOTAL",
+            "240,806,216,645",
+            "262,058,019,205",
+            "251,195,425,688",
+            "244,031,793,912",
+            "241,589,010,353",
+            "238,893,055,447",
+            "238,459,697,695",
+            "91.2"
+          ]
+        }
+      ],
+      "resources": [
+        "http://transparencia-economica.mef.gob.pe/",
+        "http://www.mef.gob.pe",
+        "https://apps5.mineco.gob.pe/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=2&cb=826001021",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=1BnuDEX3zORMirQY64la4udKmeI8bD-uloCH3XuEGFe3n2PV6zjgfzu792i6UF5NhFcV74HExP-nBsj8UXI-iCtB2dd9ui8ErXfbSehVIjeSEC9l3cUdCxFq-OkfuG9N4dPkNr03M0wbXbrU1KCJfXu1orDfTSyhojJIEbvkEOY1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=40tcUJdFLPtJWHOpmE0ZbkZIxbVhzwUsHPT-xn4Vg9PvUBMrz8YXY0z-H6A1pNkyvSAo8dVVHpICxy09j9nhqJC1_aISFntzNsS9UGiKFH7SDKqJlkKSjgckmH4GBqZTyRECYpuxLaDXhg42vm5CgRxsjv0j8-O_Z4posTTmNSLq7sppM8b2UBXwop-ibS-Q0&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=DBNzyOhxQn_wJWOr7e4KG9CvIX8PcvYdURL9BWsmhRKx53AbAeGmHfSS1ZDevdC0mSgXmbe42iQKPi9z8LCudXvd6fNhB-InWbXcZyvxr_1rY5ybgkiV6F5IiiF3lVnfkGdgR7FG0re59yUIhLs0f37xxz52kYSXcKPRMIWbmxYoX8ScjNxvzVBhNpeF2Pbn0&t=ffffffff805766b3",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=EZDiIv6pLE1XvRzF-OlkBYvmmQ24Zdft2oXe6EaDML1xe0i6fFPoDjtKfbVoNO7taZrZXcvCGh2A7_uoZAhnvHcFNrG_ZhS9QNXa5TlbtmBDSjdD6OMoYg0tbYS1PoFw29DBnFht57RoF5QV_gpo_bvng8YCpdwSF4idxnhkrP41&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=N6CHJJAA6y9QkRJn5-c2msJksPNy7UBwwF4LNGpeeuyB0ZrxQ4unHNDTQS1R65iWpXJ3Izqx1dFRqbXehtQJPIV4w0NAb7IFPrKZ2hp-ixc6zpIHEkkbwOKgIdS5vLliH9UFgUGpZ_Fhf0f6l2x_RLEMd-ya4pWHhAcDaR98KR01&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=XqZ127bEyPdOh7ycPOmuxULVgtHVUUKsQs-lkd4RsL_Z7pCdxViuDal4Cc0yZ5fynifQq9hFXq82kYYQMbn2cw7-JEqZYkwi34ih-9M5GSMyGO3d4EKkyPZ_8TQ2TCelXTb6c5gunZf7fQNJZtFcprfNR2oLeLlVwoIOPn4DUCo1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=a6na7sN5w98ZopEJuXhlydSwrgT8vG39JZYYduAfWcaZ9OILpJLQUvPDFCER07dTc5vQhPADYD6eUsWbC8cAl3F3Z0VHPRD8AUnyVVNW4Eq4cf8uiHAjHOu5CBveA37GVsTMprQ9LLp8Eb0wpBlFIG6Khfs34MBtMfk0KGauWNQ1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=kAU7C5_P7jVZU_aco9JDwpAiAfLmP6JA4Ko1r16l2RCrnaDMbWleUVOm_S4y2xrRanHdVsP88pSeb3LXapoFg7SOG8HppqSFPNG0yyd7r9viwaslDWKQa2urhCAAjO_e0Pf1eZn5T6adp779YDqEsz2iwNY2c2RA3MVHZaubIKk1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=p7NG-y8d8LuPWHuow9p6k7hbWKwIdig7xjdB6YwRIE0Wv1b8BCUUEx2A6W_BxZpMcpgMm9YFcyiwbJLNSb-kqPsd26AqmwilLHkLImR3PGCsCHKCJOnWm7209ymwnLmsvgKZBZ6xHg2u3HDTdeC_Zpd90z12XJ1m9brgcxMctziJU5bEO9U85Fl42Cvlju6Z0&t=ffffffff8b3ffb57",
+        "https://www.googletagmanager.com/gtag/js?id=G-V4ESNG1Y68"
+      ],
+      "captcha_marker": false,
+      "view_state_present": false
+    },
+    {
+      "url": "https://apps5.mineco.gob.pe/transparencia/Navegador/Navegar_6.aspx?y=2024&ap=Proyecto",
+      "status": 200,
+      "final_url": "https://apps5.mineco.gob.pe/transparencia/Navegador/Navegar_6.aspx?y=2024&ap=Proyecto",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 43670,
+      "session_cookie_present": true,
+      "official_cut_date": "2026-10-13",
+      "forms": [
+        {
+          "id": "aspnetForm",
+          "action": "Navegar_6.aspx?y=2024&ap=Proyecto",
+          "method": "post"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "__VIEWSTATE",
+          "id": "__VIEWSTATE",
+          "type": "hidden"
+        },
+        {
+          "name": "__EVENTVALIDATION",
+          "id": "__EVENTVALIDATION",
+          "type": "hidden"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTipoGobierno",
+          "id": "ctl00_CPH1_BtnTipoGobierno",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnProgramaPpto",
+          "id": "ctl00_CPH1_BtnProgramaPpto",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuncion",
+          "id": "ctl00_CPH1_BtnFuncion",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuenteAgregada",
+          "id": "ctl00_CPH1_BtnFuenteAgregada",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnRubro",
+          "id": "ctl00_CPH1_BtnRubro",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnGenerica",
+          "id": "ctl00_CPH1_BtnGenerica",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnDepartamentoMeta",
+          "id": "ctl00_CPH1_BtnDepartamentoMeta",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTrimestre",
+          "id": "ctl00_CPH1_BtnTrimestre",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnMes",
+          "id": "ctl00_CPH1_BtnMes",
+          "type": "submit"
+        },
+        {
+          "name": "grp1",
+          "id": "",
+          "type": "radio"
+        }
+      ],
+      "options": [
+        {
+          "value": "1999",
+          "selected": ""
+        },
+        {
+          "value": "2000",
+          "selected": ""
+        },
+        {
+          "value": "2001",
+          "selected": ""
+        },
+        {
+          "value": "2002",
+          "selected": ""
+        },
+        {
+          "value": "2003",
+          "selected": ""
+        },
+        {
+          "value": "2004",
+          "selected": ""
+        },
+        {
+          "value": "2005",
+          "selected": ""
+        },
+        {
+          "value": "2006",
+          "selected": ""
+        },
+        {
+          "value": "2007",
+          "selected": ""
+        },
+        {
+          "value": "2008",
+          "selected": ""
+        },
+        {
+          "value": "2009",
+          "selected": ""
+        },
+        {
+          "value": "2010",
+          "selected": ""
+        },
+        {
+          "value": "2011",
+          "selected": ""
+        },
+        {
+          "value": "2012",
+          "selected": ""
+        },
+        {
+          "value": "2013",
+          "selected": ""
+        },
+        {
+          "value": "2014",
+          "selected": ""
+        },
+        {
+          "value": "2015",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "2017",
+          "selected": ""
+        },
+        {
+          "value": "2018",
+          "selected": ""
+        },
+        {
+          "value": "2019",
+          "selected": ""
+        },
+        {
+          "value": "2020",
+          "selected": ""
+        },
+        {
+          "value": "2021",
+          "selected": ""
+        },
+        {
+          "value": "2022",
+          "selected": ""
+        },
+        {
+          "value": "2023",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": "selected"
+        },
+        {
+          "value": "2025",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": ""
+        },
+        {
+          "value": "ActProy",
+          "selected": ""
+        },
+        {
+          "value": "Actividad",
+          "selected": ""
+        },
+        {
+          "value": "Proyecto",
+          "selected": "selected"
+        }
+      ],
+      "buttons": {
+        "ctl00$CPH1$BtnTipoGobierno": "Nivel de Gobierno",
+        "ctl00$CPH1$BtnProgramaPpto": "Categoría Presupuestal",
+        "ctl00$CPH1$BtnFuncion": "Función",
+        "ctl00$CPH1$BtnFuenteAgregada": "Fuente",
+        "ctl00$CPH1$BtnRubro": "Rubro",
+        "ctl00$CPH1$BtnGenerica": "Genérica",
+        "ctl00$CPH1$BtnDepartamentoMeta": "Departamento",
+        "ctl00$CPH1$BtnTrimestre": "Trimestre",
+        "ctl00$CPH1$BtnMes": "Mes"
+      },
+      "selected": {
+        "ctl00$CPH1$DrpYear": "2024",
+        "ctl00$CPH1$DrpActProy": "Proyecto"
+      },
+      "first_rows": [
+        {
+          "label": "TOTAL",
+          "cells": [
+            "",
+            "TOTAL",
+            "56,233,353,054",
+            "70,130,033,598",
+            "66,678,606,583",
+            "61,364,174,980",
+            "59,447,895,430",
+            "57,168,259,898",
+            "57,118,903,075",
+            "81.5"
+          ]
+        }
+      ],
+      "resources": [
+        "http://transparencia-economica.mef.gob.pe/",
+        "http://www.mef.gob.pe",
+        "https://apps5.mineco.gob.pe/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=1&cb=590045213",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=1BnuDEX3zORMirQY64la4udKmeI8bD-uloCH3XuEGFe3n2PV6zjgfzu792i6UF5NhFcV74HExP-nBsj8UXI-iCtB2dd9ui8ErXfbSehVIjeSEC9l3cUdCxFq-OkfuG9N4dPkNr03M0wbXbrU1KCJfXu1orDfTSyhojJIEbvkEOY1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=40tcUJdFLPtJWHOpmE0ZbkZIxbVhzwUsHPT-xn4Vg9PvUBMrz8YXY0z-H6A1pNkyvSAo8dVVHpICxy09j9nhqJC1_aISFntzNsS9UGiKFH7SDKqJlkKSjgckmH4GBqZTyRECYpuxLaDXhg42vm5CgRxsjv0j8-O_Z4posTTmNSLq7sppM8b2UBXwop-ibS-Q0&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=DBNzyOhxQn_wJWOr7e4KG9CvIX8PcvYdURL9BWsmhRKx53AbAeGmHfSS1ZDevdC0mSgXmbe42iQKPi9z8LCudXvd6fNhB-InWbXcZyvxr_1rY5ybgkiV6F5IiiF3lVnfkGdgR7FG0re59yUIhLs0f37xxz52kYSXcKPRMIWbmxYoX8ScjNxvzVBhNpeF2Pbn0&t=ffffffff805766b3",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=EZDiIv6pLE1XvRzF-OlkBYvmmQ24Zdft2oXe6EaDML1xe0i6fFPoDjtKfbVoNO7taZrZXcvCGh2A7_uoZAhnvHcFNrG_ZhS9QNXa5TlbtmBDSjdD6OMoYg0tbYS1PoFw29DBnFht57RoF5QV_gpo_bvng8YCpdwSF4idxnhkrP41&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=N6CHJJAA6y9QkRJn5-c2msJksPNy7UBwwF4LNGpeeuyB0ZrxQ4unHNDTQS1R65iWpXJ3Izqx1dFRqbXehtQJPIV4w0NAb7IFPrKZ2hp-ixc6zpIHEkkbwOKgIdS5vLliH9UFgUGpZ_Fhf0f6l2x_RLEMd-ya4pWHhAcDaR98KR01&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=XqZ127bEyPdOh7ycPOmuxULVgtHVUUKsQs-lkd4RsL_Z7pCdxViuDal4Cc0yZ5fynifQq9hFXq82kYYQMbn2cw7-JEqZYkwi34ih-9M5GSMyGO3d4EKkyPZ_8TQ2TCelXTb6c5gunZf7fQNJZtFcprfNR2oLeLlVwoIOPn4DUCo1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=a6na7sN5w98ZopEJuXhlydSwrgT8vG39JZYYduAfWcaZ9OILpJLQUvPDFCER07dTc5vQhPADYD6eUsWbC8cAl3F3Z0VHPRD8AUnyVVNW4Eq4cf8uiHAjHOu5CBveA37GVsTMprQ9LLp8Eb0wpBlFIG6Khfs34MBtMfk0KGauWNQ1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=kAU7C5_P7jVZU_aco9JDwpAiAfLmP6JA4Ko1r16l2RCrnaDMbWleUVOm_S4y2xrRanHdVsP88pSeb3LXapoFg7SOG8HppqSFPNG0yyd7r9viwaslDWKQa2urhCAAjO_e0Pf1eZn5T6adp779YDqEsz2iwNY2c2RA3MVHZaubIKk1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=p7NG-y8d8LuPWHuow9p6k7hbWKwIdig7xjdB6YwRIE0Wv1b8BCUUEx2A6W_BxZpMcpgMm9YFcyiwbJLNSb-kqPsd26AqmwilLHkLImR3PGCsCHKCJOnWm7209ymwnLmsvgKZBZ6xHg2u3HDTdeC_Zpd90z12XJ1m9brgcxMctziJU5bEO9U85Fl42Cvlju6Z0&t=ffffffff8b3ffb57",
+        "https://www.googletagmanager.com/gtag/js?id=G-V4ESNG1Y68"
+      ],
+      "captcha_marker": false,
+      "view_state_present": false
+    },
+    {
+      "url": "https://apps5.mineco.gob.pe/transparencia/Navegador/Navegar_6.aspx?y=2024&ap=Actividad",
+      "status": 200,
+      "final_url": "https://apps5.mineco.gob.pe/transparencia/Navegador/Navegar_6.aspx?y=2024&ap=Actividad",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 43692,
+      "session_cookie_present": true,
+      "official_cut_date": "2026-10-13",
+      "forms": [
+        {
+          "id": "aspnetForm",
+          "action": "Navegar_6.aspx?y=2024&ap=Actividad",
+          "method": "post"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "__VIEWSTATE",
+          "id": "__VIEWSTATE",
+          "type": "hidden"
+        },
+        {
+          "name": "__EVENTVALIDATION",
+          "id": "__EVENTVALIDATION",
+          "type": "hidden"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTipoGobierno",
+          "id": "ctl00_CPH1_BtnTipoGobierno",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnProgramaPpto",
+          "id": "ctl00_CPH1_BtnProgramaPpto",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuncion",
+          "id": "ctl00_CPH1_BtnFuncion",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuenteAgregada",
+          "id": "ctl00_CPH1_BtnFuenteAgregada",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnRubro",
+          "id": "ctl00_CPH1_BtnRubro",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnGenerica",
+          "id": "ctl00_CPH1_BtnGenerica",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnDepartamentoMeta",
+          "id": "ctl00_CPH1_BtnDepartamentoMeta",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTrimestre",
+          "id": "ctl00_CPH1_BtnTrimestre",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnMes",
+          "id": "ctl00_CPH1_BtnMes",
+          "type": "submit"
+        },
+        {
+          "name": "grp1",
+          "id": "",
+          "type": "radio"
+        }
+      ],
+      "options": [
+        {
+          "value": "1999",
+          "selected": ""
+        },
+        {
+          "value": "2000",
+          "selected": ""
+        },
+        {
+          "value": "2001",
+          "selected": ""
+        },
+        {
+          "value": "2002",
+          "selected": ""
+        },
+        {
+          "value": "2003",
+          "selected": ""
+        },
+        {
+          "value": "2004",
+          "selected": ""
+        },
+        {
+          "value": "2005",
+          "selected": ""
+        },
+        {
+          "value": "2006",
+          "selected": ""
+        },
+        {
+          "value": "2007",
+          "selected": ""
+        },
+        {
+          "value": "2008",
+          "selected": ""
+        },
+        {
+          "value": "2009",
+          "selected": ""
+        },
+        {
+          "value": "2010",
+          "selected": ""
+        },
+        {
+          "value": "2011",
+          "selected": ""
+        },
+        {
+          "value": "2012",
+          "selected": ""
+        },
+        {
+          "value": "2013",
+          "selected": ""
+        },
+        {
+          "value": "2014",
+          "selected": ""
+        },
+        {
+          "value": "2015",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "2017",
+          "selected": ""
+        },
+        {
+          "value": "2018",
+          "selected": ""
+        },
+        {
+          "value": "2019",
+          "selected": ""
+        },
+        {
+          "value": "2020",
+          "selected": ""
+        },
+        {
+          "value": "2021",
+          "selected": ""
+        },
+        {
+          "value": "2022",
+          "selected": ""
+        },
+        {
+          "value": "2023",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": "selected"
+        },
+        {
+          "value": "2025",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": ""
+        },
+        {
+          "value": "ActProy",
+          "selected": ""
+        },
+        {
+          "value": "Actividad",
+          "selected": "selected"
+        },
+        {
+          "value": "Proyecto",
+          "selected": ""
+        }
+      ],
+      "buttons": {
+        "ctl00$CPH1$BtnTipoGobierno": "Nivel de Gobierno",
+        "ctl00$CPH1$BtnProgramaPpto": "Categoría Presupuestal",
+        "ctl00$CPH1$BtnFuncion": "Función",
+        "ctl00$CPH1$BtnFuenteAgregada": "Fuente",
+        "ctl00$CPH1$BtnRubro": "Rubro",
+        "ctl00$CPH1$BtnGenerica": "Genérica",
+        "ctl00$CPH1$BtnDepartamentoMeta": "Departamento",
+        "ctl00$CPH1$BtnTrimestre": "Trimestre",
+        "ctl00$CPH1$BtnMes": "Mes"
+      },
+      "selected": {
+        "ctl00$CPH1$DrpYear": "2024",
+        "ctl00$CPH1$DrpActProy": "Actividad"
+      },
+      "first_rows": [
+        {
+          "label": "TOTAL",
+          "cells": [
+            "",
+            "TOTAL",
+            "184,572,863,591",
+            "191,927,985,607",
+            "184,516,819,105",
+            "182,667,618,932",
+            "182,141,114,923",
+            "181,724,795,549",
+            "181,340,794,619",
+            "94.7"
+          ]
+        }
+      ],
+      "resources": [
+        "http://transparencia-economica.mef.gob.pe/",
+        "http://www.mef.gob.pe",
+        "https://apps5.mineco.gob.pe/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=3&cb=2142064418",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=1BnuDEX3zORMirQY64la4udKmeI8bD-uloCH3XuEGFe3n2PV6zjgfzu792i6UF5NhFcV74HExP-nBsj8UXI-iCtB2dd9ui8ErXfbSehVIjeSEC9l3cUdCxFq-OkfuG9N4dPkNr03M0wbXbrU1KCJfXu1orDfTSyhojJIEbvkEOY1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=40tcUJdFLPtJWHOpmE0ZbkZIxbVhzwUsHPT-xn4Vg9PvUBMrz8YXY0z-H6A1pNkyvSAo8dVVHpICxy09j9nhqJC1_aISFntzNsS9UGiKFH7SDKqJlkKSjgckmH4GBqZTyRECYpuxLaDXhg42vm5CgRxsjv0j8-O_Z4posTTmNSLq7sppM8b2UBXwop-ibS-Q0&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=DBNzyOhxQn_wJWOr7e4KG9CvIX8PcvYdURL9BWsmhRKx53AbAeGmHfSS1ZDevdC0mSgXmbe42iQKPi9z8LCudXvd6fNhB-InWbXcZyvxr_1rY5ybgkiV6F5IiiF3lVnfkGdgR7FG0re59yUIhLs0f37xxz52kYSXcKPRMIWbmxYoX8ScjNxvzVBhNpeF2Pbn0&t=ffffffff805766b3",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=EZDiIv6pLE1XvRzF-OlkBYvmmQ24Zdft2oXe6EaDML1xe0i6fFPoDjtKfbVoNO7taZrZXcvCGh2A7_uoZAhnvHcFNrG_ZhS9QNXa5TlbtmBDSjdD6OMoYg0tbYS1PoFw29DBnFht57RoF5QV_gpo_bvng8YCpdwSF4idxnhkrP41&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=N6CHJJAA6y9QkRJn5-c2msJksPNy7UBwwF4LNGpeeuyB0ZrxQ4unHNDTQS1R65iWpXJ3Izqx1dFRqbXehtQJPIV4w0NAb7IFPrKZ2hp-ixc6zpIHEkkbwOKgIdS5vLliH9UFgUGpZ_Fhf0f6l2x_RLEMd-ya4pWHhAcDaR98KR01&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=XqZ127bEyPdOh7ycPOmuxULVgtHVUUKsQs-lkd4RsL_Z7pCdxViuDal4Cc0yZ5fynifQq9hFXq82kYYQMbn2cw7-JEqZYkwi34ih-9M5GSMyGO3d4EKkyPZ_8TQ2TCelXTb6c5gunZf7fQNJZtFcprfNR2oLeLlVwoIOPn4DUCo1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=a6na7sN5w98ZopEJuXhlydSwrgT8vG39JZYYduAfWcaZ9OILpJLQUvPDFCER07dTc5vQhPADYD6eUsWbC8cAl3F3Z0VHPRD8AUnyVVNW4Eq4cf8uiHAjHOu5CBveA37GVsTMprQ9LLp8Eb0wpBlFIG6Khfs34MBtMfk0KGauWNQ1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=kAU7C5_P7jVZU_aco9JDwpAiAfLmP6JA4Ko1r16l2RCrnaDMbWleUVOm_S4y2xrRanHdVsP88pSeb3LXapoFg7SOG8HppqSFPNG0yyd7r9viwaslDWKQa2urhCAAjO_e0Pf1eZn5T6adp779YDqEsz2iwNY2c2RA3MVHZaubIKk1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=p7NG-y8d8LuPWHuow9p6k7hbWKwIdig7xjdB6YwRIE0Wv1b8BCUUEx2A6W_BxZpMcpgMm9YFcyiwbJLNSb-kqPsd26AqmwilLHkLImR3PGCsCHKCJOnWm7209ymwnLmsvgKZBZ6xHg2u3HDTdeC_Zpd90z12XJ1m9brgcxMctziJU5bEO9U85Fl42Cvlju6Z0&t=ffffffff8b3ffb57",
+        "https://www.googletagmanager.com/gtag/js?id=G-V4ESNG1Y68"
+      ],
+      "captcha_marker": false,
+      "view_state_present": false
+    },
+    {
+      "url": "https://apps5.mineco.gob.pe/transparencia/Navegador/Navegar_6.aspx?y=2025&ap=ActProy",
+      "status": 200,
+      "final_url": "https://apps5.mineco.gob.pe/transparencia/Navegador/Navegar_6.aspx?y=2025&ap=ActProy",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 43645,
+      "session_cookie_present": true,
+      "official_cut_date": "2026-10-13",
+      "forms": [
+        {
+          "id": "aspnetForm",
+          "action": "Navegar_6.aspx?y=2025&ap=ActProy",
+          "method": "post"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "__VIEWSTATE",
+          "id": "__VIEWSTATE",
+          "type": "hidden"
+        },
+        {
+          "name": "__EVENTVALIDATION",
+          "id": "__EVENTVALIDATION",
+          "type": "hidden"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTipoGobierno",
+          "id": "ctl00_CPH1_BtnTipoGobierno",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnProgramaPpto",
+          "id": "ctl00_CPH1_BtnProgramaPpto",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuncion",
+          "id": "ctl00_CPH1_BtnFuncion",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuenteAgregada",
+          "id": "ctl00_CPH1_BtnFuenteAgregada",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnRubro",
+          "id": "ctl00_CPH1_BtnRubro",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnGenerica",
+          "id": "ctl00_CPH1_BtnGenerica",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnDepartamentoMeta",
+          "id": "ctl00_CPH1_BtnDepartamentoMeta",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTrimestre",
+          "id": "ctl00_CPH1_BtnTrimestre",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnMes",
+          "id": "ctl00_CPH1_BtnMes",
+          "type": "submit"
+        },
+        {
+          "name": "grp1",
+          "id": "",
+          "type": "radio"
+        }
+      ],
+      "options": [
+        {
+          "value": "1999",
+          "selected": ""
+        },
+        {
+          "value": "2000",
+          "selected": ""
+        },
+        {
+          "value": "2001",
+          "selected": ""
+        },
+        {
+          "value": "2002",
+          "selected": ""
+        },
+        {
+          "value": "2003",
+          "selected": ""
+        },
+        {
+          "value": "2004",
+          "selected": ""
+        },
+        {
+          "value": "2005",
+          "selected": ""
+        },
+        {
+          "value": "2006",
+          "selected": ""
+        },
+        {
+          "value": "2007",
+          "selected": ""
+        },
+        {
+          "value": "2008",
+          "selected": ""
+        },
+        {
+          "value": "2009",
+          "selected": ""
+        },
+        {
+          "value": "2010",
+          "selected": ""
+        },
+        {
+          "value": "2011",
+          "selected": ""
+        },
+        {
+          "value": "2012",
+          "selected": ""
+        },
+        {
+          "value": "2013",
+          "selected": ""
+        },
+        {
+          "value": "2014",
+          "selected": ""
+        },
+        {
+          "value": "2015",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "2017",
+          "selected": ""
+        },
+        {
+          "value": "2018",
+          "selected": ""
+        },
+        {
+          "value": "2019",
+          "selected": ""
+        },
+        {
+          "value": "2020",
+          "selected": ""
+        },
+        {
+          "value": "2021",
+          "selected": ""
+        },
+        {
+          "value": "2022",
+          "selected": ""
+        },
+        {
+          "value": "2023",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": ""
+        },
+        {
+          "value": "2025",
+          "selected": "selected"
+        },
+        {
+          "value": "2026",
+          "selected": ""
+        },
+        {
+          "value": "ActProy",
+          "selected": "selected"
+        },
+        {
+          "value": "Actividad",
+          "selected": ""
+        },
+        {
+          "value": "Proyecto",
+          "selected": ""
+        }
+      ],
+      "buttons": {
+        "ctl00$CPH1$BtnTipoGobierno": "Nivel de Gobierno",
+        "ctl00$CPH1$BtnProgramaPpto": "Categoría Presupuestal",
+        "ctl00$CPH1$BtnFuncion": "Función",
+        "ctl00$CPH1$BtnFuenteAgregada": "Fuente",
+        "ctl00$CPH1$BtnRubro": "Rubro",
+        "ctl00$CPH1$BtnGenerica": "Genérica",
+        "ctl00$CPH1$BtnDepartamentoMeta": "Departamento",
+        "ctl00$CPH1$BtnTrimestre": "Trimestre",
+        "ctl00$CPH1$BtnMes": "Mes"
+      },
+      "selected": {
+        "ctl00$CPH1$DrpYear": "2025",
+        "ctl00$CPH1$DrpActProy": "ActProy"
+      },
+      "first_rows": [
+        {
+          "label": "TOTAL",
+          "cells": [
+            "",
+            "TOTAL",
+            "251,801,045,185",
+            "272,450,859,407",
+            "263,078,640,792",
+            "258,771,064,634",
+            "256,964,605,553",
+            "253,675,121,123",
+            "253,316,691,801",
+            "93.1"
+          ]
+        }
+      ],
+      "resources": [
+        "http://transparencia-economica.mef.gob.pe/",
+        "http://www.mef.gob.pe",
+        "https://apps5.mineco.gob.pe/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=4&cb=254844669",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=1BnuDEX3zORMirQY64la4udKmeI8bD-uloCH3XuEGFe3n2PV6zjgfzu792i6UF5NhFcV74HExP-nBsj8UXI-iCtB2dd9ui8ErXfbSehVIjeSEC9l3cUdCxFq-OkfuG9N4dPkNr03M0wbXbrU1KCJfXu1orDfTSyhojJIEbvkEOY1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=40tcUJdFLPtJWHOpmE0ZbkZIxbVhzwUsHPT-xn4Vg9PvUBMrz8YXY0z-H6A1pNkyvSAo8dVVHpICxy09j9nhqJC1_aISFntzNsS9UGiKFH7SDKqJlkKSjgckmH4GBqZTyRECYpuxLaDXhg42vm5CgRxsjv0j8-O_Z4posTTmNSLq7sppM8b2UBXwop-ibS-Q0&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=DBNzyOhxQn_wJWOr7e4KG9CvIX8PcvYdURL9BWsmhRKx53AbAeGmHfSS1ZDevdC0mSgXmbe42iQKPi9z8LCudXvd6fNhB-InWbXcZyvxr_1rY5ybgkiV6F5IiiF3lVnfkGdgR7FG0re59yUIhLs0f37xxz52kYSXcKPRMIWbmxYoX8ScjNxvzVBhNpeF2Pbn0&t=ffffffff805766b3",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=EZDiIv6pLE1XvRzF-OlkBYvmmQ24Zdft2oXe6EaDML1xe0i6fFPoDjtKfbVoNO7taZrZXcvCGh2A7_uoZAhnvHcFNrG_ZhS9QNXa5TlbtmBDSjdD6OMoYg0tbYS1PoFw29DBnFht57RoF5QV_gpo_bvng8YCpdwSF4idxnhkrP41&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=N6CHJJAA6y9QkRJn5-c2msJksPNy7UBwwF4LNGpeeuyB0ZrxQ4unHNDTQS1R65iWpXJ3Izqx1dFRqbXehtQJPIV4w0NAb7IFPrKZ2hp-ixc6zpIHEkkbwOKgIdS5vLliH9UFgUGpZ_Fhf0f6l2x_RLEMd-ya4pWHhAcDaR98KR01&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=XqZ127bEyPdOh7ycPOmuxULVgtHVUUKsQs-lkd4RsL_Z7pCdxViuDal4Cc0yZ5fynifQq9hFXq82kYYQMbn2cw7-JEqZYkwi34ih-9M5GSMyGO3d4EKkyPZ_8TQ2TCelXTb6c5gunZf7fQNJZtFcprfNR2oLeLlVwoIOPn4DUCo1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=a6na7sN5w98ZopEJuXhlydSwrgT8vG39JZYYduAfWcaZ9OILpJLQUvPDFCER07dTc5vQhPADYD6eUsWbC8cAl3F3Z0VHPRD8AUnyVVNW4Eq4cf8uiHAjHOu5CBveA37GVsTMprQ9LLp8Eb0wpBlFIG6Khfs34MBtMfk0KGauWNQ1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=kAU7C5_P7jVZU_aco9JDwpAiAfLmP6JA4Ko1r16l2RCrnaDMbWleUVOm_S4y2xrRanHdVsP88pSeb3LXapoFg7SOG8HppqSFPNG0yyd7r9viwaslDWKQa2urhCAAjO_e0Pf1eZn5T6adp779YDqEsz2iwNY2c2RA3MVHZaubIKk1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=p7NG-y8d8LuPWHuow9p6k7hbWKwIdig7xjdB6YwRIE0Wv1b8BCUUEx2A6W_BxZpMcpgMm9YFcyiwbJLNSb-kqPsd26AqmwilLHkLImR3PGCsCHKCJOnWm7209ymwnLmsvgKZBZ6xHg2u3HDTdeC_Zpd90z12XJ1m9brgcxMctziJU5bEO9U85Fl42Cvlju6Z0&t=ffffffff8b3ffb57",
+        "https://www.googletagmanager.com/gtag/js?id=G-V4ESNG1Y68"
+      ],
+      "captcha_marker": false,
+      "view_state_present": false
+    },
+    {
+      "url": "https://apps5.mineco.gob.pe/transparencia/Navegador/Navegar_6.aspx?y=2025&ap=Proyecto",
+      "status": 200,
+      "final_url": "https://apps5.mineco.gob.pe/transparencia/Navegador/Navegar_6.aspx?y=2025&ap=Proyecto",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 43673,
+      "session_cookie_present": true,
+      "official_cut_date": "2026-10-13",
+      "forms": [
+        {
+          "id": "aspnetForm",
+          "action": "Navegar_6.aspx?y=2025&ap=Proyecto",
+          "method": "post"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "__VIEWSTATE",
+          "id": "__VIEWSTATE",
+          "type": "hidden"
+        },
+        {
+          "name": "__EVENTVALIDATION",
+          "id": "__EVENTVALIDATION",
+          "type": "hidden"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTipoGobierno",
+          "id": "ctl00_CPH1_BtnTipoGobierno",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnProgramaPpto",
+          "id": "ctl00_CPH1_BtnProgramaPpto",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuncion",
+          "id": "ctl00_CPH1_BtnFuncion",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuenteAgregada",
+          "id": "ctl00_CPH1_BtnFuenteAgregada",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnRubro",
+          "id": "ctl00_CPH1_BtnRubro",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnGenerica",
+          "id": "ctl00_CPH1_BtnGenerica",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnDepartamentoMeta",
+          "id": "ctl00_CPH1_BtnDepartamentoMeta",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTrimestre",
+          "id": "ctl00_CPH1_BtnTrimestre",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnMes",
+          "id": "ctl00_CPH1_BtnMes",
+          "type": "submit"
+        },
+        {
+          "name": "grp1",
+          "id": "",
+          "type": "radio"
+        }
+      ],
+      "options": [
+        {
+          "value": "1999",
+          "selected": ""
+        },
+        {
+          "value": "2000",
+          "selected": ""
+        },
+        {
+          "value": "2001",
+          "selected": ""
+        },
+        {
+          "value": "2002",
+          "selected": ""
+        },
+        {
+          "value": "2003",
+          "selected": ""
+        },
+        {
+          "value": "2004",
+          "selected": ""
+        },
+        {
+          "value": "2005",
+          "selected": ""
+        },
+        {
+          "value": "2006",
+          "selected": ""
+        },
+        {
+          "value": "2007",
+          "selected": ""
+        },
+        {
+          "value": "2008",
+          "selected": ""
+        },
+        {
+          "value": "2009",
+          "selected": ""
+        },
+        {
+          "value": "2010",
+          "selected": ""
+        },
+        {
+          "value": "2011",
+          "selected": ""
+        },
+        {
+          "value": "2012",
+          "selected": ""
+        },
+        {
+          "value": "2013",
+          "selected": ""
+        },
+        {
+          "value": "2014",
+          "selected": ""
+        },
+        {
+          "value": "2015",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "2017",
+          "selected": ""
+        },
+        {
+          "value": "2018",
+          "selected": ""
+        },
+        {
+          "value": "2019",
+          "selected": ""
+        },
+        {
+          "value": "2020",
+          "selected": ""
+        },
+        {
+          "value": "2021",
+          "selected": ""
+        },
+        {
+          "value": "2022",
+          "selected": ""
+        },
+        {
+          "value": "2023",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": ""
+        },
+        {
+          "value": "2025",
+          "selected": "selected"
+        },
+        {
+          "value": "2026",
+          "selected": ""
+        },
+        {
+          "value": "ActProy",
+          "selected": ""
+        },
+        {
+          "value": "Actividad",
+          "selected": ""
+        },
+        {
+          "value": "Proyecto",
+          "selected": "selected"
+        }
+      ],
+      "buttons": {
+        "ctl00$CPH1$BtnTipoGobierno": "Nivel de Gobierno",
+        "ctl00$CPH1$BtnProgramaPpto": "Categoría Presupuestal",
+        "ctl00$CPH1$BtnFuncion": "Función",
+        "ctl00$CPH1$BtnFuenteAgregada": "Fuente",
+        "ctl00$CPH1$BtnRubro": "Rubro",
+        "ctl00$CPH1$BtnGenerica": "Genérica",
+        "ctl00$CPH1$BtnDepartamentoMeta": "Departamento",
+        "ctl00$CPH1$BtnTrimestre": "Trimestre",
+        "ctl00$CPH1$BtnMes": "Mes"
+      },
+      "selected": {
+        "ctl00$CPH1$DrpYear": "2025",
+        "ctl00$CPH1$DrpActProy": "Proyecto"
+      },
+      "first_rows": [
+        {
+          "label": "TOTAL",
+          "cells": [
+            "",
+            "TOTAL",
+            "55,741,691,937",
+            "70,948,758,100",
+            "66,991,173,982",
+            "63,737,256,006",
+            "62,345,083,068",
+            "59,782,413,864",
+            "59,653,136,025",
+            "84.3"
+          ]
+        }
+      ],
+      "resources": [
+        "http://transparencia-economica.mef.gob.pe/",
+        "http://www.mef.gob.pe",
+        "https://apps5.mineco.gob.pe/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=5&cb=677993058",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=1BnuDEX3zORMirQY64la4udKmeI8bD-uloCH3XuEGFe3n2PV6zjgfzu792i6UF5NhFcV74HExP-nBsj8UXI-iCtB2dd9ui8ErXfbSehVIjeSEC9l3cUdCxFq-OkfuG9N4dPkNr03M0wbXbrU1KCJfXu1orDfTSyhojJIEbvkEOY1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=40tcUJdFLPtJWHOpmE0ZbkZIxbVhzwUsHPT-xn4Vg9PvUBMrz8YXY0z-H6A1pNkyvSAo8dVVHpICxy09j9nhqJC1_aISFntzNsS9UGiKFH7SDKqJlkKSjgckmH4GBqZTyRECYpuxLaDXhg42vm5CgRxsjv0j8-O_Z4posTTmNSLq7sppM8b2UBXwop-ibS-Q0&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=DBNzyOhxQn_wJWOr7e4KG9CvIX8PcvYdURL9BWsmhRKx53AbAeGmHfSS1ZDevdC0mSgXmbe42iQKPi9z8LCudXvd6fNhB-InWbXcZyvxr_1rY5ybgkiV6F5IiiF3lVnfkGdgR7FG0re59yUIhLs0f37xxz52kYSXcKPRMIWbmxYoX8ScjNxvzVBhNpeF2Pbn0&t=ffffffff805766b3",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=EZDiIv6pLE1XvRzF-OlkBYvmmQ24Zdft2oXe6EaDML1xe0i6fFPoDjtKfbVoNO7taZrZXcvCGh2A7_uoZAhnvHcFNrG_ZhS9QNXa5TlbtmBDSjdD6OMoYg0tbYS1PoFw29DBnFht57RoF5QV_gpo_bvng8YCpdwSF4idxnhkrP41&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=N6CHJJAA6y9QkRJn5-c2msJksPNy7UBwwF4LNGpeeuyB0ZrxQ4unHNDTQS1R65iWpXJ3Izqx1dFRqbXehtQJPIV4w0NAb7IFPrKZ2hp-ixc6zpIHEkkbwOKgIdS5vLliH9UFgUGpZ_Fhf0f6l2x_RLEMd-ya4pWHhAcDaR98KR01&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=XqZ127bEyPdOh7ycPOmuxULVgtHVUUKsQs-lkd4RsL_Z7pCdxViuDal4Cc0yZ5fynifQq9hFXq82kYYQMbn2cw7-JEqZYkwi34ih-9M5GSMyGO3d4EKkyPZ_8TQ2TCelXTb6c5gunZf7fQNJZtFcprfNR2oLeLlVwoIOPn4DUCo1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=a6na7sN5w98ZopEJuXhlydSwrgT8vG39JZYYduAfWcaZ9OILpJLQUvPDFCER07dTc5vQhPADYD6eUsWbC8cAl3F3Z0VHPRD8AUnyVVNW4Eq4cf8uiHAjHOu5CBveA37GVsTMprQ9LLp8Eb0wpBlFIG6Khfs34MBtMfk0KGauWNQ1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=kAU7C5_P7jVZU_aco9JDwpAiAfLmP6JA4Ko1r16l2RCrnaDMbWleUVOm_S4y2xrRanHdVsP88pSeb3LXapoFg7SOG8HppqSFPNG0yyd7r9viwaslDWKQa2urhCAAjO_e0Pf1eZn5T6adp779YDqEsz2iwNY2c2RA3MVHZaubIKk1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=p7NG-y8d8LuPWHuow9p6k7hbWKwIdig7xjdB6YwRIE0Wv1b8BCUUEx2A6W_BxZpMcpgMm9YFcyiwbJLNSb-kqPsd26AqmwilLHkLImR3PGCsCHKCJOnWm7209ymwnLmsvgKZBZ6xHg2u3HDTdeC_Zpd90z12XJ1m9brgcxMctziJU5bEO9U85Fl42Cvlju6Z0&t=ffffffff8b3ffb57",
+        "https://www.googletagmanager.com/gtag/js?id=G-V4ESNG1Y68"
+      ],
+      "captcha_marker": false,
+      "view_state_present": false
+    },
+    {
+      "url": "https://apps5.mineco.gob.pe/transparencia/Navegador/Navegar_6.aspx?y=2025&ap=Actividad",
+      "status": 200,
+      "final_url": "https://apps5.mineco.gob.pe/transparencia/Navegador/Navegar_6.aspx?y=2025&ap=Actividad",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 43691,
+      "session_cookie_present": true,
+      "official_cut_date": "2026-10-13",
+      "forms": [
+        {
+          "id": "aspnetForm",
+          "action": "Navegar_6.aspx?y=2025&ap=Actividad",
+          "method": "post"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "__VIEWSTATE",
+          "id": "__VIEWSTATE",
+          "type": "hidden"
+        },
+        {
+          "name": "__EVENTVALIDATION",
+          "id": "__EVENTVALIDATION",
+          "type": "hidden"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTipoGobierno",
+          "id": "ctl00_CPH1_BtnTipoGobierno",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnProgramaPpto",
+          "id": "ctl00_CPH1_BtnProgramaPpto",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuncion",
+          "id": "ctl00_CPH1_BtnFuncion",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuenteAgregada",
+          "id": "ctl00_CPH1_BtnFuenteAgregada",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnRubro",
+          "id": "ctl00_CPH1_BtnRubro",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnGenerica",
+          "id": "ctl00_CPH1_BtnGenerica",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnDepartamentoMeta",
+          "id": "ctl00_CPH1_BtnDepartamentoMeta",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTrimestre",
+          "id": "ctl00_CPH1_BtnTrimestre",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnMes",
+          "id": "ctl00_CPH1_BtnMes",
+          "type": "submit"
+        },
+        {
+          "name": "grp1",
+          "id": "",
+          "type": "radio"
+        }
+      ],
+      "options": [
+        {
+          "value": "1999",
+          "selected": ""
+        },
+        {
+          "value": "2000",
+          "selected": ""
+        },
+        {
+          "value": "2001",
+          "selected": ""
+        },
+        {
+          "value": "2002",
+          "selected": ""
+        },
+        {
+          "value": "2003",
+          "selected": ""
+        },
+        {
+          "value": "2004",
+          "selected": ""
+        },
+        {
+          "value": "2005",
+          "selected": ""
+        },
+        {
+          "value": "2006",
+          "selected": ""
+        },
+        {
+          "value": "2007",
+          "selected": ""
+        },
+        {
+          "value": "2008",
+          "selected": ""
+        },
+        {
+          "value": "2009",
+          "selected": ""
+        },
+        {
+          "value": "2010",
+          "selected": ""
+        },
+        {
+          "value": "2011",
+          "selected": ""
+        },
+        {
+          "value": "2012",
+          "selected": ""
+        },
+        {
+          "value": "2013",
+          "selected": ""
+        },
+        {
+          "value": "2014",
+          "selected": ""
+        },
+        {
+          "value": "2015",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "2017",
+          "selected": ""
+        },
+        {
+          "value": "2018",
+          "selected": ""
+        },
+        {
+          "value": "2019",
+          "selected": ""
+        },
+        {
+          "value": "2020",
+          "selected": ""
+        },
+        {
+          "value": "2021",
+          "selected": ""
+        },
+        {
+          "value": "2022",
+          "selected": ""
+        },
+        {
+          "value": "2023",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": ""
+        },
+        {
+          "value": "2025",
+          "selected": "selected"
+        },
+        {
+          "value": "2026",
+          "selected": ""
+        },
+        {
+          "value": "ActProy",
+          "selected": ""
+        },
+        {
+          "value": "Actividad",
+          "selected": "selected"
+        },
+        {
+          "value": "Proyecto",
+          "selected": ""
+        }
+      ],
+      "buttons": {
+        "ctl00$CPH1$BtnTipoGobierno": "Nivel de Gobierno",
+        "ctl00$CPH1$BtnProgramaPpto": "Categoría Presupuestal",
+        "ctl00$CPH1$BtnFuncion": "Función",
+        "ctl00$CPH1$BtnFuenteAgregada": "Fuente",
+        "ctl00$CPH1$BtnRubro": "Rubro",
+        "ctl00$CPH1$BtnGenerica": "Genérica",
+        "ctl00$CPH1$BtnDepartamentoMeta": "Departamento",
+        "ctl00$CPH1$BtnTrimestre": "Trimestre",
+        "ctl00$CPH1$BtnMes": "Mes"
+      },
+      "selected": {
+        "ctl00$CPH1$DrpYear": "2025",
+        "ctl00$CPH1$DrpActProy": "Actividad"
+      },
+      "first_rows": [
+        {
+          "label": "TOTAL",
+          "cells": [
+            "",
+            "TOTAL",
+            "196,059,353,248",
+            "201,502,101,307",
+            "196,087,466,810",
+            "195,033,808,628",
+            "194,619,522,485",
+            "193,892,707,259",
+            "193,663,555,776",
+            "96.2"
+          ]
+        }
+      ],
+      "resources": [
+        "http://transparencia-economica.mef.gob.pe/",
+        "http://www.mef.gob.pe",
+        "https://apps5.mineco.gob.pe/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=6&cb=676036478",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=1BnuDEX3zORMirQY64la4udKmeI8bD-uloCH3XuEGFe3n2PV6zjgfzu792i6UF5NhFcV74HExP-nBsj8UXI-iCtB2dd9ui8ErXfbSehVIjeSEC9l3cUdCxFq-OkfuG9N4dPkNr03M0wbXbrU1KCJfXu1orDfTSyhojJIEbvkEOY1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=40tcUJdFLPtJWHOpmE0ZbkZIxbVhzwUsHPT-xn4Vg9PvUBMrz8YXY0z-H6A1pNkyvSAo8dVVHpICxy09j9nhqJC1_aISFntzNsS9UGiKFH7SDKqJlkKSjgckmH4GBqZTyRECYpuxLaDXhg42vm5CgRxsjv0j8-O_Z4posTTmNSLq7sppM8b2UBXwop-ibS-Q0&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=DBNzyOhxQn_wJWOr7e4KG9CvIX8PcvYdURL9BWsmhRKx53AbAeGmHfSS1ZDevdC0mSgXmbe42iQKPi9z8LCudXvd6fNhB-InWbXcZyvxr_1rY5ybgkiV6F5IiiF3lVnfkGdgR7FG0re59yUIhLs0f37xxz52kYSXcKPRMIWbmxYoX8ScjNxvzVBhNpeF2Pbn0&t=ffffffff805766b3",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=EZDiIv6pLE1XvRzF-OlkBYvmmQ24Zdft2oXe6EaDML1xe0i6fFPoDjtKfbVoNO7taZrZXcvCGh2A7_uoZAhnvHcFNrG_ZhS9QNXa5TlbtmBDSjdD6OMoYg0tbYS1PoFw29DBnFht57RoF5QV_gpo_bvng8YCpdwSF4idxnhkrP41&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=N6CHJJAA6y9QkRJn5-c2msJksPNy7UBwwF4LNGpeeuyB0ZrxQ4unHNDTQS1R65iWpXJ3Izqx1dFRqbXehtQJPIV4w0NAb7IFPrKZ2hp-ixc6zpIHEkkbwOKgIdS5vLliH9UFgUGpZ_Fhf0f6l2x_RLEMd-ya4pWHhAcDaR98KR01&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=XqZ127bEyPdOh7ycPOmuxULVgtHVUUKsQs-lkd4RsL_Z7pCdxViuDal4Cc0yZ5fynifQq9hFXq82kYYQMbn2cw7-JEqZYkwi34ih-9M5GSMyGO3d4EKkyPZ_8TQ2TCelXTb6c5gunZf7fQNJZtFcprfNR2oLeLlVwoIOPn4DUCo1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=a6na7sN5w98ZopEJuXhlydSwrgT8vG39JZYYduAfWcaZ9OILpJLQUvPDFCER07dTc5vQhPADYD6eUsWbC8cAl3F3Z0VHPRD8AUnyVVNW4Eq4cf8uiHAjHOu5CBveA37GVsTMprQ9LLp8Eb0wpBlFIG6Khfs34MBtMfk0KGauWNQ1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=kAU7C5_P7jVZU_aco9JDwpAiAfLmP6JA4Ko1r16l2RCrnaDMbWleUVOm_S4y2xrRanHdVsP88pSeb3LXapoFg7SOG8HppqSFPNG0yyd7r9viwaslDWKQa2urhCAAjO_e0Pf1eZn5T6adp779YDqEsz2iwNY2c2RA3MVHZaubIKk1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=p7NG-y8d8LuPWHuow9p6k7hbWKwIdig7xjdB6YwRIE0Wv1b8BCUUEx2A6W_BxZpMcpgMm9YFcyiwbJLNSb-kqPsd26AqmwilLHkLImR3PGCsCHKCJOnWm7209ymwnLmsvgKZBZ6xHg2u3HDTdeC_Zpd90z12XJ1m9brgcxMctziJU5bEO9U85Fl42Cvlju6Z0&t=ffffffff8b3ffb57",
+        "https://www.googletagmanager.com/gtag/js?id=G-V4ESNG1Y68"
+      ],
+      "captcha_marker": false,
+      "view_state_present": false
+    },
+    {
+      "url": "https://apps5.mineco.gob.pe/transparencia/Navegador/Navegar_6.aspx?y=2026&ap=ActProy",
+      "status": 200,
+      "final_url": "https://apps5.mineco.gob.pe/transparencia/Navegador/Navegar_6.aspx?y=2026&ap=ActProy",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 43645,
+      "session_cookie_present": true,
+      "official_cut_date": "2026-10-13",
+      "forms": [
+        {
+          "id": "aspnetForm",
+          "action": "Navegar_6.aspx?y=2026&ap=ActProy",
+          "method": "post"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "__VIEWSTATE",
+          "id": "__VIEWSTATE",
+          "type": "hidden"
+        },
+        {
+          "name": "__EVENTVALIDATION",
+          "id": "__EVENTVALIDATION",
+          "type": "hidden"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTipoGobierno",
+          "id": "ctl00_CPH1_BtnTipoGobierno",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnProgramaPpto",
+          "id": "ctl00_CPH1_BtnProgramaPpto",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuncion",
+          "id": "ctl00_CPH1_BtnFuncion",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuenteAgregada",
+          "id": "ctl00_CPH1_BtnFuenteAgregada",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnRubro",
+          "id": "ctl00_CPH1_BtnRubro",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnGenerica",
+          "id": "ctl00_CPH1_BtnGenerica",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnDepartamentoMeta",
+          "id": "ctl00_CPH1_BtnDepartamentoMeta",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTrimestre",
+          "id": "ctl00_CPH1_BtnTrimestre",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnMes",
+          "id": "ctl00_CPH1_BtnMes",
+          "type": "submit"
+        },
+        {
+          "name": "grp1",
+          "id": "",
+          "type": "radio"
+        }
+      ],
+      "options": [
+        {
+          "value": "1999",
+          "selected": ""
+        },
+        {
+          "value": "2000",
+          "selected": ""
+        },
+        {
+          "value": "2001",
+          "selected": ""
+        },
+        {
+          "value": "2002",
+          "selected": ""
+        },
+        {
+          "value": "2003",
+          "selected": ""
+        },
+        {
+          "value": "2004",
+          "selected": ""
+        },
+        {
+          "value": "2005",
+          "selected": ""
+        },
+        {
+          "value": "2006",
+          "selected": ""
+        },
+        {
+          "value": "2007",
+          "selected": ""
+        },
+        {
+          "value": "2008",
+          "selected": ""
+        },
+        {
+          "value": "2009",
+          "selected": ""
+        },
+        {
+          "value": "2010",
+          "selected": ""
+        },
+        {
+          "value": "2011",
+          "selected": ""
+        },
+        {
+          "value": "2012",
+          "selected": ""
+        },
+        {
+          "value": "2013",
+          "selected": ""
+        },
+        {
+          "value": "2014",
+          "selected": ""
+        },
+        {
+          "value": "2015",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "2017",
+          "selected": ""
+        },
+        {
+          "value": "2018",
+          "selected": ""
+        },
+        {
+          "value": "2019",
+          "selected": ""
+        },
+        {
+          "value": "2020",
+          "selected": ""
+        },
+        {
+          "value": "2021",
+          "selected": ""
+        },
+        {
+          "value": "2022",
+          "selected": ""
+        },
+        {
+          "value": "2023",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": ""
+        },
+        {
+          "value": "2025",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": "selected"
+        },
+        {
+          "value": "ActProy",
+          "selected": "selected"
+        },
+        {
+          "value": "Actividad",
+          "selected": ""
+        },
+        {
+          "value": "Proyecto",
+          "selected": ""
+        }
+      ],
+      "buttons": {
+        "ctl00$CPH1$BtnTipoGobierno": "Nivel de Gobierno",
+        "ctl00$CPH1$BtnProgramaPpto": "Categoría Presupuestal",
+        "ctl00$CPH1$BtnFuncion": "Función",
+        "ctl00$CPH1$BtnFuenteAgregada": "Fuente",
+        "ctl00$CPH1$BtnRubro": "Rubro",
+        "ctl00$CPH1$BtnGenerica": "Genérica",
+        "ctl00$CPH1$BtnDepartamentoMeta": "Departamento",
+        "ctl00$CPH1$BtnTrimestre": "Trimestre",
+        "ctl00$CPH1$BtnMes": "Mes"
+      },
+      "selected": {
+        "ctl00$CPH1$DrpYear": "2026",
+        "ctl00$CPH1$DrpActProy": "ActProy"
+      },
+      "first_rows": [
+        {
+          "label": "TOTAL",
+          "cells": [
+            "",
+            "TOTAL",
+            "257,561,619,143",
+            "289,453,592,191",
+            "266,045,288,529",
+            "246,754,002,151",
+            "214,358,687,865",
+            "201,897,717,145",
+            "198,646,680,820",
+            "69.8"
+          ]
+        }
+      ],
+      "resources": [
+        "http://transparencia-economica.mef.gob.pe/",
+        "http://www.mef.gob.pe",
+        "https://apps5.mineco.gob.pe/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=8&cb=464422924",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=1BnuDEX3zORMirQY64la4udKmeI8bD-uloCH3XuEGFe3n2PV6zjgfzu792i6UF5NhFcV74HExP-nBsj8UXI-iCtB2dd9ui8ErXfbSehVIjeSEC9l3cUdCxFq-OkfuG9N4dPkNr03M0wbXbrU1KCJfXu1orDfTSyhojJIEbvkEOY1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=40tcUJdFLPtJWHOpmE0ZbkZIxbVhzwUsHPT-xn4Vg9PvUBMrz8YXY0z-H6A1pNkyvSAo8dVVHpICxy09j9nhqJC1_aISFntzNsS9UGiKFH7SDKqJlkKSjgckmH4GBqZTyRECYpuxLaDXhg42vm5CgRxsjv0j8-O_Z4posTTmNSLq7sppM8b2UBXwop-ibS-Q0&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=DBNzyOhxQn_wJWOr7e4KG9CvIX8PcvYdURL9BWsmhRKx53AbAeGmHfSS1ZDevdC0mSgXmbe42iQKPi9z8LCudXvd6fNhB-InWbXcZyvxr_1rY5ybgkiV6F5IiiF3lVnfkGdgR7FG0re59yUIhLs0f37xxz52kYSXcKPRMIWbmxYoX8ScjNxvzVBhNpeF2Pbn0&t=ffffffff805766b3",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=EZDiIv6pLE1XvRzF-OlkBYvmmQ24Zdft2oXe6EaDML1xe0i6fFPoDjtKfbVoNO7taZrZXcvCGh2A7_uoZAhnvHcFNrG_ZhS9QNXa5TlbtmBDSjdD6OMoYg0tbYS1PoFw29DBnFht57RoF5QV_gpo_bvng8YCpdwSF4idxnhkrP41&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=N6CHJJAA6y9QkRJn5-c2msJksPNy7UBwwF4LNGpeeuyB0ZrxQ4unHNDTQS1R65iWpXJ3Izqx1dFRqbXehtQJPIV4w0NAb7IFPrKZ2hp-ixc6zpIHEkkbwOKgIdS5vLliH9UFgUGpZ_Fhf0f6l2x_RLEMd-ya4pWHhAcDaR98KR01&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=XqZ127bEyPdOh7ycPOmuxULVgtHVUUKsQs-lkd4RsL_Z7pCdxViuDal4Cc0yZ5fynifQq9hFXq82kYYQMbn2cw7-JEqZYkwi34ih-9M5GSMyGO3d4EKkyPZ_8TQ2TCelXTb6c5gunZf7fQNJZtFcprfNR2oLeLlVwoIOPn4DUCo1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=a6na7sN5w98ZopEJuXhlydSwrgT8vG39JZYYduAfWcaZ9OILpJLQUvPDFCER07dTc5vQhPADYD6eUsWbC8cAl3F3Z0VHPRD8AUnyVVNW4Eq4cf8uiHAjHOu5CBveA37GVsTMprQ9LLp8Eb0wpBlFIG6Khfs34MBtMfk0KGauWNQ1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=kAU7C5_P7jVZU_aco9JDwpAiAfLmP6JA4Ko1r16l2RCrnaDMbWleUVOm_S4y2xrRanHdVsP88pSeb3LXapoFg7SOG8HppqSFPNG0yyd7r9viwaslDWKQa2urhCAAjO_e0Pf1eZn5T6adp779YDqEsz2iwNY2c2RA3MVHZaubIKk1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=p7NG-y8d8LuPWHuow9p6k7hbWKwIdig7xjdB6YwRIE0Wv1b8BCUUEx2A6W_BxZpMcpgMm9YFcyiwbJLNSb-kqPsd26AqmwilLHkLImR3PGCsCHKCJOnWm7209ymwnLmsvgKZBZ6xHg2u3HDTdeC_Zpd90z12XJ1m9brgcxMctziJU5bEO9U85Fl42Cvlju6Z0&t=ffffffff8b3ffb57",
+        "https://www.googletagmanager.com/gtag/js?id=G-V4ESNG1Y68"
+      ],
+      "captcha_marker": false,
+      "view_state_present": false
+    },
+    {
+      "url": "https://apps5.mineco.gob.pe/transparencia/Navegador/Navegar_6.aspx?y=2026&ap=Proyecto",
+      "status": 200,
+      "final_url": "https://apps5.mineco.gob.pe/transparencia/Navegador/Navegar_6.aspx?y=2026&ap=Proyecto",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 43674,
+      "session_cookie_present": true,
+      "official_cut_date": "2026-10-13",
+      "forms": [
+        {
+          "id": "aspnetForm",
+          "action": "Navegar_6.aspx?y=2026&ap=Proyecto",
+          "method": "post"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "__VIEWSTATE",
+          "id": "__VIEWSTATE",
+          "type": "hidden"
+        },
+        {
+          "name": "__EVENTVALIDATION",
+          "id": "__EVENTVALIDATION",
+          "type": "hidden"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTipoGobierno",
+          "id": "ctl00_CPH1_BtnTipoGobierno",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnProgramaPpto",
+          "id": "ctl00_CPH1_BtnProgramaPpto",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuncion",
+          "id": "ctl00_CPH1_BtnFuncion",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuenteAgregada",
+          "id": "ctl00_CPH1_BtnFuenteAgregada",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnRubro",
+          "id": "ctl00_CPH1_BtnRubro",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnGenerica",
+          "id": "ctl00_CPH1_BtnGenerica",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnDepartamentoMeta",
+          "id": "ctl00_CPH1_BtnDepartamentoMeta",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTrimestre",
+          "id": "ctl00_CPH1_BtnTrimestre",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnMes",
+          "id": "ctl00_CPH1_BtnMes",
+          "type": "submit"
+        },
+        {
+          "name": "grp1",
+          "id": "",
+          "type": "radio"
+        }
+      ],
+      "options": [
+        {
+          "value": "1999",
+          "selected": ""
+        },
+        {
+          "value": "2000",
+          "selected": ""
+        },
+        {
+          "value": "2001",
+          "selected": ""
+        },
+        {
+          "value": "2002",
+          "selected": ""
+        },
+        {
+          "value": "2003",
+          "selected": ""
+        },
+        {
+          "value": "2004",
+          "selected": ""
+        },
+        {
+          "value": "2005",
+          "selected": ""
+        },
+        {
+          "value": "2006",
+          "selected": ""
+        },
+        {
+          "value": "2007",
+          "selected": ""
+        },
+        {
+          "value": "2008",
+          "selected": ""
+        },
+        {
+          "value": "2009",
+          "selected": ""
+        },
+        {
+          "value": "2010",
+          "selected": ""
+        },
+        {
+          "value": "2011",
+          "selected": ""
+        },
+        {
+          "value": "2012",
+          "selected": ""
+        },
+        {
+          "value": "2013",
+          "selected": ""
+        },
+        {
+          "value": "2014",
+          "selected": ""
+        },
+        {
+          "value": "2015",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "2017",
+          "selected": ""
+        },
+        {
+          "value": "2018",
+          "selected": ""
+        },
+        {
+          "value": "2019",
+          "selected": ""
+        },
+        {
+          "value": "2020",
+          "selected": ""
+        },
+        {
+          "value": "2021",
+          "selected": ""
+        },
+        {
+          "value": "2022",
+          "selected": ""
+        },
+        {
+          "value": "2023",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": ""
+        },
+        {
+          "value": "2025",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": "selected"
+        },
+        {
+          "value": "ActProy",
+          "selected": ""
+        },
+        {
+          "value": "Actividad",
+          "selected": ""
+        },
+        {
+          "value": "Proyecto",
+          "selected": "selected"
+        }
+      ],
+      "buttons": {
+        "ctl00$CPH1$BtnTipoGobierno": "Nivel de Gobierno",
+        "ctl00$CPH1$BtnProgramaPpto": "Categoría Presupuestal",
+        "ctl00$CPH1$BtnFuncion": "Función",
+        "ctl00$CPH1$BtnFuenteAgregada": "Fuente",
+        "ctl00$CPH1$BtnRubro": "Rubro",
+        "ctl00$CPH1$BtnGenerica": "Genérica",
+        "ctl00$CPH1$BtnDepartamentoMeta": "Departamento",
+        "ctl00$CPH1$BtnTrimestre": "Trimestre",
+        "ctl00$CPH1$BtnMes": "Mes"
+      },
+      "selected": {
+        "ctl00$CPH1$DrpYear": "2026",
+        "ctl00$CPH1$DrpActProy": "Proyecto"
+      },
+      "first_rows": [
+        {
+          "label": "TOTAL",
+          "cells": [
+            "",
+            "TOTAL",
+            "48,594,496,937",
+            "72,687,717,175",
+            "64,751,025,306",
+            "54,616,585,323",
+            "48,815,583,276",
+            "43,906,358,942",
+            "42,472,414,592",
+            "60.4"
+          ]
+        }
+      ],
+      "resources": [
+        "http://transparencia-economica.mef.gob.pe/",
+        "http://www.mef.gob.pe",
+        "https://apps5.mineco.gob.pe/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=7&cb=1014960580",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=1BnuDEX3zORMirQY64la4udKmeI8bD-uloCH3XuEGFe3n2PV6zjgfzu792i6UF5NhFcV74HExP-nBsj8UXI-iCtB2dd9ui8ErXfbSehVIjeSEC9l3cUdCxFq-OkfuG9N4dPkNr03M0wbXbrU1KCJfXu1orDfTSyhojJIEbvkEOY1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=40tcUJdFLPtJWHOpmE0ZbkZIxbVhzwUsHPT-xn4Vg9PvUBMrz8YXY0z-H6A1pNkyvSAo8dVVHpICxy09j9nhqJC1_aISFntzNsS9UGiKFH7SDKqJlkKSjgckmH4GBqZTyRECYpuxLaDXhg42vm5CgRxsjv0j8-O_Z4posTTmNSLq7sppM8b2UBXwop-ibS-Q0&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=DBNzyOhxQn_wJWOr7e4KG9CvIX8PcvYdURL9BWsmhRKx53AbAeGmHfSS1ZDevdC0mSgXmbe42iQKPi9z8LCudXvd6fNhB-InWbXcZyvxr_1rY5ybgkiV6F5IiiF3lVnfkGdgR7FG0re59yUIhLs0f37xxz52kYSXcKPRMIWbmxYoX8ScjNxvzVBhNpeF2Pbn0&t=ffffffff805766b3",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=EZDiIv6pLE1XvRzF-OlkBYvmmQ24Zdft2oXe6EaDML1xe0i6fFPoDjtKfbVoNO7taZrZXcvCGh2A7_uoZAhnvHcFNrG_ZhS9QNXa5TlbtmBDSjdD6OMoYg0tbYS1PoFw29DBnFht57RoF5QV_gpo_bvng8YCpdwSF4idxnhkrP41&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=N6CHJJAA6y9QkRJn5-c2msJksPNy7UBwwF4LNGpeeuyB0ZrxQ4unHNDTQS1R65iWpXJ3Izqx1dFRqbXehtQJPIV4w0NAb7IFPrKZ2hp-ixc6zpIHEkkbwOKgIdS5vLliH9UFgUGpZ_Fhf0f6l2x_RLEMd-ya4pWHhAcDaR98KR01&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=XqZ127bEyPdOh7ycPOmuxULVgtHVUUKsQs-lkd4RsL_Z7pCdxViuDal4Cc0yZ5fynifQq9hFXq82kYYQMbn2cw7-JEqZYkwi34ih-9M5GSMyGO3d4EKkyPZ_8TQ2TCelXTb6c5gunZf7fQNJZtFcprfNR2oLeLlVwoIOPn4DUCo1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=a6na7sN5w98ZopEJuXhlydSwrgT8vG39JZYYduAfWcaZ9OILpJLQUvPDFCER07dTc5vQhPADYD6eUsWbC8cAl3F3Z0VHPRD8AUnyVVNW4Eq4cf8uiHAjHOu5CBveA37GVsTMprQ9LLp8Eb0wpBlFIG6Khfs34MBtMfk0KGauWNQ1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=kAU7C5_P7jVZU_aco9JDwpAiAfLmP6JA4Ko1r16l2RCrnaDMbWleUVOm_S4y2xrRanHdVsP88pSeb3LXapoFg7SOG8HppqSFPNG0yyd7r9viwaslDWKQa2urhCAAjO_e0Pf1eZn5T6adp779YDqEsz2iwNY2c2RA3MVHZaubIKk1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=p7NG-y8d8LuPWHuow9p6k7hbWKwIdig7xjdB6YwRIE0Wv1b8BCUUEx2A6W_BxZpMcpgMm9YFcyiwbJLNSb-kqPsd26AqmwilLHkLImR3PGCsCHKCJOnWm7209ymwnLmsvgKZBZ6xHg2u3HDTdeC_Zpd90z12XJ1m9brgcxMctziJU5bEO9U85Fl42Cvlju6Z0&t=ffffffff8b3ffb57",
+        "https://www.googletagmanager.com/gtag/js?id=G-V4ESNG1Y68"
+      ],
+      "captcha_marker": false,
+      "view_state_present": false
+    },
+    {
+      "url": "https://apps5.mineco.gob.pe/transparencia/Navegador/Navegar_6.aspx?y=2026&ap=Actividad",
+      "status": 200,
+      "final_url": "https://apps5.mineco.gob.pe/transparencia/Navegador/Navegar_6.aspx?y=2026&ap=Actividad",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 43692,
+      "session_cookie_present": true,
+      "official_cut_date": "2026-10-13",
+      "forms": [
+        {
+          "id": "aspnetForm",
+          "action": "Navegar_6.aspx?y=2026&ap=Actividad",
+          "method": "post"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "__VIEWSTATE",
+          "id": "__VIEWSTATE",
+          "type": "hidden"
+        },
+        {
+          "name": "__EVENTVALIDATION",
+          "id": "__EVENTVALIDATION",
+          "type": "hidden"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTipoGobierno",
+          "id": "ctl00_CPH1_BtnTipoGobierno",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnProgramaPpto",
+          "id": "ctl00_CPH1_BtnProgramaPpto",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuncion",
+          "id": "ctl00_CPH1_BtnFuncion",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuenteAgregada",
+          "id": "ctl00_CPH1_BtnFuenteAgregada",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnRubro",
+          "id": "ctl00_CPH1_BtnRubro",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnGenerica",
+          "id": "ctl00_CPH1_BtnGenerica",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnDepartamentoMeta",
+          "id": "ctl00_CPH1_BtnDepartamentoMeta",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTrimestre",
+          "id": "ctl00_CPH1_BtnTrimestre",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnMes",
+          "id": "ctl00_CPH1_BtnMes",
+          "type": "submit"
+        },
+        {
+          "name": "grp1",
+          "id": "",
+          "type": "radio"
+        }
+      ],
+      "options": [
+        {
+          "value": "1999",
+          "selected": ""
+        },
+        {
+          "value": "2000",
+          "selected": ""
+        },
+        {
+          "value": "2001",
+          "selected": ""
+        },
+        {
+          "value": "2002",
+          "selected": ""
+        },
+        {
+          "value": "2003",
+          "selected": ""
+        },
+        {
+          "value": "2004",
+          "selected": ""
+        },
+        {
+          "value": "2005",
+          "selected": ""
+        },
+        {
+          "value": "2006",
+          "selected": ""
+        },
+        {
+          "value": "2007",
+          "selected": ""
+        },
+        {
+          "value": "2008",
+          "selected": ""
+        },
+        {
+          "value": "2009",
+          "selected": ""
+        },
+        {
+          "value": "2010",
+          "selected": ""
+        },
+        {
+          "value": "2011",
+          "selected": ""
+        },
+        {
+          "value": "2012",
+          "selected": ""
+        },
+        {
+          "value": "2013",
+          "selected": ""
+        },
+        {
+          "value": "2014",
+          "selected": ""
+        },
+        {
+          "value": "2015",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "2017",
+          "selected": ""
+        },
+        {
+          "value": "2018",
+          "selected": ""
+        },
+        {
+          "value": "2019",
+          "selected": ""
+        },
+        {
+          "value": "2020",
+          "selected": ""
+        },
+        {
+          "value": "2021",
+          "selected": ""
+        },
+        {
+          "value": "2022",
+          "selected": ""
+        },
+        {
+          "value": "2023",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": ""
+        },
+        {
+          "value": "2025",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": "selected"
+        },
+        {
+          "value": "ActProy",
+          "selected": ""
+        },
+        {
+          "value": "Actividad",
+          "selected": "selected"
+        },
+        {
+          "value": "Proyecto",
+          "selected": ""
+        }
+      ],
+      "buttons": {
+        "ctl00$CPH1$BtnTipoGobierno": "Nivel de Gobierno",
+        "ctl00$CPH1$BtnProgramaPpto": "Categoría Presupuestal",
+        "ctl00$CPH1$BtnFuncion": "Función",
+        "ctl00$CPH1$BtnFuenteAgregada": "Fuente",
+        "ctl00$CPH1$BtnRubro": "Rubro",
+        "ctl00$CPH1$BtnGenerica": "Genérica",
+        "ctl00$CPH1$BtnDepartamentoMeta": "Departamento",
+        "ctl00$CPH1$BtnTrimestre": "Trimestre",
+        "ctl00$CPH1$BtnMes": "Mes"
+      },
+      "selected": {
+        "ctl00$CPH1$DrpYear": "2026",
+        "ctl00$CPH1$DrpActProy": "Actividad"
+      },
+      "first_rows": [
+        {
+          "label": "TOTAL",
+          "cells": [
+            "",
+            "TOTAL",
+            "208,967,122,206",
+            "216,765,875,016",
+            "201,294,263,223",
+            "192,137,416,828",
+            "165,543,104,590",
+            "157,991,358,203",
+            "156,174,266,229",
+            "72.9"
+          ]
+        }
+      ],
+      "resources": [
+        "http://transparencia-economica.mef.gob.pe/",
+        "http://www.mef.gob.pe",
+        "https://apps5.mineco.gob.pe/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=9&cb=1684716066",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=1BnuDEX3zORMirQY64la4udKmeI8bD-uloCH3XuEGFe3n2PV6zjgfzu792i6UF5NhFcV74HExP-nBsj8UXI-iCtB2dd9ui8ErXfbSehVIjeSEC9l3cUdCxFq-OkfuG9N4dPkNr03M0wbXbrU1KCJfXu1orDfTSyhojJIEbvkEOY1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=40tcUJdFLPtJWHOpmE0ZbkZIxbVhzwUsHPT-xn4Vg9PvUBMrz8YXY0z-H6A1pNkyvSAo8dVVHpICxy09j9nhqJC1_aISFntzNsS9UGiKFH7SDKqJlkKSjgckmH4GBqZTyRECYpuxLaDXhg42vm5CgRxsjv0j8-O_Z4posTTmNSLq7sppM8b2UBXwop-ibS-Q0&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=DBNzyOhxQn_wJWOr7e4KG9CvIX8PcvYdURL9BWsmhRKx53AbAeGmHfSS1ZDevdC0mSgXmbe42iQKPi9z8LCudXvd6fNhB-InWbXcZyvxr_1rY5ybgkiV6F5IiiF3lVnfkGdgR7FG0re59yUIhLs0f37xxz52kYSXcKPRMIWbmxYoX8ScjNxvzVBhNpeF2Pbn0&t=ffffffff805766b3",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=EZDiIv6pLE1XvRzF-OlkBYvmmQ24Zdft2oXe6EaDML1xe0i6fFPoDjtKfbVoNO7taZrZXcvCGh2A7_uoZAhnvHcFNrG_ZhS9QNXa5TlbtmBDSjdD6OMoYg0tbYS1PoFw29DBnFht57RoF5QV_gpo_bvng8YCpdwSF4idxnhkrP41&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=N6CHJJAA6y9QkRJn5-c2msJksPNy7UBwwF4LNGpeeuyB0ZrxQ4unHNDTQS1R65iWpXJ3Izqx1dFRqbXehtQJPIV4w0NAb7IFPrKZ2hp-ixc6zpIHEkkbwOKgIdS5vLliH9UFgUGpZ_Fhf0f6l2x_RLEMd-ya4pWHhAcDaR98KR01&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=XqZ127bEyPdOh7ycPOmuxULVgtHVUUKsQs-lkd4RsL_Z7pCdxViuDal4Cc0yZ5fynifQq9hFXq82kYYQMbn2cw7-JEqZYkwi34ih-9M5GSMyGO3d4EKkyPZ_8TQ2TCelXTb6c5gunZf7fQNJZtFcprfNR2oLeLlVwoIOPn4DUCo1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=a6na7sN5w98ZopEJuXhlydSwrgT8vG39JZYYduAfWcaZ9OILpJLQUvPDFCER07dTc5vQhPADYD6eUsWbC8cAl3F3Z0VHPRD8AUnyVVNW4Eq4cf8uiHAjHOu5CBveA37GVsTMprQ9LLp8Eb0wpBlFIG6Khfs34MBtMfk0KGauWNQ1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=kAU7C5_P7jVZU_aco9JDwpAiAfLmP6JA4Ko1r16l2RCrnaDMbWleUVOm_S4y2xrRanHdVsP88pSeb3LXapoFg7SOG8HppqSFPNG0yyd7r9viwaslDWKQa2urhCAAjO_e0Pf1eZn5T6adp779YDqEsz2iwNY2c2RA3MVHZaubIKk1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=p7NG-y8d8LuPWHuow9p6k7hbWKwIdig7xjdB6YwRIE0Wv1b8BCUUEx2A6W_BxZpMcpgMm9YFcyiwbJLNSb-kqPsd26AqmwilLHkLImR3PGCsCHKCJOnWm7209ymwnLmsvgKZBZ6xHg2u3HDTdeC_Zpd90z12XJ1m9brgcxMctziJU5bEO9U85Fl42Cvlju6Z0&t=ffffffff8b3ffb57",
+        "https://www.googletagmanager.com/gtag/js?id=G-V4ESNG1Y68"
+      ],
+      "captcha_marker": false,
+      "view_state_present": false
+    },
+    {
+      "url": "https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2024&ap=ActProy",
+      "status": 200,
+      "final_url": "https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2024&ap=ActProy",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 44129,
+      "session_cookie_present": true,
+      "official_cut_date": "2026-09-30",
+      "forms": [
+        {
+          "id": "aspnetForm",
+          "action": "Navegar_6.aspx?y=2024&ap=ActProy",
+          "method": "post"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "__VIEWSTATE",
+          "id": "__VIEWSTATE",
+          "type": "hidden"
+        },
+        {
+          "name": "__EVENTVALIDATION",
+          "id": "__EVENTVALIDATION",
+          "type": "hidden"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTipoGobierno",
+          "id": "ctl00_CPH1_BtnTipoGobierno",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnProgramaPpto",
+          "id": "ctl00_CPH1_BtnProgramaPpto",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuncion",
+          "id": "ctl00_CPH1_BtnFuncion",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuenteAgregada",
+          "id": "ctl00_CPH1_BtnFuenteAgregada",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnRubro",
+          "id": "ctl00_CPH1_BtnRubro",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnGenerica",
+          "id": "ctl00_CPH1_BtnGenerica",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnDepartamentoMeta",
+          "id": "ctl00_CPH1_BtnDepartamentoMeta",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTrimestre",
+          "id": "ctl00_CPH1_BtnTrimestre",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnMes",
+          "id": "ctl00_CPH1_BtnMes",
+          "type": "submit"
+        },
+        {
+          "name": "grp1",
+          "id": "",
+          "type": "radio"
+        }
+      ],
+      "options": [
+        {
+          "value": "1999",
+          "selected": ""
+        },
+        {
+          "value": "2000",
+          "selected": ""
+        },
+        {
+          "value": "2001",
+          "selected": ""
+        },
+        {
+          "value": "2002",
+          "selected": ""
+        },
+        {
+          "value": "2003",
+          "selected": ""
+        },
+        {
+          "value": "2004",
+          "selected": ""
+        },
+        {
+          "value": "2005",
+          "selected": ""
+        },
+        {
+          "value": "2006",
+          "selected": ""
+        },
+        {
+          "value": "2007",
+          "selected": ""
+        },
+        {
+          "value": "2008",
+          "selected": ""
+        },
+        {
+          "value": "2009",
+          "selected": ""
+        },
+        {
+          "value": "2010",
+          "selected": ""
+        },
+        {
+          "value": "2011",
+          "selected": ""
+        },
+        {
+          "value": "2012",
+          "selected": ""
+        },
+        {
+          "value": "2013",
+          "selected": ""
+        },
+        {
+          "value": "2014",
+          "selected": ""
+        },
+        {
+          "value": "2015",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "2017",
+          "selected": ""
+        },
+        {
+          "value": "2018",
+          "selected": ""
+        },
+        {
+          "value": "2019",
+          "selected": ""
+        },
+        {
+          "value": "2020",
+          "selected": ""
+        },
+        {
+          "value": "2021",
+          "selected": ""
+        },
+        {
+          "value": "2022",
+          "selected": ""
+        },
+        {
+          "value": "2023",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": "selected"
+        },
+        {
+          "value": "2025",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": ""
+        },
+        {
+          "value": "ActProy",
+          "selected": "selected"
+        },
+        {
+          "value": "Actividad",
+          "selected": ""
+        },
+        {
+          "value": "Proyecto",
+          "selected": ""
+        }
+      ],
+      "buttons": {
+        "ctl00$CPH1$BtnTipoGobierno": "Nivel de Gobierno",
+        "ctl00$CPH1$BtnProgramaPpto": "Categoría Presupuestal",
+        "ctl00$CPH1$BtnFuncion": "Función",
+        "ctl00$CPH1$BtnFuenteAgregada": "Fuente",
+        "ctl00$CPH1$BtnRubro": "Rubro",
+        "ctl00$CPH1$BtnGenerica": "Genérica",
+        "ctl00$CPH1$BtnDepartamentoMeta": "Departamento",
+        "ctl00$CPH1$BtnTrimestre": "Trimestre",
+        "ctl00$CPH1$BtnMes": "Mes"
+      },
+      "selected": {
+        "ctl00$CPH1$DrpYear": "2024",
+        "ctl00$CPH1$DrpActProy": "ActProy"
+      },
+      "first_rows": [
+        {
+          "label": "TOTAL",
+          "cells": [
+            "",
+            "TOTAL",
+            "240,806,216,645",
+            "262,058,019,205",
+            "251,195,425,688",
+            "244,031,793,912",
+            "241,589,010,353",
+            "238,893,055,447",
+            "238,459,697,695",
+            "91.2"
+          ]
+        }
+      ],
+      "resources": [
+        "http://transparencia-economica.mef.gob.pe/",
+        "http://www.mef.gob.pe",
+        "https://apps5.mineco.gob.pe/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=10&cb=189446499",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=1BnuDEX3zORMirQY64la4udKmeI8bD-uloCH3XuEGFe3n2PV6zjgfzu792i6UF5NhFcV74HExP-nBsj8UXI-iCtB2dd9ui8ErXfbSehVIjeSEC9l3cUdCxFq-OkfuG9N4dPkNr03M0wbXbrU1KCJfXu1orDfTSyhojJIEbvkEOY1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=40tcUJdFLPtJWHOpmE0ZbkZIxbVhzwUsHPT-xn4Vg9PvUBMrz8YXY0z-H6A1pNkyvSAo8dVVHpICxy09j9nhqJC1_aISFntzNsS9UGiKFH7SDKqJlkKSjgckmH4GBqZTyRECYpuxLaDXhg42vm5CgRxsjv0j8-O_Z4posTTmNSLq7sppM8b2UBXwop-ibS-Q0&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=DBNzyOhxQn_wJWOr7e4KG9CvIX8PcvYdURL9BWsmhRKx53AbAeGmHfSS1ZDevdC0mSgXmbe42iQKPi9z8LCudXvd6fNhB-InWbXcZyvxr_1rY5ybgkiV6F5IiiF3lVnfkGdgR7FG0re59yUIhLs0f37xxz52kYSXcKPRMIWbmxYoX8ScjNxvzVBhNpeF2Pbn0&t=ffffffff805766b3",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=EZDiIv6pLE1XvRzF-OlkBYvmmQ24Zdft2oXe6EaDML1xe0i6fFPoDjtKfbVoNO7taZrZXcvCGh2A7_uoZAhnvHcFNrG_ZhS9QNXa5TlbtmBDSjdD6OMoYg0tbYS1PoFw29DBnFht57RoF5QV_gpo_bvng8YCpdwSF4idxnhkrP41&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=N6CHJJAA6y9QkRJn5-c2msJksPNy7UBwwF4LNGpeeuyB0ZrxQ4unHNDTQS1R65iWpXJ3Izqx1dFRqbXehtQJPIV4w0NAb7IFPrKZ2hp-ixc6zpIHEkkbwOKgIdS5vLliH9UFgUGpZ_Fhf0f6l2x_RLEMd-ya4pWHhAcDaR98KR01&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=XqZ127bEyPdOh7ycPOmuxULVgtHVUUKsQs-lkd4RsL_Z7pCdxViuDal4Cc0yZ5fynifQq9hFXq82kYYQMbn2cw7-JEqZYkwi34ih-9M5GSMyGO3d4EKkyPZ_8TQ2TCelXTb6c5gunZf7fQNJZtFcprfNR2oLeLlVwoIOPn4DUCo1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=a6na7sN5w98ZopEJuXhlydSwrgT8vG39JZYYduAfWcaZ9OILpJLQUvPDFCER07dTc5vQhPADYD6eUsWbC8cAl3F3Z0VHPRD8AUnyVVNW4Eq4cf8uiHAjHOu5CBveA37GVsTMprQ9LLp8Eb0wpBlFIG6Khfs34MBtMfk0KGauWNQ1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=kAU7C5_P7jVZU_aco9JDwpAiAfLmP6JA4Ko1r16l2RCrnaDMbWleUVOm_S4y2xrRanHdVsP88pSeb3LXapoFg7SOG8HppqSFPNG0yyd7r9viwaslDWKQa2urhCAAjO_e0Pf1eZn5T6adp779YDqEsz2iwNY2c2RA3MVHZaubIKk1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=p7NG-y8d8LuPWHuow9p6k7hbWKwIdig7xjdB6YwRIE0Wv1b8BCUUEx2A6W_BxZpMcpgMm9YFcyiwbJLNSb-kqPsd26AqmwilLHkLImR3PGCsCHKCJOnWm7209ymwnLmsvgKZBZ6xHg2u3HDTdeC_Zpd90z12XJ1m9brgcxMctziJU5bEO9U85Fl42Cvlju6Z0&t=ffffffff8b3ffb57",
+        "https://www.googletagmanager.com/gtag/js?id=G-PBCDT7HW28"
+      ],
+      "captcha_marker": false,
+      "view_state_present": false
+    },
+    {
+      "url": "https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2024&ap=Proyecto",
+      "status": 200,
+      "final_url": "https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2024&ap=Proyecto",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 44148,
+      "session_cookie_present": true,
+      "official_cut_date": "2026-09-30",
+      "forms": [
+        {
+          "id": "aspnetForm",
+          "action": "Navegar_6.aspx?y=2024&ap=Proyecto",
+          "method": "post"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "__VIEWSTATE",
+          "id": "__VIEWSTATE",
+          "type": "hidden"
+        },
+        {
+          "name": "__EVENTVALIDATION",
+          "id": "__EVENTVALIDATION",
+          "type": "hidden"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTipoGobierno",
+          "id": "ctl00_CPH1_BtnTipoGobierno",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnProgramaPpto",
+          "id": "ctl00_CPH1_BtnProgramaPpto",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuncion",
+          "id": "ctl00_CPH1_BtnFuncion",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuenteAgregada",
+          "id": "ctl00_CPH1_BtnFuenteAgregada",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnRubro",
+          "id": "ctl00_CPH1_BtnRubro",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnGenerica",
+          "id": "ctl00_CPH1_BtnGenerica",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnDepartamentoMeta",
+          "id": "ctl00_CPH1_BtnDepartamentoMeta",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTrimestre",
+          "id": "ctl00_CPH1_BtnTrimestre",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnMes",
+          "id": "ctl00_CPH1_BtnMes",
+          "type": "submit"
+        },
+        {
+          "name": "grp1",
+          "id": "",
+          "type": "radio"
+        }
+      ],
+      "options": [
+        {
+          "value": "1999",
+          "selected": ""
+        },
+        {
+          "value": "2000",
+          "selected": ""
+        },
+        {
+          "value": "2001",
+          "selected": ""
+        },
+        {
+          "value": "2002",
+          "selected": ""
+        },
+        {
+          "value": "2003",
+          "selected": ""
+        },
+        {
+          "value": "2004",
+          "selected": ""
+        },
+        {
+          "value": "2005",
+          "selected": ""
+        },
+        {
+          "value": "2006",
+          "selected": ""
+        },
+        {
+          "value": "2007",
+          "selected": ""
+        },
+        {
+          "value": "2008",
+          "selected": ""
+        },
+        {
+          "value": "2009",
+          "selected": ""
+        },
+        {
+          "value": "2010",
+          "selected": ""
+        },
+        {
+          "value": "2011",
+          "selected": ""
+        },
+        {
+          "value": "2012",
+          "selected": ""
+        },
+        {
+          "value": "2013",
+          "selected": ""
+        },
+        {
+          "value": "2014",
+          "selected": ""
+        },
+        {
+          "value": "2015",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "2017",
+          "selected": ""
+        },
+        {
+          "value": "2018",
+          "selected": ""
+        },
+        {
+          "value": "2019",
+          "selected": ""
+        },
+        {
+          "value": "2020",
+          "selected": ""
+        },
+        {
+          "value": "2021",
+          "selected": ""
+        },
+        {
+          "value": "2022",
+          "selected": ""
+        },
+        {
+          "value": "2023",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": "selected"
+        },
+        {
+          "value": "2025",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": ""
+        },
+        {
+          "value": "ActProy",
+          "selected": ""
+        },
+        {
+          "value": "Actividad",
+          "selected": ""
+        },
+        {
+          "value": "Proyecto",
+          "selected": "selected"
+        }
+      ],
+      "buttons": {
+        "ctl00$CPH1$BtnTipoGobierno": "Nivel de Gobierno",
+        "ctl00$CPH1$BtnProgramaPpto": "Categoría Presupuestal",
+        "ctl00$CPH1$BtnFuncion": "Función",
+        "ctl00$CPH1$BtnFuenteAgregada": "Fuente",
+        "ctl00$CPH1$BtnRubro": "Rubro",
+        "ctl00$CPH1$BtnGenerica": "Genérica",
+        "ctl00$CPH1$BtnDepartamentoMeta": "Departamento",
+        "ctl00$CPH1$BtnTrimestre": "Trimestre",
+        "ctl00$CPH1$BtnMes": "Mes"
+      },
+      "selected": {
+        "ctl00$CPH1$DrpYear": "2024",
+        "ctl00$CPH1$DrpActProy": "Proyecto"
+      },
+      "first_rows": [
+        {
+          "label": "TOTAL",
+          "cells": [
+            "",
+            "TOTAL",
+            "56,233,353,054",
+            "70,130,033,598",
+            "66,678,606,583",
+            "61,364,174,980",
+            "59,447,895,430",
+            "57,168,259,898",
+            "57,118,903,075",
+            "81.5"
+          ]
+        }
+      ],
+      "resources": [
+        "http://transparencia-economica.mef.gob.pe/",
+        "http://www.mef.gob.pe",
+        "https://apps5.mineco.gob.pe/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=11&cb=2128962301",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=1BnuDEX3zORMirQY64la4udKmeI8bD-uloCH3XuEGFe3n2PV6zjgfzu792i6UF5NhFcV74HExP-nBsj8UXI-iCtB2dd9ui8ErXfbSehVIjeSEC9l3cUdCxFq-OkfuG9N4dPkNr03M0wbXbrU1KCJfXu1orDfTSyhojJIEbvkEOY1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=40tcUJdFLPtJWHOpmE0ZbkZIxbVhzwUsHPT-xn4Vg9PvUBMrz8YXY0z-H6A1pNkyvSAo8dVVHpICxy09j9nhqJC1_aISFntzNsS9UGiKFH7SDKqJlkKSjgckmH4GBqZTyRECYpuxLaDXhg42vm5CgRxsjv0j8-O_Z4posTTmNSLq7sppM8b2UBXwop-ibS-Q0&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=DBNzyOhxQn_wJWOr7e4KG9CvIX8PcvYdURL9BWsmhRKx53AbAeGmHfSS1ZDevdC0mSgXmbe42iQKPi9z8LCudXvd6fNhB-InWbXcZyvxr_1rY5ybgkiV6F5IiiF3lVnfkGdgR7FG0re59yUIhLs0f37xxz52kYSXcKPRMIWbmxYoX8ScjNxvzVBhNpeF2Pbn0&t=ffffffff805766b3",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=EZDiIv6pLE1XvRzF-OlkBYvmmQ24Zdft2oXe6EaDML1xe0i6fFPoDjtKfbVoNO7taZrZXcvCGh2A7_uoZAhnvHcFNrG_ZhS9QNXa5TlbtmBDSjdD6OMoYg0tbYS1PoFw29DBnFht57RoF5QV_gpo_bvng8YCpdwSF4idxnhkrP41&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=N6CHJJAA6y9QkRJn5-c2msJksPNy7UBwwF4LNGpeeuyB0ZrxQ4unHNDTQS1R65iWpXJ3Izqx1dFRqbXehtQJPIV4w0NAb7IFPrKZ2hp-ixc6zpIHEkkbwOKgIdS5vLliH9UFgUGpZ_Fhf0f6l2x_RLEMd-ya4pWHhAcDaR98KR01&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=XqZ127bEyPdOh7ycPOmuxULVgtHVUUKsQs-lkd4RsL_Z7pCdxViuDal4Cc0yZ5fynifQq9hFXq82kYYQMbn2cw7-JEqZYkwi34ih-9M5GSMyGO3d4EKkyPZ_8TQ2TCelXTb6c5gunZf7fQNJZtFcprfNR2oLeLlVwoIOPn4DUCo1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=a6na7sN5w98ZopEJuXhlydSwrgT8vG39JZYYduAfWcaZ9OILpJLQUvPDFCER07dTc5vQhPADYD6eUsWbC8cAl3F3Z0VHPRD8AUnyVVNW4Eq4cf8uiHAjHOu5CBveA37GVsTMprQ9LLp8Eb0wpBlFIG6Khfs34MBtMfk0KGauWNQ1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=kAU7C5_P7jVZU_aco9JDwpAiAfLmP6JA4Ko1r16l2RCrnaDMbWleUVOm_S4y2xrRanHdVsP88pSeb3LXapoFg7SOG8HppqSFPNG0yyd7r9viwaslDWKQa2urhCAAjO_e0Pf1eZn5T6adp779YDqEsz2iwNY2c2RA3MVHZaubIKk1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=p7NG-y8d8LuPWHuow9p6k7hbWKwIdig7xjdB6YwRIE0Wv1b8BCUUEx2A6W_BxZpMcpgMm9YFcyiwbJLNSb-kqPsd26AqmwilLHkLImR3PGCsCHKCJOnWm7209ymwnLmsvgKZBZ6xHg2u3HDTdeC_Zpd90z12XJ1m9brgcxMctziJU5bEO9U85Fl42Cvlju6Z0&t=ffffffff8b3ffb57",
+        "https://www.googletagmanager.com/gtag/js?id=G-PBCDT7HW28"
+      ],
+      "captcha_marker": false,
+      "view_state_present": false
+    },
+    {
+      "url": "https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2024&ap=Actividad",
+      "status": 200,
+      "final_url": "https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2024&ap=Actividad",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 44175,
+      "session_cookie_present": true,
+      "official_cut_date": "2026-09-30",
+      "forms": [
+        {
+          "id": "aspnetForm",
+          "action": "Navegar_6.aspx?y=2024&ap=Actividad",
+          "method": "post"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "__VIEWSTATE",
+          "id": "__VIEWSTATE",
+          "type": "hidden"
+        },
+        {
+          "name": "__EVENTVALIDATION",
+          "id": "__EVENTVALIDATION",
+          "type": "hidden"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTipoGobierno",
+          "id": "ctl00_CPH1_BtnTipoGobierno",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnProgramaPpto",
+          "id": "ctl00_CPH1_BtnProgramaPpto",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuncion",
+          "id": "ctl00_CPH1_BtnFuncion",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuenteAgregada",
+          "id": "ctl00_CPH1_BtnFuenteAgregada",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnRubro",
+          "id": "ctl00_CPH1_BtnRubro",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnGenerica",
+          "id": "ctl00_CPH1_BtnGenerica",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnDepartamentoMeta",
+          "id": "ctl00_CPH1_BtnDepartamentoMeta",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTrimestre",
+          "id": "ctl00_CPH1_BtnTrimestre",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnMes",
+          "id": "ctl00_CPH1_BtnMes",
+          "type": "submit"
+        },
+        {
+          "name": "grp1",
+          "id": "",
+          "type": "radio"
+        }
+      ],
+      "options": [
+        {
+          "value": "1999",
+          "selected": ""
+        },
+        {
+          "value": "2000",
+          "selected": ""
+        },
+        {
+          "value": "2001",
+          "selected": ""
+        },
+        {
+          "value": "2002",
+          "selected": ""
+        },
+        {
+          "value": "2003",
+          "selected": ""
+        },
+        {
+          "value": "2004",
+          "selected": ""
+        },
+        {
+          "value": "2005",
+          "selected": ""
+        },
+        {
+          "value": "2006",
+          "selected": ""
+        },
+        {
+          "value": "2007",
+          "selected": ""
+        },
+        {
+          "value": "2008",
+          "selected": ""
+        },
+        {
+          "value": "2009",
+          "selected": ""
+        },
+        {
+          "value": "2010",
+          "selected": ""
+        },
+        {
+          "value": "2011",
+          "selected": ""
+        },
+        {
+          "value": "2012",
+          "selected": ""
+        },
+        {
+          "value": "2013",
+          "selected": ""
+        },
+        {
+          "value": "2014",
+          "selected": ""
+        },
+        {
+          "value": "2015",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "2017",
+          "selected": ""
+        },
+        {
+          "value": "2018",
+          "selected": ""
+        },
+        {
+          "value": "2019",
+          "selected": ""
+        },
+        {
+          "value": "2020",
+          "selected": ""
+        },
+        {
+          "value": "2021",
+          "selected": ""
+        },
+        {
+          "value": "2022",
+          "selected": ""
+        },
+        {
+          "value": "2023",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": "selected"
+        },
+        {
+          "value": "2025",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": ""
+        },
+        {
+          "value": "ActProy",
+          "selected": ""
+        },
+        {
+          "value": "Actividad",
+          "selected": "selected"
+        },
+        {
+          "value": "Proyecto",
+          "selected": ""
+        }
+      ],
+      "buttons": {
+        "ctl00$CPH1$BtnTipoGobierno": "Nivel de Gobierno",
+        "ctl00$CPH1$BtnProgramaPpto": "Categoría Presupuestal",
+        "ctl00$CPH1$BtnFuncion": "Función",
+        "ctl00$CPH1$BtnFuenteAgregada": "Fuente",
+        "ctl00$CPH1$BtnRubro": "Rubro",
+        "ctl00$CPH1$BtnGenerica": "Genérica",
+        "ctl00$CPH1$BtnDepartamentoMeta": "Departamento",
+        "ctl00$CPH1$BtnTrimestre": "Trimestre",
+        "ctl00$CPH1$BtnMes": "Mes"
+      },
+      "selected": {
+        "ctl00$CPH1$DrpYear": "2024",
+        "ctl00$CPH1$DrpActProy": "Actividad"
+      },
+      "first_rows": [
+        {
+          "label": "TOTAL",
+          "cells": [
+            "",
+            "TOTAL",
+            "184,572,863,591",
+            "191,927,985,607",
+            "184,516,819,105",
+            "182,667,618,932",
+            "182,141,114,923",
+            "181,724,795,549",
+            "181,340,794,619",
+            "94.7"
+          ]
+        }
+      ],
+      "resources": [
+        "http://transparencia-economica.mef.gob.pe/",
+        "http://www.mef.gob.pe",
+        "https://apps5.mineco.gob.pe/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=12&cb=505069717",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=1BnuDEX3zORMirQY64la4udKmeI8bD-uloCH3XuEGFe3n2PV6zjgfzu792i6UF5NhFcV74HExP-nBsj8UXI-iCtB2dd9ui8ErXfbSehVIjeSEC9l3cUdCxFq-OkfuG9N4dPkNr03M0wbXbrU1KCJfXu1orDfTSyhojJIEbvkEOY1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=40tcUJdFLPtJWHOpmE0ZbkZIxbVhzwUsHPT-xn4Vg9PvUBMrz8YXY0z-H6A1pNkyvSAo8dVVHpICxy09j9nhqJC1_aISFntzNsS9UGiKFH7SDKqJlkKSjgckmH4GBqZTyRECYpuxLaDXhg42vm5CgRxsjv0j8-O_Z4posTTmNSLq7sppM8b2UBXwop-ibS-Q0&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=DBNzyOhxQn_wJWOr7e4KG9CvIX8PcvYdURL9BWsmhRKx53AbAeGmHfSS1ZDevdC0mSgXmbe42iQKPi9z8LCudXvd6fNhB-InWbXcZyvxr_1rY5ybgkiV6F5IiiF3lVnfkGdgR7FG0re59yUIhLs0f37xxz52kYSXcKPRMIWbmxYoX8ScjNxvzVBhNpeF2Pbn0&t=ffffffff805766b3",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=EZDiIv6pLE1XvRzF-OlkBYvmmQ24Zdft2oXe6EaDML1xe0i6fFPoDjtKfbVoNO7taZrZXcvCGh2A7_uoZAhnvHcFNrG_ZhS9QNXa5TlbtmBDSjdD6OMoYg0tbYS1PoFw29DBnFht57RoF5QV_gpo_bvng8YCpdwSF4idxnhkrP41&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=N6CHJJAA6y9QkRJn5-c2msJksPNy7UBwwF4LNGpeeuyB0ZrxQ4unHNDTQS1R65iWpXJ3Izqx1dFRqbXehtQJPIV4w0NAb7IFPrKZ2hp-ixc6zpIHEkkbwOKgIdS5vLliH9UFgUGpZ_Fhf0f6l2x_RLEMd-ya4pWHhAcDaR98KR01&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=XqZ127bEyPdOh7ycPOmuxULVgtHVUUKsQs-lkd4RsL_Z7pCdxViuDal4Cc0yZ5fynifQq9hFXq82kYYQMbn2cw7-JEqZYkwi34ih-9M5GSMyGO3d4EKkyPZ_8TQ2TCelXTb6c5gunZf7fQNJZtFcprfNR2oLeLlVwoIOPn4DUCo1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=a6na7sN5w98ZopEJuXhlydSwrgT8vG39JZYYduAfWcaZ9OILpJLQUvPDFCER07dTc5vQhPADYD6eUsWbC8cAl3F3Z0VHPRD8AUnyVVNW4Eq4cf8uiHAjHOu5CBveA37GVsTMprQ9LLp8Eb0wpBlFIG6Khfs34MBtMfk0KGauWNQ1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=kAU7C5_P7jVZU_aco9JDwpAiAfLmP6JA4Ko1r16l2RCrnaDMbWleUVOm_S4y2xrRanHdVsP88pSeb3LXapoFg7SOG8HppqSFPNG0yyd7r9viwaslDWKQa2urhCAAjO_e0Pf1eZn5T6adp779YDqEsz2iwNY2c2RA3MVHZaubIKk1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=p7NG-y8d8LuPWHuow9p6k7hbWKwIdig7xjdB6YwRIE0Wv1b8BCUUEx2A6W_BxZpMcpgMm9YFcyiwbJLNSb-kqPsd26AqmwilLHkLImR3PGCsCHKCJOnWm7209ymwnLmsvgKZBZ6xHg2u3HDTdeC_Zpd90z12XJ1m9brgcxMctziJU5bEO9U85Fl42Cvlju6Z0&t=ffffffff8b3ffb57",
+        "https://www.googletagmanager.com/gtag/js?id=G-PBCDT7HW28"
+      ],
+      "captcha_marker": false,
+      "view_state_present": false
+    },
+    {
+      "url": "https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2025&ap=ActProy",
+      "status": 200,
+      "final_url": "https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2025&ap=ActProy",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 44129,
+      "session_cookie_present": true,
+      "official_cut_date": "2026-09-30",
+      "forms": [
+        {
+          "id": "aspnetForm",
+          "action": "Navegar_6.aspx?y=2025&ap=ActProy",
+          "method": "post"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "__VIEWSTATE",
+          "id": "__VIEWSTATE",
+          "type": "hidden"
+        },
+        {
+          "name": "__EVENTVALIDATION",
+          "id": "__EVENTVALIDATION",
+          "type": "hidden"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTipoGobierno",
+          "id": "ctl00_CPH1_BtnTipoGobierno",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnProgramaPpto",
+          "id": "ctl00_CPH1_BtnProgramaPpto",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuncion",
+          "id": "ctl00_CPH1_BtnFuncion",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuenteAgregada",
+          "id": "ctl00_CPH1_BtnFuenteAgregada",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnRubro",
+          "id": "ctl00_CPH1_BtnRubro",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnGenerica",
+          "id": "ctl00_CPH1_BtnGenerica",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnDepartamentoMeta",
+          "id": "ctl00_CPH1_BtnDepartamentoMeta",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTrimestre",
+          "id": "ctl00_CPH1_BtnTrimestre",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnMes",
+          "id": "ctl00_CPH1_BtnMes",
+          "type": "submit"
+        },
+        {
+          "name": "grp1",
+          "id": "",
+          "type": "radio"
+        }
+      ],
+      "options": [
+        {
+          "value": "1999",
+          "selected": ""
+        },
+        {
+          "value": "2000",
+          "selected": ""
+        },
+        {
+          "value": "2001",
+          "selected": ""
+        },
+        {
+          "value": "2002",
+          "selected": ""
+        },
+        {
+          "value": "2003",
+          "selected": ""
+        },
+        {
+          "value": "2004",
+          "selected": ""
+        },
+        {
+          "value": "2005",
+          "selected": ""
+        },
+        {
+          "value": "2006",
+          "selected": ""
+        },
+        {
+          "value": "2007",
+          "selected": ""
+        },
+        {
+          "value": "2008",
+          "selected": ""
+        },
+        {
+          "value": "2009",
+          "selected": ""
+        },
+        {
+          "value": "2010",
+          "selected": ""
+        },
+        {
+          "value": "2011",
+          "selected": ""
+        },
+        {
+          "value": "2012",
+          "selected": ""
+        },
+        {
+          "value": "2013",
+          "selected": ""
+        },
+        {
+          "value": "2014",
+          "selected": ""
+        },
+        {
+          "value": "2015",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "2017",
+          "selected": ""
+        },
+        {
+          "value": "2018",
+          "selected": ""
+        },
+        {
+          "value": "2019",
+          "selected": ""
+        },
+        {
+          "value": "2020",
+          "selected": ""
+        },
+        {
+          "value": "2021",
+          "selected": ""
+        },
+        {
+          "value": "2022",
+          "selected": ""
+        },
+        {
+          "value": "2023",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": ""
+        },
+        {
+          "value": "2025",
+          "selected": "selected"
+        },
+        {
+          "value": "2026",
+          "selected": ""
+        },
+        {
+          "value": "ActProy",
+          "selected": "selected"
+        },
+        {
+          "value": "Actividad",
+          "selected": ""
+        },
+        {
+          "value": "Proyecto",
+          "selected": ""
+        }
+      ],
+      "buttons": {
+        "ctl00$CPH1$BtnTipoGobierno": "Nivel de Gobierno",
+        "ctl00$CPH1$BtnProgramaPpto": "Categoría Presupuestal",
+        "ctl00$CPH1$BtnFuncion": "Función",
+        "ctl00$CPH1$BtnFuenteAgregada": "Fuente",
+        "ctl00$CPH1$BtnRubro": "Rubro",
+        "ctl00$CPH1$BtnGenerica": "Genérica",
+        "ctl00$CPH1$BtnDepartamentoMeta": "Departamento",
+        "ctl00$CPH1$BtnTrimestre": "Trimestre",
+        "ctl00$CPH1$BtnMes": "Mes"
+      },
+      "selected": {
+        "ctl00$CPH1$DrpYear": "2025",
+        "ctl00$CPH1$DrpActProy": "ActProy"
+      },
+      "first_rows": [
+        {
+          "label": "TOTAL",
+          "cells": [
+            "",
+            "TOTAL",
+            "251,801,045,185",
+            "272,450,859,407",
+            "263,078,761,392",
+            "258,771,064,634",
+            "256,967,470,627",
+            "253,675,294,538",
+            "253,318,778,332",
+            "93.1"
+          ]
+        }
+      ],
+      "resources": [
+        "http://transparencia-economica.mef.gob.pe/",
+        "http://www.mef.gob.pe",
+        "https://apps5.mineco.gob.pe/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=13&cb=293601839",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=1BnuDEX3zORMirQY64la4udKmeI8bD-uloCH3XuEGFe3n2PV6zjgfzu792i6UF5NhFcV74HExP-nBsj8UXI-iCtB2dd9ui8ErXfbSehVIjeSEC9l3cUdCxFq-OkfuG9N4dPkNr03M0wbXbrU1KCJfXu1orDfTSyhojJIEbvkEOY1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=40tcUJdFLPtJWHOpmE0ZbkZIxbVhzwUsHPT-xn4Vg9PvUBMrz8YXY0z-H6A1pNkyvSAo8dVVHpICxy09j9nhqJC1_aISFntzNsS9UGiKFH7SDKqJlkKSjgckmH4GBqZTyRECYpuxLaDXhg42vm5CgRxsjv0j8-O_Z4posTTmNSLq7sppM8b2UBXwop-ibS-Q0&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=DBNzyOhxQn_wJWOr7e4KG9CvIX8PcvYdURL9BWsmhRKx53AbAeGmHfSS1ZDevdC0mSgXmbe42iQKPi9z8LCudXvd6fNhB-InWbXcZyvxr_1rY5ybgkiV6F5IiiF3lVnfkGdgR7FG0re59yUIhLs0f37xxz52kYSXcKPRMIWbmxYoX8ScjNxvzVBhNpeF2Pbn0&t=ffffffff805766b3",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=EZDiIv6pLE1XvRzF-OlkBYvmmQ24Zdft2oXe6EaDML1xe0i6fFPoDjtKfbVoNO7taZrZXcvCGh2A7_uoZAhnvHcFNrG_ZhS9QNXa5TlbtmBDSjdD6OMoYg0tbYS1PoFw29DBnFht57RoF5QV_gpo_bvng8YCpdwSF4idxnhkrP41&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=N6CHJJAA6y9QkRJn5-c2msJksPNy7UBwwF4LNGpeeuyB0ZrxQ4unHNDTQS1R65iWpXJ3Izqx1dFRqbXehtQJPIV4w0NAb7IFPrKZ2hp-ixc6zpIHEkkbwOKgIdS5vLliH9UFgUGpZ_Fhf0f6l2x_RLEMd-ya4pWHhAcDaR98KR01&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=XqZ127bEyPdOh7ycPOmuxULVgtHVUUKsQs-lkd4RsL_Z7pCdxViuDal4Cc0yZ5fynifQq9hFXq82kYYQMbn2cw7-JEqZYkwi34ih-9M5GSMyGO3d4EKkyPZ_8TQ2TCelXTb6c5gunZf7fQNJZtFcprfNR2oLeLlVwoIOPn4DUCo1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=a6na7sN5w98ZopEJuXhlydSwrgT8vG39JZYYduAfWcaZ9OILpJLQUvPDFCER07dTc5vQhPADYD6eUsWbC8cAl3F3Z0VHPRD8AUnyVVNW4Eq4cf8uiHAjHOu5CBveA37GVsTMprQ9LLp8Eb0wpBlFIG6Khfs34MBtMfk0KGauWNQ1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=kAU7C5_P7jVZU_aco9JDwpAiAfLmP6JA4Ko1r16l2RCrnaDMbWleUVOm_S4y2xrRanHdVsP88pSeb3LXapoFg7SOG8HppqSFPNG0yyd7r9viwaslDWKQa2urhCAAjO_e0Pf1eZn5T6adp779YDqEsz2iwNY2c2RA3MVHZaubIKk1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=p7NG-y8d8LuPWHuow9p6k7hbWKwIdig7xjdB6YwRIE0Wv1b8BCUUEx2A6W_BxZpMcpgMm9YFcyiwbJLNSb-kqPsd26AqmwilLHkLImR3PGCsCHKCJOnWm7209ymwnLmsvgKZBZ6xHg2u3HDTdeC_Zpd90z12XJ1m9brgcxMctziJU5bEO9U85Fl42Cvlju6Z0&t=ffffffff8b3ffb57",
+        "https://www.googletagmanager.com/gtag/js?id=G-PBCDT7HW28"
+      ],
+      "captcha_marker": false,
+      "view_state_present": false
+    },
+    {
+      "url": "https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2025&ap=Proyecto",
+      "status": 200,
+      "final_url": "https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2025&ap=Proyecto",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 44150,
+      "session_cookie_present": true,
+      "official_cut_date": "2026-09-30",
+      "forms": [
+        {
+          "id": "aspnetForm",
+          "action": "Navegar_6.aspx?y=2025&ap=Proyecto",
+          "method": "post"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "__VIEWSTATE",
+          "id": "__VIEWSTATE",
+          "type": "hidden"
+        },
+        {
+          "name": "__EVENTVALIDATION",
+          "id": "__EVENTVALIDATION",
+          "type": "hidden"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTipoGobierno",
+          "id": "ctl00_CPH1_BtnTipoGobierno",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnProgramaPpto",
+          "id": "ctl00_CPH1_BtnProgramaPpto",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuncion",
+          "id": "ctl00_CPH1_BtnFuncion",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuenteAgregada",
+          "id": "ctl00_CPH1_BtnFuenteAgregada",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnRubro",
+          "id": "ctl00_CPH1_BtnRubro",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnGenerica",
+          "id": "ctl00_CPH1_BtnGenerica",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnDepartamentoMeta",
+          "id": "ctl00_CPH1_BtnDepartamentoMeta",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTrimestre",
+          "id": "ctl00_CPH1_BtnTrimestre",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnMes",
+          "id": "ctl00_CPH1_BtnMes",
+          "type": "submit"
+        },
+        {
+          "name": "grp1",
+          "id": "",
+          "type": "radio"
+        }
+      ],
+      "options": [
+        {
+          "value": "1999",
+          "selected": ""
+        },
+        {
+          "value": "2000",
+          "selected": ""
+        },
+        {
+          "value": "2001",
+          "selected": ""
+        },
+        {
+          "value": "2002",
+          "selected": ""
+        },
+        {
+          "value": "2003",
+          "selected": ""
+        },
+        {
+          "value": "2004",
+          "selected": ""
+        },
+        {
+          "value": "2005",
+          "selected": ""
+        },
+        {
+          "value": "2006",
+          "selected": ""
+        },
+        {
+          "value": "2007",
+          "selected": ""
+        },
+        {
+          "value": "2008",
+          "selected": ""
+        },
+        {
+          "value": "2009",
+          "selected": ""
+        },
+        {
+          "value": "2010",
+          "selected": ""
+        },
+        {
+          "value": "2011",
+          "selected": ""
+        },
+        {
+          "value": "2012",
+          "selected": ""
+        },
+        {
+          "value": "2013",
+          "selected": ""
+        },
+        {
+          "value": "2014",
+          "selected": ""
+        },
+        {
+          "value": "2015",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "2017",
+          "selected": ""
+        },
+        {
+          "value": "2018",
+          "selected": ""
+        },
+        {
+          "value": "2019",
+          "selected": ""
+        },
+        {
+          "value": "2020",
+          "selected": ""
+        },
+        {
+          "value": "2021",
+          "selected": ""
+        },
+        {
+          "value": "2022",
+          "selected": ""
+        },
+        {
+          "value": "2023",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": ""
+        },
+        {
+          "value": "2025",
+          "selected": "selected"
+        },
+        {
+          "value": "2026",
+          "selected": ""
+        },
+        {
+          "value": "ActProy",
+          "selected": ""
+        },
+        {
+          "value": "Actividad",
+          "selected": ""
+        },
+        {
+          "value": "Proyecto",
+          "selected": "selected"
+        }
+      ],
+      "buttons": {
+        "ctl00$CPH1$BtnTipoGobierno": "Nivel de Gobierno",
+        "ctl00$CPH1$BtnProgramaPpto": "Categoría Presupuestal",
+        "ctl00$CPH1$BtnFuncion": "Función",
+        "ctl00$CPH1$BtnFuenteAgregada": "Fuente",
+        "ctl00$CPH1$BtnRubro": "Rubro",
+        "ctl00$CPH1$BtnGenerica": "Genérica",
+        "ctl00$CPH1$BtnDepartamentoMeta": "Departamento",
+        "ctl00$CPH1$BtnTrimestre": "Trimestre",
+        "ctl00$CPH1$BtnMes": "Mes"
+      },
+      "selected": {
+        "ctl00$CPH1$DrpYear": "2025",
+        "ctl00$CPH1$DrpActProy": "Proyecto"
+      },
+      "first_rows": [
+        {
+          "label": "TOTAL",
+          "cells": [
+            "",
+            "TOTAL",
+            "55,741,691,937",
+            "70,948,758,100",
+            "66,991,294,582",
+            "63,737,256,006",
+            "62,347,843,975",
+            "59,782,447,170",
+            "59,653,526,609",
+            "84.3"
+          ]
+        }
+      ],
+      "resources": [
+        "http://transparencia-economica.mef.gob.pe/",
+        "http://www.mef.gob.pe",
+        "https://apps5.mineco.gob.pe/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=14&cb=761006873",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=1BnuDEX3zORMirQY64la4udKmeI8bD-uloCH3XuEGFe3n2PV6zjgfzu792i6UF5NhFcV74HExP-nBsj8UXI-iCtB2dd9ui8ErXfbSehVIjeSEC9l3cUdCxFq-OkfuG9N4dPkNr03M0wbXbrU1KCJfXu1orDfTSyhojJIEbvkEOY1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=40tcUJdFLPtJWHOpmE0ZbkZIxbVhzwUsHPT-xn4Vg9PvUBMrz8YXY0z-H6A1pNkyvSAo8dVVHpICxy09j9nhqJC1_aISFntzNsS9UGiKFH7SDKqJlkKSjgckmH4GBqZTyRECYpuxLaDXhg42vm5CgRxsjv0j8-O_Z4posTTmNSLq7sppM8b2UBXwop-ibS-Q0&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=DBNzyOhxQn_wJWOr7e4KG9CvIX8PcvYdURL9BWsmhRKx53AbAeGmHfSS1ZDevdC0mSgXmbe42iQKPi9z8LCudXvd6fNhB-InWbXcZyvxr_1rY5ybgkiV6F5IiiF3lVnfkGdgR7FG0re59yUIhLs0f37xxz52kYSXcKPRMIWbmxYoX8ScjNxvzVBhNpeF2Pbn0&t=ffffffff805766b3",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=EZDiIv6pLE1XvRzF-OlkBYvmmQ24Zdft2oXe6EaDML1xe0i6fFPoDjtKfbVoNO7taZrZXcvCGh2A7_uoZAhnvHcFNrG_ZhS9QNXa5TlbtmBDSjdD6OMoYg0tbYS1PoFw29DBnFht57RoF5QV_gpo_bvng8YCpdwSF4idxnhkrP41&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=N6CHJJAA6y9QkRJn5-c2msJksPNy7UBwwF4LNGpeeuyB0ZrxQ4unHNDTQS1R65iWpXJ3Izqx1dFRqbXehtQJPIV4w0NAb7IFPrKZ2hp-ixc6zpIHEkkbwOKgIdS5vLliH9UFgUGpZ_Fhf0f6l2x_RLEMd-ya4pWHhAcDaR98KR01&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=XqZ127bEyPdOh7ycPOmuxULVgtHVUUKsQs-lkd4RsL_Z7pCdxViuDal4Cc0yZ5fynifQq9hFXq82kYYQMbn2cw7-JEqZYkwi34ih-9M5GSMyGO3d4EKkyPZ_8TQ2TCelXTb6c5gunZf7fQNJZtFcprfNR2oLeLlVwoIOPn4DUCo1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=a6na7sN5w98ZopEJuXhlydSwrgT8vG39JZYYduAfWcaZ9OILpJLQUvPDFCER07dTc5vQhPADYD6eUsWbC8cAl3F3Z0VHPRD8AUnyVVNW4Eq4cf8uiHAjHOu5CBveA37GVsTMprQ9LLp8Eb0wpBlFIG6Khfs34MBtMfk0KGauWNQ1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=kAU7C5_P7jVZU_aco9JDwpAiAfLmP6JA4Ko1r16l2RCrnaDMbWleUVOm_S4y2xrRanHdVsP88pSeb3LXapoFg7SOG8HppqSFPNG0yyd7r9viwaslDWKQa2urhCAAjO_e0Pf1eZn5T6adp779YDqEsz2iwNY2c2RA3MVHZaubIKk1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=p7NG-y8d8LuPWHuow9p6k7hbWKwIdig7xjdB6YwRIE0Wv1b8BCUUEx2A6W_BxZpMcpgMm9YFcyiwbJLNSb-kqPsd26AqmwilLHkLImR3PGCsCHKCJOnWm7209ymwnLmsvgKZBZ6xHg2u3HDTdeC_Zpd90z12XJ1m9brgcxMctziJU5bEO9U85Fl42Cvlju6Z0&t=ffffffff8b3ffb57",
+        "https://www.googletagmanager.com/gtag/js?id=G-PBCDT7HW28"
+      ],
+      "captcha_marker": false,
+      "view_state_present": false
+    },
+    {
+      "url": "https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2025&ap=Actividad",
+      "status": 200,
+      "final_url": "https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2025&ap=Actividad",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 44176,
+      "session_cookie_present": true,
+      "official_cut_date": "2026-09-30",
+      "forms": [
+        {
+          "id": "aspnetForm",
+          "action": "Navegar_6.aspx?y=2025&ap=Actividad",
+          "method": "post"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "__VIEWSTATE",
+          "id": "__VIEWSTATE",
+          "type": "hidden"
+        },
+        {
+          "name": "__EVENTVALIDATION",
+          "id": "__EVENTVALIDATION",
+          "type": "hidden"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTipoGobierno",
+          "id": "ctl00_CPH1_BtnTipoGobierno",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnProgramaPpto",
+          "id": "ctl00_CPH1_BtnProgramaPpto",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuncion",
+          "id": "ctl00_CPH1_BtnFuncion",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuenteAgregada",
+          "id": "ctl00_CPH1_BtnFuenteAgregada",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnRubro",
+          "id": "ctl00_CPH1_BtnRubro",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnGenerica",
+          "id": "ctl00_CPH1_BtnGenerica",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnDepartamentoMeta",
+          "id": "ctl00_CPH1_BtnDepartamentoMeta",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTrimestre",
+          "id": "ctl00_CPH1_BtnTrimestre",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnMes",
+          "id": "ctl00_CPH1_BtnMes",
+          "type": "submit"
+        },
+        {
+          "name": "grp1",
+          "id": "",
+          "type": "radio"
+        }
+      ],
+      "options": [
+        {
+          "value": "1999",
+          "selected": ""
+        },
+        {
+          "value": "2000",
+          "selected": ""
+        },
+        {
+          "value": "2001",
+          "selected": ""
+        },
+        {
+          "value": "2002",
+          "selected": ""
+        },
+        {
+          "value": "2003",
+          "selected": ""
+        },
+        {
+          "value": "2004",
+          "selected": ""
+        },
+        {
+          "value": "2005",
+          "selected": ""
+        },
+        {
+          "value": "2006",
+          "selected": ""
+        },
+        {
+          "value": "2007",
+          "selected": ""
+        },
+        {
+          "value": "2008",
+          "selected": ""
+        },
+        {
+          "value": "2009",
+          "selected": ""
+        },
+        {
+          "value": "2010",
+          "selected": ""
+        },
+        {
+          "value": "2011",
+          "selected": ""
+        },
+        {
+          "value": "2012",
+          "selected": ""
+        },
+        {
+          "value": "2013",
+          "selected": ""
+        },
+        {
+          "value": "2014",
+          "selected": ""
+        },
+        {
+          "value": "2015",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "2017",
+          "selected": ""
+        },
+        {
+          "value": "2018",
+          "selected": ""
+        },
+        {
+          "value": "2019",
+          "selected": ""
+        },
+        {
+          "value": "2020",
+          "selected": ""
+        },
+        {
+          "value": "2021",
+          "selected": ""
+        },
+        {
+          "value": "2022",
+          "selected": ""
+        },
+        {
+          "value": "2023",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": ""
+        },
+        {
+          "value": "2025",
+          "selected": "selected"
+        },
+        {
+          "value": "2026",
+          "selected": ""
+        },
+        {
+          "value": "ActProy",
+          "selected": ""
+        },
+        {
+          "value": "Actividad",
+          "selected": "selected"
+        },
+        {
+          "value": "Proyecto",
+          "selected": ""
+        }
+      ],
+      "buttons": {
+        "ctl00$CPH1$BtnTipoGobierno": "Nivel de Gobierno",
+        "ctl00$CPH1$BtnProgramaPpto": "Categoría Presupuestal",
+        "ctl00$CPH1$BtnFuncion": "Función",
+        "ctl00$CPH1$BtnFuenteAgregada": "Fuente",
+        "ctl00$CPH1$BtnRubro": "Rubro",
+        "ctl00$CPH1$BtnGenerica": "Genérica",
+        "ctl00$CPH1$BtnDepartamentoMeta": "Departamento",
+        "ctl00$CPH1$BtnTrimestre": "Trimestre",
+        "ctl00$CPH1$BtnMes": "Mes"
+      },
+      "selected": {
+        "ctl00$CPH1$DrpYear": "2025",
+        "ctl00$CPH1$DrpActProy": "Actividad"
+      },
+      "first_rows": [
+        {
+          "label": "TOTAL",
+          "cells": [
+            "",
+            "TOTAL",
+            "196,059,353,248",
+            "201,502,101,307",
+            "196,087,466,810",
+            "195,033,808,628",
+            "194,619,626,652",
+            "193,892,847,368",
+            "193,665,251,723",
+            "96.2"
+          ]
+        }
+      ],
+      "resources": [
+        "http://transparencia-economica.mef.gob.pe/",
+        "http://www.mef.gob.pe",
+        "https://apps5.mineco.gob.pe/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=15&cb=2114811429",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=1BnuDEX3zORMirQY64la4udKmeI8bD-uloCH3XuEGFe3n2PV6zjgfzu792i6UF5NhFcV74HExP-nBsj8UXI-iCtB2dd9ui8ErXfbSehVIjeSEC9l3cUdCxFq-OkfuG9N4dPkNr03M0wbXbrU1KCJfXu1orDfTSyhojJIEbvkEOY1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=40tcUJdFLPtJWHOpmE0ZbkZIxbVhzwUsHPT-xn4Vg9PvUBMrz8YXY0z-H6A1pNkyvSAo8dVVHpICxy09j9nhqJC1_aISFntzNsS9UGiKFH7SDKqJlkKSjgckmH4GBqZTyRECYpuxLaDXhg42vm5CgRxsjv0j8-O_Z4posTTmNSLq7sppM8b2UBXwop-ibS-Q0&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=DBNzyOhxQn_wJWOr7e4KG9CvIX8PcvYdURL9BWsmhRKx53AbAeGmHfSS1ZDevdC0mSgXmbe42iQKPi9z8LCudXvd6fNhB-InWbXcZyvxr_1rY5ybgkiV6F5IiiF3lVnfkGdgR7FG0re59yUIhLs0f37xxz52kYSXcKPRMIWbmxYoX8ScjNxvzVBhNpeF2Pbn0&t=ffffffff805766b3",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=EZDiIv6pLE1XvRzF-OlkBYvmmQ24Zdft2oXe6EaDML1xe0i6fFPoDjtKfbVoNO7taZrZXcvCGh2A7_uoZAhnvHcFNrG_ZhS9QNXa5TlbtmBDSjdD6OMoYg0tbYS1PoFw29DBnFht57RoF5QV_gpo_bvng8YCpdwSF4idxnhkrP41&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=N6CHJJAA6y9QkRJn5-c2msJksPNy7UBwwF4LNGpeeuyB0ZrxQ4unHNDTQS1R65iWpXJ3Izqx1dFRqbXehtQJPIV4w0NAb7IFPrKZ2hp-ixc6zpIHEkkbwOKgIdS5vLliH9UFgUGpZ_Fhf0f6l2x_RLEMd-ya4pWHhAcDaR98KR01&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=XqZ127bEyPdOh7ycPOmuxULVgtHVUUKsQs-lkd4RsL_Z7pCdxViuDal4Cc0yZ5fynifQq9hFXq82kYYQMbn2cw7-JEqZYkwi34ih-9M5GSMyGO3d4EKkyPZ_8TQ2TCelXTb6c5gunZf7fQNJZtFcprfNR2oLeLlVwoIOPn4DUCo1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=a6na7sN5w98ZopEJuXhlydSwrgT8vG39JZYYduAfWcaZ9OILpJLQUvPDFCER07dTc5vQhPADYD6eUsWbC8cAl3F3Z0VHPRD8AUnyVVNW4Eq4cf8uiHAjHOu5CBveA37GVsTMprQ9LLp8Eb0wpBlFIG6Khfs34MBtMfk0KGauWNQ1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=kAU7C5_P7jVZU_aco9JDwpAiAfLmP6JA4Ko1r16l2RCrnaDMbWleUVOm_S4y2xrRanHdVsP88pSeb3LXapoFg7SOG8HppqSFPNG0yyd7r9viwaslDWKQa2urhCAAjO_e0Pf1eZn5T6adp779YDqEsz2iwNY2c2RA3MVHZaubIKk1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=p7NG-y8d8LuPWHuow9p6k7hbWKwIdig7xjdB6YwRIE0Wv1b8BCUUEx2A6W_BxZpMcpgMm9YFcyiwbJLNSb-kqPsd26AqmwilLHkLImR3PGCsCHKCJOnWm7209ymwnLmsvgKZBZ6xHg2u3HDTdeC_Zpd90z12XJ1m9brgcxMctziJU5bEO9U85Fl42Cvlju6Z0&t=ffffffff8b3ffb57",
+        "https://www.googletagmanager.com/gtag/js?id=G-PBCDT7HW28"
+      ],
+      "captcha_marker": false,
+      "view_state_present": false
+    },
+    {
+      "url": "https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2026&ap=ActProy",
+      "status": 200,
+      "final_url": "https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2026&ap=ActProy",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 44130,
+      "session_cookie_present": true,
+      "official_cut_date": "2026-09-30",
+      "forms": [
+        {
+          "id": "aspnetForm",
+          "action": "Navegar_6.aspx?y=2026&ap=ActProy",
+          "method": "post"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "__VIEWSTATE",
+          "id": "__VIEWSTATE",
+          "type": "hidden"
+        },
+        {
+          "name": "__EVENTVALIDATION",
+          "id": "__EVENTVALIDATION",
+          "type": "hidden"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTipoGobierno",
+          "id": "ctl00_CPH1_BtnTipoGobierno",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnProgramaPpto",
+          "id": "ctl00_CPH1_BtnProgramaPpto",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuncion",
+          "id": "ctl00_CPH1_BtnFuncion",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuenteAgregada",
+          "id": "ctl00_CPH1_BtnFuenteAgregada",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnRubro",
+          "id": "ctl00_CPH1_BtnRubro",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnGenerica",
+          "id": "ctl00_CPH1_BtnGenerica",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnDepartamentoMeta",
+          "id": "ctl00_CPH1_BtnDepartamentoMeta",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTrimestre",
+          "id": "ctl00_CPH1_BtnTrimestre",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnMes",
+          "id": "ctl00_CPH1_BtnMes",
+          "type": "submit"
+        },
+        {
+          "name": "grp1",
+          "id": "",
+          "type": "radio"
+        }
+      ],
+      "options": [
+        {
+          "value": "1999",
+          "selected": ""
+        },
+        {
+          "value": "2000",
+          "selected": ""
+        },
+        {
+          "value": "2001",
+          "selected": ""
+        },
+        {
+          "value": "2002",
+          "selected": ""
+        },
+        {
+          "value": "2003",
+          "selected": ""
+        },
+        {
+          "value": "2004",
+          "selected": ""
+        },
+        {
+          "value": "2005",
+          "selected": ""
+        },
+        {
+          "value": "2006",
+          "selected": ""
+        },
+        {
+          "value": "2007",
+          "selected": ""
+        },
+        {
+          "value": "2008",
+          "selected": ""
+        },
+        {
+          "value": "2009",
+          "selected": ""
+        },
+        {
+          "value": "2010",
+          "selected": ""
+        },
+        {
+          "value": "2011",
+          "selected": ""
+        },
+        {
+          "value": "2012",
+          "selected": ""
+        },
+        {
+          "value": "2013",
+          "selected": ""
+        },
+        {
+          "value": "2014",
+          "selected": ""
+        },
+        {
+          "value": "2015",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "2017",
+          "selected": ""
+        },
+        {
+          "value": "2018",
+          "selected": ""
+        },
+        {
+          "value": "2019",
+          "selected": ""
+        },
+        {
+          "value": "2020",
+          "selected": ""
+        },
+        {
+          "value": "2021",
+          "selected": ""
+        },
+        {
+          "value": "2022",
+          "selected": ""
+        },
+        {
+          "value": "2023",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": ""
+        },
+        {
+          "value": "2025",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": "selected"
+        },
+        {
+          "value": "ActProy",
+          "selected": "selected"
+        },
+        {
+          "value": "Actividad",
+          "selected": ""
+        },
+        {
+          "value": "Proyecto",
+          "selected": ""
+        }
+      ],
+      "buttons": {
+        "ctl00$CPH1$BtnTipoGobierno": "Nivel de Gobierno",
+        "ctl00$CPH1$BtnProgramaPpto": "Categoría Presupuestal",
+        "ctl00$CPH1$BtnFuncion": "Función",
+        "ctl00$CPH1$BtnFuenteAgregada": "Fuente",
+        "ctl00$CPH1$BtnRubro": "Rubro",
+        "ctl00$CPH1$BtnGenerica": "Genérica",
+        "ctl00$CPH1$BtnDepartamentoMeta": "Departamento",
+        "ctl00$CPH1$BtnTrimestre": "Trimestre",
+        "ctl00$CPH1$BtnMes": "Mes"
+      },
+      "selected": {
+        "ctl00$CPH1$DrpYear": "2026",
+        "ctl00$CPH1$DrpActProy": "ActProy"
+      },
+      "first_rows": [
+        {
+          "label": "TOTAL",
+          "cells": [
+            "",
+            "TOTAL",
+            "257,561,619,143",
+            "288,623,963,096",
+            "262,963,972,329",
+            "243,955,018,368",
+            "208,875,143,403",
+            "196,498,129,665",
+            "193,157,545,381",
+            "68.1"
+          ]
+        }
+      ],
+      "resources": [
+        "http://transparencia-economica.mef.gob.pe/",
+        "http://www.mef.gob.pe",
+        "https://apps5.mineco.gob.pe/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=16&cb=1071600119",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=1BnuDEX3zORMirQY64la4udKmeI8bD-uloCH3XuEGFe3n2PV6zjgfzu792i6UF5NhFcV74HExP-nBsj8UXI-iCtB2dd9ui8ErXfbSehVIjeSEC9l3cUdCxFq-OkfuG9N4dPkNr03M0wbXbrU1KCJfXu1orDfTSyhojJIEbvkEOY1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=40tcUJdFLPtJWHOpmE0ZbkZIxbVhzwUsHPT-xn4Vg9PvUBMrz8YXY0z-H6A1pNkyvSAo8dVVHpICxy09j9nhqJC1_aISFntzNsS9UGiKFH7SDKqJlkKSjgckmH4GBqZTyRECYpuxLaDXhg42vm5CgRxsjv0j8-O_Z4posTTmNSLq7sppM8b2UBXwop-ibS-Q0&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=DBNzyOhxQn_wJWOr7e4KG9CvIX8PcvYdURL9BWsmhRKx53AbAeGmHfSS1ZDevdC0mSgXmbe42iQKPi9z8LCudXvd6fNhB-InWbXcZyvxr_1rY5ybgkiV6F5IiiF3lVnfkGdgR7FG0re59yUIhLs0f37xxz52kYSXcKPRMIWbmxYoX8ScjNxvzVBhNpeF2Pbn0&t=ffffffff805766b3",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=EZDiIv6pLE1XvRzF-OlkBYvmmQ24Zdft2oXe6EaDML1xe0i6fFPoDjtKfbVoNO7taZrZXcvCGh2A7_uoZAhnvHcFNrG_ZhS9QNXa5TlbtmBDSjdD6OMoYg0tbYS1PoFw29DBnFht57RoF5QV_gpo_bvng8YCpdwSF4idxnhkrP41&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=N6CHJJAA6y9QkRJn5-c2msJksPNy7UBwwF4LNGpeeuyB0ZrxQ4unHNDTQS1R65iWpXJ3Izqx1dFRqbXehtQJPIV4w0NAb7IFPrKZ2hp-ixc6zpIHEkkbwOKgIdS5vLliH9UFgUGpZ_Fhf0f6l2x_RLEMd-ya4pWHhAcDaR98KR01&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=XqZ127bEyPdOh7ycPOmuxULVgtHVUUKsQs-lkd4RsL_Z7pCdxViuDal4Cc0yZ5fynifQq9hFXq82kYYQMbn2cw7-JEqZYkwi34ih-9M5GSMyGO3d4EKkyPZ_8TQ2TCelXTb6c5gunZf7fQNJZtFcprfNR2oLeLlVwoIOPn4DUCo1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=a6na7sN5w98ZopEJuXhlydSwrgT8vG39JZYYduAfWcaZ9OILpJLQUvPDFCER07dTc5vQhPADYD6eUsWbC8cAl3F3Z0VHPRD8AUnyVVNW4Eq4cf8uiHAjHOu5CBveA37GVsTMprQ9LLp8Eb0wpBlFIG6Khfs34MBtMfk0KGauWNQ1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=kAU7C5_P7jVZU_aco9JDwpAiAfLmP6JA4Ko1r16l2RCrnaDMbWleUVOm_S4y2xrRanHdVsP88pSeb3LXapoFg7SOG8HppqSFPNG0yyd7r9viwaslDWKQa2urhCAAjO_e0Pf1eZn5T6adp779YDqEsz2iwNY2c2RA3MVHZaubIKk1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=p7NG-y8d8LuPWHuow9p6k7hbWKwIdig7xjdB6YwRIE0Wv1b8BCUUEx2A6W_BxZpMcpgMm9YFcyiwbJLNSb-kqPsd26AqmwilLHkLImR3PGCsCHKCJOnWm7209ymwnLmsvgKZBZ6xHg2u3HDTdeC_Zpd90z12XJ1m9brgcxMctziJU5bEO9U85Fl42Cvlju6Z0&t=ffffffff8b3ffb57",
+        "https://www.googletagmanager.com/gtag/js?id=G-PBCDT7HW28"
+      ],
+      "captcha_marker": false,
+      "view_state_present": false
+    },
+    {
+      "url": "https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2026&ap=Proyecto",
+      "status": 200,
+      "final_url": "https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2026&ap=Proyecto",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 44151,
+      "session_cookie_present": true,
+      "official_cut_date": "2026-09-30",
+      "forms": [
+        {
+          "id": "aspnetForm",
+          "action": "Navegar_6.aspx?y=2026&ap=Proyecto",
+          "method": "post"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "__VIEWSTATE",
+          "id": "__VIEWSTATE",
+          "type": "hidden"
+        },
+        {
+          "name": "__EVENTVALIDATION",
+          "id": "__EVENTVALIDATION",
+          "type": "hidden"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTipoGobierno",
+          "id": "ctl00_CPH1_BtnTipoGobierno",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnProgramaPpto",
+          "id": "ctl00_CPH1_BtnProgramaPpto",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuncion",
+          "id": "ctl00_CPH1_BtnFuncion",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuenteAgregada",
+          "id": "ctl00_CPH1_BtnFuenteAgregada",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnRubro",
+          "id": "ctl00_CPH1_BtnRubro",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnGenerica",
+          "id": "ctl00_CPH1_BtnGenerica",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnDepartamentoMeta",
+          "id": "ctl00_CPH1_BtnDepartamentoMeta",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTrimestre",
+          "id": "ctl00_CPH1_BtnTrimestre",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnMes",
+          "id": "ctl00_CPH1_BtnMes",
+          "type": "submit"
+        },
+        {
+          "name": "grp1",
+          "id": "",
+          "type": "radio"
+        }
+      ],
+      "options": [
+        {
+          "value": "1999",
+          "selected": ""
+        },
+        {
+          "value": "2000",
+          "selected": ""
+        },
+        {
+          "value": "2001",
+          "selected": ""
+        },
+        {
+          "value": "2002",
+          "selected": ""
+        },
+        {
+          "value": "2003",
+          "selected": ""
+        },
+        {
+          "value": "2004",
+          "selected": ""
+        },
+        {
+          "value": "2005",
+          "selected": ""
+        },
+        {
+          "value": "2006",
+          "selected": ""
+        },
+        {
+          "value": "2007",
+          "selected": ""
+        },
+        {
+          "value": "2008",
+          "selected": ""
+        },
+        {
+          "value": "2009",
+          "selected": ""
+        },
+        {
+          "value": "2010",
+          "selected": ""
+        },
+        {
+          "value": "2011",
+          "selected": ""
+        },
+        {
+          "value": "2012",
+          "selected": ""
+        },
+        {
+          "value": "2013",
+          "selected": ""
+        },
+        {
+          "value": "2014",
+          "selected": ""
+        },
+        {
+          "value": "2015",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "2017",
+          "selected": ""
+        },
+        {
+          "value": "2018",
+          "selected": ""
+        },
+        {
+          "value": "2019",
+          "selected": ""
+        },
+        {
+          "value": "2020",
+          "selected": ""
+        },
+        {
+          "value": "2021",
+          "selected": ""
+        },
+        {
+          "value": "2022",
+          "selected": ""
+        },
+        {
+          "value": "2023",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": ""
+        },
+        {
+          "value": "2025",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": "selected"
+        },
+        {
+          "value": "ActProy",
+          "selected": ""
+        },
+        {
+          "value": "Actividad",
+          "selected": ""
+        },
+        {
+          "value": "Proyecto",
+          "selected": "selected"
+        }
+      ],
+      "buttons": {
+        "ctl00$CPH1$BtnTipoGobierno": "Nivel de Gobierno",
+        "ctl00$CPH1$BtnProgramaPpto": "Categoría Presupuestal",
+        "ctl00$CPH1$BtnFuncion": "Función",
+        "ctl00$CPH1$BtnFuenteAgregada": "Fuente",
+        "ctl00$CPH1$BtnRubro": "Rubro",
+        "ctl00$CPH1$BtnGenerica": "Genérica",
+        "ctl00$CPH1$BtnDepartamentoMeta": "Departamento",
+        "ctl00$CPH1$BtnTrimestre": "Trimestre",
+        "ctl00$CPH1$BtnMes": "Mes"
+      },
+      "selected": {
+        "ctl00$CPH1$DrpYear": "2026",
+        "ctl00$CPH1$DrpActProy": "Proyecto"
+      },
+      "first_rows": [
+        {
+          "label": "TOTAL",
+          "cells": [
+            "",
+            "TOTAL",
+            "48,594,496,937",
+            "72,229,012,409",
+            "63,958,494,338",
+            "53,465,527,388",
+            "47,274,698,057",
+            "42,395,797,203",
+            "40,572,941,019",
+            "58.7"
+          ]
+        }
+      ],
+      "resources": [
+        "http://transparencia-economica.mef.gob.pe/",
+        "http://www.mef.gob.pe",
+        "https://apps5.mineco.gob.pe/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=17&cb=2093415928",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=1BnuDEX3zORMirQY64la4udKmeI8bD-uloCH3XuEGFe3n2PV6zjgfzu792i6UF5NhFcV74HExP-nBsj8UXI-iCtB2dd9ui8ErXfbSehVIjeSEC9l3cUdCxFq-OkfuG9N4dPkNr03M0wbXbrU1KCJfXu1orDfTSyhojJIEbvkEOY1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=40tcUJdFLPtJWHOpmE0ZbkZIxbVhzwUsHPT-xn4Vg9PvUBMrz8YXY0z-H6A1pNkyvSAo8dVVHpICxy09j9nhqJC1_aISFntzNsS9UGiKFH7SDKqJlkKSjgckmH4GBqZTyRECYpuxLaDXhg42vm5CgRxsjv0j8-O_Z4posTTmNSLq7sppM8b2UBXwop-ibS-Q0&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=DBNzyOhxQn_wJWOr7e4KG9CvIX8PcvYdURL9BWsmhRKx53AbAeGmHfSS1ZDevdC0mSgXmbe42iQKPi9z8LCudXvd6fNhB-InWbXcZyvxr_1rY5ybgkiV6F5IiiF3lVnfkGdgR7FG0re59yUIhLs0f37xxz52kYSXcKPRMIWbmxYoX8ScjNxvzVBhNpeF2Pbn0&t=ffffffff805766b3",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=EZDiIv6pLE1XvRzF-OlkBYvmmQ24Zdft2oXe6EaDML1xe0i6fFPoDjtKfbVoNO7taZrZXcvCGh2A7_uoZAhnvHcFNrG_ZhS9QNXa5TlbtmBDSjdD6OMoYg0tbYS1PoFw29DBnFht57RoF5QV_gpo_bvng8YCpdwSF4idxnhkrP41&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=N6CHJJAA6y9QkRJn5-c2msJksPNy7UBwwF4LNGpeeuyB0ZrxQ4unHNDTQS1R65iWpXJ3Izqx1dFRqbXehtQJPIV4w0NAb7IFPrKZ2hp-ixc6zpIHEkkbwOKgIdS5vLliH9UFgUGpZ_Fhf0f6l2x_RLEMd-ya4pWHhAcDaR98KR01&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=XqZ127bEyPdOh7ycPOmuxULVgtHVUUKsQs-lkd4RsL_Z7pCdxViuDal4Cc0yZ5fynifQq9hFXq82kYYQMbn2cw7-JEqZYkwi34ih-9M5GSMyGO3d4EKkyPZ_8TQ2TCelXTb6c5gunZf7fQNJZtFcprfNR2oLeLlVwoIOPn4DUCo1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=a6na7sN5w98ZopEJuXhlydSwrgT8vG39JZYYduAfWcaZ9OILpJLQUvPDFCER07dTc5vQhPADYD6eUsWbC8cAl3F3Z0VHPRD8AUnyVVNW4Eq4cf8uiHAjHOu5CBveA37GVsTMprQ9LLp8Eb0wpBlFIG6Khfs34MBtMfk0KGauWNQ1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=kAU7C5_P7jVZU_aco9JDwpAiAfLmP6JA4Ko1r16l2RCrnaDMbWleUVOm_S4y2xrRanHdVsP88pSeb3LXapoFg7SOG8HppqSFPNG0yyd7r9viwaslDWKQa2urhCAAjO_e0Pf1eZn5T6adp779YDqEsz2iwNY2c2RA3MVHZaubIKk1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=p7NG-y8d8LuPWHuow9p6k7hbWKwIdig7xjdB6YwRIE0Wv1b8BCUUEx2A6W_BxZpMcpgMm9YFcyiwbJLNSb-kqPsd26AqmwilLHkLImR3PGCsCHKCJOnWm7209ymwnLmsvgKZBZ6xHg2u3HDTdeC_Zpd90z12XJ1m9brgcxMctziJU5bEO9U85Fl42Cvlju6Z0&t=ffffffff8b3ffb57",
+        "https://www.googletagmanager.com/gtag/js?id=G-PBCDT7HW28"
+      ],
+      "captcha_marker": false,
+      "view_state_present": false
+    },
+    {
+      "url": "https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2026&ap=Actividad",
+      "status": 200,
+      "final_url": "https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx?y=2026&ap=Actividad",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 44176,
+      "session_cookie_present": true,
+      "official_cut_date": "2026-09-30",
+      "forms": [
+        {
+          "id": "aspnetForm",
+          "action": "Navegar_6.aspx?y=2026&ap=Actividad",
+          "method": "post"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "__VIEWSTATE",
+          "id": "__VIEWSTATE",
+          "type": "hidden"
+        },
+        {
+          "name": "__EVENTVALIDATION",
+          "id": "__EVENTVALIDATION",
+          "type": "hidden"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTipoGobierno",
+          "id": "ctl00_CPH1_BtnTipoGobierno",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnProgramaPpto",
+          "id": "ctl00_CPH1_BtnProgramaPpto",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuncion",
+          "id": "ctl00_CPH1_BtnFuncion",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnFuenteAgregada",
+          "id": "ctl00_CPH1_BtnFuenteAgregada",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnRubro",
+          "id": "ctl00_CPH1_BtnRubro",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnGenerica",
+          "id": "ctl00_CPH1_BtnGenerica",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnDepartamentoMeta",
+          "id": "ctl00_CPH1_BtnDepartamentoMeta",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnTrimestre",
+          "id": "ctl00_CPH1_BtnTrimestre",
+          "type": "submit"
+        },
+        {
+          "name": "ctl00$CPH1$BtnMes",
+          "id": "ctl00_CPH1_BtnMes",
+          "type": "submit"
+        },
+        {
+          "name": "grp1",
+          "id": "",
+          "type": "radio"
+        }
+      ],
+      "options": [
+        {
+          "value": "1999",
+          "selected": ""
+        },
+        {
+          "value": "2000",
+          "selected": ""
+        },
+        {
+          "value": "2001",
+          "selected": ""
+        },
+        {
+          "value": "2002",
+          "selected": ""
+        },
+        {
+          "value": "2003",
+          "selected": ""
+        },
+        {
+          "value": "2004",
+          "selected": ""
+        },
+        {
+          "value": "2005",
+          "selected": ""
+        },
+        {
+          "value": "2006",
+          "selected": ""
+        },
+        {
+          "value": "2007",
+          "selected": ""
+        },
+        {
+          "value": "2008",
+          "selected": ""
+        },
+        {
+          "value": "2009",
+          "selected": ""
+        },
+        {
+          "value": "2010",
+          "selected": ""
+        },
+        {
+          "value": "2011",
+          "selected": ""
+        },
+        {
+          "value": "2012",
+          "selected": ""
+        },
+        {
+          "value": "2013",
+          "selected": ""
+        },
+        {
+          "value": "2014",
+          "selected": ""
+        },
+        {
+          "value": "2015",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "2017",
+          "selected": ""
+        },
+        {
+          "value": "2018",
+          "selected": ""
+        },
+        {
+          "value": "2019",
+          "selected": ""
+        },
+        {
+          "value": "2020",
+          "selected": ""
+        },
+        {
+          "value": "2021",
+          "selected": ""
+        },
+        {
+          "value": "2022",
+          "selected": ""
+        },
+        {
+          "value": "2023",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": ""
+        },
+        {
+          "value": "2025",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": "selected"
+        },
+        {
+          "value": "ActProy",
+          "selected": ""
+        },
+        {
+          "value": "Actividad",
+          "selected": "selected"
+        },
+        {
+          "value": "Proyecto",
+          "selected": ""
+        }
+      ],
+      "buttons": {
+        "ctl00$CPH1$BtnTipoGobierno": "Nivel de Gobierno",
+        "ctl00$CPH1$BtnProgramaPpto": "Categoría Presupuestal",
+        "ctl00$CPH1$BtnFuncion": "Función",
+        "ctl00$CPH1$BtnFuenteAgregada": "Fuente",
+        "ctl00$CPH1$BtnRubro": "Rubro",
+        "ctl00$CPH1$BtnGenerica": "Genérica",
+        "ctl00$CPH1$BtnDepartamentoMeta": "Departamento",
+        "ctl00$CPH1$BtnTrimestre": "Trimestre",
+        "ctl00$CPH1$BtnMes": "Mes"
+      },
+      "selected": {
+        "ctl00$CPH1$DrpYear": "2026",
+        "ctl00$CPH1$DrpActProy": "Actividad"
+      },
+      "first_rows": [
+        {
+          "label": "TOTAL",
+          "cells": [
+            "",
+            "TOTAL",
+            "208,967,122,206",
+            "216,394,950,687",
+            "199,005,477,991",
+            "190,489,490,980",
+            "161,600,445,346",
+            "154,102,332,462",
+            "152,584,604,361",
+            "71.2"
+          ]
+        }
+      ],
+      "resources": [
+        "http://transparencia-economica.mef.gob.pe/",
+        "http://www.mef.gob.pe",
+        "https://apps5.mineco.gob.pe/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=18&cb=2031538365",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=1BnuDEX3zORMirQY64la4udKmeI8bD-uloCH3XuEGFe3n2PV6zjgfzu792i6UF5NhFcV74HExP-nBsj8UXI-iCtB2dd9ui8ErXfbSehVIjeSEC9l3cUdCxFq-OkfuG9N4dPkNr03M0wbXbrU1KCJfXu1orDfTSyhojJIEbvkEOY1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=40tcUJdFLPtJWHOpmE0ZbkZIxbVhzwUsHPT-xn4Vg9PvUBMrz8YXY0z-H6A1pNkyvSAo8dVVHpICxy09j9nhqJC1_aISFntzNsS9UGiKFH7SDKqJlkKSjgckmH4GBqZTyRECYpuxLaDXhg42vm5CgRxsjv0j8-O_Z4posTTmNSLq7sppM8b2UBXwop-ibS-Q0&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=DBNzyOhxQn_wJWOr7e4KG9CvIX8PcvYdURL9BWsmhRKx53AbAeGmHfSS1ZDevdC0mSgXmbe42iQKPi9z8LCudXvd6fNhB-InWbXcZyvxr_1rY5ybgkiV6F5IiiF3lVnfkGdgR7FG0re59yUIhLs0f37xxz52kYSXcKPRMIWbmxYoX8ScjNxvzVBhNpeF2Pbn0&t=ffffffff805766b3",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=EZDiIv6pLE1XvRzF-OlkBYvmmQ24Zdft2oXe6EaDML1xe0i6fFPoDjtKfbVoNO7taZrZXcvCGh2A7_uoZAhnvHcFNrG_ZhS9QNXa5TlbtmBDSjdD6OMoYg0tbYS1PoFw29DBnFht57RoF5QV_gpo_bvng8YCpdwSF4idxnhkrP41&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=N6CHJJAA6y9QkRJn5-c2msJksPNy7UBwwF4LNGpeeuyB0ZrxQ4unHNDTQS1R65iWpXJ3Izqx1dFRqbXehtQJPIV4w0NAb7IFPrKZ2hp-ixc6zpIHEkkbwOKgIdS5vLliH9UFgUGpZ_Fhf0f6l2x_RLEMd-ya4pWHhAcDaR98KR01&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=XqZ127bEyPdOh7ycPOmuxULVgtHVUUKsQs-lkd4RsL_Z7pCdxViuDal4Cc0yZ5fynifQq9hFXq82kYYQMbn2cw7-JEqZYkwi34ih-9M5GSMyGO3d4EKkyPZ_8TQ2TCelXTb6c5gunZf7fQNJZtFcprfNR2oLeLlVwoIOPn4DUCo1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=a6na7sN5w98ZopEJuXhlydSwrgT8vG39JZYYduAfWcaZ9OILpJLQUvPDFCER07dTc5vQhPADYD6eUsWbC8cAl3F3Z0VHPRD8AUnyVVNW4Eq4cf8uiHAjHOu5CBveA37GVsTMprQ9LLp8Eb0wpBlFIG6Khfs34MBtMfk0KGauWNQ1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=kAU7C5_P7jVZU_aco9JDwpAiAfLmP6JA4Ko1r16l2RCrnaDMbWleUVOm_S4y2xrRanHdVsP88pSeb3LXapoFg7SOG8HppqSFPNG0yyd7r9viwaslDWKQa2urhCAAjO_e0Pf1eZn5T6adp779YDqEsz2iwNY2c2RA3MVHZaubIKk1&t=ffffffff8b3ffb57",
+        "https://apps5.mineco.gob.pe/transparencia/ScriptResource.axd?d=p7NG-y8d8LuPWHuow9p6k7hbWKwIdig7xjdB6YwRIE0Wv1b8BCUUEx2A6W_BxZpMcpgMm9YFcyiwbJLNSb-kqPsd26AqmwilLHkLImR3PGCsCHKCJOnWm7209ymwnLmsvgKZBZ6xHg2u3HDTdeC_Zpd90z12XJ1m9brgcxMctziJU5bEO9U85Fl42Cvlju6Z0&t=ffffffff8b3ffb57",
+        "https://www.googletagmanager.com/gtag/js?id=G-PBCDT7HW28"
+      ],
+      "captcha_marker": false,
+      "view_state_present": false
+    },
+    {
+      "url": "https://bi.seace.gob.pe/pentaho/api/repos/%3Apublic%3Aportal%3Adatosabiertos.html/content?userid=public&password=key",
+      "status": 200,
+      "final_url": "https://bi.seace.gob.pe/pentaho/api/repos/%3Apublic%3Aportal%3Adatosabiertos.html/content?userid=public&password=key",
+      "content_type": "text/html",
+      "bytes": 3024,
+      "session_cookie_present": true,
+      "official_cut_date": null,
+      "forms": [],
+      "inputs": [],
+      "options": [],
+      "buttons": {},
+      "selected": {},
+      "first_rows": [],
+      "resources": [
+        "https://code.jquery.com/jquery-3.6.0.min.js",
+        "https://code.jquery.com/ui/1.12.1/jquery-ui.min.js",
+        "https://www.googletagmanager.com/gtag/js?id=UA-165328201-2"
+      ],
+      "captcha_marker": false,
+      "view_state_present": false
+    },
+    {
+      "url": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorPublico.xhtml",
+      "status": 200,
+      "final_url": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorPublico.xhtml",
+      "content_type": "text/html;charset=UTF-8",
+      "bytes": 250330,
+      "session_cookie_present": true,
+      "official_cut_date": null,
+      "forms": [
+        {
+          "id": "tbBuscador:idFormbuscarACF",
+          "action": "/seacebus-uiwd-pub/buscadorPublico/buscadorPublico.xhtml",
+          "method": "post"
+        },
+        {
+          "id": "tbBuscador:idFormBuscarProceso",
+          "action": "/seacebus-uiwd-pub/buscadorPublico/buscadorPublico.xhtml",
+          "method": "post"
+        },
+        {
+          "id": "tbBuscador:idFormbuscarexpresionInteres",
+          "action": "/seacebus-uiwd-pub/buscadorPublico/buscadorPublico.xhtml",
+          "method": "post"
+        },
+        {
+          "id": "tbBuscador:idFormbuscarDifusionRequerimientos",
+          "action": "/seacebus-uiwd-pub/buscadorPublico/buscadorPublico.xhtml",
+          "method": "post"
+        },
+        {
+          "id": "tbBuscador:idFormbuscarOCOS",
+          "action": "/seacebus-uiwd-pub/buscadorPublico/buscadorPublico.xhtml",
+          "method": "post"
+        },
+        {
+          "id": "tbBuscador:idFormbuscarCCO",
+          "action": "/seacebus-uiwd-pub/buscadorPublico/buscadorPublico.xhtml",
+          "method": "post"
+        },
+        {
+          "id": "frmMesajes",
+          "action": "/seacebus-uiwd-pub/buscadorPublico/buscadorPublico.xhtml",
+          "method": "post"
+        },
+        {
+          "id": "j_idt1134",
+          "action": "/seacebus-uiwd-pub/buscadorPublico/buscadorPublico.xhtml",
+          "method": "post"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "claveRecaptchav3SitioWeb",
+          "id": "claveRecaptchav3SitioWeb",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarACF",
+          "id": "",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarACF:hddNumeroRuc",
+          "id": "tbBuscador:idFormbuscarACF:hddNumeroRuc",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarACF:nombreEntidad",
+          "id": "tbBuscador:idFormbuscarACF:nombreEntidad",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarACF:cbxTipoSeleccion_focus",
+          "id": "tbBuscador:idFormbuscarACF:cbxTipoSeleccion_focus",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarACF:cbxObjContratacion_focus",
+          "id": "tbBuscador:idFormbuscarACF:cbxObjContratacion_focus",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarACF:dfechaInicioPubACF_input",
+          "id": "tbBuscador:idFormbuscarACF:dfechaInicioPubACF_input",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarACF:dfechaFinPubACF_input",
+          "id": "tbBuscador:idFormbuscarACF:dfechaFinPubACF_input",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarACF:descripcionObjeto",
+          "id": "tbBuscador:idFormbuscarACF:descripcionObjeto",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarACF:dfechaInicioAproxConvACF_input",
+          "id": "tbBuscador:idFormbuscarACF:dfechaInicioAproxConvACF_input",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarACF:dfechaFinAproxConvACF_input",
+          "id": "tbBuscador:idFormbuscarACF:dfechaFinAproxConvACF_input",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarACF:tokenBusACF",
+          "id": "tbBuscador:idFormbuscarACF:tokenBusACF",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarACF:txtNombreEntidad",
+          "id": "tbBuscador:idFormbuscarACF:txtNombreEntidad",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarACF:txtRucEntidad",
+          "id": "tbBuscador:idFormbuscarACF:txtRucEntidad",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarACF:txtsigla",
+          "id": "tbBuscador:idFormbuscarACF:txtsigla",
+          "type": "text"
+        },
+        {
+          "name": "javax.faces.ViewState",
+          "id": "j_id1:javax.faces.ViewState:0",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso",
+          "id": "",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:numPositionTabView",
+          "id": "tbBuscador:idFormBuscarProceso:numPositionTabView",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:hddNumeroRuc",
+          "id": "tbBuscador:idFormBuscarProceso:hddNumeroRuc",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:nombreEntidad",
+          "id": "tbBuscador:idFormBuscarProceso:nombreEntidad",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:j_idt183_focus",
+          "id": "tbBuscador:idFormBuscarProceso:j_idt183_focus",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:j_idt192_focus",
+          "id": "tbBuscador:idFormBuscarProceso:j_idt192_focus",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:numeroSeleccion",
+          "id": "tbBuscador:idFormBuscarProceso:numeroSeleccion",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:descripcionObjeto",
+          "id": "tbBuscador:idFormBuscarProceso:descripcionObjeto",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:anioConvocatoria_focus",
+          "id": "tbBuscador:idFormBuscarProceso:anioConvocatoria_focus",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:j_idt218_focus",
+          "id": "tbBuscador:idFormBuscarProceso:j_idt218_focus",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:codigoSnip",
+          "id": "tbBuscador:idFormBuscarProceso:codigoSnip",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:CUI",
+          "id": "tbBuscador:idFormBuscarProceso:CUI",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:siglasEntidad",
+          "id": "tbBuscador:idFormBuscarProceso:siglasEntidad",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:j_idt246_focus",
+          "id": "tbBuscador:idFormBuscarProceso:j_idt246_focus",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:departamento_focus",
+          "id": "tbBuscador:idFormBuscarProceso:departamento_focus",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:provincia_focus",
+          "id": "tbBuscador:idFormBuscarProceso:provincia_focus",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:distrito_focus",
+          "id": "tbBuscador:idFormBuscarProceso:distrito_focus",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:numeroConvocatoria",
+          "id": "tbBuscador:idFormBuscarProceso:numeroConvocatoria",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:j_idt273_focus",
+          "id": "tbBuscador:idFormBuscarProceso:j_idt273_focus",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:dfechaInicio_input",
+          "id": "tbBuscador:idFormBuscarProceso:dfechaInicio_input",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:dfechaFin_input",
+          "id": "tbBuscador:idFormBuscarProceso:dfechaFin_input",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:j_idt236_collapsed",
+          "id": "tbBuscador:idFormBuscarProceso:j_idt236_collapsed",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:tokenBusProSel",
+          "id": "tbBuscador:idFormBuscarProceso:tokenBusProSel",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:ipClienteIpify",
+          "id": "tbBuscador:idFormBuscarProceso:ipClienteIpify",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:txtNombreEntidad",
+          "id": "tbBuscador:idFormBuscarProceso:txtNombreEntidad",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:txtRucEntidad",
+          "id": "tbBuscador:idFormBuscarProceso:txtRucEntidad",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormBuscarProceso:txtsigla",
+          "id": "tbBuscador:idFormBuscarProceso:txtsigla",
+          "type": "text"
+        },
+        {
+          "name": "javax.faces.ViewState",
+          "id": "j_id1:javax.faces.ViewState:1",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarexpresionInteres",
+          "id": "",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarexpresionInteres:numPositionTabView",
+          "id": "tbBuscador:idFormbuscarexpresionInteres:numPositionTabView",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarexpresionInteres:hddNumeroRuc",
+          "id": "tbBuscador:idFormbuscarexpresionInteres:hddNumeroRuc",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarexpresionInteres:nombreEntidad",
+          "id": "tbBuscador:idFormbuscarexpresionInteres:nombreEntidad",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarexpresionInteres:cbxObjContratacion_focus",
+          "id": "tbBuscador:idFormbuscarexpresionInteres:cbxObjContratacion_focus",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarexpresionInteres:idDescExpreInteres",
+          "id": "tbBuscador:idFormbuscarexpresionInteres:idDescExpreInteres",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarexpresionInteres:idNumExpreInteres",
+          "id": "tbBuscador:idFormbuscarexpresionInteres:idNumExpreInteres",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarexpresionInteres:dfechaInicio_input",
+          "id": "tbBuscador:idFormbuscarexpresionInteres:dfechaInicio_input",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarexpresionInteres:dfechaFin_input",
+          "id": "tbBuscador:idFormbuscarexpresionInteres:dfechaFin_input",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarexpresionInteres:tokenBusExpInt",
+          "id": "tbBuscador:idFormbuscarexpresionInteres:tokenBusExpInt",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarexpresionInteres:txtNombreEntidad",
+          "id": "tbBuscador:idFormbuscarexpresionInteres:txtNombreEntidad",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarexpresionInteres:txtRucEntidad",
+          "id": "tbBuscador:idFormbuscarexpresionInteres:txtRucEntidad",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarexpresionInteres:txtsigla",
+          "id": "tbBuscador:idFormbuscarexpresionInteres:txtsigla",
+          "type": "text"
+        },
+        {
+          "name": "javax.faces.ViewState",
+          "id": "j_id1:javax.faces.ViewState:2",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarDifusionRequerimientos",
+          "id": "",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarDifusionRequerimientos:hddNumeroRuc",
+          "id": "tbBuscador:idFormbuscarDifusionRequerimientos:hddNumeroRuc",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarDifusionRequerimientos:nombreEntidad",
+          "id": "tbBuscador:idFormbuscarDifusionRequerimientos:nombreEntidad",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarDifusionRequerimientos:cbxObjContratacion_focus",
+          "id": "tbBuscador:idFormbuscarDifusionRequerimientos:cbxObjContratacion_focus",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarDifusionRequerimientos:idDescExpreInteres",
+          "id": "tbBuscador:idFormbuscarDifusionRequerimientos:idDescExpreInteres",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarDifusionRequerimientos:idNumExpreInteres",
+          "id": "tbBuscador:idFormbuscarDifusionRequerimientos:idNumExpreInteres",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarDifusionRequerimientos:dfechaInicio_input",
+          "id": "tbBuscador:idFormbuscarDifusionRequerimientos:dfechaInicio_input",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarDifusionRequerimientos:dfechaFin_input",
+          "id": "tbBuscador:idFormbuscarDifusionRequerimientos:dfechaFin_input",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarDifusionRequerimientos:tokenBusDifReq",
+          "id": "tbBuscador:idFormbuscarDifusionRequerimientos:tokenBusDifReq",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarDifusionRequerimientos:txtNombreEntidad",
+          "id": "tbBuscador:idFormbuscarDifusionRequerimientos:txtNombreEntidad",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarDifusionRequerimientos:txtRucEntidad",
+          "id": "tbBuscador:idFormbuscarDifusionRequerimientos:txtRucEntidad",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarDifusionRequerimientos:txtsigla",
+          "id": "tbBuscador:idFormbuscarDifusionRequerimientos:txtsigla",
+          "type": "text"
+        },
+        {
+          "name": "javax.faces.ViewState",
+          "id": "j_id1:javax.faces.ViewState:3",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarOCOS",
+          "id": "",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarOCOS:nombreEntidad",
+          "id": "tbBuscador:idFormbuscarOCOS:nombreEntidad",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarOCOS:idCmbAnioOCOS_focus",
+          "id": "tbBuscador:idFormbuscarOCOS:idCmbAnioOCOS_focus",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarOCOS:rucOCOS",
+          "id": "tbBuscador:idFormbuscarOCOS:rucOCOS",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarOCOS:idCmbMesOCOS_focus",
+          "id": "tbBuscador:idFormbuscarOCOS:idCmbMesOCOS_focus",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarOCOS:tokenBusOrdComSer",
+          "id": "tbBuscador:idFormbuscarOCOS:tokenBusOrdComSer",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarOCOS:txtNombreEntidad",
+          "id": "tbBuscador:idFormbuscarOCOS:txtNombreEntidad",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarOCOS:txtRucEntidad",
+          "id": "tbBuscador:idFormbuscarOCOS:txtRucEntidad",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarOCOS:txtsigla",
+          "id": "tbBuscador:idFormbuscarOCOS:txtsigla",
+          "type": "text"
+        },
+        {
+          "name": "javax.faces.ViewState",
+          "id": "j_id1:javax.faces.ViewState:4",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarCCO",
+          "id": "",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarCCO:hddNumeroRuc",
+          "id": "tbBuscador:idFormbuscarCCO:hddNumeroRuc",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarCCO:nombreEntidad",
+          "id": "tbBuscador:idFormbuscarCCO:nombreEntidad",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarCCO:cbxTipProc_focus",
+          "id": "tbBuscador:idFormbuscarCCO:cbxTipProc_focus",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarCCO:idDescExpreInteres",
+          "id": "tbBuscador:idFormbuscarCCO:idDescExpreInteres",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarCCO:cbxObjContratacion_focus",
+          "id": "tbBuscador:idFormbuscarCCO:cbxObjContratacion_focus",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarCCO:idNumExpreInteres",
+          "id": "tbBuscador:idFormbuscarCCO:idNumExpreInteres",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarCCO:cbxAnyo_focus",
+          "id": "tbBuscador:idFormbuscarCCO:cbxAnyo_focus",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarCCO:tokenBusCCO",
+          "id": "tbBuscador:idFormbuscarCCO:tokenBusCCO",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarCCO:txtNombreEntidad",
+          "id": "tbBuscador:idFormbuscarCCO:txtNombreEntidad",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarCCO:txtRucEntidad",
+          "id": "tbBuscador:idFormbuscarCCO:txtRucEntidad",
+          "type": "text"
+        },
+        {
+          "name": "tbBuscador:idFormbuscarCCO:txtsigla",
+          "id": "tbBuscador:idFormbuscarCCO:txtsigla",
+          "type": "text"
+        },
+        {
+          "name": "javax.faces.ViewState",
+          "id": "j_id1:javax.faces.ViewState:5",
+          "type": "hidden"
+        },
+        {
+          "name": "tbBuscador_activeIndex",
+          "id": "tbBuscador_activeIndex",
+          "type": "hidden"
+        },
+        {
+          "name": "frmMesajes",
+          "id": "",
+          "type": "hidden"
+        },
+        {
+          "name": "javax.faces.ViewState",
+          "id": "j_id1:javax.faces.ViewState:6",
+          "type": "hidden"
+        },
+        {
+          "name": "j_idt1134",
+          "id": "",
+          "type": "hidden"
+        },
+        {
+          "name": "javax.faces.ViewState",
+          "id": "j_id1:javax.faces.ViewState:7",
+          "type": "hidden"
+        }
+      ],
+      "options": [
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "1",
+          "selected": ""
+        },
+        {
+          "value": "67",
+          "selected": ""
+        },
+        {
+          "value": "60",
+          "selected": ""
+        },
+        {
+          "value": "61",
+          "selected": ""
+        },
+        {
+          "value": "72",
+          "selected": ""
+        },
+        {
+          "value": "73",
+          "selected": ""
+        },
+        {
+          "value": "64",
+          "selected": ""
+        },
+        {
+          "value": "66",
+          "selected": ""
+        },
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "62",
+          "selected": ""
+        },
+        {
+          "value": "63",
+          "selected": ""
+        },
+        {
+          "value": "64",
+          "selected": ""
+        },
+        {
+          "value": "65",
+          "selected": ""
+        },
+        {
+          "value": "10",
+          "selected": ""
+        },
+        {
+          "value": "15",
+          "selected": "selected"
+        },
+        {
+          "value": "20",
+          "selected": ""
+        },
+        {
+          "value": "5",
+          "selected": ""
+        },
+        {
+          "value": "10",
+          "selected": "selected"
+        },
+        {
+          "value": "15",
+          "selected": ""
+        },
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "790",
+          "selected": ""
+        },
+        {
+          "value": "66",
+          "selected": ""
+        },
+        {
+          "value": "171",
+          "selected": ""
+        },
+        {
+          "value": "270",
+          "selected": ""
+        },
+        {
+          "value": "67",
+          "selected": ""
+        },
+        {
+          "value": "68",
+          "selected": ""
+        },
+        {
+          "value": "69",
+          "selected": ""
+        },
+        {
+          "value": "70",
+          "selected": ""
+        },
+        {
+          "value": "71",
+          "selected": ""
+        },
+        {
+          "value": "230",
+          "selected": ""
+        },
+        {
+          "value": "390",
+          "selected": ""
+        },
+        {
+          "value": "72",
+          "selected": ""
+        },
+        {
+          "value": "73",
+          "selected": ""
+        },
+        {
+          "value": "74",
+          "selected": ""
+        },
+        {
+          "value": "1018",
+          "selected": ""
+        },
+        {
+          "value": "835",
+          "selected": ""
+        },
+        {
+          "value": "271",
+          "selected": ""
+        },
+        {
+          "value": "530",
+          "selected": ""
+        },
+        {
+          "value": "1636",
+          "selected": ""
+        },
+        {
+          "value": "1657",
+          "selected": ""
+        },
+        {
+          "value": "1696",
+          "selected": ""
+        },
+        {
+          "value": "550",
+          "selected": ""
+        },
+        {
+          "value": "770",
+          "selected": ""
+        },
+        {
+          "value": "1376",
+          "selected": ""
+        },
+        {
+          "value": "1536",
+          "selected": ""
+        },
+        {
+          "value": "1576",
+          "selected": ""
+        },
+        {
+          "value": "1616",
+          "selected": ""
+        },
+        {
+          "value": "1115",
+          "selected": ""
+        },
+        {
+          "value": "1480",
+          "selected": ""
+        },
+        {
+          "value": "1296",
+          "selected": ""
+        },
+        {
+          "value": "670",
+          "selected": ""
+        },
+        {
+          "value": "975",
+          "selected": ""
+        },
+        {
+          "value": "1676",
+          "selected": ""
+        },
+        {
+          "value": "730",
+          "selected": ""
+        },
+        {
+          "value": "1736",
+          "selected": ""
+        },
+        {
+          "value": "1887",
+          "selected": ""
+        },
+        {
+          "value": "386",
+          "selected": ""
+        },
+        {
+          "value": "690",
+          "selected": ""
+        },
+        {
+          "value": "1886",
+          "selected": ""
+        },
+        {
+          "value": "104",
+          "selected": ""
+        },
+        {
+          "value": "1055",
+          "selected": ""
+        },
+        {
+          "value": "1864",
+          "selected": ""
+        },
+        {
+          "value": "75",
+          "selected": ""
+        },
+        {
+          "value": "1883",
+          "selected": ""
+        },
+        {
+          "value": "1916",
+          "selected": ""
+        },
+        {
+          "value": "1917",
+          "selected": ""
+        },
+        {
+          "value": "1861",
+          "selected": ""
+        },
+        {
+          "value": "1860",
+          "selected": ""
+        },
+        {
+          "value": "2038",
+          "selected": ""
+        },
+        {
+          "value": "1863",
+          "selected": ""
+        },
+        {
+          "value": "1862",
+          "selected": ""
+        },
+        {
+          "value": "1881",
+          "selected": ""
+        },
+        {
+          "value": "1882",
+          "selected": ""
+        },
+        {
+          "value": "1884",
+          "selected": ""
+        },
+        {
+          "value": "1885",
+          "selected": ""
+        },
+        {
+          "value": "293",
+          "selected": ""
+        },
+        {
+          "value": "77",
+          "selected": ""
+        },
+        {
+          "value": "76",
+          "selected": ""
+        },
+        {
+          "value": "78",
+          "selected": ""
+        },
+        {
+          "value": "79",
+          "selected": ""
+        },
+        {
+          "value": "1737",
+          "selected": ""
+        },
+        {
+          "value": "80",
+          "selected": ""
+        },
+        {
+          "value": "81",
+          "selected": ""
+        },
+        {
+          "value": "935",
+          "selected": ""
+        },
+        {
+          "value": "915",
+          "selected": ""
+        },
+        {
+          "value": "916",
+          "selected": ""
+        },
+        {
+          "value": "82",
+          "selected": ""
+        },
+        {
+          "value": "1877",
+          "selected": ""
+        },
+        {
+          "value": "1918",
+          "selected": ""
+        },
+        {
+          "value": "1936",
+          "selected": ""
+        },
+        {
+          "value": "1857",
+          "selected": ""
+        },
+        {
+          "value": "1878",
+          "selected": ""
+        },
+        {
+          "value": "2037",
+          "selected": ""
+        },
+        {
+          "value": "1879",
+          "selected": ""
+        },
+        {
+          "value": "1880",
+          "selected": ""
+        },
+        {
+          "value": "1859",
+          "selected": ""
+        },
+        {
+          "value": "1858",
+          "selected": ""
+        },
+        {
+          "value": "1876",
+          "selected": ""
+        },
+        {
+          "value": "1237",
+          "selected": ""
+        },
+        {
+          "value": "1238",
+          "selected": ""
+        },
+        {
+          "value": "511",
+          "selected": ""
+        },
+        {
+          "value": "1156",
+          "selected": ""
+        },
+        {
+          "value": "83",
+          "selected": ""
+        },
+        {
+          "value": "855",
+          "selected": ""
+        },
+        {
+          "value": "84",
+          "selected": ""
+        },
+        {
+          "value": "385",
+          "selected": ""
+        },
+        {
+          "value": "384",
+          "selected": ""
+        },
+        {
+          "value": "570",
+          "selected": ""
+        },
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "62",
+          "selected": ""
+        },
+        {
+          "value": "63",
+          "selected": ""
+        },
+        {
+          "value": "64",
+          "selected": ""
+        },
+        {
+          "value": "65",
+          "selected": ""
+        },
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": "selected"
+        },
+        {
+          "value": "2025",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": ""
+        },
+        {
+          "value": "2023",
+          "selected": ""
+        },
+        {
+          "value": "2022",
+          "selected": ""
+        },
+        {
+          "value": "2021",
+          "selected": ""
+        },
+        {
+          "value": "2020",
+          "selected": ""
+        },
+        {
+          "value": "2019",
+          "selected": ""
+        },
+        {
+          "value": "2018",
+          "selected": ""
+        },
+        {
+          "value": "2017",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "2015",
+          "selected": ""
+        },
+        {
+          "value": "2014",
+          "selected": ""
+        },
+        {
+          "value": "2013",
+          "selected": ""
+        },
+        {
+          "value": "2012",
+          "selected": ""
+        },
+        {
+          "value": "2011",
+          "selected": ""
+        },
+        {
+          "value": "2010",
+          "selected": ""
+        },
+        {
+          "value": "2009",
+          "selected": ""
+        },
+        {
+          "value": "2008",
+          "selected": ""
+        },
+        {
+          "value": "2007",
+          "selected": ""
+        },
+        {
+          "value": "2006",
+          "selected": ""
+        },
+        {
+          "value": "2005",
+          "selected": ""
+        },
+        {
+          "value": "2004",
+          "selected": ""
+        },
+        {
+          "value": "2",
+          "selected": ""
+        },
+        {
+          "value": "3",
+          "selected": "selected"
+        },
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "1816",
+          "selected": ""
+        },
+        {
+          "value": "23",
+          "selected": ""
+        },
+        {
+          "value": "22",
+          "selected": ""
+        },
+        {
+          "value": "1817",
+          "selected": ""
+        },
+        {
+          "value": "1818",
+          "selected": ""
+        },
+        {
+          "value": "1836",
+          "selected": ""
+        },
+        {
+          "value": "370",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "371",
+          "selected": ""
+        },
+        {
+          "value": "24",
+          "selected": ""
+        },
+        {
+          "value": "25",
+          "selected": ""
+        },
+        {
+          "value": "381",
+          "selected": ""
+        },
+        {
+          "value": "26",
+          "selected": ""
+        },
+        {
+          "value": "27",
+          "selected": ""
+        },
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "2",
+          "selected": ""
+        },
+        {
+          "value": "3",
+          "selected": ""
+        },
+        {
+          "value": "4",
+          "selected": ""
+        },
+        {
+          "value": "5",
+          "selected": ""
+        },
+        {
+          "value": "6",
+          "selected": ""
+        },
+        {
+          "value": "7",
+          "selected": ""
+        },
+        {
+          "value": "8",
+          "selected": ""
+        },
+        {
+          "value": "9",
+          "selected": ""
+        },
+        {
+          "value": "9997",
+          "selected": ""
+        },
+        {
+          "value": "10",
+          "selected": ""
+        },
+        {
+          "value": "11",
+          "selected": ""
+        },
+        {
+          "value": "12",
+          "selected": ""
+        },
+        {
+          "value": "13",
+          "selected": ""
+        },
+        {
+          "value": "14",
+          "selected": ""
+        },
+        {
+          "value": "15",
+          "selected": ""
+        },
+        {
+          "value": "16",
+          "selected": ""
+        },
+        {
+          "value": "17",
+          "selected": ""
+        },
+        {
+          "value": "18",
+          "selected": ""
+        },
+        {
+          "value": "19",
+          "selected": ""
+        },
+        {
+          "value": "9994",
+          "selected": ""
+        },
+        {
+          "value": "20",
+          "selected": ""
+        },
+        {
+          "value": "21",
+          "selected": ""
+        },
+        {
+          "value": "22",
+          "selected": ""
+        },
+        {
+          "value": "23",
+          "selected": ""
+        },
+        {
+          "value": "24",
+          "selected": ""
+        },
+        {
+          "value": "25",
+          "selected": ""
+        },
+        {
+          "value": "26",
+          "selected": ""
+        },
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "51",
+          "selected": ""
+        },
+        {
+          "value": "52",
+          "selected": ""
+        },
+        {
+          "value": "53",
+          "selected": ""
+        },
+        {
+          "value": "54",
+          "selected": ""
+        },
+        {
+          "value": "55",
+          "selected": ""
+        },
+        {
+          "value": "56",
+          "selected": ""
+        },
+        {
+          "value": "57",
+          "selected": ""
+        },
+        {
+          "value": "10",
+          "selected": ""
+        },
+        {
+          "value": "15",
+          "selected": "selected"
+        },
+        {
+          "value": "20",
+          "selected": ""
+        },
+        {
+          "value": "5",
+          "selected": ""
+        },
+        {
+          "value": "10",
+          "selected": "selected"
+        },
+        {
+          "value": "15",
+          "selected": ""
+        },
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "62",
+          "selected": ""
+        },
+        {
+          "value": "63",
+          "selected": ""
+        },
+        {
+          "value": "64",
+          "selected": ""
+        },
+        {
+          "value": "65",
+          "selected": ""
+        },
+        {
+          "value": "10",
+          "selected": ""
+        },
+        {
+          "value": "15",
+          "selected": "selected"
+        },
+        {
+          "value": "20",
+          "selected": ""
+        },
+        {
+          "value": "5",
+          "selected": ""
+        },
+        {
+          "value": "10",
+          "selected": "selected"
+        },
+        {
+          "value": "15",
+          "selected": ""
+        },
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "62",
+          "selected": ""
+        },
+        {
+          "value": "63",
+          "selected": ""
+        },
+        {
+          "value": "64",
+          "selected": ""
+        },
+        {
+          "value": "65",
+          "selected": ""
+        },
+        {
+          "value": "10",
+          "selected": ""
+        },
+        {
+          "value": "15",
+          "selected": "selected"
+        },
+        {
+          "value": "20",
+          "selected": ""
+        },
+        {
+          "value": "5",
+          "selected": ""
+        },
+        {
+          "value": "10",
+          "selected": "selected"
+        },
+        {
+          "value": "15",
+          "selected": ""
+        },
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": ""
+        },
+        {
+          "value": "2025",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": ""
+        },
+        {
+          "value": "2023",
+          "selected": ""
+        },
+        {
+          "value": "2022",
+          "selected": ""
+        },
+        {
+          "value": "2021",
+          "selected": ""
+        },
+        {
+          "value": "2020",
+          "selected": ""
+        },
+        {
+          "value": "2019",
+          "selected": ""
+        },
+        {
+          "value": "2018",
+          "selected": ""
+        },
+        {
+          "value": "2017",
+          "selected": ""
+        },
+        {
+          "value": "2016",
+          "selected": ""
+        },
+        {
+          "value": "2015",
+          "selected": ""
+        },
+        {
+          "value": "2014",
+          "selected": ""
+        },
+        {
+          "value": "2013",
+          "selected": ""
+        },
+        {
+          "value": "2012",
+          "selected": ""
+        },
+        {
+          "value": "2011",
+          "selected": ""
+        },
+        {
+          "value": "2010",
+          "selected": ""
+        },
+        {
+          "value": "2009",
+          "selected": ""
+        },
+        {
+          "value": "2008",
+          "selected": ""
+        },
+        {
+          "value": "2007",
+          "selected": ""
+        },
+        {
+          "value": "2006",
+          "selected": ""
+        },
+        {
+          "value": "2005",
+          "selected": ""
+        },
+        {
+          "value": "2004",
+          "selected": ""
+        },
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "1",
+          "selected": ""
+        },
+        {
+          "value": "2",
+          "selected": ""
+        },
+        {
+          "value": "3",
+          "selected": ""
+        },
+        {
+          "value": "4",
+          "selected": ""
+        },
+        {
+          "value": "5",
+          "selected": ""
+        },
+        {
+          "value": "6",
+          "selected": ""
+        },
+        {
+          "value": "7",
+          "selected": ""
+        },
+        {
+          "value": "8",
+          "selected": ""
+        },
+        {
+          "value": "9",
+          "selected": ""
+        },
+        {
+          "value": "10",
+          "selected": ""
+        },
+        {
+          "value": "11",
+          "selected": ""
+        },
+        {
+          "value": "12",
+          "selected": ""
+        },
+        {
+          "value": "10",
+          "selected": ""
+        },
+        {
+          "value": "15",
+          "selected": "selected"
+        },
+        {
+          "value": "20",
+          "selected": ""
+        },
+        {
+          "value": "5",
+          "selected": ""
+        },
+        {
+          "value": "10",
+          "selected": "selected"
+        },
+        {
+          "value": "15",
+          "selected": ""
+        },
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "1736",
+          "selected": ""
+        },
+        {
+          "value": "1737",
+          "selected": ""
+        },
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": "selected"
+        },
+        {
+          "value": "2025",
+          "selected": ""
+        },
+        {
+          "value": "2024",
+          "selected": ""
+        },
+        {
+          "value": "10",
+          "selected": ""
+        },
+        {
+          "value": "15",
+          "selected": "selected"
+        },
+        {
+          "value": "20",
+          "selected": ""
+        },
+        {
+          "value": "5",
+          "selected": ""
+        },
+        {
+          "value": "10",
+          "selected": "selected"
+        },
+        {
+          "value": "15",
+          "selected": ""
+        }
+      ],
+      "buttons": {},
+      "selected": {},
+      "first_rows": [],
+      "resources": [
+        "https://prod1.seace.gob.pe/portal/download?fileName=86559cf8-c4b9-4425-8f12-3c3a88e7b3e5",
+        "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorPublico.xhtml",
+        "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorPublico.xhtml#tbBuscador:tab1",
+        "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorPublico.xhtml#tbBuscador:tab3",
+        "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorPublico.xhtml#tbBuscador:tab4",
+        "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorPublico.xhtml#tbBuscador:tab5",
+        "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorPublico.xhtml#tbBuscador:tab6",
+        "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorPublico.xhtml#tbBuscador:tab7",
+        "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/contact/contactenos.xhtml",
+        "https://prod2.seace.gob.pe/seacebus-uiwd-pub/javax.faces.resource/jquery/jquery-plugins.js.xhtml?ln=primefaces",
+        "https://prod2.seace.gob.pe/seacebus-uiwd-pub/javax.faces.resource/jquery/jquery.js.xhtml?ln=primefaces",
+        "https://prod2.seace.gob.pe/seacebus-uiwd-pub/javax.faces.resource/js/calendar_es.js.xhtml?ln=default&v=1_0",
+        "https://prod2.seace.gob.pe/seacebus-uiwd-pub/javax.faces.resource/js/utils.js.xhtml?ln=default&v=1_0",
+        "https://prod2.seace.gob.pe/seacebus-uiwd-pub/javax.faces.resource/primefaces.js.xhtml?ln=primefaces",
+        "https://prod2.seace.gob.pe/seacebus-uiwd-pub/recurso?nombre=cmsDescarga.js",
+        "https://www.gob.pe/institucion/oece/informes-publicaciones/437067-preguntas-frecuentes-seace",
+        "https://www.google.com/recaptcha/api.js?render=6Lfhnb0pAAAAAB3RxPrOlihIByQUBjpZCAjX-cY2"
+      ],
+      "captcha_marker": true,
+      "view_state_present": true
+    }
+  ]
+}
