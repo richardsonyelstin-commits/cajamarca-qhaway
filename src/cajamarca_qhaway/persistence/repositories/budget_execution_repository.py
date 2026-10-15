@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import json
 from collections.abc import Sequence
-from datetime import datetime, timezone
 from typing import Any
 
 from cajamarca_qhaway.models import BudgetExecutionRecord
 from cajamarca_qhaway.persistence.connection import DatabaseManager
+
+JSON_COLUMNS = ("raw_payload", "breakdown_by_scope", "breakdown_by_funding_source", "comparison_cuts")
+BUDGET_COLUMNS = tuple(BudgetExecutionRecord.model_fields)
 
 
 class BudgetExecutionRepository:
@@ -47,34 +49,23 @@ class BudgetExecutionRepository:
         if not records:
             return 0
 
-        sql = """
-        INSERT INTO budget_execution_records
-            (execution_record_id, entity_id, fiscal_year, budgeted_amount, executed_amount,
-             budget_category, raw_payload, source, retrieved_at)
-        VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT (execution_record_id) DO UPDATE SET
-            budgeted_amount = excluded.budgeted_amount,
-            executed_amount = excluded.executed_amount,
-            budget_category = excluded.budget_category,
-            raw_payload = excluded.raw_payload,
-            retrieved_at = excluded.retrieved_at
-        """
-
-        params = [
-            (
-                r.execution_record_id,
-                r.entity_id,
-                r.fiscal_year,
-                r.budgeted_amount,
-                r.executed_amount,
-                r.budget_category,
-                json.dumps(r.raw_payload, ensure_ascii=False) if isinstance(r.raw_payload, dict) else str(r.raw_payload),
-                r.source,
-                r.retrieved_at.isoformat(),
-            )
-            for r in records
-        ]
+        columns = ", ".join(BUDGET_COLUMNS)
+        parameters = ", ".join("?" for _ in BUDGET_COLUMNS)
+        updates = ", ".join(
+            f"{column} = excluded.{column}" for column in BUDGET_COLUMNS
+            if column not in ("execution_record_id", "entity_id", "fiscal_year")
+        )
+        sql = (
+            f"INSERT INTO budget_execution_records ({columns}) VALUES ({parameters}) "
+            f"ON CONFLICT (execution_record_id) DO UPDATE SET {updates}"
+        )
+        params = []
+        for record in records:
+            values = record.model_dump(mode="json")
+            for column in JSON_COLUMNS:
+                if values[column] is not None:
+                    values[column] = json.dumps(values[column], ensure_ascii=False)
+            params.append(tuple(values[column] for column in BUDGET_COLUMNS))
 
         with self.db.connection() as conn:
             cursor = conn.cursor()
@@ -84,27 +75,8 @@ class BudgetExecutionRepository:
 
     @staticmethod
     def _row_to_model(row: Any) -> BudgetExecutionRecord:
-        raw_payload = row["raw_payload"]
-        if isinstance(raw_payload, str):
-            try:
-                raw_payload = json.loads(raw_payload)
-            except json.JSONDecodeError:
-                raw_payload = {}
-
-        retrieved_at = row["retrieved_at"]
-        if isinstance(retrieved_at, str):
-            retrieved_at = datetime.fromisoformat(retrieved_at)
-        if retrieved_at.tzinfo is None:
-            retrieved_at = retrieved_at.replace(tzinfo=timezone.utc)
-
-        return BudgetExecutionRecord(
-            execution_record_id=row["execution_record_id"],
-            entity_id=row["entity_id"],
-            fiscal_year=row["fiscal_year"],
-            budgeted_amount=row["budgeted_amount"],
-            executed_amount=row["executed_amount"],
-            budget_category=row["budget_category"],
-            raw_payload=raw_payload,
-            source=row["source"],
-            retrieved_at=retrieved_at,
-        )
+        values = {column: row[column] for column in BUDGET_COLUMNS}
+        for column in JSON_COLUMNS:
+            if isinstance(values[column], str):
+                values[column] = json.loads(values[column])
+        return BudgetExecutionRecord.model_validate(values)

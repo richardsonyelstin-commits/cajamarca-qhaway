@@ -122,7 +122,7 @@ class MefPoller:
         records: list[BudgetExecutionRecord] = []
         async with MefConsultaAmigableClient() as client:
             for year in years:
-                records.extend(await client.extract(year, entities))
+                records.extend(await client.extract_reconciled(year, entities))
         self._pending_records.update((record.execution_record_id, record) for record in records)
         if records:
             self._pending_timestamp = max(record.retrieved_at for record in records)

@@ -12,6 +12,8 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from cajamarca_qhaway.models.procurement_source_record import ProcurementSourceRecord
+
 
 def compute_procurement_id(ocid: str) -> str:
     """Deriva un identificador determinista estable a partir del OCID."""
@@ -45,9 +47,15 @@ class ProcurementRecord(BaseModel):
     raw_payload: dict[str, Any] = Field(default_factory=dict)
     source: Literal["seace-ocds"] = "seace-ocds"
     retrieved_at: datetime
+    source_evidence: list[ProcurementSourceRecord] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def _validate_invariants(self) -> ProcurementRecord:
+        for evidence in self.source_evidence:
+            if evidence.entity_id != self.entity_id or evidence.procurement_id != self.procurement_id:
+                raise ValueError("La evidencia no corresponde al proceso y entidad canonicos")
+        if len({item.source_evidence_id for item in self.source_evidence}) != len(self.source_evidence):
+            raise ValueError("Evidencia de contratacion duplicada")
         if not self.procurement_id.strip():
             raise ValueError("procurement_id no puede ser vacio")
         if not self.ocid.strip():

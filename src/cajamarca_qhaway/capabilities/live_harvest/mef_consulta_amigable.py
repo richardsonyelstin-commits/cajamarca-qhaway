@@ -2,13 +2,16 @@
 
 from __future__ import annotations
 
+import asyncio
+import logging
 import re
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from decimal import Decimal, InvalidOperation
 from html.parser import HTMLParser
 from itertools import pairwise
-from typing import Any, Self
+from pathlib import Path
+from typing import Any, Literal, Self
 
 import httpx
 
@@ -21,9 +24,18 @@ from cajamarca_qhaway.models import (
     ContractingEntity,
     compute_execution_record_id,
 )
+from cajamarca_qhaway.models.budget_breakdown import (
+    BreakdownByScope,
+    Cut,
+    Funding,
+    Rubro,
+    Scope,
+)
+from cajamarca_qhaway.models.budget_reconciliation import moments_from_payload
 
 BASE_URL = "https://apps5.mineco.gob.pe/transparencia/Mensual/Navegar_6.aspx"
 SOURCE = "mef-consulta-amigable"
+logger = logging.getLogger(__name__)
 MUNICIPALITY_LABELS = {
     "CAJAMARCA": "01", "CAJABAMBA": "02", "CELENDIN": "03", "CHOTA": "04",
     "CONTUMAZA": "05", "CUTERVO": "06", "HUALGAYOC": "07", "JAEN": "08",
@@ -186,9 +198,17 @@ def _official_cut_date(content: str) -> str | None:
 class MefConsultaAmigableClient:
     """Cliente stateful de los postbacks ASP.NET del modulo mensual del MEF."""
 
-    def __init__(self, http_client: httpx.AsyncClient | None = None) -> None:
+    def __init__(
+        self, http_client: httpx.AsyncClient | None = None, *,
+        cut_type: Literal["daily", "monthly"] = "monthly",
+        scope: Literal["ActProy", "Proyecto", "Actividad"] = "ActProy",
+        include_funding: bool = False,
+    ) -> None:
         self._client = http_client
         self._owns_client = http_client is None
+        self.cut_type = cut_type
+        self.scope = scope
+        self.include_funding = include_funding
 
     async def __aenter__(self) -> Self:
         if self._client is None:
@@ -208,7 +228,8 @@ class MefConsultaAmigableClient:
 
     async def _get(self, year: int) -> tuple[str, str]:
         assert self._client is not None
-        url = f"{BASE_URL}?y={year}&ap=ActProy"
+        base = BASE_URL.replace("/Mensual/", "/Navegador/") if self.cut_type == "daily" else BASE_URL
+        url = f"{base}?y={year}&ap={self.scope}"
         response = await self._client.get(url)
         response.raise_for_status()
         return response.text, str(response.url)
@@ -222,7 +243,8 @@ class MefConsultaAmigableClient:
         if row is None or not row.radio_value:
             raise ValueError(f"No se encontro fila MEF {row_match!r} en {url}")
         button = next(
-            ((name, value) for name, value in page.buttons.items() if value == button_label),
+            ((name, value) for name, value in page.buttons.items()
+             if value == button_label and "Meta" not in name),
             None,
         )
         if button is None:
@@ -239,6 +261,127 @@ class MefConsultaAmigableClient:
         self, content: str, url: str, selection: str, button: str
     ) -> tuple[str, str]:
         return await self._postback(content, url, selection, button)
+
+    async def _go_up(self, content: str, url: str, dimension: int) -> tuple[str, str]:
+        """Reproduce GoUpTo con el ViewState de la respuesta mas reciente."""
+        assert self._client is not None
+        if f"GoUpTo({dimension})" not in content:
+            raise ValueError(f"El MEF no expone el nivel de retorno {dimension}")
+        page = _parse_page(content)
+        data = {**page.hidden, **page.selects,
+                "__EVENTTARGET": "__Page", "__EVENTARGUMENT": f"GoUpTo.{dimension}"}
+        response = await self._client.post(url, data=data)
+        response.raise_for_status()
+        return response.text, str(response.url)
+
+    async def _funding(
+        self, content: str, url: str, row: _Row, year: int, navigation: list[str],
+    ) -> list[Funding]:
+        content, url = await self._navigate(content, url, row.label, "Fuente")
+        source_rows = _parse_page(content).rows
+        result: list[Funding] = []
+        for index, source_row in enumerate(source_rows):
+            raw = _row_payload(source_row, year, url, navigation + ["Fuente"], _official_cut_date(content))
+            content, url = await self._navigate(content, url, source_row.label, "Rubro")
+            rubros: list[Rubro] = []
+            for rubro_row in _parse_page(content).rows:
+                rubro_raw = _row_payload(
+                    rubro_row, year, url, navigation + ["Fuente", source_row.label, "Rubro"],
+                    _official_cut_date(content),
+                )
+                rubros.append(Rubro(
+                    code=rubro_row.label.split(":", 1)[0].strip(), label=rubro_raw["nombre_entidad"],
+                    moments=moments_from_payload(rubro_raw), raw_payload=rubro_raw,
+                ))
+            result.append(Funding.model_validate({
+                "code": source_row.label.split(":", 1)[0].strip(),
+                "label": raw["nombre_entidad"], "moments": moments_from_payload(raw),
+                "rubros": rubros, "raw_payload": raw,
+            }))
+            if index < len(source_rows) - 1:
+                content, url = await self._go_up(content, url, 14)
+                refreshed = _parse_page(content).rows
+                if [r.label for r in refreshed] != [r.label for r in source_rows]:
+                    raise ValueError("La particion de fuentes cambio durante la sesion MEF")
+        return result
+
+    async def _record_with_funding(
+        self, row: _Row, entity: ContractingEntity, year: int,
+        url: str, navigation: list[str], content: str,
+    ) -> BudgetExecutionRecord:
+        record = _to_record(row, entity, year, url, navigation, _official_cut_date(content))
+        raw = {**record.raw_payload, "SCOPE": self.scope, "CUT_TYPE": self.cut_type}
+        moments = moments_from_payload(raw)
+        funding = await self._funding(content, url, row, year, navigation) if self.include_funding else []
+        category = "TOTAL" if self.scope == "ActProy" else self.scope
+        result = BudgetExecutionRecord.model_validate({
+            **record.model_dump(), **moments.model_dump(),
+            "execution_record_id": compute_execution_record_id(entity.entity_id, year, category),
+            "budget_category": category, "raw_payload": raw, "cut_type": self.cut_type,
+            "official_cut_date": raw["FECHA_CORTE_OFICIAL"],
+            "breakdown_by_funding_source": funding,
+        })
+        logger.info("MEF %s %s %s: %s", year, self.scope, self.cut_type, entity.entity_id)
+        return result
+
+    async def extract_reconciled(
+        self, year: int, entities: list[ContractingEntity], *,
+        checkpoint_directory: Path | None = None,
+    ) -> list[BudgetExecutionRecord]:
+        """Construye maestros diarios con tres ambitos y comparacion mensual separada."""
+        semaphore = asyncio.Semaphore(2)
+
+        async def collect(scope: Literal["ActProy", "Proyecto", "Actividad"]) -> list[BudgetExecutionRecord]:
+            async with semaphore, MefConsultaAmigableClient(
+                cut_type="daily", scope=scope, include_funding=True,
+            ) as client:
+                path = checkpoint_directory / f"{year}-{scope}.jsonl" if checkpoint_directory else None
+                if path is not None and path.exists():
+                    records = [BudgetExecutionRecord.model_validate_json(line)
+                               for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+                    current, _ = await client._get(year)
+                    if len(records) == 14 and all(
+                        str(record.official_cut_date) == _official_cut_date(current) for record in records
+                    ):
+                        return records
+                records = await client.extract(year, entities)
+                if path is not None:
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    temporary = path.with_suffix(".tmp")
+                    temporary.write_text("".join(r.model_dump_json() + "\n" for r in records), encoding="utf-8")
+                    temporary.replace(path)
+                return records
+
+        total, projects, activities = await asyncio.gather(
+            collect("ActProy"), collect("Proyecto"), collect("Actividad"),
+        )
+        async with MefConsultaAmigableClient(cut_type="monthly") as client:
+            monthly = await client.extract(year, entities)
+        projects_by_id = {r.entity_id: r for r in projects}
+        activities_by_id = {r.entity_id: r for r in activities}
+        monthly_by_id = {r.entity_id: r for r in monthly}
+
+        def as_scope(record: BudgetExecutionRecord, name: str) -> Scope:
+            return Scope.model_validate({
+                "scope": name, "moments": moments_from_payload(record.raw_payload),
+                "official_cut_date": record.official_cut_date,
+                "source_url": record.raw_payload["FUENTE_URL"], "raw_payload": record.raw_payload,
+                "breakdown_by_funding_source": record.breakdown_by_funding_source,
+            })
+
+        result: list[BudgetExecutionRecord] = []
+        for record in total:
+            result.append(BudgetExecutionRecord.model_validate({
+                **record.model_dump(), "is_canonical_total": True,
+                "breakdown_by_scope": BreakdownByScope(
+                    Proyecto=as_scope(projects_by_id[record.entity_id], "Proyecto"),
+                    Actividad=as_scope(activities_by_id[record.entity_id], "Actividad"),
+                ),
+                "comparison_cuts": [Cut.model_validate({
+                    "cut_type": "monthly", "total": as_scope(monthly_by_id[record.entity_id], "ActProy"),
+                })],
+            }))
+        return result
 
     async def extract(
         self, year: int, entities: list[ContractingEntity]
@@ -271,9 +414,8 @@ class MefConsultaAmigableClient:
         if regional_row is None:
             raise ValueError(f"El MEF no devolvio el pliego 445 para {year}")
         records = [
-            _to_record(
-                regional_row, regional, year, url, navigation,
-                _official_cut_date(content),
+            await self._record_with_funding(
+                regional_row, regional, year, url, navigation, content,
             )
         ]
 
@@ -317,9 +459,8 @@ class MefConsultaAmigableClient:
             if executor is None:
                 raise ValueError(f"No se verifico ejecutora provincial {province_name} ({year})")
             records.append(
-                _to_record(
-                    executor, province_entity, year, url, navigation,
-                    _official_cut_date(content),
+                await self._record_with_funding(
+                    executor, province_entity, year, url, navigation, content,
                 )
             )
             if province_index < len(province_items) - 1:

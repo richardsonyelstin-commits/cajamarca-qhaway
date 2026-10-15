@@ -64,7 +64,23 @@ class DatabaseManager:
             supplier_ruc TEXT,
             raw_payload TEXT NOT NULL DEFAULT '{}',
             source TEXT NOT NULL DEFAULT 'seace-ocds',
-            retrieved_at TEXT NOT NULL
+            retrieved_at TEXT NOT NULL,
+            source_evidence TEXT NOT NULL DEFAULT '[]'
+        );
+
+        CREATE TABLE IF NOT EXISTS procurement_source_records (
+            source_evidence_id TEXT PRIMARY KEY,
+            source_system TEXT NOT NULL,
+            dataset TEXT NOT NULL,
+            fiscal_year INTEGER NOT NULL,
+            entity_id TEXT NOT NULL REFERENCES contracting_entities(entity_id),
+            source_record_id TEXT NOT NULL,
+            official_process_id TEXT,
+            procurement_id TEXT REFERENCES procurement_records(procurement_id),
+            cui TEXT,
+            source_url TEXT NOT NULL,
+            retrieved_at TEXT NOT NULL,
+            raw_payload TEXT NOT NULL
         );
 
         CREATE TABLE IF NOT EXISTS budget_execution_records (
@@ -76,7 +92,20 @@ class DatabaseManager:
             budget_category TEXT,
             raw_payload TEXT NOT NULL DEFAULT '{}',
             source TEXT NOT NULL DEFAULT 'mef-datastore',
-            retrieved_at TEXT NOT NULL
+            retrieved_at TEXT NOT NULL,
+            is_canonical_total INTEGER NOT NULL DEFAULT 0,
+            pia_amount REAL,
+            certified_amount REAL,
+            committed_annual_amount REAL,
+            monthly_commitment_amount REAL,
+            paid_amount REAL,
+            modification_amount REAL,
+            execution_pct REAL,
+            cut_type TEXT,
+            official_cut_date TEXT,
+            breakdown_by_scope TEXT,
+            breakdown_by_funding_source TEXT NOT NULL DEFAULT '[]',
+            comparison_cuts TEXT NOT NULL DEFAULT '[]'
         );
 
         CREATE TABLE IF NOT EXISTS red_flags (

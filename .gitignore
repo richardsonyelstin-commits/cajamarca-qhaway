@@ -41,4 +41,7 @@ data/harvested/live-cutover-v2/procurements_all.jsonl
 data/curated/
 data/state/cutover-v2-coverage-gaps.jsonl
 data/state/cutover-v2-watermarks.json
+data/harvested/official-source-staging/
+data/harvested/official-source-staging-v1/
+data/state/dual-source-gaps.jsonl
 

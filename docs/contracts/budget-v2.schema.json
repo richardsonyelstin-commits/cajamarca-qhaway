@@ -1,0 +1,233 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cajamarca-qhaway.vercel.app/contracts/budget-v2.schema.json",
+  "title": "Desglose institucional MEF sin doble conteo",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "is_canonical_total",
+    "cut_type",
+    "total",
+    "breakdown_by_scope",
+    "comparison_cuts"
+  ],
+  "properties": {
+    "is_canonical_total": {
+      "const": true
+    },
+    "cut_type": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "monthly"
+      ]
+    },
+    "total": {
+      "$ref": "#/$defs/scope"
+    },
+    "breakdown_by_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Proyecto",
+        "Actividad"
+      ],
+      "properties": {
+        "Proyecto": {
+          "$ref": "#/$defs/scope"
+        },
+        "Actividad": {
+          "$ref": "#/$defs/scope"
+        }
+      }
+    },
+    "comparison_cuts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/cut"
+      }
+    }
+  },
+  "$defs": {
+    "moments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pia_amount",
+        "budgeted_amount",
+        "certified_amount",
+        "committed_annual_amount",
+        "monthly_commitment_amount",
+        "executed_amount",
+        "paid_amount",
+        "modification_amount",
+        "execution_pct"
+      ],
+      "properties": {
+        "pia_amount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "budgeted_amount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "certified_amount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "committed_annual_amount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "monthly_commitment_amount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "executed_amount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "paid_amount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "modification_amount": {
+          "type": "number"
+        },
+        "execution_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "rubro": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "label",
+        "moments",
+        "raw_payload"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "moments": {
+          "$ref": "#/$defs/moments"
+        },
+        "raw_payload": {
+          "type": "object"
+        }
+      }
+    },
+    "funding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "label",
+        "moments",
+        "rubros",
+        "raw_payload"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+          ]
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "moments": {
+          "$ref": "#/$defs/moments"
+        },
+        "rubros": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/rubro"
+          }
+        },
+        "raw_payload": {
+          "type": "object"
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope",
+        "moments",
+        "official_cut_date",
+        "source_url",
+        "raw_payload",
+        "breakdown_by_funding_source"
+      ],
+      "properties": {
+        "scope": {
+          "type": "string",
+          "enum": [
+            "ActProy",
+            "Proyecto",
+            "Actividad"
+          ]
+        },
+        "moments": {
+          "$ref": "#/$defs/moments"
+        },
+        "breakdown_by_funding_source": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/funding"
+          }
+        },
+        "official_cut_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "source_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "raw_payload": {
+          "type": "object"
+        }
+      }
+    },
+    "cut": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cut_type",
+        "total"
+      ],
+      "properties": {
+        "cut_type": {
+          "type": "string",
+          "enum": [
+            "daily",
+            "monthly"
+          ]
+        },
+        "total": {
+          "$ref": "#/$defs/scope"
+        }
+      }
+    }
+  }
+}
