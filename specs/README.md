@@ -1,64 +1,64 @@
 ---
-title: Mapa de capacidades - cajamarca-qhaway
+title: "Mapa de capacidades - cajamarca-qhaway"
 status: active
-created: 2026-08-20
-updated: 2026-10-15
+updated: 2026-10-16
 source: ai
-generator: codex-gpt-6
-generated_at: 2026-10-15T18:33:00Z
+generator: codex
+generated_at: 2026-10-16T07:18:34.441452+00:00
 confidence: high
 verified: false
 ---
 
 # Mapa de capacidades - cajamarca-qhaway
 
-Capacidades identificadas para Fase 1, en orden de dependencia. Las siete primeras tienen
-spec en `draft` (ver `docs/sdd/constitution.md`, Articulo 8, para el ciclo de vida). Las dos
-ultimas quedan **reservadas, sin spec todavia**, por las razones concretas que se listan abajo --
-no por olvido.
+Las capacidades documentan requisitos y mantienen su estado de aprobación original.
+El árbol contiene implementaciones que no equivalen a una certificación productiva de cada caso.
+011 ya dispone de runtime privado y permanece separado del motor heredado 004.
+
+## Mapa actual
+
+| Spec | Código | Estado técnico y documental |
+|---|---|---|
+| [001](001-entity-mapping/spec.md) | entity_mapping | Entidades; spec draft |
+| [002](002-seace-ingestion/spec.md) | seace_ingestion, live_harvest | Contrataciones y procedencia; spec draft |
+| [003](003-mef-ingestion/spec.md) | mef_ingestion, live_harvest | Presupuesto y fuentes; spec draft |
+| [004](004-red-flags-engine/spec.md) | red_flags_engine | Motor heredado, catálogo de diez reglas |
+| [005](005-review-panel/spec.md) | review_panel | Compuerta humana y decisiones persistidas; spec draft |
+| [006](006-denuncia-intake/spec.md) | denuncia_intake | Recepción y moderación; spec draft |
+| [007](007-geospatial-satellite-monitoring/spec.md) | geospatial_monitoring | Módulo presente; cobertura depende de catálogo y evidencia reales |
+| [010](010-budget-moments-dual-sources-identity/spec.md) | Modelos, ingesta y vistas | Cortes, ámbitos y evidencia; spec draft |
+| [011](011-deterministic-engine/spec.md) | deterministic_engine | Seis reglas exactas y shadow privado; spec proposed |
+
+Los módulos se encuentran en [capabilities/](../src/cajamarca_qhaway/capabilities/).
+Las pruebas están en [tests/](../tests/).
+No se declara que todos los criterios de campo estén satisfechos por tener módulos y tests.
 
 ```mermaid
 flowchart LR
-  A[001 entity-mapping] --> B[002 seace-ingestion]
-  A --> C[003 mef-ingestion]
-  B --> D[004 red-flags-engine]
+  A[001 Entidades] --> B[002 Contrataciones]
+  A --> C[003 Presupuesto]
+  B --> D[004 Motor heredado]
   C --> D
-  B --> G[007 geospatial-satellite-monitoring]
-  C --> G
-  D --> E[005 review-panel]
-  G --> E
-  F[006 denuncia-intake] -.candidato de investigacion.-> E
-  A --> H[008 dji-ingestion]
-  E --> I[009 sms-whatsapp-notify]
+  D --> E[005 Revisión humana]
+  F[006 Denuncias] --> E
+  G[007 Evidencia territorial] --> E
+  B --> H[011 Request explícito]
+  C --> H
+  H --> I[Evaluaciones y shadow privados]
 ```
 
-## Capacidades con spec (`draft`)
+La última flecha no supone una integración automática de los conectores con 011.
+Su adaptador requiere normalización y correspondencias acreditadas desde bytes preservados.
 
-El propietario autorizó la reforma Constitución v2.0 el 2026-10-15.
-Las specs 001-007 incorporan fuentes plurales, particiones presupuestales y niveles de IA.
-La extensión 010 fija criterios de presupuesto, evidencia dual e identidad.
-La disponibilidad del copiloto y la recalibración se certifica al cerrar el Nodo 3.
+## Reservadas
 
-| # | Capacidad | Produce | Estado |
-|---|---|---|---|
-| 001 | `entity-mapping` | `ContractingEntity` | `draft` -- implementado en `cajamarca_qhaway.capabilities.entity_mapping`; corpus dorado de 14 entidades verificado |
-| 002 | `seace-ingestion` | `ProcurementRecord` | `draft` -- contrato implementado; cliente/parser con filtro Cajamarca en `cajamarca_qhaway.capabilities.seace_ingestion` |
-| 003 | `mef-ingestion` | `BudgetExecutionRecord` | `draft` -- contrato implementado; cliente/parser CKAN datastore en `cajamarca_qhaway.capabilities.mef_ingestion` |
-| 004 | `red-flags-engine` | `RedFlag` | `draft` -- contrato implementado; motor con catalogo de 5 indicadores en `cajamarca_qhaway.capabilities.red_flags_engine` |
-| 005 | `review-panel` | `Alert` | `draft` -- contrato implementado; servicio de compuerta humana en `cajamarca_qhaway.capabilities.review_panel` |
-| 006 | `denuncia-intake` | `CitizenReport` | `draft` -- contrato implementado; servicio de recepcion y moderacion en `cajamarca_qhaway.capabilities.denuncia_intake` |
-| 007 | `geospatial-satellite-monitoring` | `PhysicalFinancialDivergenceSignal`, `RedFlag` | `draft` -- contrato implementado; catalogo geoespacial, Sentinel-1/2, NASA HLS/GIBS y evaluador en `cajamarca_qhaway.capabilities.geospatial_monitoring` |
+008 dji-ingestion no tiene spec ni ingesta autorizada de relaciones reales.
+009 sms-whatsapp-notify no tiene spec ni proveedor decidido.
+Las dependencias legales y de producto siguen en [pending-adrs.md](pending-adrs.md).
 
-*Nota (2026-10-13):* Los contratos canonicos del Articulo 19 y las interfaces desacopladas de las capacidades 001 a 007 han sido implementados en `src/cajamarca_qhaway/` con 124 pruebas unitarias y de integracion pasando.
+## Lectura de estados
 
-## Capacidades reservadas (sin spec)
-
-| # | Capacidad | Por que espera |
-|---|---|---|
-| 008 | `dji-ingestion` | Bloqueada por el Articulo 17 de la constitucion: requiere evaluacion legal formal bajo la Ley 29733 antes de que tenga sentido especificar el pipeline tecnico. Especificarla ahora seria fingir que esa decision ya se tomo. |
-| 009 | `sms-whatsapp-notify` | Depende de que exista al menos una `Alert` real que notificar (`005`) y de una decision de proveedor de SMS/WhatsApp que no le corresponde a este agente (`specs/pending-adrs.md`). |
-
-## Como se actualiza este mapa
-
-Cuando una spec avanza de estado (Articulo 8 de la constitucion), esta tabla se actualiza en el
-mismo cambio -- no es un artefacto generado automaticamente en este proyecto todavia.
+Draft y proposed identifican aprobación documental; no son un contador de módulos existentes.
+Los planes heredados conservan el razonamiento de diseño y señalan ahora la implementación local.
+La Constitución v2 está vigente; su enmienda 011 y ADR 0015-0019 permanecen propuestos.
+No se migran por documentación aprobaciones humanas, prioridades ni alertas publicadas.

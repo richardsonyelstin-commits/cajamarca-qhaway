@@ -4,18 +4,25 @@ spec: "007"
 capability: geospatial-satellite-monitoring
 status: draft
 created: 2026-10-13
-updated: 2026-10-15
+updated: 2026-10-16
 consumes: [ProcurementRecord, BudgetExecutionRecord, ContractingEntity]
 produces: [RedFlag, PhysicalFinancialDivergenceSignal]
 open_clarifications: 0
 source: ai
-generator: codex-gpt-6
-generated_at: 2026-10-15T18:33:00Z
+generator: codex
+generated_at: 2026-10-16T07:18:34.441452+00:00
 confidence: high
 verified: false
 ---
 
 # Spec 007 - geospatial-satellite-monitoring
+
+## Estado contrastado (2026-10-16)
+
+La implementación local correspondiente está en [código](../../src/cajamarca_qhaway/capabilities/geospatial_monitoring/).
+El estado draft se conserva: tener implementación no constituye aprobación documental.
+Las reglas siguientes son requisitos y diseño; no certifican cobertura o servicios remotos.
+La presencia de módulos no acredita por sí sola un catálogo de obras verificadas.
 
 Monitorea multi-temporalmente el avance fisico de obras de infraestructura publica en Cajamarca mediante teledeteccion satelital abierta (optica y radar) y camaras publicas de obra, contrastandolo deterministicamente contra el devengado financiero del MEF y los contratos de SEACE para generar candidatos a RedFlag de divergencia fisico-financiera.
 

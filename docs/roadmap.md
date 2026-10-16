@@ -1,57 +1,48 @@
 ---
-title: Roadmap - cajamarca-qhaway
+title: "Roadmap - cajamarca-qhaway"
 status: active
-created: 2026-08-20
-updated: 2026-10-12
+updated: 2026-10-16
 source: ai
-generator: claude-sonnet-5
-generated_at: 2026-08-20T00:00:00Z
+generator: codex
+generated_at: 2026-10-16T07:14:27.989761+00:00
 confidence: high
 verified: false
 ---
 
 # Roadmap - cajamarca-qhaway
 
-Organizado por **horizontes**, no por fechas. Un roadmap con fechas concretas a más de un
-trimestre es ficción, y la ficción se convierte en deuda de credibilidad.
-Se revisa el primer lunes de cada mes.
+El código existente y el trabajo pendiente se distinguen por criterios verificables.
+El motor 011 ya puede ejecutarse de forma privada, pero no reemplaza el flujo productivo 004.
+No se asignan fechas ni aprobaciones humanas a actividades todavía no realizadas.
 
-## Now - en curso
+## Disponible en el árbol actual
 
-| Qué | Por qué (resultado esperado) | Tamaño | Tarea |
-|---|---|---|---|
-| ~~Implementar `001-entity-mapping` según spec + ADR 0006~~ **Hecho.** | Corpus dorado de 14 entidades verificado | S | |
-| ~~Fundación Contractual SDD y 6 Modelos Canónicos (Art. 19)~~ **Hecho (2026-10-12).** | Contratos Pydantic v2 inviolables con inmutabilidad y validaciones | M | |
-| ~~Capacidades de Ingesta y Motor (002, 003, 004, 005, 006, CLI)~~ **Hecho (2026-10-12).** | Ingestas desacopladas, motor con 5 indicadores, compuerta humana y denuncias | L | |
-| ~~Pilar 1: Cosecha Continua de Datos en Vivo (`live_harvest`)~~ **Hecho (2026-10-12).** | HarvesterDaemon, pollers SEACE/MEF, persistencia atómica de marcas de agua y log de brechas | M | |
-| ~~Pilar 2: Base de Datos Operativa Conectada a Supabase~~ **Hecho (2026-10-12).** | Repositorios para los 6 modelos canónicos, RLS activo, spooling fallback y comandos CLI `db` | M | |
-| ~~Pilar 3: Plataforma Web Integral (`web/`), Panel de Revisión (CU5), Dashboard Público (CU1-CU4) y Canal de Denuncia (`006`)~~ **Hecho (2026-10-12).** | Plataforma web completa en `web/` (`index.html`, `DESIGN.md`, `src/`, `media/`, `tools/`), puente Python/Vercel y conexión en vivo con Supabase | L | `TK-301`..`TK-306` |
-| Resolver fila 8 de `specs/pending-adrs.md`: re-verificar `GET /downloads` de OECE desde otra red | Condiciona si `002-seace-ingestion` en producción puede apoyarse en descarga masiva | S | |
-
-<!-- Solo este horizonte enlaza a tareas concretas. -->
-
-## Next - siguiente ciclo
-
-| Qué | Por qué | Tamaño |
-|---|---|---|
-| Validación operativa en campo con aliados regionales (Proética Cajamarca, Propuesta Ciudadana, GRUFIDES) sobre la plataforma web desplegada | Confirma ahorro de trabajo real en investigación y moderación | M |
-
-## Later - comprometido, sin fecha
-
-| Qué | Por qué |
+| Área | Evidencia de código |
 |---|---|
-| Evaluación legal formal de uso de DJI bajo Ley 29733, luego ingesta de DJI limitada a relaciones declaradas | Dominio legalmente más sensible - requiere sign-off explícito antes de construir |
-| Canal SMS/WhatsApp piloto automatizado con un grupo reducido | Cubre el vacío de conectividad rural documentado en el diseño de Fase 1 |
+| Entidades e ingestión | [capacidades](../src/cajamarca_qhaway/capabilities/) y [tests](../tests/) |
+| Persistencia y panel | [repositorios](../src/cajamarca_qhaway/persistence/repositories/) |
+| Web MPA y API | [servidor WSGI](../src/cajamarca_qhaway/web/server.py), [web](../web/) |
+| Motor heredado de diez reglas | [catálogo 004](../src/cajamarca_qhaway/capabilities/red_flags_engine/catalog.py) |
+| Motor puro de seis reglas y shadow | [núcleo 011](../src/cajamarca_qhaway/capabilities/deterministic_engine/) |
+| Geoespacial | [módulo 007](../src/cajamarca_qhaway/capabilities/geospatial_monitoring/) |
 
-## Someday - no comprometido
+La existencia del módulo geoespacial no acredita obras, coordenadas ni cobertura verificadas.
 
-<!-- Ideas vivas. Que algo esté aquí no promete nada a nadie. -->
+## Pendientes con compuerta
 
-- Generalizar el modelo a otras regiones (`<region>-qhaway`) si Cajamarca valida la hipótesis.
-- Imágenes satelitales para verificación física de obras.
-- App móvil nativa, si el uso real demuestra que web + SMS/WhatsApp no basta.
+| Trabajo | Criterio de cierre |
+|---|---|
+| Adopción 011 | Corpus oficial autorizado, correspondencias acreditadas y diferencias explicadas |
+| Política exploratoria | Calibración humana y aprobación documental, sin inferencia de límites legales |
+| Piloto privado | Cumplir la observación prevista en 011 y registrar sus resultados reales |
+| Dependencias de despliegue | Reconciliar requirements.txt con pyproject.toml antes de usar esa vía para 011 |
+| Seguridad operativa | Verificación de OAuth, revocación y persistencia entre instancias en staging |
+| Fuentes protegidas | Registrar cobertura real y brechas; CAPTCHA o rechazo no equivalen a cosecha completa |
+| Uso regional | Validación operativa con usuarios y composición acreditada del panel |
 
-## Descartado
+## Capacidades reservadas
 
-<!-- Lo que salió del roadmap, con fecha y motivo. Evita reabrir el mismo debate cada
-     trimestre. -->
+008, ingestión DJI, depende de evaluación legal y alcance autorizado.
+009, notificación SMS/WhatsApp, requiere spec, proveedor y condiciones de privacidad.
+El alcance se mantiene en Cajamarca; generalización territorial y aplicación nativa no se declaran listas.
+Los antecedentes activos se conservan en [tasks/active](../tasks/active/).

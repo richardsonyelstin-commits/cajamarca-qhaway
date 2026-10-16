@@ -1,3 +1,15 @@
+---
+title: "TK-201: Esquemas DDL Relacionales, Migraciones y RLS en Supabase"
+record_kind: historical
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:11:56.288182+00:00
+confidence: medium
+verified: false
+metadata_only: true
+original_body_sha256: 41131b133d900df50d34c45833d3ca37a2b3f2e15e07ad6dfadd8dc82e9539e9
+---
+
 # TK-201: Esquemas DDL Relacionales, Migraciones y RLS en Supabase
 
 **Estado:** DONE  

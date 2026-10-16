@@ -4,13 +4,20 @@ spec: "003"
 capability: mef-ingestion
 status: draft
 source: ai
-generator: codex-gpt-6
-generated_at: 2026-10-14T21:53:14.441784+00:00
+generator: codex
+generated_at: 2026-10-16T07:18:34.441452+00:00
 confidence: high
 verified: false
+updated: 2026-10-16
 ---
 
 # Tareas 003 - mef-ingestion
+
+## Estado contrastado (2026-10-16)
+
+La implementación local correspondiente está en [código](../../src/cajamarca_qhaway/capabilities/mef_ingestion/).
+El estado draft se conserva: tener implementación no constituye aprobación documental.
+Las reglas siguientes son requisitos y diseño; no certifican cobertura o servicios remotos.
 
 Las pruebas siguientes cubren la ruta oficial mensual implementada.
 Las aclaraciones pendientes CKAN se conservan sin declarar la spec aprobada.

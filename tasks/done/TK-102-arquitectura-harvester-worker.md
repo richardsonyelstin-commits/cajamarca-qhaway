@@ -1,3 +1,15 @@
+---
+title: "TK-102: Arquitectura y especificación técnica del Harvester Daemon / Background Worker"
+record_kind: historical
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:11:56.288182+00:00
+confidence: medium
+verified: false
+metadata_only: true
+original_body_sha256: a06ec80ec1140af9b834b5e82f96fdbd43d32534d58975b4d2d5b5cac7629bbf
+---
+
 # TK-102: Arquitectura y especificación técnica del Harvester Daemon / Background Worker
 
 **Estado:** DONE  

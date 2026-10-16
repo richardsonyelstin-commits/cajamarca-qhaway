@@ -4,18 +4,24 @@ spec: "006"
 capability: denuncia-intake
 status: draft
 created: 2026-08-20
-updated: 2026-10-15
+updated: 2026-10-16
 consumes: []
 produces: [CitizenReport]
 open_clarifications: 6
 source: ai
-generator: codex-gpt-6
-generated_at: 2026-10-15T18:33:00Z
+generator: codex
+generated_at: 2026-10-16T07:18:34.441452+00:00
 confidence: low
 verified: false
 ---
 
 # Spec 006 - denuncia-intake
+
+## Estado contrastado (2026-10-16)
+
+La implementación local correspondiente está en [código](../../src/cajamarca_qhaway/capabilities/denuncia_intake/).
+El estado draft se conserva: tener implementación no constituye aprobación documental.
+Las reglas siguientes son requisitos y diseño; no certifican cobertura o servicios remotos.
 
 Recibe una denuncia ciudadana curada, la modera antes de convertirla en candidato de
 investigación, y muestra el aviso obligatorio de que la plataforma no ofrece protección legal

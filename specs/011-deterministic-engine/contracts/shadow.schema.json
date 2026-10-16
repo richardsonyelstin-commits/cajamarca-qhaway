@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qhaway.invalid/contracts/shadow-1",
+  "title": "Private shadow envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "mapping_version",
+    "request",
+    "links",
+    "money"
+  ],
+  "properties": {
+    "mapping_version": {
+      "const": "shadow-1"
+    },
+    "request": {
+      "$ref": "https://qhaway.invalid/engine-2/request.schema.json"
+    },
+    "links": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "legacy_id",
+          "scope_id",
+          "record_key",
+          "evidence_id"
+        ],
+        "properties": {
+          "legacy_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scope_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "record_key": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "money": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "scope_id",
+          "record_key",
+          "source_id",
+          "revision",
+          "field",
+          "evidence_id",
+          "pointer"
+        ],
+        "properties": {
+          "scope_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "record_key": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pointer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "field": {
+            "enum": [
+              "amount",
+              "pim",
+              "devengado"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

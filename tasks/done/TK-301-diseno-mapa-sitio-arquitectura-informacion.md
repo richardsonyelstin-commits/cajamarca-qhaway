@@ -1,3 +1,15 @@
+---
+title: "TK-301: Diseño de Mapa de Sitio y Arquitectura de Información Web"
+record_kind: historical
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:11:56.288182+00:00
+confidence: medium
+verified: false
+metadata_only: true
+original_body_sha256: 7da3ef4021a919db4c62e98c89ad1861391f2df53e2d8b3791c24da088899334
+---
+
 # TK-301: Diseño de Mapa de Sitio y Arquitectura de Información Web
 
 **Estado:** DONE  

@@ -4,18 +4,24 @@ spec: "001"
 capability: entity-mapping
 status: draft
 created: 2026-08-20
-updated: 2026-10-15
+updated: 2026-10-16
 consumes: []
 produces: [ContractingEntity]
 open_clarifications: 1
 source: ai
-generator: codex-gpt-6
-generated_at: 2026-10-15T18:33:00Z
+generator: codex
+generated_at: 2026-10-16T07:18:34.441452+00:00
 confidence: medium
 verified: false
 ---
 
 # Spec 001 - entity-mapping
+
+## Estado contrastado (2026-10-16)
+
+La implementación local correspondiente está en [código](../../src/cajamarca_qhaway/capabilities/entity_mapping/).
+El estado draft se conserva: tener implementación no constituye aprobación documental.
+Las reglas siguientes son requisitos y diseño; no certifican cobertura o servicios remotos.
 
 Construye y mantiene el universo verificado de entidades contratantes de la región Cajamarca:
 Gobierno Regional y las 13 municipalidades provinciales como raíces canónicas.

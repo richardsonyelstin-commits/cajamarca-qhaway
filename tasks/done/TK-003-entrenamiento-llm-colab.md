@@ -1,3 +1,15 @@
+---
+title: "TK-003: Pipeline de Fine-Tuning y Evaluación de LLM en Google Colab"
+record_kind: historical
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:11:56.288182+00:00
+confidence: medium
+verified: false
+metadata_only: true
+original_body_sha256: e6009bfb71cab5dd2867f6dfc9c39f1c35ef6644e0af13ca2c40cf7a04addab9
+---
+
 # TK-003: Pipeline de Fine-Tuning y Evaluación de LLM en Google Colab
 
 **Estado:** DONE  

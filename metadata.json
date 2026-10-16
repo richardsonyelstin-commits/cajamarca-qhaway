@@ -1,8 +1,0 @@
-{
-  "name": "Cajamarca Qhaway: Observatorio Cívico Regional",
-  "description": "Observatorio Cívico Regional de contrataciones públicas y ejecución presupuestal en el departamento de Cajamarca.",
-  "permissions": [],
-  "capabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
-}

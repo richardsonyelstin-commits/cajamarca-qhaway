@@ -1,0 +1,739 @@
+{
+  "source": "ai",
+  "generator": "codex-gpt-6",
+  "confidence": "medium",
+  "verified": false,
+  "synthetic": true,
+  "generated_at": "2026-10-16T04:49:08Z",
+  "vectors": [
+    {
+      "id": "same-source-same-revision-conflict",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "single-bidder"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 1
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "single-bidder",
+            "state": "INVALID",
+            "reason_code": "CONFLICTING_REVISION",
+            "observed": null,
+            "threshold": null
+          }
+        ]
+      },
+      "derivation": "Dos hechos distintos en la misma fuente, clave y revision1 elegible. No se elige por orden ni se oculta el conflicto; valores y umbral son null.",
+      "identity_matches_full_fixture": false
+    },
+    {
+      "id": "cross-source-disagreement",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "single-bidder"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-secondary",
+            "source_id": "synthetic-secondary",
+            "source_url": "https://example.invalid/secondary",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 1
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic-secondary",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-secondary"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "single-bidder",
+            "state": "INVALID",
+            "reason_code": "SOURCE_DISAGREEMENT",
+            "observed": null,
+            "threshold": null
+          }
+        ]
+      },
+      "derivation": "Las fuentes elegibles afirman bidders1 y bidders2 para la misma record_key. Proyeccion de consenso fact+deleted discrepa; no hay fuente ganadora.",
+      "identity_matches_full_fixture": false
+    },
+    {
+      "id": "selected-tombstone-empty",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 0,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "single-bidder"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 1
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 2,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": true,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 1
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "single-bidder",
+            "state": "NOT_EVALUABLE",
+            "reason_code": "EMPTY_SCOPE",
+            "observed": null,
+            "threshold": null
+          }
+        ]
+      },
+      "derivation": "Revision2 elegible retira el unico hecho. No resucita revision1; expected_count0 describe hechos activos. Diagnostico TOMBSTONE_SELECTED para scope-1 y ocds-synthetic-1/award-1; evidencia del retiro y manifiesto se conservan.",
+      "identity_matches_full_fixture": false
+    },
+    {
+      "id": "future-revision-excluded",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "single-bidder"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-future",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-10-16T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 1
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 2,
+            "effective_at": "2026-10-16T00:00:00Z",
+            "retrieved_at": "2026-10-16T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-future"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "single-bidder",
+            "state": "SIGNAL",
+            "reason_code": "THRESHOLD_MATCH",
+            "observed": {
+              "numerator": "1",
+              "denominator": "1"
+            },
+            "threshold": {
+              "numerator": "1",
+              "denominator": "1"
+            }
+          }
+        ]
+      },
+      "derivation": "Revision2 tiene extraccion y vigencia posteriores a as_of2026-10-15. Se conserva bidders1 de revision1 y diagnostico FUTURE_REVISION_EXCLUDED. La revision futura permanece en request normalizado: run_id cambia aunque el valor1/1 y SIGNAL coincidan.",
+      "identity_matches_full_fixture": false
+    },
+    {
+      "id": "latest-eligible-revision",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "single-bidder"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-revision-2",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-02-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 1
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 2,
+            "effective_at": "2026-02-01T00:00:00Z",
+            "retrieved_at": "2026-02-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-revision-2"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "single-bidder",
+            "state": "PASS",
+            "reason_code": "THRESHOLD_NOT_MATCH",
+            "observed": {
+              "numerator": "2",
+              "denominator": "1"
+            },
+            "threshold": {
+              "numerator": "1",
+              "denominator": "1"
+            }
+          }
+        ]
+      },
+      "derivation": "Revision2 es mayor y elegible; gana bidders2. Dos postores no son iguales al umbral1, por tanto PASS observado2/1. Se conserva revision1 en identidad de replay, sin emitir resultado obsoleto separado.",
+      "identity_matches_full_fixture": false
+    },
+    {
+      "id": "exact-observation-duplicate",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "single-bidder"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 1
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 1
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "single-bidder",
+            "state": "SIGNAL",
+            "reason_code": "THRESHOLD_MATCH",
+            "observed": {
+              "numerator": "1",
+              "denominator": "1"
+            },
+            "threshold": {
+              "numerator": "1",
+              "denominator": "1"
+            }
+          }
+        ]
+      },
+      "derivation": "La observacion duplicada exacta colapsa antes de hashear. El request normalizado coincide byte a byte con full-result.input y conserva run_id, result_id, diagnosticos vacios y observed1/1.",
+      "identity_matches_full_fixture": true
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 ---
-title: Estudio de Factibilidad y Arquitectura de Monitoreo Geoespacial Satelital y Camaras Publicas para Obras Publicas de Cajamarca
+title: "Estudio de Factibilidad y Arquitectura: Monitoreo Geoespacial Satelital y Camaras Publicas para Obras Publicas en Cajamarca"
 status: active
 created: 2026-10-13
 source: ai

@@ -1,0 +1,18 @@
+{
+  "source": "ai",
+  "generator": "codex-gpt-6",
+  "confidence": "medium",
+  "verified": false,
+  "synthetic": true,
+  "generated_at": "2026-10-16T04:49:08Z",
+  "output": {
+    "schema_version": "engine-2",
+    "kind": "BatchInvalid",
+    "problems": [
+      {
+        "pointer": "/scopes/0/unknown",
+        "code": "SCHEMA_VIOLATION"
+      }
+    ]
+  }
+}

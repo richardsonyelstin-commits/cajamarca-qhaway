@@ -1,0 +1,15 @@
+{
+  "source": "ai",
+  "generator": "codex",
+  "generated_at": "2026-10-16T18:15:14.342002+00:00",
+  "confidence": "high",
+  "verified": false,
+  "documents": 105,
+  "local_links": 240,
+  "historical_task_bodies_preserved": 21,
+  "issues": [],
+  "limitations": [
+    "No comprueba disponibilidad de URLs remotas ni fragmentos Markdown.",
+    "No acredita servicios productivos ni aceptación humana."
+  ]
+}

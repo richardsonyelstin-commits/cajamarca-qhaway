@@ -1,0 +1,1130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qhaway.invalid/engine-2/result.schema.json",
+  "title": "Resultado determinista propuesto",
+  "description": "source: ai; generator: codex-gpt-6; generated_at: 2026-10-16T04:41:12Z; confidence: medium; verified: false",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "engine-2"
+        },
+        "engine_version": {
+          "const": "deterministic-2.0.0"
+        },
+        "policy_version": {
+          "const": "qhaway-exploratory-1"
+        },
+        "kind": {
+          "const": "BatchResult"
+        },
+        "run_id": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "as_of": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\dZ$"
+        },
+        "evaluations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "result_id": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "scope_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "rule_code": {
+                "enum": [
+                  "single-bidder",
+                  "contract-share",
+                  "hhi",
+                  "recurrent-direct",
+                  "budget-unspent",
+                  "budget-above-pim"
+                ]
+              },
+              "state": {
+                "enum": [
+                  "INVALID",
+                  "NOT_EVALUABLE",
+                  "PASS",
+                  "SIGNAL"
+                ]
+              },
+              "reason_code": {
+                "enum": [
+                  "THRESHOLD_MATCH",
+                  "THRESHOLD_NOT_MATCH",
+                  "EMPTY_SCOPE",
+                  "MISSING_FIELD",
+                  "INCOMPLETE_COVERAGE",
+                  "INSUFFICIENT_SAMPLE",
+                  "UNALLOCATED_SUPPLIERS",
+                  "INAPPLICABLE",
+                  "OPEN_FISCAL_YEAR",
+                  "ZERO_DENOMINATOR",
+                  "CONFLICTING_REVISION",
+                  "SOURCE_DISAGREEMENT",
+                  "MIXED_GRAIN",
+                  "INVALID_INTERVAL",
+                  "INVALID_CUT",
+                  "INVALID_FACT",
+                  "COVERAGE_MISMATCH"
+                ]
+              },
+              "formula_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "observed": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "numerator": {
+                        "type": "string",
+                        "pattern": "^(0|-?[1-9][0-9]*)$"
+                      },
+                      "denominator": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]*$"
+                      }
+                    },
+                    "required": [
+                      "numerator",
+                      "denominator"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "threshold": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "numerator": {
+                        "type": "string",
+                        "pattern": "^(0|-?[1-9][0-9]*)$"
+                      },
+                      "denominator": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]*$"
+                      }
+                    },
+                    "required": [
+                      "numerator",
+                      "denominator"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "record_keys": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "uniqueItems": true
+              },
+              "evidence_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "result_id",
+              "scope_id",
+              "rule_code",
+              "state",
+              "reason_code",
+              "formula_id",
+              "observed",
+              "threshold",
+              "record_keys",
+              "evidence_ids"
+            ],
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "state": {
+                      "enum": [
+                        "PASS",
+                        "SIGNAL"
+                      ]
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "observed": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "numerator": {
+                          "type": "string",
+                          "pattern": "^(0|-?[1-9][0-9]*)$"
+                        },
+                        "denominator": {
+                          "type": "string",
+                          "pattern": "^[1-9][0-9]*$"
+                        }
+                      },
+                      "required": [
+                        "numerator",
+                        "denominator"
+                      ]
+                    },
+                    "threshold": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "numerator": {
+                          "type": "string",
+                          "pattern": "^(0|-?[1-9][0-9]*)$"
+                        },
+                        "denominator": {
+                          "type": "string",
+                          "pattern": "^[1-9][0-9]*$"
+                        }
+                      },
+                      "required": [
+                        "numerator",
+                        "denominator"
+                      ]
+                    },
+                    "reason_code": {
+                      "enum": [
+                        "THRESHOLD_MATCH",
+                        "THRESHOLD_NOT_MATCH"
+                      ]
+                    }
+                  }
+                },
+                "else": {
+                  "properties": {
+                    "observed": {
+                      "type": "null"
+                    },
+                    "threshold": {
+                      "type": "null"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "state": {
+                      "const": "PASS"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "reason_code": {
+                      "enum": [
+                        "THRESHOLD_NOT_MATCH"
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "state": {
+                      "const": "SIGNAL"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "reason_code": {
+                      "enum": [
+                        "THRESHOLD_MATCH"
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "state": {
+                      "const": "INVALID"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "reason_code": {
+                      "enum": [
+                        "CONFLICTING_REVISION",
+                        "SOURCE_DISAGREEMENT",
+                        "MIXED_GRAIN",
+                        "INVALID_INTERVAL",
+                        "INVALID_CUT",
+                        "INVALID_FACT",
+                        "COVERAGE_MISMATCH"
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "state": {
+                      "const": "NOT_EVALUABLE"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "reason_code": {
+                      "enum": [
+                        "EMPTY_SCOPE",
+                        "MISSING_FIELD",
+                        "INCOMPLETE_COVERAGE",
+                        "INSUFFICIENT_SAMPLE",
+                        "UNALLOCATED_SUPPLIERS",
+                        "INAPPLICABLE",
+                        "OPEN_FISCAL_YEAR",
+                        "ZERO_DENOMINATOR"
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "rule_code": {
+                      "const": "single-bidder"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "formula_id": {
+                      "const": "bidders-eq-v1"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "rule_code": {
+                      "const": "contract-share"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "formula_id": {
+                      "const": "max-award-share-v1"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "rule_code": {
+                      "const": "hhi"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "formula_id": {
+                      "const": "award-hhi-v1"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "rule_code": {
+                      "const": "recurrent-direct"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "formula_id": {
+                      "const": "distinct-direct-processes-v1"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "rule_code": {
+                      "const": "budget-unspent"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "formula_id": {
+                      "const": "annual-unspent-v1"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "rule_code": {
+                      "const": "budget-above-pim"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "formula_id": {
+                      "const": "annual-above-pim-v1"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "scope_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "record_key": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "code": {
+                "enum": [
+                  "FUTURE_REVISION_EXCLUDED",
+                  "TOMBSTONE_SELECTED"
+                ]
+              }
+            },
+            "required": [
+              "scope_id",
+              "record_key",
+              "code"
+            ]
+          }
+        }
+      },
+      "required": [
+        "schema_version",
+        "engine_version",
+        "policy_version",
+        "kind",
+        "run_id",
+        "as_of",
+        "evaluations",
+        "diagnostics"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "engine-2"
+        },
+        "kind": {
+          "const": "BatchInvalid"
+        },
+        "problems": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "pointer": {
+                "type": "string",
+                "pattern": "^(/.*)?$"
+              },
+              "code": {
+                "enum": [
+                  "SCHEMA_VIOLATION",
+                  "DUPLICATE_JSON_KEY",
+                  "UNSUPPORTED_VERSION",
+                  "DUPLICATE_ID",
+                  "DANGLING_REFERENCE",
+                  "RESOURCE_LIMIT"
+                ]
+              }
+            },
+            "required": [
+              "pointer",
+              "code"
+            ]
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "schema_version",
+        "kind",
+        "problems"
+      ]
+    }
+  ],
+  "$defs": {
+    "fraction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "numerator": {
+          "type": "string",
+          "pattern": "^(0|-?[1-9][0-9]*)$"
+        },
+        "denominator": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        }
+      },
+      "required": [
+        "numerator",
+        "denominator"
+      ]
+    },
+    "evaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "result_id": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "scope_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "rule_code": {
+          "enum": [
+            "single-bidder",
+            "contract-share",
+            "hhi",
+            "recurrent-direct",
+            "budget-unspent",
+            "budget-above-pim"
+          ]
+        },
+        "state": {
+          "enum": [
+            "INVALID",
+            "NOT_EVALUABLE",
+            "PASS",
+            "SIGNAL"
+          ]
+        },
+        "reason_code": {
+          "enum": [
+            "THRESHOLD_MATCH",
+            "THRESHOLD_NOT_MATCH",
+            "EMPTY_SCOPE",
+            "MISSING_FIELD",
+            "INCOMPLETE_COVERAGE",
+            "INSUFFICIENT_SAMPLE",
+            "UNALLOCATED_SUPPLIERS",
+            "INAPPLICABLE",
+            "OPEN_FISCAL_YEAR",
+            "ZERO_DENOMINATOR",
+            "CONFLICTING_REVISION",
+            "SOURCE_DISAGREEMENT",
+            "MIXED_GRAIN",
+            "INVALID_INTERVAL",
+            "INVALID_CUT",
+            "INVALID_FACT",
+            "COVERAGE_MISMATCH"
+          ]
+        },
+        "formula_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "observed": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "numerator": {
+                  "type": "string",
+                  "pattern": "^(0|-?[1-9][0-9]*)$"
+                },
+                "denominator": {
+                  "type": "string",
+                  "pattern": "^[1-9][0-9]*$"
+                }
+              },
+              "required": [
+                "numerator",
+                "denominator"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "threshold": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "numerator": {
+                  "type": "string",
+                  "pattern": "^(0|-?[1-9][0-9]*)$"
+                },
+                "denominator": {
+                  "type": "string",
+                  "pattern": "^[1-9][0-9]*$"
+                }
+              },
+              "required": [
+                "numerator",
+                "denominator"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "record_keys": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "uniqueItems": true
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "result_id",
+        "scope_id",
+        "rule_code",
+        "state",
+        "reason_code",
+        "formula_id",
+        "observed",
+        "threshold",
+        "record_keys",
+        "evidence_ids"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "PASS",
+                  "SIGNAL"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "observed": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "numerator": {
+                    "type": "string",
+                    "pattern": "^(0|-?[1-9][0-9]*)$"
+                  },
+                  "denominator": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]*$"
+                  }
+                },
+                "required": [
+                  "numerator",
+                  "denominator"
+                ]
+              },
+              "threshold": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "numerator": {
+                    "type": "string",
+                    "pattern": "^(0|-?[1-9][0-9]*)$"
+                  },
+                  "denominator": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]*$"
+                  }
+                },
+                "required": [
+                  "numerator",
+                  "denominator"
+                ]
+              },
+              "reason_code": {
+                "enum": [
+                  "THRESHOLD_MATCH",
+                  "THRESHOLD_NOT_MATCH"
+                ]
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "observed": {
+                "type": "null"
+              },
+              "threshold": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "PASS"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reason_code": {
+                "enum": [
+                  "THRESHOLD_NOT_MATCH"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "SIGNAL"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reason_code": {
+                "enum": [
+                  "THRESHOLD_MATCH"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "INVALID"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reason_code": {
+                "enum": [
+                  "CONFLICTING_REVISION",
+                  "SOURCE_DISAGREEMENT",
+                  "MIXED_GRAIN",
+                  "INVALID_INTERVAL",
+                  "INVALID_CUT",
+                  "INVALID_FACT",
+                  "COVERAGE_MISMATCH"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "NOT_EVALUABLE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reason_code": {
+                "enum": [
+                  "EMPTY_SCOPE",
+                  "MISSING_FIELD",
+                  "INCOMPLETE_COVERAGE",
+                  "INSUFFICIENT_SAMPLE",
+                  "UNALLOCATED_SUPPLIERS",
+                  "INAPPLICABLE",
+                  "OPEN_FISCAL_YEAR",
+                  "ZERO_DENOMINATOR"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "rule_code": {
+                "const": "single-bidder"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "formula_id": {
+                "const": "bidders-eq-v1"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "rule_code": {
+                "const": "contract-share"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "formula_id": {
+                "const": "max-award-share-v1"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "rule_code": {
+                "const": "hhi"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "formula_id": {
+                "const": "award-hhi-v1"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "rule_code": {
+                "const": "recurrent-direct"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "formula_id": {
+                "const": "distinct-direct-processes-v1"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "rule_code": {
+                "const": "budget-unspent"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "formula_id": {
+                "const": "annual-unspent-v1"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "rule_code": {
+                "const": "budget-above-pim"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "formula_id": {
+                "const": "annual-above-pim-v1"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "GoldenProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "evaluations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "scope_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "rule_code": {
+                "enum": [
+                  "single-bidder",
+                  "contract-share",
+                  "hhi",
+                  "recurrent-direct",
+                  "budget-unspent",
+                  "budget-above-pim"
+                ]
+              },
+              "state": {
+                "enum": [
+                  "INVALID",
+                  "NOT_EVALUABLE",
+                  "PASS",
+                  "SIGNAL"
+                ]
+              },
+              "reason_code": {
+                "enum": [
+                  "THRESHOLD_MATCH",
+                  "THRESHOLD_NOT_MATCH",
+                  "EMPTY_SCOPE",
+                  "MISSING_FIELD",
+                  "INCOMPLETE_COVERAGE",
+                  "INSUFFICIENT_SAMPLE",
+                  "UNALLOCATED_SUPPLIERS",
+                  "INAPPLICABLE",
+                  "OPEN_FISCAL_YEAR",
+                  "ZERO_DENOMINATOR",
+                  "CONFLICTING_REVISION",
+                  "SOURCE_DISAGREEMENT",
+                  "MIXED_GRAIN",
+                  "INVALID_INTERVAL",
+                  "INVALID_CUT",
+                  "INVALID_FACT",
+                  "COVERAGE_MISMATCH"
+                ]
+              },
+              "observed": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "numerator": {
+                        "type": "string",
+                        "pattern": "^(0|-?[1-9][0-9]*)$"
+                      },
+                      "denominator": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]*$"
+                      }
+                    },
+                    "required": [
+                      "numerator",
+                      "denominator"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "threshold": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "numerator": {
+                        "type": "string",
+                        "pattern": "^(0|-?[1-9][0-9]*)$"
+                      },
+                      "denominator": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]*$"
+                      }
+                    },
+                    "required": [
+                      "numerator",
+                      "denominator"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "scope_id",
+              "rule_code",
+              "state",
+              "reason_code",
+              "observed",
+              "threshold"
+            ],
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "state": {
+                      "const": "PASS"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "reason_code": {
+                      "enum": [
+                        "THRESHOLD_NOT_MATCH"
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "state": {
+                      "const": "SIGNAL"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "reason_code": {
+                      "enum": [
+                        "THRESHOLD_MATCH"
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "state": {
+                      "const": "INVALID"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "reason_code": {
+                      "enum": [
+                        "CONFLICTING_REVISION",
+                        "SOURCE_DISAGREEMENT",
+                        "MIXED_GRAIN",
+                        "INVALID_INTERVAL",
+                        "INVALID_CUT",
+                        "INVALID_FACT",
+                        "COVERAGE_MISMATCH"
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "state": {
+                      "const": "NOT_EVALUABLE"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "reason_code": {
+                      "enum": [
+                        "EMPTY_SCOPE",
+                        "MISSING_FIELD",
+                        "INCOMPLETE_COVERAGE",
+                        "INSUFFICIENT_SAMPLE",
+                        "UNALLOCATED_SUPPLIERS",
+                        "INAPPLICABLE",
+                        "OPEN_FISCAL_YEAR",
+                        "ZERO_DENOMINATOR"
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "evaluations"
+      ]
+    }
+  }
+}

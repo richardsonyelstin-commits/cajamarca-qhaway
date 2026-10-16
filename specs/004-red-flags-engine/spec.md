@@ -4,18 +4,25 @@ spec: "004"
 capability: red-flags-engine
 status: draft
 created: 2026-08-20
-updated: 2026-10-15
+updated: 2026-10-16
 consumes: [ProcurementRecord, BudgetExecutionRecord]
 produces: [RedFlag]
 open_clarifications: 5
 source: ai
-generator: codex-gpt-6
-generated_at: 2026-10-15T18:33:00Z
+generator: codex
+generated_at: 2026-10-16T07:18:34.441452+00:00
 confidence: medium
 verified: false
 ---
 
 # Spec 004 - red-flags-engine
+
+## Estado contrastado (2026-10-16)
+
+La implementación local correspondiente está en [código](../../src/cajamarca_qhaway/capabilities/red_flags_engine/).
+El estado draft se conserva: tener implementación no constituye aprobación documental.
+Las reglas siguientes son requisitos y diseño; no certifican cobertura o servicios remotos.
+El catálogo vigente de 004 tiene diez reglas; 011 es otro contrato y sigue en modo privado.
 
 Aplica un subconjunto priorizado de indicadores de riesgo tipo Cardinal/OCP sobre los datos de
 `002-seace-ingestion` y `003-mef-ingestion`, y produce candidatos de `RedFlag` con fórmula y

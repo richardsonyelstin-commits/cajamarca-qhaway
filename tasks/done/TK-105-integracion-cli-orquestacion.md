@@ -1,3 +1,15 @@
+---
+title: "TK-105: Integración en CLI (`cajamarca-qhaway harvest`) y orquestación con alertas"
+record_kind: historical
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:11:56.288182+00:00
+confidence: medium
+verified: false
+metadata_only: true
+original_body_sha256: 5afe09cedb032ddfccac35ee2672f4cc624896f808cf5cc0cb753d0ed913e6e7
+---
+
 # TK-105: Integración en CLI (`cajamarca-qhaway harvest`) y orquestación con alertas
 
 **Estado:** DONE  

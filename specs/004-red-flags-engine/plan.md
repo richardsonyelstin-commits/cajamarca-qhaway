@@ -4,23 +4,32 @@ spec: "004"
 capability: red-flags-engine
 status: draft
 created: 2026-08-20
-updated: 2026-08-20
+updated: 2026-10-16
 source: ai
-generator: claude-sonnet-5
-generated_at: 2026-08-20T00:00:00Z
+generator: codex
+generated_at: 2026-10-16T07:18:34.441452+00:00
 confidence: low
 verified: false
 ---
 
 # Plan 004 - red-flags-engine
 
+## Estado contrastado (2026-10-16)
+
+La implementación local correspondiente está en [código](../../src/cajamarca_qhaway/capabilities/red_flags_engine/).
+El estado draft se conserva: tener implementación no constituye aprobación documental.
+Las reglas siguientes son requisitos y diseño; no certifican cobertura o servicios remotos.
+El catálogo vigente de 004 tiene diez reglas; 011 es otro contrato y sigue en modo privado.
+
 Diseño técnico parcial. El catálogo final de indicadores (AC-004-01) es la ambigüedad más
 bloqueante del proyecto en esta ronda: sin datos reales de `002`/`003` no hay umbral que
 calibrar, y calibrar en el vacío produciría indicadores decorativos. Este plan fija la forma del
 motor (cómo se declara y evalúa un indicador), no su contenido final.
 
-## Módulos conceptuales (sin nombres de fichero: dependen del stack, ver
-`specs/pending-adrs.md`)
+## Módulos conceptuales y correspondencia actual
+
+La implementación heredada está en capabilities/red_flags_engine/; el catálogo contiene
+diez reglas. Los bloques conceptuales siguientes no redefinen sus firmas públicas.
 
 - Un **registro de indicadores**, análogo en espíritu al `registry.py` de adaptadores de
   `source-federation` en `scientific-literature-pipeline`: cada indicador se declara con
@@ -62,10 +71,10 @@ evidencia, exactamente lo que el Artículo 3 de la constitución prohíbe.
 
 ## Dependencias nuevas
 
-`specs/pending-adrs.md` registra la decisión pendiente de si se adapta Cardinal (OCP) o se
-implementa el catálogo desde cero. Este plan no fija ninguna librería mientras esa decisión no
-se tome, porque la forma del "registro de indicadores" de arriba cambiaría según la respuesta
-(adaptar Cardinal implicaría un mapeo a su propio formato de indicador OCDS).
+El ADR 0004 resolvió adoptar un motor propio; no hay una decisión Cardinal pendiente.
+El código heredado y sus dependencias permanecen separados del runtime 011.
+El nuevo contrato 011 usa seis reglas exactas y ejecución privada; no reemplaza por identidad
+las diez reglas, resultados ni dictámenes de este plan.
 
 ## Riesgos
 

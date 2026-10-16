@@ -1,3 +1,15 @@
+---
+title: "TK-305: Herramientas Web Bridge Supabase, Comando CLI y Pruebas E2E"
+record_kind: historical
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:11:56.288182+00:00
+confidence: medium
+verified: false
+metadata_only: true
+original_body_sha256: 37c5ec7113f347ff38f3a7a52159797d2a0f3b16ae44a28b2c228a2bd3f3a6e2
+---
+
 # TK-305: Herramientas Web Bridge Supabase, Comando CLI y Pruebas E2E
 
 **Estado:** DONE  

@@ -1,3 +1,15 @@
+---
+title: "TK-306: Auditoría de Enjambre Multi-Agente y Despliegue Cloud (GitHub, Supabase y Vercel)"
+record_kind: historical
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:11:56.288182+00:00
+confidence: medium
+verified: false
+metadata_only: true
+original_body_sha256: b4ce71567fa7a3bd86845aabfaf32ebb9d12811581e17262591619bc5a379b79
+---
+
 # TK-306: Auditoría de Enjambre Multi-Agente y Despliegue Cloud (GitHub, Supabase y Vercel)
 
 **Estado:** DONE  

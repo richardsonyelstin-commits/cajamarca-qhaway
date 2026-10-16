@@ -1,3 +1,15 @@
+---
+title: "TK-104: Pruebas automatizadas, simulación de resiliencia y verificación de contratos"
+record_kind: historical
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:11:56.288182+00:00
+confidence: medium
+verified: false
+metadata_only: true
+original_body_sha256: d101739156edbc610d6ada88cb85c846a9fec121a657f58a530f53d60b916962
+---
+
 # TK-104: Pruebas automatizadas, simulación de resiliencia y verificación de contratos
 
 **Estado:** DONE  

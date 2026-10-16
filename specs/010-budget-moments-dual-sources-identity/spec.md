@@ -3,12 +3,19 @@ title: Presupuesto reconciliado, fuentes duales e identidad
 status: draft
 source: ai
 generator: codex
-generated_at: 2026-10-15T03:45:00Z
+generated_at: 2026-10-16T07:18:34.441452+00:00
 confidence: high
 verified: false
+updated: 2026-10-16
 ---
 
 # Presupuesto reconciliado, fuentes duales e identidad
+
+## Estado contrastado (2026-10-16)
+
+La implementación local correspondiente está en [código](../../src/cajamarca_qhaway/models/).
+El estado draft se conserva: tener implementación no constituye aprobación documental.
+Las reglas siguientes son requisitos y diseño; no certifican cobertura o servicios remotos.
 
 El encargo humano define el alcance y autoriza implementar modelo, conectores y vistas.
 La propuesta ADR 0013 registra las decisiones sin alterar ADR aceptados.

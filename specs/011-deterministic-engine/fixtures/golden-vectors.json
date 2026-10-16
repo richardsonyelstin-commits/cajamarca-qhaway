@@ -1,0 +1,3279 @@
+{
+  "source": "ai",
+  "generator": "codex-gpt-6",
+  "generated_at": "2026-10-16T04:41:12Z",
+  "confidence": "medium",
+  "verified": false,
+  "synthetic": true,
+  "vectors": [
+    {
+      "id": "single-positive",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "single-bidder"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 1
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "single-bidder",
+            "state": "SIGNAL",
+            "reason_code": "THRESHOLD_MATCH",
+            "observed": {
+              "numerator": "1",
+              "denominator": "1"
+            },
+            "threshold": {
+              "numerator": "1",
+              "denominator": "1"
+            }
+          }
+        ]
+      },
+      "derivation": "Un proceso completo: número de postores declarado; igualdad1 activa y2 no activa."
+    },
+    {
+      "id": "single-negative",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "single-bidder"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "single-bidder",
+            "state": "PASS",
+            "reason_code": "THRESHOLD_NOT_MATCH",
+            "observed": {
+              "numerator": "2",
+              "denominator": "1"
+            },
+            "threshold": {
+              "numerator": "1",
+              "denominator": "1"
+            }
+          }
+        ]
+      },
+      "derivation": "Un proceso completo: número de postores declarado; igualdad1 activa y2 no activa."
+    },
+    {
+      "id": "single-missing",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "single-bidder"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": null
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "single-bidder",
+            "state": "NOT_EVALUABLE",
+            "reason_code": "MISSING_FIELD",
+            "observed": null,
+            "threshold": null
+          }
+        ]
+      },
+      "derivation": "Un proceso completo: número de postores declarado; igualdad1 activa y2 no activa."
+    },
+    {
+      "id": "single-zero-invalid",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "single-bidder"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 0
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "single-bidder",
+            "state": "INVALID",
+            "reason_code": "INVALID_FACT",
+            "observed": null,
+            "threshold": null
+          }
+        ]
+      },
+      "derivation": "Un proceso completo: número de postores declarado; igualdad1 activa y2 no activa."
+    },
+    {
+      "id": "share-boundary",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 3,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "contract-share"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-2",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/2",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000002",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-3",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/3",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000003",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "40.00",
+              "supplier_ruc": "20999999991",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-2/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-2"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-2",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "30.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-3/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-3"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-3",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "30.00",
+              "supplier_ruc": "20999999993",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "contract-share",
+            "state": "PASS",
+            "reason_code": "THRESHOLD_NOT_MATCH",
+            "observed": {
+              "numerator": "2",
+              "denominator": "5"
+            },
+            "threshold": {
+              "numerator": "2",
+              "denominator": "5"
+            }
+          }
+        ]
+      },
+      "derivation": "Suma100; máximo por RUC da exactamente2/5; se compara estrictamente con2/5."
+    },
+    {
+      "id": "share-positive",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 3,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "contract-share"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-2",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/2",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000002",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-3",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/3",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000003",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "41.00",
+              "supplier_ruc": "20999999991",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-2/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-2"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-2",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "30.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-3/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-3"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-3",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "29.00",
+              "supplier_ruc": "20999999993",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "contract-share",
+            "state": "SIGNAL",
+            "reason_code": "THRESHOLD_MATCH",
+            "observed": {
+              "numerator": "41",
+              "denominator": "100"
+            },
+            "threshold": {
+              "numerator": "2",
+              "denominator": "5"
+            }
+          }
+        ]
+      },
+      "derivation": "Suma100; máximo por RUC da exactamente41/100; se compara estrictamente con2/5."
+    },
+    {
+      "id": "share-negative",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 3,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "contract-share"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-2",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/2",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000002",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-3",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/3",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000003",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "34.00",
+              "supplier_ruc": "20999999991",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-2/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-2"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-2",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "33.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-3/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-3"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-3",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "33.00",
+              "supplier_ruc": "20999999993",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "contract-share",
+            "state": "PASS",
+            "reason_code": "THRESHOLD_NOT_MATCH",
+            "observed": {
+              "numerator": "17",
+              "denominator": "50"
+            },
+            "threshold": {
+              "numerator": "2",
+              "denominator": "5"
+            }
+          }
+        ]
+      },
+      "derivation": "Suma100; máximo por RUC da exactamente17/50; se compara estrictamente con2/5."
+    },
+    {
+      "id": "share-monopoly",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 3,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "contract-share"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-2",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/2",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000002",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-3",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/3",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000003",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "20.00",
+              "supplier_ruc": "20999999991",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-2/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-2"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-2",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "30.00",
+              "supplier_ruc": "20999999991",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-3/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-3"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-3",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "50.00",
+              "supplier_ruc": "20999999991",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "contract-share",
+            "state": "SIGNAL",
+            "reason_code": "THRESHOLD_MATCH",
+            "observed": {
+              "numerator": "1",
+              "denominator": "1"
+            },
+            "threshold": {
+              "numerator": "2",
+              "denominator": "5"
+            }
+          }
+        ]
+      },
+      "derivation": "Suma100; máximo por RUC da exactamente1/1; se compara estrictamente con2/5."
+    },
+    {
+      "id": "share-missing",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 3,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "contract-share"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-2",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/2",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000002",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-3",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/3",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000003",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "40.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-2/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-2"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-2",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "30.00",
+              "supplier_ruc": null,
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-3/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-3"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-3",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "30.00",
+              "supplier_ruc": "20999999993",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "contract-share",
+            "state": "NOT_EVALUABLE",
+            "reason_code": "MISSING_FIELD",
+            "observed": null,
+            "threshold": null
+          }
+        ]
+      },
+      "derivation": "Un RUC ausente impide construir denominador completo por proveedor."
+    },
+    {
+      "id": "hhi-boundary",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 4,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "hhi"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-2",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/2",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000002",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-3",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/3",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000003",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-4",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/4",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000004",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "25.00",
+              "supplier_ruc": "20999999991",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-2/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-2"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-2",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "25.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-3/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-3"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-3",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "25.00",
+              "supplier_ruc": "20999999993",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-4/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-4"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-4",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "25.00",
+              "supplier_ruc": "20999999994",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "hhi",
+            "state": "SIGNAL",
+            "reason_code": "THRESHOLD_MATCH",
+            "observed": {
+              "numerator": "2500",
+              "denominator": "1"
+            },
+            "threshold": {
+              "numerator": "2500",
+              "denominator": "1"
+            }
+          }
+        ]
+      },
+      "derivation": "Cuotas iguales:10000/4=2500; todos los procesos y RUC son explícitos."
+    },
+    {
+      "id": "hhi-negative",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 5,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "hhi"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-2",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/2",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000002",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-3",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/3",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000003",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-4",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/4",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000004",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-5",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/5",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000005",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "20.00",
+              "supplier_ruc": "20999999991",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-2/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-2"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-2",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "20.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-3/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-3"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-3",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "20.00",
+              "supplier_ruc": "20999999993",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-4/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-4"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-4",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "20.00",
+              "supplier_ruc": "20999999994",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-5/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-5"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-5",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "20.00",
+              "supplier_ruc": "20999999995",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "hhi",
+            "state": "PASS",
+            "reason_code": "THRESHOLD_NOT_MATCH",
+            "observed": {
+              "numerator": "2000",
+              "denominator": "1"
+            },
+            "threshold": {
+              "numerator": "2500",
+              "denominator": "1"
+            }
+          }
+        ]
+      },
+      "derivation": "Cuotas iguales:10000/5=2000; todos los procesos y RUC son explícitos."
+    },
+    {
+      "id": "hhi-monopoly",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 3,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "hhi"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-2",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/2",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000002",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-3",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/3",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000003",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "25.00",
+              "supplier_ruc": "20999999991",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-2/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-2"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-2",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "25.00",
+              "supplier_ruc": "20999999991",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-3/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-3"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-3",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "25.00",
+              "supplier_ruc": "20999999991",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "hhi",
+            "state": "SIGNAL",
+            "reason_code": "THRESHOLD_MATCH",
+            "observed": {
+              "numerator": "10000",
+              "denominator": "1"
+            },
+            "threshold": {
+              "numerator": "2500",
+              "denominator": "1"
+            }
+          }
+        ]
+      },
+      "derivation": "Cuotas iguales:10000/1=10000; todos los procesos y RUC son explícitos."
+    },
+    {
+      "id": "hhi-incomplete",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "partial",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "hhi"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "competitive",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "hhi",
+            "state": "NOT_EVALUABLE",
+            "reason_code": "INCOMPLETE_COVERAGE",
+            "observed": null,
+            "threshold": null
+          }
+        ]
+      },
+      "derivation": "No se calcula un HHI sobre una cobertura parcial como si fuera el universo."
+    },
+    {
+      "id": "recurrent-positive",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 3,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "recurrent-direct"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-2",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/2",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000002",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-3",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/3",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000003",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "direct",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-2/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-2"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-2",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "direct",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-3/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-3"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-3",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "direct",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "recurrent-direct",
+            "state": "SIGNAL",
+            "reason_code": "THRESHOLD_MATCH",
+            "observed": {
+              "numerator": "3",
+              "denominator": "1"
+            },
+            "threshold": {
+              "numerator": "3",
+              "denominator": "1"
+            }
+          }
+        ]
+      },
+      "derivation": "Se cuentan procesos distintos por RUC, no awards; ventana2025 dura365 días exactos."
+    },
+    {
+      "id": "recurrent-negative",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 2,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "recurrent-direct"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-2",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/2",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000002",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "direct",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-2/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-2"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-2",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "direct",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "recurrent-direct",
+            "state": "PASS",
+            "reason_code": "THRESHOLD_NOT_MATCH",
+            "observed": {
+              "numerator": "2",
+              "denominator": "1"
+            },
+            "threshold": {
+              "numerator": "3",
+              "denominator": "1"
+            }
+          }
+        ]
+      },
+      "derivation": "Se cuentan procesos distintos por RUC, no awards; ventana2025 dura365 días exactos."
+    },
+    {
+      "id": "recurrent-lots",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 3,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "recurrent-direct"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-2",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/2",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000002",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-3",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/3",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000003",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-one",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "direct",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-2/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-2"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-one",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "direct",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          },
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-3/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-3"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-one",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "direct",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": "20999999992",
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "recurrent-direct",
+            "state": "PASS",
+            "reason_code": "THRESHOLD_NOT_MATCH",
+            "observed": {
+              "numerator": "1",
+              "denominator": "1"
+            },
+            "threshold": {
+              "numerator": "3",
+              "denominator": "1"
+            }
+          }
+        ]
+      },
+      "derivation": "Se cuentan procesos distintos por RUC, no awards; ventana2025 dura365 días exactos."
+    },
+    {
+      "id": "recurrent-missing",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "procurement",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "recurrent-direct"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          },
+          {
+            "evidence_id": "evidence-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/1",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "ocds-synthetic-1/award-1",
+            "revision": 1,
+            "effective_at": "2025-06-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "evidence-1"
+            ],
+            "fact": {
+              "kind": "award",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "process_id": "ocds-synthetic-1",
+              "event_at": "2025-06-01T00:00:00Z",
+              "status": "active",
+              "method": "direct",
+              "currency": "PEN",
+              "amount": "100.00",
+              "supplier_ruc": null,
+              "supplier_allocation": "single",
+              "bidders": 2
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "recurrent-direct",
+            "state": "NOT_EVALUABLE",
+            "reason_code": "MISSING_FIELD",
+            "observed": null,
+            "threshold": null
+          }
+        ]
+      },
+      "derivation": "No se infiere identidad a partir de un nombre."
+    },
+    {
+      "id": "unspent-boundary",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "budget",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "budget-unspent"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "mef-entity-1/2025/ActProy",
+            "revision": 1,
+            "effective_at": "2025-01-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "coverage-1"
+            ],
+            "fact": {
+              "kind": "budget",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "event_at": "2025-12-31T00:00:00Z",
+              "fiscal_year": 2025,
+              "cut_at": "2025-12-31T00:00:00Z",
+              "dimensions": "institution-total",
+              "currency": "PEN",
+              "pim": "100.00",
+              "devengado": "50.00"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "budget-unspent",
+            "state": "SIGNAL",
+            "reason_code": "THRESHOLD_MATCH",
+            "observed": {
+              "numerator": "1",
+              "denominator": "2"
+            },
+            "threshold": {
+              "numerator": "1",
+              "denominator": "2"
+            }
+          }
+        ]
+      },
+      "derivation": "PIM y Devengado en céntimos; cociente exacto manual, sin redondeo antes de comparar."
+    },
+    {
+      "id": "unspent-positive",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "budget",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "budget-unspent"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "mef-entity-1/2025/ActProy",
+            "revision": 1,
+            "effective_at": "2025-01-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "coverage-1"
+            ],
+            "fact": {
+              "kind": "budget",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "event_at": "2025-12-31T00:00:00Z",
+              "fiscal_year": 2025,
+              "cut_at": "2025-12-31T00:00:00Z",
+              "dimensions": "institution-total",
+              "currency": "PEN",
+              "pim": "100.00",
+              "devengado": "49.99"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "budget-unspent",
+            "state": "SIGNAL",
+            "reason_code": "THRESHOLD_MATCH",
+            "observed": {
+              "numerator": "5001",
+              "denominator": "10000"
+            },
+            "threshold": {
+              "numerator": "1",
+              "denominator": "2"
+            }
+          }
+        ]
+      },
+      "derivation": "PIM y Devengado en céntimos; cociente exacto manual, sin redondeo antes de comparar."
+    },
+    {
+      "id": "unspent-negative",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "budget",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "budget-unspent"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "mef-entity-1/2025/ActProy",
+            "revision": 1,
+            "effective_at": "2025-01-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "coverage-1"
+            ],
+            "fact": {
+              "kind": "budget",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "event_at": "2025-12-31T00:00:00Z",
+              "fiscal_year": 2025,
+              "cut_at": "2025-12-31T00:00:00Z",
+              "dimensions": "institution-total",
+              "currency": "PEN",
+              "pim": "100.00",
+              "devengado": "50.01"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "budget-unspent",
+            "state": "PASS",
+            "reason_code": "THRESHOLD_NOT_MATCH",
+            "observed": {
+              "numerator": "4999",
+              "denominator": "10000"
+            },
+            "threshold": {
+              "numerator": "1",
+              "denominator": "2"
+            }
+          }
+        ]
+      },
+      "derivation": "PIM y Devengado en céntimos; cociente exacto manual, sin redondeo antes de comparar."
+    },
+    {
+      "id": "unspent-negative-balance",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "budget",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "budget-unspent"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "mef-entity-1/2025/ActProy",
+            "revision": 1,
+            "effective_at": "2025-01-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "coverage-1"
+            ],
+            "fact": {
+              "kind": "budget",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "event_at": "2025-12-31T00:00:00Z",
+              "fiscal_year": 2025,
+              "cut_at": "2025-12-31T00:00:00Z",
+              "dimensions": "institution-total",
+              "currency": "PEN",
+              "pim": "100.00",
+              "devengado": "120.00"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "budget-unspent",
+            "state": "PASS",
+            "reason_code": "THRESHOLD_NOT_MATCH",
+            "observed": {
+              "numerator": "-1",
+              "denominator": "5"
+            },
+            "threshold": {
+              "numerator": "1",
+              "denominator": "2"
+            }
+          }
+        ]
+      },
+      "derivation": "PIM y Devengado en céntimos; cociente exacto manual, sin redondeo antes de comparar."
+    },
+    {
+      "id": "unspent-zero",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "budget",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "budget-unspent"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "mef-entity-1/2025/ActProy",
+            "revision": 1,
+            "effective_at": "2025-01-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "coverage-1"
+            ],
+            "fact": {
+              "kind": "budget",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "event_at": "2025-12-31T00:00:00Z",
+              "fiscal_year": 2025,
+              "cut_at": "2025-12-31T00:00:00Z",
+              "dimensions": "institution-total",
+              "currency": "PEN",
+              "pim": "0.00",
+              "devengado": "0.00"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "budget-unspent",
+            "state": "NOT_EVALUABLE",
+            "reason_code": "ZERO_DENOMINATOR",
+            "observed": null,
+            "threshold": null
+          }
+        ]
+      },
+      "derivation": "PIM y Devengado en céntimos; cociente exacto manual, sin redondeo antes de comparar."
+    },
+    {
+      "id": "above-boundary",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "budget",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "budget-above-pim"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "mef-entity-1/2025/ActProy",
+            "revision": 1,
+            "effective_at": "2025-01-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "coverage-1"
+            ],
+            "fact": {
+              "kind": "budget",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "event_at": "2025-12-31T00:00:00Z",
+              "fiscal_year": 2025,
+              "cut_at": "2025-12-31T00:00:00Z",
+              "dimensions": "institution-total",
+              "currency": "PEN",
+              "pim": "100.00",
+              "devengado": "110.00"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "budget-above-pim",
+            "state": "PASS",
+            "reason_code": "THRESHOLD_NOT_MATCH",
+            "observed": {
+              "numerator": "11",
+              "denominator": "10"
+            },
+            "threshold": {
+              "numerator": "11",
+              "denominator": "10"
+            }
+          }
+        ]
+      },
+      "derivation": "PIM y Devengado en céntimos; cociente exacto manual, sin redondeo antes de comparar."
+    },
+    {
+      "id": "above-positive",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "budget",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "budget-above-pim"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "mef-entity-1/2025/ActProy",
+            "revision": 1,
+            "effective_at": "2025-01-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "coverage-1"
+            ],
+            "fact": {
+              "kind": "budget",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "event_at": "2025-12-31T00:00:00Z",
+              "fiscal_year": 2025,
+              "cut_at": "2025-12-31T00:00:00Z",
+              "dimensions": "institution-total",
+              "currency": "PEN",
+              "pim": "100.00",
+              "devengado": "110.01"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "budget-above-pim",
+            "state": "SIGNAL",
+            "reason_code": "THRESHOLD_MATCH",
+            "observed": {
+              "numerator": "11001",
+              "denominator": "10000"
+            },
+            "threshold": {
+              "numerator": "11",
+              "denominator": "10"
+            }
+          }
+        ]
+      },
+      "derivation": "PIM y Devengado en céntimos; cociente exacto manual, sin redondeo antes de comparar."
+    },
+    {
+      "id": "above-negative",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "budget",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "budget-above-pim"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "mef-entity-1/2025/ActProy",
+            "revision": 1,
+            "effective_at": "2025-01-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "coverage-1"
+            ],
+            "fact": {
+              "kind": "budget",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "event_at": "2025-12-31T00:00:00Z",
+              "fiscal_year": 2025,
+              "cut_at": "2025-12-31T00:00:00Z",
+              "dimensions": "institution-total",
+              "currency": "PEN",
+              "pim": "100.00",
+              "devengado": "109.99"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "budget-above-pim",
+            "state": "PASS",
+            "reason_code": "THRESHOLD_NOT_MATCH",
+            "observed": {
+              "numerator": "10999",
+              "denominator": "10000"
+            },
+            "threshold": {
+              "numerator": "11",
+              "denominator": "10"
+            }
+          }
+        ]
+      },
+      "derivation": "PIM y Devengado en céntimos; cociente exacto manual, sin redondeo antes de comparar."
+    },
+    {
+      "id": "above-missing",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "budget",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "budget-above-pim"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "mef-entity-1/2025/ActProy",
+            "revision": 1,
+            "effective_at": "2025-01-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "coverage-1"
+            ],
+            "fact": {
+              "kind": "budget",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "event_at": "2025-12-31T00:00:00Z",
+              "fiscal_year": 2025,
+              "cut_at": "2025-12-31T00:00:00Z",
+              "dimensions": "institution-total",
+              "currency": "PEN",
+              "pim": "100.00",
+              "devengado": null
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "budget-above-pim",
+            "state": "NOT_EVALUABLE",
+            "reason_code": "MISSING_FIELD",
+            "observed": null,
+            "threshold": null
+          }
+        ]
+      },
+      "derivation": "PIM y Devengado en céntimos; cociente exacto manual, sin redondeo antes de comparar."
+    },
+    {
+      "id": "unspent-open-year",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "budget",
+            "start": "2026-01-01T00:00:00Z",
+            "end": "2027-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "budget-unspent"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-10-14T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "mef-entity-1/2026/ActProy",
+            "revision": 1,
+            "effective_at": "2025-01-01T00:00:00Z",
+            "retrieved_at": "2026-10-14T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "coverage-1"
+            ],
+            "fact": {
+              "kind": "budget",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "event_at": "2026-10-14T00:00:00Z",
+              "fiscal_year": 2026,
+              "cut_at": "2026-10-14T00:00:00Z",
+              "dimensions": "institution-total",
+              "currency": "PEN",
+              "pim": "100.00",
+              "devengado": "50.00"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "budget-unspent",
+            "state": "NOT_EVALUABLE",
+            "reason_code": "OPEN_FISCAL_YEAR",
+            "observed": null,
+            "threshold": null
+          }
+        ]
+      },
+      "derivation": "Ejercicio2026 igual al año de as_of: no se extrapola ejecución anual."
+    },
+    {
+      "id": "above-partition-invalid",
+      "input": {
+        "schema_version": "engine-2",
+        "engine_version": "deterministic-2.0.0",
+        "policy_version": "qhaway-exploratory-1",
+        "as_of": "2026-10-15T00:00:00Z",
+        "scopes": [
+          {
+            "scope_id": "scope-1",
+            "entity_id": "PE-RUC:20999999991",
+            "region": "CAJAMARCA",
+            "cohort": "all",
+            "kind": "budget",
+            "start": "2025-01-01T00:00:00Z",
+            "end": "2026-01-01T00:00:00Z",
+            "coverage": "complete",
+            "expected_count": 1,
+            "coverage_evidence_id": "coverage-1",
+            "rules": [
+              "budget-above-pim"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "coverage-1",
+            "source_id": "synthetic",
+            "source_url": "https://example.invalid/coverage",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "media_type": "application/json",
+            "adapter_version": "synthetic-adapter-1"
+          }
+        ],
+        "observations": [
+          {
+            "scope_id": "scope-1",
+            "source_id": "synthetic",
+            "record_key": "mef-entity-1/2025/ActProy",
+            "revision": 1,
+            "effective_at": "2025-01-01T00:00:00Z",
+            "retrieved_at": "2026-01-02T00:00:00Z",
+            "deleted": false,
+            "evidence_ids": [
+              "coverage-1"
+            ],
+            "fact": {
+              "kind": "budget",
+              "entity_id": "PE-RUC:20999999991",
+              "cohort": "all",
+              "event_at": "2025-12-31T00:00:00Z",
+              "fiscal_year": 2025,
+              "cut_at": "2025-12-31T00:00:00Z",
+              "dimensions": "partition",
+              "currency": "PEN",
+              "pim": "100.00",
+              "devengado": "110.01"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "evaluations": [
+          {
+            "scope_id": "scope-1",
+            "rule_code": "budget-above-pim",
+            "state": "INVALID",
+            "reason_code": "MIXED_GRAIN",
+            "observed": null,
+            "threshold": null
+          }
+        ]
+      },
+      "derivation": "Una partición no es maestro, aunque su ratio cruce el umbral."
+    }
+  ]
+}

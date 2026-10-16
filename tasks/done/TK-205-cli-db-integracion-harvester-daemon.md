@@ -1,3 +1,15 @@
+---
+title: "TK-205: Integración CLI y Acoplamiento Transaccional con HarvesterDaemon"
+record_kind: historical
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:11:56.288182+00:00
+confidence: medium
+verified: false
+metadata_only: true
+original_body_sha256: d72233665ee734c9d57c64d7a6f30a23a68f392bd8948ddd2c61d787c8477847
+---
+
 # TK-205: Integración CLI y Acoplamiento Transaccional con HarvesterDaemon
 
 **Estado:** DONE  

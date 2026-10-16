@@ -1,5 +1,5 @@
 ---
-title: Verificación técnica de fuentes - OECE/OCDS y MEF (cajamarca-qhaway)
+title: "Verificación técnica de fuentes - OECE/OCDS y MEF"
 tags: [verificacion-tecnica, seace, ocds, mef, datos-abiertos, cajamarca]
 source: ai
 generator: claude-sonnet-5

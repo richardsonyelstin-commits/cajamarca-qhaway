@@ -6,7 +6,7 @@ budgets:
   l1: 20000
 
 always:
-  - CLAUDE.md
+  - AGENTS.md
   - PROJECT.yaml
 
 on_demand:

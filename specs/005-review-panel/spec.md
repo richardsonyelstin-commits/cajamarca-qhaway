@@ -4,18 +4,24 @@ spec: "005"
 capability: review-panel
 status: draft
 created: 2026-08-20
-updated: 2026-10-15
+updated: 2026-10-16
 consumes: [RedFlag]
 produces: [Alert]
 open_clarifications: 4
 source: ai
-generator: codex-gpt-6
-generated_at: 2026-10-15T18:33:00Z
+generator: codex
+generated_at: 2026-10-16T07:18:34.441452+00:00
 confidence: medium
 verified: false
 ---
 
 # Spec 005 - review-panel
+
+## Estado contrastado (2026-10-16)
+
+La implementación local correspondiente está en [código](../../src/cajamarca_qhaway/capabilities/review_panel/).
+El estado draft se conserva: tener implementación no constituye aprobación documental.
+Las reglas siguientes son requisitos y diseño; no certifican cobertura o servicios remotos.
 
 Recibe los candidatos de `RedFlag` producidos por `004-red-flags-engine` y decide, por acción
 humana explícita, publicarlos como `Alert` o descartarlos. Es la implementación directa del

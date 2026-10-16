@@ -1,3 +1,15 @@
+---
+title: "TK-302: Arquitectura Web Bootstrap, Cliente JS Supabase y Enrutador SPA"
+record_kind: historical
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:11:56.288182+00:00
+confidence: medium
+verified: false
+metadata_only: true
+original_body_sha256: 6e8a17c691d96f5c3d237b449b5cd581174b7c520dc4e211f6c5c20b24e9d9f3
+---
+
 # TK-302: Arquitectura Web Bootstrap, Cliente JS Supabase y Enrutador SPA
 
 **Estado:** DONE  

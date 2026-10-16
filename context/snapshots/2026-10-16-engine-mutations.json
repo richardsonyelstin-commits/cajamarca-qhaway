@@ -1,0 +1,146 @@
+{
+  "source": "ai",
+  "generator": "codex",
+  "generated_at": "2026-10-16T05:15:15.438777+00:00",
+  "confidence": "high",
+  "baseline_commit": "f4e1f73c6fa2bcd8d959b3d1f5dda9b7f305180a",
+  "worktree_dirty": true,
+  "verified": false,
+  "mutants": [
+    {
+      "name": "share-inclusive",
+      "killed": true,
+      "exit_code": 1,
+      "summary": [
+        "1 failed, 86 passed, 4 deselected in 12.47s"
+      ],
+      "stderr": ""
+    },
+    {
+      "name": "above-inclusive",
+      "killed": true,
+      "exit_code": 1,
+      "summary": [
+        "1 failed, 4 deselected in 2.04s"
+      ],
+      "stderr": ""
+    },
+    {
+      "name": "hhi-exclusive",
+      "killed": true,
+      "exit_code": 1,
+      "summary": [
+        "1 failed, 42 passed, 4 deselected in 3.26s"
+      ],
+      "stderr": ""
+    },
+    {
+      "name": "unspent-exclusive",
+      "killed": true,
+      "exit_code": 1,
+      "summary": [
+        "1 failed, 89 passed, 4 deselected in 12.13s"
+      ],
+      "stderr": ""
+    },
+    {
+      "name": "recurrence-exclusive",
+      "killed": true,
+      "exit_code": 1,
+      "summary": [
+        "1 failed, 79 passed, 4 deselected in 13.32s"
+      ],
+      "stderr": ""
+    },
+    {
+      "name": "bidder-greater-equal",
+      "killed": true,
+      "exit_code": 1,
+      "summary": [
+        "1 failed, 81 passed, 4 deselected in 13.66s"
+      ],
+      "stderr": ""
+    },
+    {
+      "name": "inclusive-end",
+      "killed": true,
+      "exit_code": 1,
+      "summary": [
+        "1 failed, 33 passed, 4 deselected in 2.08s"
+      ],
+      "stderr": ""
+    },
+    {
+      "name": "count-awards",
+      "killed": true,
+      "exit_code": 1,
+      "summary": [
+        "1 failed, 79 passed, 4 deselected in 13.01s"
+      ],
+      "stderr": ""
+    },
+    {
+      "name": "float-money",
+      "killed": true,
+      "exit_code": 1,
+      "summary": [
+        "1 failed, 37 passed, 4 deselected in 2.95s"
+      ],
+      "stderr": ""
+    },
+    {
+      "name": "missing-ruc-fallback",
+      "killed": true,
+      "exit_code": 1,
+      "summary": [
+        "1 failed, 79 passed, 4 deselected in 13.46s"
+      ],
+      "stderr": ""
+    },
+    {
+      "name": "oldest-revision",
+      "killed": true,
+      "exit_code": 1,
+      "summary": [
+        "1 failed, 81 passed, 4 deselected in 13.18s"
+      ],
+      "stderr": ""
+    },
+    {
+      "name": "partition-summed",
+      "killed": true,
+      "exit_code": 1,
+      "summary": [
+        "1 failed, 4 deselected in 1.90s"
+      ],
+      "stderr": ""
+    },
+    {
+      "name": "missing-count",
+      "killed": true,
+      "exit_code": 1,
+      "summary": [
+        "1 failed, 28 passed, 4 deselected in 2.01s"
+      ],
+      "stderr": ""
+    },
+    {
+      "name": "null-zero",
+      "killed": true,
+      "exit_code": 1,
+      "summary": [
+        "1 failed, 4 deselected in 1.91s"
+      ],
+      "stderr": ""
+    },
+    {
+      "name": "legacy-approval",
+      "killed": true,
+      "exit_code": 1,
+      "summary": [
+        "1 failed, 43 passed, 4 deselected in 3.45s"
+      ],
+      "stderr": ""
+    }
+  ]
+}

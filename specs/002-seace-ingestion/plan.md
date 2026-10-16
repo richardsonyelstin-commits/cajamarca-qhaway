@@ -4,15 +4,21 @@ spec: "002"
 capability: seace-ingestion
 status: draft
 created: 2026-08-20
-updated: 2026-08-20
+updated: 2026-10-16
 source: ai
-generator: claude-sonnet-5
-generated_at: 2026-08-20T00:00:00Z
+generator: codex
+generated_at: 2026-10-16T07:18:34.441452+00:00
 confidence: low
 verified: false
 ---
 
 # Plan 002 - seace-ingestion
+
+## Estado contrastado (2026-10-16)
+
+La implementación local correspondiente está en [código](../../src/cajamarca_qhaway/capabilities/seace_ingestion/).
+El estado draft se conserva: tener implementación no constituye aprobación documental.
+Las reglas siguientes son requisitos y diseño; no certifican cobertura o servicios remotos.
 
 Diseño técnico parcial. Cinco de las siete ambigüedades de `spec.md` bloquean el diseño de la
 estrategia de cosecha (paginación, frecuencia, versionado, corridas): sin resolverlas, cualquier
@@ -57,10 +63,9 @@ cada actualización (`release.id` incluye una marca de tiempo en el formato obse
 
 ## Dependencias nuevas
 
-Ninguna fijada: depende del lenguaje/runtime del proyecto (`specs/pending-adrs.md`). El único
-requisito no negociable es un cliente HTTP capaz de hacer una petición GET simple sin
-autenticación - no se necesita ninguna librería específica de OCDS, porque no se usa ninguna
-extensión ni validación de esquema formal en Fase 1.
+Python 3.12, httpx y Pydantic forman parte de las dependencias declaradas del paquete.
+El cliente y el parser existen en capabilities/seace_ingestion/.
+Las versiones resueltas se consultan en uv.lock; no hay una decisión de lenguaje pendiente.
 
 ## Riesgos
 
@@ -73,12 +78,10 @@ extensión ni validación de esquema formal en Fase 1.
 
 ## Estrategia de prueba
 
-No se detalla suite de código: depende del stack. Lo que sí se puede fijar es el fixture de
-verificación: la respuesta real capturada en
-`docs/research/2026-08-20-verificacion-tecnica-fuentes.md` (y en
-`scripts/verification/probe-oece-ocds.sh`) sirve como caso de prueba dorado para el algoritmo de
-filtrado en dos pasos, incluyendo el `party` de "GOBIERNO REGIONAL DE CAJAMARCA - UGEL CELENDÍN"
-como caso positivo confirmado.
+Las pruebas de tests/ ejercen el filtrado, los modelos y los casos de entrada de la capacidad.
+La captura histórica en docs/research/2026-08-20-verificacion-tecnica-fuentes.md y el probe
+scripts/verification/probe-oece-ocds.sh conservan su fecha y alcance.
+No se usan para afirmar disponibilidad actual de OCDS ni cobertura completa de otra red.
 
 ## Orden de implementación
 

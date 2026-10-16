@@ -3,10 +3,11 @@ title: ADR pendientes - cajamarca-qhaway
 status: active
 created: 2026-08-20
 source: ai
-generator: claude-sonnet-5
-generated_at: 2026-08-20T00:00:00Z
+generator: codex
+generated_at: 2026-10-16T07:18:34.441452+00:00
 confidence: medium
 verified: false
+updated: 2026-10-16
 ---
 
 # ADR pendientes - cajamarca-qhaway
@@ -18,6 +19,16 @@ estas specs como insumo (ver el encargo original de esta tarea). Para cada fila:
 qué opciones se identificaron, por qué no se decidió aquí, y qué spec la dejó pendiente.
 
 No se ha escrito ni editado nada en `docs/adr/` para producir esta tabla.
+
+## Estado de lectura (2026-10-16)
+
+La tabla conserva el razonamiento y las resoluciones de sus rondas originales.
+No todas sus formulaciones futuras describen bloqueos técnicos vigentes.
+El lenguaje, los repositorios y la identidad tienen implementación en src/cajamarca_qhaway/.
+La disponibilidad de una fuente debe verificarse en la corrida y entorno que se evalúen.
+Los textos legales, el alcance DJI, el proveedor de notificaciones y las aprobaciones humanas
+no se consideran resueltos por código ni por esta actualización documental.
+Los nuevos ADR 0015-0019 siguen proposed pese a la implementación privada de 011.
 
 ## Tabla
 

@@ -1,3 +1,13 @@
+---
+title: "Auditoría base de extremo a extremo de Cajamarca Qhaway"
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:10:28.005038+00:00
+confidence: medium
+verified: false
+metadata_reviewed_at: 2026-10-16
+---
+
 # Auditoría base de extremo a extremo de Cajamarca Qhaway
 
 Fecha: 15 de octubre de 2026, America/Lima.

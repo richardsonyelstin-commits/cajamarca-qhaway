@@ -1,10 +1,12 @@
 ---
-title: Correccion de identidad, privacidad y consistencia de extremo a extremo
+title: "Correccion de F01 a F08"
 status: proposed
 date: 2026-10-15
 source: ai
 generator: codex
 verified: false
+generated_at: 2026-10-16T18:10:28.005038+00:00
+confidence: medium
 ---
 
 # Correccion de F01 a F08
@@ -12,8 +14,8 @@ verified: false
 Este documento define el contrato implementable de
 [TK-307](../../tasks/active/TK-307-audit-remediation.md) y la
 [auditoria base](../audits/2026-10-15-e2e-security-baseline.md).
-Complementa las arquitecturas 003/005; el comportamiento antiguo de sus diagramas
-SPA y fallback no constituye una autorizacion para publicar ni aceptar denuncias.
+Complementa las arquitecturas 003/005 actualizadas a MPA y persistencia duradera.
+Las descripciones antiguas de SPA y fallback son antecedentes, no una autorización operativa.
 La propuesta de decision se registra en el [ADR 0014](../adr/0014-identidad-acreditada-y-consistencia-privada.md).
 
 ## Limites y fuentes de verdad

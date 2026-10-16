@@ -1,3 +1,15 @@
+---
+title: "TK-204: Pruebas Automatizadas de Persistencia, Spool y Contratos"
+record_kind: historical
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:11:56.288182+00:00
+confidence: medium
+verified: false
+metadata_only: true
+original_body_sha256: 73a3d6bdf4be007784a3e4cdb4e1e1b9afd71b40683ded806fac6bb582502fdb
+---
+
 # TK-204: Pruebas Automatizadas de Persistencia, Spool y Contratos
 
 **Estado:** DONE  

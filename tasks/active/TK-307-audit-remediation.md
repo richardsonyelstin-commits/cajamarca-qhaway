@@ -1,3 +1,13 @@
+---
+title: "TK-307: Corrección de hallazgos de auditoría de extremo a extremo"
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:10:28.005038+00:00
+confidence: medium
+verified: false
+metadata_reviewed_at: 2026-10-16
+---
+
 # TK-307: Corrección de hallazgos de auditoría de extremo a extremo
 
 **Estado:** READY_FOR_STAGING (implementación y verificación local completas; cierre integral pendiente)
@@ -147,3 +157,12 @@ Implementación y validación local completas según la ejecución final indepen
 - Arquitectura: [documento 007](../../docs/architecture/007-audit-remediation-security-consistency.md) y [ADR 0014 propuesto](../../docs/adr/0014-identidad-acreditada-y-consistencia-privada.md), disponibles para F01-F08 con límites y migración privada de revocaciones. Su existencia no implica aplicación remota de la migración.
 - Construcción: implementación y regresiones completadas localmente; evidencia en el [informe de validación](../../docs/audits/2026-10-15-remediation-validation.md). Integración remota pendiente de staging.
 - Coordinación final: informe al usuario con correcciones verificadas, resultados y pendientes de staging. El creador de este ticket no cambia código, tests, `docs/INDEX.md`, `CHANGELOG.md` ni realiza commits.
+
+## Actualización documental del 2026-10-16
+
+La última suite completa observada en esta conversación pasó 479 pruebas Python y 25 Node.
+Esto reemplaza como estado local actual las cifras de corridas parciales anteriores.
+No certifica OAuth, migraciones ni durabilidad entre instancias en staging.
+El motor 011 dispone de implementación privada y no sustituye el flujo 004 ni sus dictámenes.
+Las observaciones remotas fechadas de esta bitácora no se han vuelto a consultar en esta
+actualización documental.

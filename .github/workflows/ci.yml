@@ -32,12 +32,20 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -e ".[dev,db]"
+          python -m pip install uv==0.11.32
+          uv sync --extra dev --extra db --frozen
+          echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
 
       - name: Run deterministic test suite (Pilares 1, 2 y 3)
         run: |
-          pytest -v
+          python scripts/deterministic-engine/generate-deterministic-contracts.py --check
+          python -m coverage run --branch --source=cajamarca_qhaway.capabilities.deterministic_engine -m pytest -v
+          python -m coverage report --fail-under=90
+          python -m coverage json -o coverage-engine.json
+          python scripts/deterministic-engine/check-deterministic-coverage.py coverage-engine.json
+
+      - name: Kill deterministic semantic mutants
+        run: python scripts/deterministic-engine/mutate-deterministic-engine.py --output engine-mutations.json
 
       - name: Audit Web Platform & Constitutional Invariants
         run: |

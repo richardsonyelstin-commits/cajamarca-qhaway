@@ -1,3 +1,13 @@
+---
+title: "Verificacion local de TK-307"
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:10:28.005038+00:00
+confidence: medium
+verified: false
+metadata_reviewed_at: 2026-10-16
+---
+
 # Verificacion local de TK-307
 
 Fecha: 2026-10-15, America/Lima. Rama: `agent/codex/audit-remediation`.

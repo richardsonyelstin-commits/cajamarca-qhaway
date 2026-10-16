@@ -1,123 +1,98 @@
 ---
-title: cajamarca-qhaway
+title: "cajamarca-qhaway"
+status: active
+updated: 2026-10-16
 source: ai
-generator: codex-gpt-6
-generated_at: 2026-10-15T18:33:00Z
+generator: codex
+generated_at: 2026-10-16T07:17:20.427304+00:00
 confidence: high
 verified: false
 ---
+
 # cajamarca-qhaway
 
-L0 del proyecto. Presupuesto: **150 líneas**. Si algo no cabe, va a `docs/` y se enlaza
-desde `docs/INDEX.md`.
-Las reglas globales están en `C:\ws\AGENTS.md` y aplican también aquí.
+Instrucciones canónicas del proyecto y mapa de contexto mínimo.
+El árbol actual contiene el sistema heredado y el motor determinista 011 privado.
+Aplican las reglas de C:/ws/AGENTS.md y las directivas globales del workspace.
 
-## Qué es esto
+## Estado y fuentes
 
-Plataforma de monitoreo ciudadano de corrupción en administración pública para la región
-Cajamarca (Perú), Fase 1. Cruza datos oficiales abiertos (SEACE/OCDS, MEF, DJI) con un motor
-de red flags para priorizar candidatos de riesgo que un panel humano revisa antes de publicar.
-No hace scoring de personas, no reemplaza a las ONG de vigilancia ya activas en la región
-(Proética, Propuesta Ciudadana, GRUFIDES) - es una herramienta para ellas.
+Python >=3.12; CI toma Python 3.12 como referencia.
+La web usa HTML MPA y una aplicación WSGI de biblioteca estándar.
+PostgreSQL, Pydantic y los demás paquetes se declaran en pyproject.toml y uv.lock.
+El motor 004 conserva diez reglas; 011 implementa seis reglas con aritmética exacta.
+El estado técnico se comprueba en src/, tests/ y .github/workflows/ci.yml.
+Los documentos de auditoría y snapshots contienen observaciones fechadas.
+No presentarlos como prueba de disponibilidad remota actual.
 
-## Estado: desarrollo activo
+## Trabajo autorizado y Git
 
-Coordinación previa con Proética Cajamarca, Propuesta Ciudadana y GRUFIDES completada
-(2026-08-20): confirman que no existe una iniciativa similar y que por ahora no pueden aportar
-más información. Stack y cinco decisiones estructurales fijadas en ADR `accepted` (`docs/adr/`
-0001-0006). Ver `docs/research/2026-08-20-diseno-cajamarca-qhaway-fase1.md`, sección 6, para lo
-que sigue pendiente (uso legal formal de DJI, presupuesto/sostenibilidad, quién compone el
-panel de revisión - condiciona el ADR 0005).
+Por instrucción del propietario, trabajar directamente en main.
+No crear ramas divergentes ni worktrees para este proyecto.
+Esta preferencia sustituye aquí el modo branch global.
+No hacer commit, push, despliegue ni mutación externa por actualizar documentación.
+Las autorizaciones concretas de la conversación siguen siendo la referencia de alcance.
 
-## Stack
+## Comandos locales
 
-| Capa | Tecnología |
-|---|---|
-| Lenguaje | Python 3.12 (ADR 0001) |
-| Framework | Sin decidir - backend Python con JS mínimo en el navegador (ADR 0001) |
-| Datos | PostgreSQL (ADR 0003), CTE recursivas para relaciones proveedor-funcionario-contrato |
-| Pruebas | pytest (convención heredada, ver ADR 0001) |
-| Despliegue | |
-
-## Comandos
-
-```bash
-# instalar
-python -m venv .venv
-.venv/Scripts/python -m pip install -e ".[dev]"
-
-# pruebas
-.venv/Scripts/python -m pytest -q
-
-# siembra del universo de entidades a PostgreSQL (ADR 0006) - requiere el extra `db`
-.venv/Scripts/python -m pip install -e ".[db]"
-CAJAMARCA_QHAWAY_DATABASE_URL=postgresql://... python scripts/seed_contracting_entities.py
-python scripts/seed_contracting_entities.py --dry-run   # solo valida el dataset, sin PostgreSQL
-
-# desarrollo / lint / build: sin decidir. No metas una herramienta de tapadillo: propónla en un ADR.
+```powershell
+uv sync --extra dev --frozen
+uv run python -m pytest -q
+node --test tests/*.test.mjs
+uv run cajamarca-qhaway web serve --port 8080
+uv run cajamarca-qhaway web audit
+uv run python scripts/deterministic-engine/generate-deterministic-contracts.py --check
 ```
+
+Más comandos en scripts/README.md y docs/deployment/001-cloud-deployment-guide.md.
+Las operaciones de cosecha, siembra y sincronización pueden modificar datos reales.
+No usarlas como comprobaciones offline de documentación.
 
 ## Invariantes
 
-- Ninguna alerta se publica sin pasar por el panel de revisión humana. IA prioriza candidatos,
-  nunca publica directamente.
-- Cada alerta expone: regla/indicador activado, dato exacto, fuente, fecha de extracción. Sin
-  esto no es publicable - es la defensa legal y periodística del proyecto.
-- Las alertas son sobre procesos y contratos, nunca un score o ranking de una persona
-  identificada por nombre.
-- DJI se usa solo para relaciones declaradas (funcionario-empresa-familiar). Nunca se cruza
-  con gasto, propiedades o redes sociales para inferir patrimonio no declarado.
-- Ámbito geográfico fijo en Fase 1: región Cajamarca. No generalizar a otras regiones sin
-  decisión explícita - evita abstracciones prematuras.
+- Ninguna alerta se publica sin revisión humana acreditada.
+- Una señal conserva fuente, extracción, fórmula y evidencia resoluble.
+- No existe scoring de personas ni inferencia de patrimonio no declarado desde DJI.
+- No sumar cortes, ejercicios o niveles presupuestales incompatibles.
+- 011 exige as_of y versiones explícitas; dinero sin float y evaluación sin efectos externos.
+- Shadow no traslada automáticamente aprobación, publicación ni prioridad de 004.
+- No confundir pruebas sintéticas con calibración o cobertura oficial.
 
-## Método
+## Documentación y aprobación
 
-La Constitución v2.0 fue autorizada expresamente por el propietario el 2026-10-15.
-Fuentes oficiales plurales conservan payload, URL y extracción UTC.
-TIER_1_PROBATIVE produce señales reproducibles; TIER_2_COGNITIVE_COPILOT asiste al panel privado.
-La prioridad se calcula sobre expedientes con componentes explicables, nunca sobre personas.
-Las raíces son 14 entidades; ejecutoras y CUI verificados son desgloses sin doble conteo.
-El encargo humano autoriza la reforma SDD, implementación, sincronización y despliegue.
+La Constitución v2 está vigente; la enmienda v3 de 011 permanece propuesta.
+Las specs draft y los ADR proposed no se aceptan automáticamente al implementar código.
+Los ADR existentes son inmutables: añadir uno nuevo con supersedes si es necesario.
+Solo una persona puede cambiar verified a true.
+Los enlaces entre propuestas sirven para navegación y trazabilidad, no como evidencia factual.
+Las afirmaciones de estado deben apoyarse en código, pruebas o fuentes primarias verificadas.
 
-Spec-Driven Development. Las specs viven en `specs/NNN-<slug>/` y son **la fuente de verdad**
-para las seis primeras capacidades del pipeline (`001-entity-mapping` a `006-denuncia-intake`);
-`007` cubre monitoreo geoespacial; `008-009` quedan reservadas sin spec.
-Las reglas del método, incluidos los invariantes de arriba convertidos en artículos falsables y
-los seis contratos canónicos compartidos (`ContractingEntity`, `ProcurementRecord`,
-`BudgetExecutionRecord`, `RedFlag`, `Alert`, `CitizenReport`), están en
-`docs/sdd/constitution.md`: léelo antes de escribir o cambiar una spec.
-Decisiones arquitectónicas que las specs destaparon pero no resolvieron: `specs/pending-adrs.md`.
+## Entrada y presupuesto
 
-## Qué no tocar
+1. Leer PROJECT.yaml y context/snapshots/latest.md si existe.
+2. Leer docs/INDEX.md y cargar solo los documentos activados por la tarea.
+3. Buscar en src/; no leerlo exhaustivamente.
+4. Tratar snapshots y documentos fechados como contexto de su corte.
 
-- `secrets/`, `**/.env`, `**/*.pem`, `**/*.key`: lectura y escritura prohibidas.
-- ADR aceptados en `docs/adr/`: inmutables.
+L0: máximo 4000 tokens; L1: máximo 20000 tokens por tarea.
+Para revisiones amplias, inventariar y comprobar referencias sin cargar todo el archivo histórico.
 
-## Dónde está todo
+## Ubicación y convenciones
 
-| Necesito | Voy a |
-|---|---|
-| Mapa de la documentación | `docs/INDEX.md` |
-| Cómo está construido | `docs/architecture/overview.md` |
-| Por qué se decidió algo | `docs/adr/` |
-| Qué viene después | `docs/roadmap.md` |
-| Trabajo en curso | `tasks/active/` |
-| Estado reciente | `context/snapshots/latest.md` |
-| Contexto de negocio | `brain/20-projects/cajamarca-qhaway/context.md` |
+Código en src/, pruebas en tests/ y herramientas en scripts/.
+Documentación técnica en docs/; requisitos y contratos por capacidad en specs/.
+Las herramientas 011 viven en scripts/deterministic-engine/.
+Módulos Python, pruebas y campos JSON conservan snake_case.
+Los demás nombres nuevos usan kebab-case salvo excepciones globales.
+Contenido en español y diagramas Mermaid.
+URL, tablas de trazabilidad y JSON pueden superar 100 caracteres por línea.
+Cada documento IA lleva sus metadatos y verified:false.
+CLAUDE.md es un adaptador de entrada y no duplica estas instrucciones.
 
-## Antes de empezar
+## Protección y cierre
 
-Por instrucción expresa del propietario del 2026-10-15, trabajar directamente en `main`.
-No crear ramas divergentes ni worktrees para este proyecto.
-Esta preferencia sustituye el modo branch del workspace dentro de `cajamarca-qhaway`.
-
-1. Lee `context/snapshots/latest.md` si existe.
-2. Lee `docs/INDEX.md` y carga **solo** lo que la tarea active.
-3. No leas `src/` de forma exhaustiva: busca, no listes.
-
-## Al terminar
-
-- [ ] Tests pasan.
-- [ ] Documentación afectada actualizada **en el mismo commit** que el código.
-- [ ] `CHANGELOG.md` actualizado si hay cambio visible.
-- [ ] Si hubo decisión arquitectónica, ADR en `status: proposed`.
+Nunca leer ni escribir secretos, archivos .env, .pem o .key.
+No eludir rechazos del sistema cambiando de herramienta o mecanismo.
+El mensaje blocked by policy no basta para identificar el componente que lo emitió.
+Revisar diff y conservar cambios ajenos o anteriores.
+Actualizar CHANGELOG.md cuando haya un cambio visible y ejecutar comprobaciones apropiadas.

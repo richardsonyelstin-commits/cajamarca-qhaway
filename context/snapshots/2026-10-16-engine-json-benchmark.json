@@ -1,0 +1,28 @@
+{
+  "source": "ai",
+  "generator": "codex",
+  "generated_at": "2026-10-16T05:18:27.613679+00:00",
+  "confidence": "high",
+  "verified": false,
+  "results": [
+    {
+      "observations": 10000,
+      "bytes": 7692280,
+      "seconds": 5.525291899999502,
+      "kind": "BatchResult",
+      "problems": []
+    },
+    {
+      "observations": 100000,
+      "bytes": 76921180,
+      "seconds": 0.0016704000008758157,
+      "kind": "BatchInvalid",
+      "problems": [
+        {
+          "code": "RESOURCE_LIMIT",
+          "pointer": ""
+        }
+      ]
+    }
+  ]
+}

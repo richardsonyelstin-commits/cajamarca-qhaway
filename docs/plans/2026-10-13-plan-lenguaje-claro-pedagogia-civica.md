@@ -1,4 +1,5 @@
 ---
+title: "Plan Integral de Pedagogía Cívica, Lenguaje Claro y Accesibilidad Cognitiva"
 source: ai
 generator: citizen-ux-planner
 generated_at: '2026-10-13T07:45:00Z'

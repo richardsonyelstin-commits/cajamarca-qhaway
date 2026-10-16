@@ -1,47 +1,40 @@
 ---
-title: SDD - cajamarca-qhaway
+title: "SDD - cajamarca-qhaway"
 status: active
-created: 2026-08-20
+updated: 2026-10-16
 source: ai
-generator: claude-sonnet-5
-generated_at: 2026-08-20T00:00:00Z
-confidence: medium
+generator: codex
+generated_at: 2026-10-16T07:14:27.989761+00:00
+confidence: high
 verified: false
 ---
 
 # SDD - cajamarca-qhaway
 
-Este proyecto se construye con Spec-Driven Development (SDD): antes de escribir código, cada
-capacidad se especifica en `specs/NNN-<slug>/`. Las reglas del método están en
-`constitution.md`, en este mismo directorio - léelo antes de escribir o cambiar una spec.
+Cada capacidad separa requisitos, diseño y evidencia de implementación.
+El estado documental no se infiere de que un módulo exista o sus pruebas pasen.
+La Constitución vigente y sus propuestas se identifican explícitamente.
 
-## Por qué SDD aquí
+## Artefactos
 
-Este no es un pipeline de datos cualquiera: produce señales que pueden dañar reputaciones si se
-equivocan. Especificar primero, con reglas de negocio numeradas y criterios falsables, es lo que
-permite defender después -legal y periodísticamente- por qué una alerta dice lo que dice. La
-spec **es** la documentación de esa defensa, no un trámite previo al código.
+spec.md fija reglas y aceptación; plan.md describe el diseño y tasks.md organiza la ejecución.
+011 incorpora test-plan.md, traceability.json, contratos cerrados y vectores sintéticos.
+El generador emite DTO desde JSON Schema y --check detecta divergencias.
+La referencia normativa del método es [constitution.md](constitution.md).
 
-## Cómo se usa
+## Estados y aprobación
 
-1. Cada capacidad vive en `specs/NNN-<slug>/`, con hasta tres artefactos: `spec.md` (qué y por
-   qué), `plan.md` (cómo), `tasks.md` (en qué orden). Ver Artículo 2 de la constitución.
-2. Una spec nace en `draft`. Nadie -humano o agente- la mueve a `approved` sin que esté vacía de
-   `[NECESITA ACLARACIÓN]` sin resolver. Ver Artículo 8.
-3. `plan.md` no existe, o existe pero está incompleto, cuando la spec todavía tiene ambigüedades
-   que cambiarían el diseño técnico. `tasks.md` solo se escribe cuando spec y plan son lo
-   bastante sólidos como para que una tarea tenga sentido - fabricar tareas sobre una base
-   inestable es peor que no tenerlas (Artículo 2).
-4. Los seis contratos de datos compartidos (`ContractingEntity`, `ProcurementRecord`,
-   `BudgetExecutionRecord`, `RedFlag`, `Alert`, `CitizenReport`) están en el Artículo 19 de la
-   constitución. Ninguna spec los redefine por su cuenta.
-5. Las decisiones arquitectónicas que una spec destapa -pero no puede resolver por sí sola- se
-   listan en `specs/pending-adrs.md`, no se deciden en silencio dentro de la spec.
+Las specs heredadas conservan draft y los ADR mantienen sus estados originales.
+011 conserva proposed aunque su implementación privada esté disponible.
+No se cambia verified:false a true ni se inventan firmas de aceptación.
+La Constitución v2 sigue vigente; la sección v3 de 011 permanece propuesta.
+La ejecución técnica fue autorizada por el propietario en esta conversación.
+La calibración y la promoción productiva requieren evidencia y decisiones propias.
 
-## Qué no es SDD aquí
+## Contratos y coexistencia
 
-- No sustituye la coordinación previa con Proética Cajamarca, Propuesta Ciudadana y GRUFIDES que
-  bloquea el desarrollo técnico (`CLAUDE.md`, sección "Estado").
-- No decide temas legales (Ley 29733 sobre DJI) ni éticos (scoring de personas) - esos quedan
-  escalados por diseño, nunca resueltos en una spec (Artículos 16 y 17).
-- No reemplaza los ADR: una spec puede *pedir* uno, nunca *ser* uno.
+Los seis modelos heredados siguen en [models/](../../src/cajamarca_qhaway/models/).
+011 usa [contratos versionados](../../specs/011-deterministic-engine/contracts/).
+Sus evaluaciones no son Alert ni trasladan decisiones humanas o prioridad histórica.
+Las fuentes concretas de comportamiento son el código y sus pruebas, no las notas IA sin verificar.
+El [mapa de capacidades](../../specs/README.md) permite localizar requisitos y módulos.

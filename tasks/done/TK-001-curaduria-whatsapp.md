@@ -1,3 +1,15 @@
+---
+title: "TK-001: Curaduría de Datos y Filtrado de Ruido de WhatsApp"
+record_kind: historical
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:11:56.288182+00:00
+confidence: medium
+verified: false
+metadata_only: true
+original_body_sha256: 7651eb07043b8025132cd600e23cdc5665b0875ca6dbd466c19a64d66d064f12
+---
+
 # TK-001: Curaduría de Datos y Filtrado de Ruido de WhatsApp
 
 **Estado:** DONE  

@@ -17,6 +17,7 @@ dependencies = [
     "httpx>=0.27",
     # Web identity, revocation and confirmed writes require PostgreSQL in cloud.
     "psycopg[binary]>=3.1",
+    "jsonschema[format-nongpl]>=4.26,<5",
 ]
 
 [project.optional-dependencies]
@@ -24,6 +25,9 @@ dev = [
     "pytest>=8.0",
     # La suite completa ejerce funciones de persistencia y requiere el driver real.
     "psycopg[binary]>=3.1",
+    "jsonschema[format-nongpl]>=4.26,<5",
+    "hypothesis>=6.150,<7",
+    "coverage>=7.10,<8",
 ]
 # Compatibility extra for existing seed/development commands; the driver is now
 # also a runtime dependency of the authenticated web application.
@@ -36,6 +40,7 @@ browser = [
 
 [project.scripts]
 cajamarca-qhaway = "cajamarca_qhaway.cli:main"
+cajamarca-qhaway-engine = "cajamarca_qhaway.deterministic_cli:main"
 cajamarca-qhaway-seed-entities = "cajamarca_qhaway.capabilities.entity_mapping.seed:main"
 
 [tool.hatch.build.targets.wheel]

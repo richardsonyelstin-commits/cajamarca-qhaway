@@ -4,15 +4,21 @@ spec: "003"
 capability: mef-ingestion
 status: draft
 created: 2026-08-20
-updated: 2026-10-14
+updated: 2026-10-16
 source: ai
-generator: codex-gpt-6
-generated_at: 2026-10-14T21:53:14.441784+00:00
+generator: codex
+generated_at: 2026-10-16T07:18:34.441452+00:00
 confidence: high
 verified: false
 ---
 
 # Plan 003 - mef-ingestion
+
+## Estado contrastado (2026-10-16)
+
+La implementación local correspondiente está en [código](../../src/cajamarca_qhaway/capabilities/mef_ingestion/).
+El estado draft se conserva: tener implementación no constituye aprobación documental.
+Las reglas siguientes son requisitos y diseño; no certifican cobertura o servicios remotos.
 
 El modulo mensual oficial permite extraer un total por entidad y ejercicio.
 La cosecha valida el universo de 14 entidades y conserva las ocho columnas de la fila fuente.

@@ -4,15 +4,21 @@ spec: "005"
 capability: review-panel
 status: draft
 created: 2026-08-20
-updated: 2026-08-20
+updated: 2026-10-16
 source: ai
-generator: claude-sonnet-5
-generated_at: 2026-08-20T00:00:00Z
+generator: codex
+generated_at: 2026-10-16T07:18:34.441452+00:00
 confidence: medium
 verified: false
 ---
 
 # Plan 005 - review-panel
+
+## Estado contrastado (2026-10-16)
+
+La implementación local correspondiente está en [código](../../src/cajamarca_qhaway/capabilities/review_panel/).
+El estado draft se conserva: tener implementación no constituye aprobación documental.
+Las reglas siguientes son requisitos y diseño; no certifican cobertura o servicios remotos.
 
 A diferencia de `002`, `003` y `004`, esta capacidad no depende de ninguna verificación técnica
 externa: su lógica es un flujo de decisión humana sobre datos que ya existen como `RedFlag`. Lo
@@ -47,7 +53,8 @@ decide(
 
 `reviewed_by` no se infiere de una sesión implícita ni de una cabecera HTTP sin verificar: debe
 ser un identificador de persona ya autenticada por el sistema que exista fuera de esta capacidad
-(mecanismo de autenticación no especificado aquí - depende del stack, `specs/pending-adrs.md`).
+La implementación actual usa Supabase Auth y acreditación administrada en web/auth.py;
+la comprobación OAuth real en un entorno de staging es una compuerta operativa separada.
 
 ## Concurrencia (CL-005-01)
 
@@ -60,8 +67,9 @@ real.
 
 ## Dependencias nuevas
 
-Ninguna específica de este dominio. Depende del mecanismo de autenticación del stack elegido
-(`specs/pending-adrs.md`), que esta spec no decide.
+La identidad se verifica en web/auth.py y la escritura de decisiones en los repositorios.
+El mecanismo implementado no cambia por sí solo la composición humana requerida del panel.
+Las dependencias de ejecución se consultan en pyproject.toml y uv.lock.
 
 ## Riesgos
 
@@ -82,13 +90,13 @@ tests de la maquina de estados:
   - agrupar dos RedFlag en una Alert requiere una lista explícita, no inferencia automática
 ```
 
-Detalle de ficheros y funciones: pendiente del stack.
+Las funciones se encuentran en capabilities/review_panel/, web/auth.py
+y persistence/repositories/alert_repository.py.
 
 ## Orden de implementación
 
 1. Máquina de estados y contrato de `decide()` - no bloqueado.
-2. Mecanismo de identidad de revisor (`reviewed_by`) - depende del sistema de autenticación del
-   stack, `specs/pending-adrs.md`.
+2. Identidad de revisor: implementación presente con Supabase Auth; validar OAuth real en staging.
 3. Mecanismo de concurrencia/reclamo - **bloqueado por AC-005-01**.
 4. Texto final del descargo - **bloqueado por AC-005-02**.
 

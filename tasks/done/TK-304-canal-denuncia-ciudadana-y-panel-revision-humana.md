@@ -1,3 +1,15 @@
+---
+title: "TK-304: Canal de Denuncia Ciudadana y Panel Interno de Revisión Humana"
+record_kind: historical
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:11:56.288182+00:00
+confidence: medium
+verified: false
+metadata_only: true
+original_body_sha256: 49b19afe5c618970573b50e9abd4448eb03966ff8a13fec0e573e758303b723b
+---
+
 # TK-304: Canal de Denuncia Ciudadana y Panel Interno de Revisión Humana
 
 **Estado:** DONE  

@@ -1,0 +1,253 @@
+{
+  "metadata": {
+    "source": "ai",
+    "generator": "codex-gpt-6",
+    "generated_at": "2026-10-16T04:41:12Z",
+    "confidence": "medium",
+    "verified": false,
+    "synthetic": true,
+    "implementation_status": "implemented-private"
+  },
+  "rules": [
+    {
+      "rule_id": "RN-011-01",
+      "acceptance_ids": [
+        "CA-011-01"
+      ],
+      "task_ids": [
+        "T-011-01"
+      ],
+      "tests": [
+        {
+          "file": "tests/deterministic_engine/test_boundary.py",
+          "function": "test_closed_boundary_and_pure_execution"
+        }
+      ]
+    },
+    {
+      "rule_id": "RN-011-02",
+      "acceptance_ids": [
+        "CA-011-02"
+      ],
+      "task_ids": [
+        "T-011-02"
+      ],
+      "tests": [
+        {
+          "file": "tests/deterministic_engine/test_revisions.py",
+          "function": "test_revision_selection_and_source_conflicts"
+        }
+      ]
+    },
+    {
+      "rule_id": "RN-011-03",
+      "acceptance_ids": [
+        "CA-011-03"
+      ],
+      "task_ids": [
+        "T-011-03"
+      ],
+      "tests": [
+        {
+          "file": "tests/deterministic_engine/test_arithmetic.py",
+          "function": "test_exact_cents_and_fraction_boundaries"
+        }
+      ]
+    },
+    {
+      "rule_id": "RN-011-04",
+      "acceptance_ids": [
+        "CA-011-04"
+      ],
+      "task_ids": [
+        "T-011-04"
+      ],
+      "tests": [
+        {
+          "file": "tests/deterministic_engine/test_states.py",
+          "function": "test_exactly_one_state_per_requested_rule"
+        }
+      ]
+    },
+    {
+      "rule_id": "RN-011-05",
+      "acceptance_ids": [
+        "CA-011-05"
+      ],
+      "task_ids": [
+        "T-011-05"
+      ],
+      "tests": [
+        {
+          "file": "tests/deterministic_engine/test_scopes.py",
+          "function": "test_grain_and_denominator_no_double_count"
+        }
+      ]
+    },
+    {
+      "rule_id": "RN-011-06",
+      "acceptance_ids": [
+        "CA-011-06"
+      ],
+      "task_ids": [
+        "T-011-06"
+      ],
+      "tests": [
+        {
+          "file": "tests/deterministic_engine/test_evidence.py",
+          "function": "test_evidence_graph_and_explanation_complete"
+        }
+      ]
+    },
+    {
+      "rule_id": "RN-011-07",
+      "acceptance_ids": [
+        "CA-011-07"
+      ],
+      "task_ids": [
+        "T-011-07"
+      ],
+      "tests": [
+        {
+          "file": "tests/deterministic_engine/test_replay.py",
+          "function": "test_canonical_replay_across_processes"
+        }
+      ]
+    },
+    {
+      "rule_id": "RN-011-08",
+      "acceptance_ids": [
+        "CA-011-08"
+      ],
+      "task_ids": [
+        "T-011-08"
+      ],
+      "tests": [
+        {
+          "file": "tests/deterministic_engine/test_policy.py",
+          "function": "test_finite_versioned_heuristic_catalog"
+        }
+      ]
+    },
+    {
+      "rule_id": "RN-011-09",
+      "acceptance_ids": [
+        "CA-011-09"
+      ],
+      "task_ids": [
+        "T-011-09"
+      ],
+      "tests": [
+        {
+          "file": "tests/deterministic_engine/test_single_bidder.py",
+          "function": "test_single_bidder_golden_boundaries"
+        }
+      ]
+    },
+    {
+      "rule_id": "RN-011-10",
+      "acceptance_ids": [
+        "CA-011-10"
+      ],
+      "task_ids": [
+        "T-011-10"
+      ],
+      "tests": [
+        {
+          "file": "tests/deterministic_engine/test_share.py",
+          "function": "test_contract_share_golden_boundaries"
+        }
+      ]
+    },
+    {
+      "rule_id": "RN-011-11",
+      "acceptance_ids": [
+        "CA-011-11"
+      ],
+      "task_ids": [
+        "T-011-11"
+      ],
+      "tests": [
+        {
+          "file": "tests/deterministic_engine/test_hhi.py",
+          "function": "test_hhi_golden_boundaries"
+        }
+      ]
+    },
+    {
+      "rule_id": "RN-011-12",
+      "acceptance_ids": [
+        "CA-011-12"
+      ],
+      "task_ids": [
+        "T-011-12"
+      ],
+      "tests": [
+        {
+          "file": "tests/deterministic_engine/test_recurrence.py",
+          "function": "test_recurrent_direct_golden_boundaries"
+        }
+      ]
+    },
+    {
+      "rule_id": "RN-011-13",
+      "acceptance_ids": [
+        "CA-011-13"
+      ],
+      "task_ids": [
+        "T-011-13"
+      ],
+      "tests": [
+        {
+          "file": "tests/deterministic_engine/test_unspent.py",
+          "function": "test_budget_unspent_golden_boundaries"
+        }
+      ]
+    },
+    {
+      "rule_id": "RN-011-14",
+      "acceptance_ids": [
+        "CA-011-14"
+      ],
+      "task_ids": [
+        "T-011-14"
+      ],
+      "tests": [
+        {
+          "file": "tests/deterministic_engine/test_above_pim.py",
+          "function": "test_budget_above_pim_golden_boundaries"
+        }
+      ]
+    },
+    {
+      "rule_id": "RN-011-15",
+      "acceptance_ids": [
+        "CA-011-15"
+      ],
+      "task_ids": [
+        "T-011-15"
+      ],
+      "tests": [
+        {
+          "file": "tests/deterministic_engine/test_deferred.py",
+          "function": "test_deferred_rules_never_enter_core"
+        }
+      ]
+    },
+    {
+      "rule_id": "RN-011-16",
+      "acceptance_ids": [
+        "CA-011-16"
+      ],
+      "task_ids": [
+        "T-011-16"
+      ],
+      "tests": [
+        {
+          "file": "tests/deterministic_engine/test_migration.py",
+          "function": "test_shadow_migration_preserves_history"
+        }
+      ]
+    }
+  ]
+}

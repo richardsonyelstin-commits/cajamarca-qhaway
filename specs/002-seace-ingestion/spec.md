@@ -4,18 +4,24 @@ spec: "002"
 capability: seace-ingestion
 status: draft
 created: 2026-08-20
-updated: 2026-10-15
+updated: 2026-10-16
 consumes: [ContractingEntity]
 produces: [ProcurementRecord]
 open_clarifications: 5
 source: ai
-generator: codex-gpt-6
-generated_at: 2026-10-15T18:33:00Z
+generator: codex
+generated_at: 2026-10-16T07:18:34.441452+00:00
 confidence: medium
 verified: false
 ---
 
 # Spec 002 - seace-ingestion
+
+## Estado contrastado (2026-10-16)
+
+La implementación local correspondiente está en [código](../../src/cajamarca_qhaway/capabilities/seace_ingestion/).
+El estado draft se conserva: tener implementación no constituye aprobación documental.
+Las reglas siguientes son requisitos y diseño; no certifican cobertura o servicios remotos.
 
 Ingiere contrataciones públicas desde la API OCDS del Portal de Contrataciones Abiertas (OECE,
 ex-OSCE/SEACE), filtradas al universo de `001-entity-mapping`, con el payload original íntegro y

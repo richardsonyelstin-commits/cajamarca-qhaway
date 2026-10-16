@@ -18,6 +18,12 @@ Se escribe **en el PR**, no en el release: reconstruirlo después es inventarlo.
 
 ### Added
 
+- Motor 011 privado con seis reglas exactas, revisión temporal, evidencia y replay canónico.
+- CLI exclusiva, shadow desde bytes preservados, pruebas de propiedades, mutación y cobertura CI.
+
+- Propuesta SDD 011 del motor determinista, ADR 0015-0019 y enmienda constitucional para revisión.
+- Contratos cerrados, ejemplos sintéticos y pruebas automáticas de coherencia del diseño propuesto.
+
 - Presupuesto por momentos con corte diario, comparacion mensual y desgloses de ambito y rubro.
 - Evidencia OECE Pentaho en tabla independiente, enlace exacto a OCDS y cliente JSF con brechas CAPTCHA.
 - Identidad Qhaway aplicada a 16 vistas, 88 activos locales y fuentes sin dependencias de CDN.
@@ -31,6 +37,13 @@ Se escribe **en el PR**, no en el release: reconstruirlo después es inventarlo.
 - **Arquitectura Cloud Híbrida (ADR 0009):** workflow de GitHub Actions para el harvester y persistencia de watermarks en PostgreSQL.
 
 ### Changed
+
+- Documentación vigente reconciliada con MPA/WSGI, persistencia y motores 004/011.
+- Índices, roadmap, comandos y estados documentales actualizados; ADR históricos conservados.
+
+- Herramientas 011 agrupadas en scripts/deterministic-engine/ con CI y comandos actualizados.
+- Instrucciones canónicas en AGENTS.md; CLAUDE.md queda como entrada de compatibilidad.
+- Retirados catorce placeholders .gitkeep y los metadatos Gemini del scaffolding.
 
 - El catálogo primario del conector MEF se trasladó a PNDA; descubre los recursos de gasto 2024-2026 y prioriza sus CSV oficiales. DataStore queda como fallback y los HTTP 404 se registran como brechas sin contar la cosecha vacía como éxito.
 - La cola de alertas admite `generated`/`in_review` sin firma; seis publicaciones anteriores sin acta/dictamen verificable en Supabase se regresaron a `in_review`.

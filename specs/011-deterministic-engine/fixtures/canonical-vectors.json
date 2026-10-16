@@ -1,0 +1,37 @@
+{
+  "source": "ai",
+  "generator": "codex-gpt-6",
+  "generated_at": "2026-10-16T04:41:12Z",
+  "confidence": "medium",
+  "verified": false,
+  "synthetic": true,
+  "vectors": [
+    {
+      "id": "empty-object",
+      "value": {},
+      "canonical_utf8": "{}",
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "id": "unicode-and-escapes",
+      "value": {
+        "z": "Cajamarca",
+        "a": "á\n\"\\",
+        "n": 1,
+        "f": false,
+        "x": null
+      },
+      "canonical_utf8": "{\"a\":\"á\\n\\\"\\\\\",\"f\":false,\"n\":1,\"x\":null,\"z\":\"Cajamarca\"}",
+      "sha256": "dc4efb9e7065cb5a48ae9bb8439edf9e80c6c47e83847a3a4478eef3b7f0ff4c"
+    },
+    {
+      "id": "exact-fraction",
+      "value": {
+        "denominator": "3",
+        "numerator": "1"
+      },
+      "canonical_utf8": "{\"denominator\":\"3\",\"numerator\":\"1\"}",
+      "sha256": "0910a5f4d247f6e935e9517d51de077b109fba5771033c77ce4beb8c042ecf50"
+    }
+  ]
+}

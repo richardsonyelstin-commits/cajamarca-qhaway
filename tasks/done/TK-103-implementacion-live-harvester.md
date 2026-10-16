@@ -1,3 +1,15 @@
+---
+title: "TK-103: Implementación del Core Live Harvester Worker"
+record_kind: historical
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:11:56.288182+00:00
+confidence: medium
+verified: false
+metadata_only: true
+original_body_sha256: 77d3f005d752cfa7a4ef198065330f429cfcb8f85b62a5d410dce6c9bc25545f
+---
+
 # TK-103: Implementación del Core Live Harvester Worker
 
 **Estado:** DONE  

@@ -1,3 +1,15 @@
+---
+title: "TK-303: Estructura de la Plataforma Web Pública y Casos de Uso CU1 a CU4"
+record_kind: historical
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:11:56.288182+00:00
+confidence: medium
+verified: false
+metadata_only: true
+original_body_sha256: 833a67012a9d62ffd0dcfebbcd00de2d1cd8e5022cc47cd43ac69cd9d35e8138
+---
+
 # TK-303: Estructura de la Plataforma Web Pública y Casos de Uso CU1 a CU4
 
 **Estado:** DONE  

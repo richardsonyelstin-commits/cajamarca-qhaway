@@ -4,15 +4,21 @@ spec: "001"
 capability: entity-mapping
 status: draft
 created: 2026-08-20
-updated: 2026-08-20
+updated: 2026-10-16
 source: ai
-generator: claude-sonnet-5
-generated_at: 2026-08-20T00:00:00Z
+generator: codex
+generated_at: 2026-10-16T07:18:34.441452+00:00
 confidence: low
 verified: false
 ---
 
 # Plan 001 - entity-mapping
+
+## Estado contrastado (2026-10-16)
+
+La implementación local correspondiente está en [código](../../src/cajamarca_qhaway/capabilities/entity_mapping/).
+El estado draft se conserva: tener implementación no constituye aprobación documental.
+Las reglas siguientes son requisitos y diseño; no certifican cobertura o servicios remotos.
 
 Diseño técnico parcial. Tres de las cuatro ambigüedades abiertas de `spec.md`
 (AC-001-01, AC-001-02, AC-001-03) bloquean partes concretas de este plan - se marcan donde
@@ -24,9 +30,10 @@ justificación.
 
 Cubre: construcción de `entity_id`, verificación cruzada de RUC contra dos fuentes, y la forma
 del registro que acompaña a cada entidad (procedencia, fecha de verificación, justificación de
-inclusión). No cubre: dónde vive el artefacto en disco/base de datos (AC-001-02, depende del
-stack - ver `specs/pending-adrs.md`), ni el criterio de selección de distritales (AC-001-01), ni
-la agrupación de unidades ejecutoras (AC-001-03).
+inclusión). El universo versionado vive en data/entities/ y se siembra mediante
+scripts/seed_contracting_entities.py, conforme al ADR 0006.
+El criterio de inclusión de distritales y la agrupación de ejecutoras mantienen sus criterios
+de aceptación y no se declaran resueltos por este ajuste documental.
 
 ## Algoritmos
 
@@ -53,9 +60,9 @@ inventa el criterio.
 
 ## Dependencias nuevas
 
-Ninguna identificada todavía que no dependa del stack elegido (`specs/pending-adrs.md`, fila
-"Lenguaje/runtime del proyecto"). No se puede fijar una librería de verificación de RUC ni de
-scraping de SUNAT sin saber en qué lenguaje corre el proyecto.
+Python 3.12 y las dependencias de ejecución están fijadas en pyproject.toml y uv.lock.
+La capacidad usa modelos Pydantic y el universo YAML versionado.
+La existencia de un cliente SUNAT no constituye una nueva verificación externa de cada entidad.
 
 ## Riesgos
 
@@ -67,11 +74,10 @@ scraping de SUNAT sin saber en qué lenguaje corre el proyecto.
 
 ## Estrategia de prueba
 
-No se detalla suite de pruebas de código todavía: depende del lenguaje/runtime
-(`specs/pending-adrs.md`). Lo que sí se puede fijar sin esa decisión es el **corpus dorado** de
-verificación: las 14 entidades obligatorias (Gobierno Regional + 13 provinciales), con su RUC y
-`consucode_id` confirmados a mano contra SUNAT y el feed OCDS, como fixture de referencia para
-cualquier implementación futura.
+La suite local usa el corpus de catorce entidades y comprueba modelos, claves y siembra.
+Las fuentes están en data/entities/, capabilities/entity_mapping/ y tests/.
+Las comprobaciones históricas de procedencia no se vuelven a ejecutar al actualizar este plan.
+Una aceptación del corpus por pruebas de código no sustituye verificación humana de fuentes.
 
 ## Orden de implementación
 

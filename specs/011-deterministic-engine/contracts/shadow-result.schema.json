@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qhaway.invalid/contracts/shadow-result-1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "mapping_version",
+    "links",
+    "result",
+    "promotion",
+    "migration_inventory"
+  ],
+  "properties": {
+    "mapping_version": {
+      "const": "shadow-1"
+    },
+    "links": {
+      "$ref": "https://qhaway.invalid/contracts/shadow-1#/properties/links"
+    },
+    "result": {
+      "$ref": "https://qhaway.invalid/engine-2/result.schema.json"
+    },
+    "promotion": {
+      "const": "disabled"
+    },
+    "migration_inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "single-bidder",
+        "execution-overrun",
+        "contract-concentration",
+        "short-tender-window",
+        "direct-award-threshold",
+        "direct-administration-equipment-rent",
+        "contract-splitting-orders",
+        "mef-underspending",
+        "recurrent-direct-award",
+        "hhi-concentration",
+        "case-priority"
+      ],
+      "properties": {
+        "single-bidder": {
+          "const": "single-bidder: proceso completo y método confirmado"
+        },
+        "execution-overrun": {
+          "const": "budget-above-pim: solo maestro institucional anual"
+        },
+        "contract-concentration": {
+          "const": "contract-share: cobertura y mínimo tres procesos"
+        },
+        "short-tender-window": {
+          "const": "deferred: requiere calendario y régimen"
+        },
+        "direct-award-threshold": {
+          "const": "deferred: requiere régimen y umbral autorizado"
+        },
+        "direct-administration-equipment-rent": {
+          "const": "retired: texto insuficiente"
+        },
+        "contract-splitting-orders": {
+          "const": "deferred: sin similitud como prueba"
+        },
+        "mef-underspending": {
+          "const": "budget-unspent: solo ejercicio cerrado"
+        },
+        "recurrent-direct-award": {
+          "const": "recurrent-direct: procesos distintos en 365 días"
+        },
+        "hhi-concentration": {
+          "const": "hhi: fracción exacta y cohorte completa"
+        },
+        "case-priority": {
+          "const": "outside-core: prioridad y dictámenes no se migran"
+        }
+      }
+    }
+  }
+}

@@ -1,3 +1,15 @@
+---
+title: "TK-101: Investigar especificaciones live de OECE/SEACE OCDS y MEF DataStore"
+record_kind: historical
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:11:56.288182+00:00
+confidence: medium
+verified: false
+metadata_only: true
+original_body_sha256: 5d3e479269e0f36db80496fd281f334212b4220d7adb47ce26b21a88c0663e61
+---
+
 # TK-101: Investigar especificaciones live de OECE/SEACE OCDS y MEF DataStore
 
 **Estado:** DONE  

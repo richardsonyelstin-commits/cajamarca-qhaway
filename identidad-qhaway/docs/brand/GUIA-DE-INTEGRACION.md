@@ -1,3 +1,13 @@
+---
+title: "Cajamarca Qhaway: guía de integración de la identidad visual"
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:10:28.005038+00:00
+confidence: medium
+verified: false
+metadata_reviewed_at: 2026-10-16
+---
+
 # Cajamarca Qhaway: guía de integración de la identidad visual
 
 Versión 1.0, 13 de octubre de 2026. El manual completo está en `manual-de-marca.html` (archivo autónomo, ábralo en cualquier navegador).
@@ -54,9 +64,9 @@ Revise `vercel.json` y `server.py`: los archivos de la raíz de `web/` (favicon,
 
 ## 5. Flujo recomendado para el repositorio
 
-1. Cree la rama `agent/<nombre>/identidad-visual` y copie los archivos.
-2. Redacte un ADR nuevo (por ejemplo `docs/adr/0010-identidad-visual.md`). No edite los ADR aceptados.
-3. Reemplace el logotipo y los `<link>` de la cabecera en las 14 vistas; después ejecute `pytest -q` y `python -m cajamarca_qhaway.cli web audit`.
+1. Trabaje directamente en main, conforme a AGENTS.md; no cree una rama divergente.
+2. Si cambia una decisión arquitectónica, redacte un ADR nuevo con numeración libre. No edite ADR existentes.
+3. Reemplace el logotipo y los `<link>` de la cabecera en las vistas HTML existentes; después ejecute `pytest -q` y `python -m cajamarca_qhaway.cli web audit`.
 4. Suba `web/media/social/github-social-preview.png` en Settings, Social preview del repositorio.
 
 ## 6. Regenerar los activos

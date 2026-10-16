@@ -1,0 +1,49 @@
+{
+  "source": "ai",
+  "generator": "codex",
+  "generated_at": "2026-10-16T05:13:46.230852+00:00",
+  "confidence": "high",
+  "baseline_commit": "f4e1f73c6fa2bcd8d959b3d1f5dda9b7f305180a",
+  "worktree_dirty": true,
+  "verified": false,
+  "python": "3.13.14",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "logical_cpus": 8,
+  "reference_host_certified": false,
+  "seed": 20261015,
+  "results": [
+    {
+      "observations": 10000,
+      "scopes": 100,
+      "evidence": 10000,
+      "corpus_sha256": "6c941dbf37c8b25a2de7c672beaa1ead6959b83d75508689eaed157118a2c3ea",
+      "json_bytes": 7692280,
+      "seconds": [
+        0.8445032999998148,
+        0.7977832000005947,
+        0.8848121000000901,
+        0.7953914999998233,
+        0.7978859999993801
+      ],
+      "median_seconds": 0.7978859999993801,
+      "peak_bytes": 40331138
+    },
+    {
+      "observations": 100000,
+      "scopes": 1000,
+      "evidence": 100000,
+      "corpus_sha256": "5de6f3830fcd3526e5a500314dfa63eca6b31147441f6237d17cd7da0cb89772",
+      "json_bytes": 76921180,
+      "seconds": [
+        9.08828369999992,
+        8.64508879999994,
+        9.137148799999522,
+        8.939307999999983,
+        8.868849899999987
+      ],
+      "median_seconds": 8.939307999999983,
+      "peak_bytes": 394371298
+    }
+  ],
+  "scaling_ratio": 11.203740885298059
+}

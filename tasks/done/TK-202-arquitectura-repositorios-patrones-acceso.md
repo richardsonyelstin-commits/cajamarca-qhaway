@@ -1,3 +1,15 @@
+---
+title: "TK-202: Arquitectura y Especificación Técnica de Persistencia"
+record_kind: historical
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:11:56.288182+00:00
+confidence: medium
+verified: false
+metadata_only: true
+original_body_sha256: 6e57e41de545f32360e12d7db8b2e0e0881fb7a78974db1c22a1e62bdfcb469a
+---
+
 # TK-202: Arquitectura y Especificación Técnica de Persistencia
 
 **Estado:** DONE  

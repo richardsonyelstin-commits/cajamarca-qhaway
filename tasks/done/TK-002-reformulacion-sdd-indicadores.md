@@ -1,3 +1,15 @@
+---
+title: "TK-002: Reformulación SDD y Ampliación del Catálogo de Banderas Rojas"
+record_kind: historical
+source: ai
+generator: codex
+generated_at: 2026-10-16T18:11:56.288182+00:00
+confidence: medium
+verified: false
+metadata_only: true
+original_body_sha256: 02e955f51cec2b9a514655c454f50a85ead593ed5f757137325e41666331260a
+---
+
 # TK-002: Reformulación SDD y Ampliación del Catálogo de Banderas Rojas
 
 **Estado:** DONE  

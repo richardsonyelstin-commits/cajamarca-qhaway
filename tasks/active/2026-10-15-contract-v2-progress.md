@@ -82,3 +82,38 @@ Antes de cambios funcionales: 220 Python y 12 Node PASS.
 Protocolo y calibración nuevos: 17 pruebas focalizadas PASS antes del último ajuste de plazos.
 Motor y calibración: 20 PASS después del ajuste de plazos.
 Falta ejecutar suite completa, Ruff y Pyright de los módulos cambiados.
+
+## Reevaluación de pendientes (2026-10-16)
+
+La lista de trabajo de la sección 4 conserva el estado histórico de esta bitácora.
+Una inspección del árbol encuentra implementaciones para cosecha JSF/Pentaho,
+`source_evidence`, señales estructuradas, prioridad, `AIReviewCopilot`, migración
+de análisis y dossier privado. Esto confirma presencia de código, no su ejecución
+actual ni el cierre de las verificaciones de datos descritas en la lista histórica.
+
+Consulta de solo lectura al proyecto Supabase `oglltrpvvifqvwmxmkjq`, 2026-10-16:
+14 entidades, 475 contrataciones, 42 registros presupuestales y 20 análisis privados.
+`procurement_source_records` contiene 80.027 filas exactas: 77.981 Pentaho y
+2.046 del buscador SEACE. 686 filas tienen `procurement_id`; el valor cuenta
+vínculos de evidencia, no contrataciones distintas.
+
+La tabla `public.auth_revocations` no existe en el proyecto consultado y la
+migración local `scripts/migrations/0012_auth_revocations.sql` no aparece en su
+historial remoto. No hay ramas Supabase de staging disponibles. No se aplicó la
+migración al proyecto conectado: la aceptación de TK-307 exige verificarla en
+staging y la guía de remediación prohíbe tomar un Preview como aislamiento.
+
+Siguen pendientes en un entorno de staging: migración 0012, OAuth real,
+persistencia/revocación entre instancias, caché CDN y límites del proveedor.
+La calibración normativa y de umbrales, la reconciliación completa para uso
+operativo, el piloto privado de 30 días y sus actas requieren fuentes primarias,
+panel humano y evidencia que no se sustituye con fixtures sintéticas.
+
+## Actualización documental del 2026-10-16
+
+La última suite completa observada en esta conversación pasó 479 pruebas Python y 25 Node.
+Esto reemplaza como estado local actual las cifras de corridas parciales anteriores.
+No certifica OAuth, migraciones ni durabilidad entre instancias en staging.
+El motor 011 dispone de implementación privada y no sustituye el flujo 004 ni sus dictámenes.
+Las observaciones remotas fechadas de esta bitácora no se han vuelto a consultar en esta
+actualización documental.

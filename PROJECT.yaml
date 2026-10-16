@@ -13,25 +13,25 @@ summary: >
   aplicada a detección de riesgo (red flags) sobre datos oficiales abiertos. Fase 1
   acotada a la región Cajamarca, Perú: contrataciones públicas (SEACE/OCDS), ejecución
   presupuestal (MEF) y declaraciones juradas de intereses (DJI), con canal de denuncia
-  ciudadana curada e incluye acceso alterno (SMS/WhatsApp) por la conectividad rural
-  desigual de la región.
+  ciudadana curada. SMS/WhatsApp es una capacidad reservada, no un canal implementado.
 
 stack:
   language: python            # ADR 0001, accepted 2026-08-20
-  framework: null              # backend web sin decidir aun; ver docs/adr/0001, seccion "Negativas"
+  framework: stdlib-wsgi      # implementado en src/cajamarca_qhaway/web/server.py
   runtime: python3.12
   datastore: PostgreSQL        # ADR 0002/0003, accepted 2026-08-20; CTE recursivas para el grafo
                                 # proveedor-funcionario-contrato
   tests: pytest                # convencion heredada de scientific-literature-pipeline, ver ADR 0001
 
 commands:
-  install: "python -m venv .venv && .venv/Scripts/python -m pip install -e \".[dev]\""
-  dev: null
-  test: ".venv/Scripts/python -m pytest -q"
-  lint: null                 # sin decidir aun, ver CLAUDE.md
+  install: "uv sync --extra dev --frozen"
+  dev: "uv run cajamarca-qhaway web serve --port 8080"
+  test: "uv run python -m pytest -q"
+  lint: "uvx ruff check src tests scripts api web/tools"
   build: null
 
 entrypoints:
+  - "cajamarca-qhaway-engine"              # motor determinista 011 privado
   - "cajamarca-qhaway"                     # CLI principal del pipeline de monitoreo (0.1.0)
   - "scripts/seed_contracting_entities.py"  # siembra data/entities/*.yaml a PostgreSQL (ADR 0006)
 
@@ -55,11 +55,11 @@ scope:
     - cobertura nacional o de otras regiones
     - cruce automatizado DJI con datos de terceros (redes sociales, gasto, propiedades)
     - scoring o ranking publico de personas (solo de procesos/contratos)
-    - imagenes satelitales / verificacion fisica de obras
+    - afirmar avance físico de obras sin catálogo, fechas y evidencia verificados
     - app movil nativa
 
 context:
-  l0: [CLAUDE.md, PROJECT.yaml]
+  l0: [AGENTS.md, PROJECT.yaml]
   index: docs/INDEX.md
   snapshot: context/snapshots/latest.md
   manifest: context/manifest.yaml
@@ -70,7 +70,7 @@ knowledge:
   patterns: []              # ids de brain/10-knowledge/patterns aplicados aquí
 
 repo:
-  remote: null
+  remote: https://github.com/richardsonyelstin-commits/cajamarca-qhaway.git
   default_branch: main
 
 dependencies_on_projects: []  # otros proyectos de los que este depende

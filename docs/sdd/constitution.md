@@ -7,7 +7,7 @@ version: 2.0
 applies_to: specs/**
 source: ai
 generator: codex-gpt-6
-generated_at: 2026-10-15T18:33:00Z
+generated_at: 2026-10-16T04:41:12Z
 confidence: medium
 verified: false
 ---
@@ -410,3 +410,42 @@ Una denuncia ciudadana entrante, antes de moderación.
 
 Estos seis contratos son la base; una spec que necesite un campo adicional lo marca
 `[NECESITA ACLARACIÓN]` y propone el ADR correspondiente (Artículo 6).
+
+## Propuesta de enmienda v3.0 para el motor determinista
+
+Estado: proposed; v2.0 sigue vigente hasta adopción humana explícita de esta enmienda.
+Mandato: el propietario autorizó reformular motor, convenciones y Constitución el 2026-10-15.
+La autorización de elaborar no equivale a aceptar ADR ni calibrar umbrales automáticamente.
+Esta sección fue generada por codex-gpt-6 el 2026-10-16T04:41:12Z, verified:false.
+El runtime 011 fue implementado posteriormente en modo privado con pruebas automatizadas.
+Ese hecho técnico no acepta esta enmienda ni modifica los estados de los ADR.
+
+### Artículo 20 propuesto. Contratos versionados y pruebas documentales
+
+Para011 se proponen spec, plan, tasks, test-plan, traceability, schemas y fixtures independientes.
+Esto amplía los tres artefactos del artículo 2 sin mezclar requisito, diseño e implementación.
+Los schemas JSON 2020-12 son contratos engine-2 propuestos, distintos de modelos heredados.
+No se redefine silenciosamente RedFlag, Alert ni sus aprobaciones existentes.
+Se conserva snake_case en campos Python/JSON; nombres de archivos siguen kebab-case.
+Las validaciones documentales prueban conformidad del SDD y no implementación del motor.
+Comprobación: cada RN 011 tiene CA, tarea y prueba nominal trazados y schema válido.
+
+### Artículo 21 propuesto. Determinismo y cobertura probatoria
+
+El núcleo exige as_of y versiones explícitas, UTC canónico y dinero exacto sin float.
+No accede a reloj implícito, red, DB, LLM ni fitting estadístico sobre lote durante evaluación.
+Ausencia, invalidez, no cruce y señal son estados diferenciados y nunca se imputan ceros.
+Cada denominador declara cohorte, corte, granularidad y cobertura con manifiesto trazable.
+Una regla sin evidencia normativa validada no se presenta como incumplimiento de ley.
+Los umbrales heurísticos se identifican como tales y su política requiere calibración humana.
+Comprobación: fixtures de frontera y replay producen fracciones y bytes canónicos iguales.
+
+### Artículo 22 propuesto. Coexistencia e identidad
+
+011 se adopta mediante shadow privado y mapa versionado, sin borrar resultados004.
+No migra aprobación humana, publicación ni prioridad por conversión automática.
+La prioridad de expedientes sigue autorizada por v2, pero queda fuera del núcleo probatorio011.
+Una capacidad futura de prioridad necesitará fórmula propia, evidencia y pruebas de no doble conteo.
+Se mantienen privacidad, revisión colegiada y prohibición de puntuar personas.
+Comprobación: ningún contrato011 contiene published, reviewed_by ni case_priority_score.
+ADR0015-0019 registran propuestas de implementación; no alteran ADR anteriores aceptados.

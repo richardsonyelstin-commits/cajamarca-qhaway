@@ -4,15 +4,21 @@ spec: "006"
 capability: denuncia-intake
 status: draft
 created: 2026-08-20
-updated: 2026-08-20
+updated: 2026-10-16
 source: ai
-generator: claude-sonnet-5
-generated_at: 2026-08-20T00:00:00Z
+generator: codex
+generated_at: 2026-10-16T07:18:34.441452+00:00
 confidence: low
 verified: false
 ---
 
 # Plan 006 - denuncia-intake
+
+## Estado contrastado (2026-10-16)
+
+La implementación local correspondiente está en [código](../../src/cajamarca_qhaway/capabilities/denuncia_intake/).
+El estado draft se conserva: tener implementación no constituye aprobación documental.
+Las reglas siguientes son requisitos y diseño; no certifican cobertura o servicios remotos.
 
 Plan mínimo. Dos de las seis ambigüedades de `spec.md` (AC-006-01, texto legal; AC-006-02, flujo
 operativo de investigación) son las que más importan y ninguna de las dos es una decisión técnica
@@ -42,8 +48,9 @@ de cumplir RN-006-01 sin depender de sesión.
 
 ## Dependencias nuevas
 
-Ninguna fijada - depende del stack (`specs/pending-adrs.md`). El canal `web` no exige nada más
-que un formulario simple; no se necesita ninguna librería de mensajería hasta que `009` exista.
+El canal web usa la API WSGI, modelos del paquete y persistencia del repositorio de denuncias.
+Las dependencias efectivas están en pyproject.toml y uv.lock.
+No existe una integración de mensajería 009 ni se incorpora una dependencia de SMS/WhatsApp.
 
 ## Riesgos
 

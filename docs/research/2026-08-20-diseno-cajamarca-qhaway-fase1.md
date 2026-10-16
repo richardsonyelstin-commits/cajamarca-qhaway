@@ -1,5 +1,5 @@
 ---
-title: Cajamarca Qhaway - diseño de Fase 1 (plataforma de monitoreo ciudadano de corrupción)
+title: "Cajamarca Qhaway - Diseño de Fase 1 (plataforma de monitoreo ciudadano de corrupción, ámbito regional)"
 tags: [anticorrupcion, cajamarca, monitoreo-ciudadano, arquitectura, diseno-producto]
 source: ai
 generator: claude-sonnet-5
