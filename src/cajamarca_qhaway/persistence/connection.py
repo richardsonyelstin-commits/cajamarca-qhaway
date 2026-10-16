@@ -156,6 +156,11 @@ class DatabaseManager:
             )
         );
 
+        CREATE TABLE IF NOT EXISTS auth_revocations (
+            token_hash TEXT PRIMARY KEY CHECK (length(token_hash) = 64),
+            expires_at BIGINT NOT NULL
+        );
+
         CREATE TABLE IF NOT EXISTS harvest_watermarks (
             source_name TEXT PRIMARY KEY,
             last_timestamp TEXT,

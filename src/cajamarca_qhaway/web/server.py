@@ -20,9 +20,7 @@ Cumple con politicas de seguridad (CSP, nosniff, DENY) y Antislop R-02 (cero em-
 
 from __future__ import annotations
 
-import base64
 import hashlib
-import hmac
 import json
 import logging
 import mimetypes
@@ -100,97 +98,38 @@ CLEAN_PAGE_ROUTES: dict[str, str] = {
     "acreditacion": "login.html",
 }
 
-ACCREDITED_VEEDORES: list[dict[str, str]] = [
-    {
-        "email": "veeduria-cajamarca@proetica.org.pe",
-        "password_hash": hashlib.sha256(b"demo-veedor-2025").hexdigest(),
-        "name": "Lic. Carlos Arana Silva",
-        "organization": "Proetica (Capitulo Peruano de Transparency International)",
-        "accreditationNumber": "VEED-PROETICA-2025-014",
-        "role": "veedor_titular",
-    },
-    {
-        "email": "veeduria.proetica@cajamarca-qhaway.pe",
-        "password_hash": hashlib.sha256(b"Proetica#Cajamarca2025!").hexdigest(),
-        "name": "Dra. Elena Santillan Mori",
-        "organization": "Proetica Cajamarca",
-        "accreditationNumber": "VEED-PROETICA-2025-008",
-        "role": "veedor_titular",
-    },
-    {
-        "email": "veeduria.propuesta@cajamarca-qhaway.pe",
-        "password_hash": hashlib.sha256(b"Propuesta#Civica2025!").hexdigest(),
-        "name": "Ing. Marco Tacilla Vasquez",
-        "organization": "Grupo Propuesta Ciudadana",
-        "accreditationNumber": "VEED-PROPUESTA-2025-021",
-        "role": "veedor_revisor",
-    },
-    {
-        "email": "veeduria.grufides@cajamarca-qhaway.pe",
-        "password_hash": hashlib.sha256(b"Grufides#Veedor2025!").hexdigest(),
-        "name": "Abg. Mirtha Villanueva Quispe",
-        "organization": "GRUFIDES Cajamarca",
-        "accreditationNumber": "VEED-GRUFIDES-2025-003",
-        "role": "veedor_titular",
-    },
-    {
-        "email": "veedor.regional@cajamarca-qhaway.pe",
-        "password_hash": hashlib.sha256(b"Veedor#Qhaway2025!").hexdigest(),
-        "name": "Prof. Jorge Terrones Bazan",
-        "organization": "Mesa de Concertacion y Veeduria Ciudadana Cajamarca",
-        "accreditationNumber": "VEED-MESA-2025-007",
-        "role": "veedor_colegiado",
-    },
-]
-
-_TOKEN_SECRET = os.environ.get(
-    "CAJAMARCA_QHAWAY_AUTH_SECRET",
-    "cajamarca-qhaway-civic-veedor-hmac-key-2026",
-).encode("utf-8")
-_REVOKED_TOKENS: set[str] = set()
-_LOGIN_ATTEMPTS: dict[str, dict[str, Any]] = {}
-_MAX_ATTEMPTS = 5
-_LOCKOUT_SECONDS = 15 * 60
-
-
-def _issue_veedor_token(veedor: dict[str, str], ttl_seconds: int = 8 * 3600) -> tuple[str, int]:
-    now_ms = int(time.time() * 1000)
-    expires_at = now_ms + (ttl_seconds * 1000)
-    payload = {
-        "veedor": {
-            "email": veedor["email"],
-            "name": veedor["name"],
-            "organization": veedor["organization"],
-            "accreditationNumber": veedor["accreditationNumber"],
-            "role": veedor["role"],
-        },
-        "createdAt": now_ms,
-        "expiresAt": expires_at,
-        "nonce": secrets.token_hex(8),
-    }
-    raw_bytes = json.dumps(payload, separators=(",", ":")).encode("utf-8")
-    b64_payload = base64.urlsafe_b64encode(raw_bytes).decode("ascii").rstrip("=")
-    sig = hmac.new(_TOKEN_SECRET, b64_payload.encode("ascii"), hashlib.sha256).hexdigest()
-    return f"{b64_payload}.{sig}", expires_at
+class PublicProjectionUnavailable(RuntimeError):
+    """Configured authoritative publication storage cannot be read safely."""
 
 
 def _verify_veedor_token(token: str | None) -> dict[str, Any] | None:
-    if not token or token in _REVOKED_TOKENS or "." not in token:
-        return None
-    b64_payload, sig = token.split(".", 1)
-    expected_sig = hmac.new(_TOKEN_SECRET, b64_payload.encode("ascii"), hashlib.sha256).hexdigest()
-    if not hmac.compare_digest(sig, expected_sig):
-        return None
-    padding = "=" * (-len(b64_payload) % 4)
-    try:
-        raw = base64.urlsafe_b64decode(b64_payload + padding)
-        data = json.loads(raw.decode("utf-8"))
-    except Exception as error:
-        logger.exception("Fallo controlado del adaptador web (%s)", type(error).__name__, exc_info=False)
-        return None
-    if int(time.time() * 1000) > int(data.get("expiresAt", 0)):
-        return None
-    return data
+    from cajamarca_qhaway.web.auth import AuthService
+    return AuthService(_db_manager).verify(token)
+
+
+def _durable_repository(repo: Any) -> bool:
+    """Cloud/private writes require configured PostgreSQL, never volatile storage."""
+    if repo is None:
+        return False
+    cloud = bool(os.environ.get("VERCEL") or os.environ.get("CAJAMARCA_QHAWAY_DATABASE_URL")
+                 or os.environ.get("CAJAMARCA_QHAWAY_ENV", "").lower() == "production"
+                 or os.environ.get("ENVIRONMENT", "").lower() == "production")
+    return not cloud or bool(getattr(getattr(repo, "db", None), "is_postgres", False))
+
+
+def _cache_control(method: str, path: str, query: dict[str, list[str]],
+                   headers: dict[str, str], status: int) -> str:
+    effective = query.get("__path", [path])[0]
+    effective = "/" + effective.lstrip("/")
+    private = headers.get("authorization") or any(
+        effective.startswith(prefix) for prefix in
+        ("/api/auth", "/api/reports", "/api/review", "/api/red-flags")
+    )
+    if private or method != "GET" or status != 200:
+        return "private, no-store"
+    if effective.startswith("/api/"):
+        return "public, max-age=0, s-maxage=60, stale-while-revalidate=300"
+    return "public, max-age=0, s-maxage=3600"
 
 
 class WebApiHandler(BaseHTTPRequestHandler):
@@ -236,8 +175,10 @@ class WebApiHandler(BaseHTTPRequestHandler):
     @classmethod
     def _fetch_live_snapshot(cls) -> dict[str, Any] | None:
         """Consulta las tablas publicas de Supabase sin exponer credenciales al cliente."""
-        base_url = os.environ.get("SUPABASE_URL", "").rstrip("/")
-        anon_key = os.environ.get("SUPABASE_ANON_KEY", "")
+        base_url = (os.environ.get("CAJAMARCA_QHAWAY_SUPABASE_URL")
+                    or os.environ.get("SUPABASE_URL", "")).rstrip("/")
+        anon_key = (os.environ.get("CAJAMARCA_QHAWAY_SUPABASE_ANON_KEY")
+                    or os.environ.get("SUPABASE_ANON_KEY", ""))
         if not base_url or not anon_key:
             return None
 
@@ -324,7 +265,19 @@ class WebApiHandler(BaseHTTPRequestHandler):
         return cls._sunat_service
 
     @classmethod
-    def dispatch(
+    def dispatch(cls, method: str, path: str, query: dict[str, list[str]],
+                 body_bytes: bytes = b"", headers: dict[str, str] | None = None
+                 ) -> tuple[int, str, bytes]:
+        from cajamarca_qhaway.web.auth import AuthUnavailable
+        try:
+            return cls._dispatch(method, path, query, body_bytes, headers)
+        except AuthUnavailable:
+            return cls._error_bytes("Autenticacion segura no disponible", 503)
+        except PublicProjectionUnavailable:
+            return cls._error_bytes("Publicacion confirmada temporalmente no disponible", 503)
+
+    @classmethod
+    def _dispatch(
         cls,
         method: str,
         path: str,
@@ -360,6 +313,9 @@ class WebApiHandler(BaseHTTPRequestHandler):
             except Exception as exc:
                 logger.exception("Fallo controlado del adaptador web (%s)", type(exc).__name__, exc_info=False)
                 return cls._error_bytes(f"JSON invalido: {exc!s}", 400)
+
+            if not isinstance(data, dict):
+                return cls._error_bytes("El cuerpo JSON debe ser un objeto", 400)
 
             if path == "/api/auth/login":
                 return cls._dispatch_post_login(data, req_headers)
@@ -415,6 +371,45 @@ class WebApiHandler(BaseHTTPRequestHandler):
         }
 
     @classmethod
+    def _public_projection(cls, snapshot: dict[str, Any]) -> dict[str, Any]:
+        """Recover committed publication independently of the process snapshot cache."""
+        public = dict(snapshot)
+        public["citizen_reports"] = []
+        public["alerts"] = [row for row in snapshot.get("alerts", []) if row.get("status") == "published"]
+        repository_active = False
+        authoritative = bool(getattr(_db_manager, "is_postgres", False))
+        if authoritative and _alert_repo is None:
+            raise PublicProjectionUnavailable()
+        if _durable_repository(_alert_repo):
+            try:
+                published = _alert_repo.list_published()
+                # An explicitly configured PostgreSQL database is authoritative even
+                # when empty. A pristine local in-memory DB retains snapshot reading.
+                repository_active = bool(_alert_repo.db.is_postgres or published or _alert_repo.list_all())
+                if repository_active:
+                    public["alerts"] = [row.model_dump(mode="json") for row in published]
+            except Exception as error:
+                if authoritative:
+                    raise PublicProjectionUnavailable() from error
+                logger.warning("Repositorio local no disponible; se usa instantanea publica")
+        published_ids = {flag_id for row in public["alerts"] for flag_id in row.get("red_flag_ids", [])}
+        flags = {row["red_flag_id"]: row for row in snapshot.get("red_flags", [])
+                 if row.get("red_flag_id") in published_ids}
+        if repository_active and _red_flag_repo is not None:
+            for flag_id in sorted(published_ids):
+                try:
+                    flag = _red_flag_repo.get_by_id(flag_id)
+                    if flag is not None:
+                        flags[flag_id] = flag.model_dump(mode="json")
+                except Exception as error:
+                    if authoritative:
+                        raise PublicProjectionUnavailable() from error
+                    logger.warning("Evidencia publicada no disponible para la proyeccion publica")
+        public["red_flags"] = list(flags.values())
+        public["metadata"] = {**snapshot.get("metadata", {}), "total_published_alerts": len(public["alerts"])}
+        return public
+
+    @classmethod
     def _dispatch_api_get(
         cls,
         path: str,
@@ -422,6 +417,8 @@ class WebApiHandler(BaseHTTPRequestHandler):
         req_headers: dict[str, str] | None = None,
     ) -> tuple[int, str, bytes]:
         snapshot = cls.get_snapshot()
+        if path in ("/api/alerts", "/api/red-flags", "/api/snapshot"):
+            snapshot = cls._public_projection(snapshot)
         req_headers = req_headers or {}
 
         if path == "/api/health":
@@ -576,15 +573,30 @@ class WebApiHandler(BaseHTTPRequestHandler):
                     {"error": "Sesion de veedor invalida o expirada"},
                     status_code=401,
                 )
-            reports = snapshot.get("citizen_reports", [])
-            return cls._json_bytes(reports)
+            try:
+                limit = int(query.get("limit", ["100"])[0])
+                offset = int(query.get("offset", ["0"])[0])
+                status = query.get("status", [None])[0]
+                if not 1 <= limit <= 200 or offset < 0:
+                    raise ValueError("Paginacion invalida")
+                if status not in (None, "pending", "accepted_as_lead", "rejected"):
+                    raise ValueError("Estado invalido")
+            except ValueError:
+                return cls._error_bytes("Paginacion o estado invalido", 400)
+            if not _durable_repository(_report_repo):
+                return cls._error_bytes("Repositorio privado no disponible", 503)
+            try:
+                reports = _report_repo.list_page(limit=limit, offset=offset, status=status)
+            except Exception:
+                return cls._error_bytes("No se pudo consultar las denuncias", 503)
+            return cls._json_bytes([report.model_dump(mode="json") for report in reports])
 
         if path == "/api/reports/track":
             token = query.get("token", [None])[0] or query.get("id", [None])[0]
             if not token:
                 return cls._error_bytes("Parametro 'token' es obligatorio", 400)
             token_clean = token.strip()
-            reports = snapshot.get("citizen_reports", [])
+            reports = []
             token_hash = hashlib.sha256(token_clean.encode("utf-8")).hexdigest()
             matched = next(
                 (r for r in reports if r.get("tracking_token_hash") == token_hash),
@@ -700,68 +712,28 @@ class WebApiHandler(BaseHTTPRequestHandler):
 
     @classmethod
     def _dispatch_post_login(cls, data: dict[str, Any], req_headers: dict[str, str]) -> tuple[int, str, bytes]:
+        from cajamarca_qhaway.web.auth import AuthService, AuthUnavailable, InvalidCredentials
         if data.get("honeypot"):
             return cls._error_bytes("Solicitud rechazada", 400)
-
-        email = str(data.get("email", "")).strip().lower()
-        password = str(data.get("password", ""))
-        if not email or not password:
-            return cls._error_bytes("Debe ingresar el correo y la contrasena de acreditacion", 400)
-
-        now = time.time()
-        user_key = f"user:{email}"
-        record = _LOGIN_ATTEMPTS.get(user_key)
-        if record and record.get("locked_until", 0) > now:
-            remaining_sec = int(record["locked_until"] - now)
-            return cls._json_bytes(
-                {
-                    "error": f"Cuenta bloqueada temporalmente por seguridad. Reintente en {max(1, remaining_sec // 60)} minutos.",
-                    "retryAfter": remaining_sec,
-                    "status": 429,
-                },
-                status_code=429,
-            )
-
-        cand_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
-        matched = next((v for v in ACCREDITED_VEEDORES if v["email"] == email), None)
-        is_valid = bool(matched and hmac.compare_digest(matched["password_hash"], cand_hash))
-
-        if not is_valid or matched is None:
-            rec = _LOGIN_ATTEMPTS.setdefault(user_key, {"attempts": 0, "locked_until": 0.0})
-            rec["attempts"] += 1
-            if rec["attempts"] >= _MAX_ATTEMPTS:
-                rec["locked_until"] = now + _LOCKOUT_SECONDS
-            remaining = max(0, _MAX_ATTEMPTS - rec["attempts"])
-            return cls._json_bytes(
-                {
-                    "error": "Credenciales invalidas. Compruebe su correo u organizacion y el codigo de veeduria.",
-                    "remainingAttempts": remaining,
-                    "status": 401,
-                },
-                status_code=401,
-            )
-
-        _LOGIN_ATTEMPTS.pop(user_key, None)
-        token, expires_at = _issue_veedor_token(matched)
-        veedor_public = {
-            "email": matched["email"],
-            "name": matched["name"],
-            "organization": matched["organization"],
-            "accreditationNumber": matched["accreditationNumber"],
-            "role": matched["role"],
-        }
-        return cls._json_bytes({
-            "token": token,
-            "veedor": veedor_public,
-            "expiresAt": expires_at,
-            "message": "Acreditacion verificada. Sesion segura iniciada.",
-        })
+        try:
+            return cls._json_bytes(AuthService(_db_manager).login(data))
+        except AuthUnavailable:
+            return cls._error_bytes("Autenticacion no disponible", 503)
+        except InvalidCredentials:
+            return cls._error_bytes("Acreditacion invalida", 401)
 
     @classmethod
     def _dispatch_post_logout(cls, req_headers: dict[str, str]) -> tuple[int, str, bytes]:
-        auth_header = req_headers.get("authorization", "")
-        if auth_header.startswith("Bearer "):
-            _REVOKED_TOKENS.add(auth_header[7:].strip())
+        from cajamarca_qhaway.web.auth import AuthService, AuthUnavailable, InvalidCredentials
+        auth = req_headers.get("authorization", "")
+        if not auth.startswith("Bearer "):
+            return cls._error_bytes("Sesion requerida", 401)
+        try:
+            AuthService(_db_manager).logout(auth[7:].strip())
+        except AuthUnavailable:
+            return cls._error_bytes("No se pudo confirmar el cierre de sesion", 503)
+        except InvalidCredentials:
+            return cls._error_bytes("Sesion invalida", 401)
         return cls._json_bytes({"message": "Sesion finalizada correctamente"})
 
     @classmethod
@@ -786,7 +758,10 @@ class WebApiHandler(BaseHTTPRequestHandler):
         try:
             tracking_token = secrets.token_urlsafe(32)
             tracking_token_hash = hashlib.sha256(tracking_token.encode("utf-8")).hexdigest()
-            report = cls.denuncia_service.submit_report(
+            if not _durable_repository(_report_repo):
+                return cls._error_bytes("Persistencia duradera de denuncias no disponible", 503)
+            pending_service = DenunciaIntakeService()
+            report = pending_service.submit_report(
                 raw_text=raw_text,
                 legal_disclaimer_shown=True,
                 channel=channel,
@@ -806,8 +781,7 @@ class WebApiHandler(BaseHTTPRequestHandler):
                         f"No se pudo guardar la denuncia: {type(exc).__name__}", 503
                     )
 
-            snapshot = cls.get_snapshot()
-            snapshot.setdefault("citizen_reports", []).append(payload)
+            cls.denuncia_service._reports[report.report_id] = report
 
             public_payload = {
                 key: value for key, value in payload.items() if key != "tracking_token_hash"
@@ -857,66 +831,35 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 400,
             )
 
-        snapshot = cls.get_snapshot()
-        reports = snapshot.setdefault("citizen_reports", [])
-        matched = next((r for r in reports if r.get("report_id") == report_id), None)
-
-        now_utc = datetime.now(UTC)
-        now_iso = now_utc.isoformat()
-
-        # Si no esta en el servicio en memoria pero si en snapshot o DB, sincronizarlo
-        if not cls.denuncia_service.get_report(report_id):
-            if matched:
-                cls.denuncia_service._reports[report_id] = CitizenReport(
-                    report_id=matched["report_id"],
-                    submitted_at=datetime.fromisoformat(matched.get("submitted_at") or now_iso),
-                    channel=matched.get("channel", "web"),
-                    raw_text=matched.get("raw_text", "Texto de denuncia verificado"),
-                    related_entity_id=matched.get("related_entity_id"),
-                    moderation_status="pending",
-                    legal_disclaimer_shown=True,
-                )
-            elif _report_repo is not None:
-                db_r = _report_repo.get_by_id(report_id)
-                if db_r:
-                    cls.denuncia_service._reports[report_id] = db_r
-
+        if not _durable_repository(_report_repo):
+            return cls._error_bytes("Persistencia duradera no disponible", 503)
         try:
-            # Invocar maquina de estados de DenunciaIntakeService
-            updated = cls.denuncia_service.moderate_report(
-                report_id=report_id,
-                new_status=status,
-                moderator_id=moderator_id,
-                moderated_at=now_utc,
+            existing = _report_repo.get_by_id(report_id)
+        except Exception:
+            return cls._error_bytes("No se pudo consultar la denuncia", 503)
+        if existing is None:
+            return cls._error_bytes("Denuncia no encontrada", 404)
+        pending_service = DenunciaIntakeService()
+        pending_service._reports[report_id] = existing
+        try:
+            updated = pending_service.moderate_report(
+                report_id=report_id, new_status=status,
+                moderator_id=moderator_nominal, moderated_at=datetime.now(UTC),
             )
-            payload = updated.model_dump(mode="json")
-
-            # Actualizar en snapshot cache
-            if matched:
-                matched.update(payload)
-            else:
-                reports.append(payload)
-
-            # Persistir en base de datos operativa / Supabase (Pilar 2)
-            if _report_repo is not None:
-                try:
-                    _report_repo.save(updated)
-                except Exception as error:
-                    logger.exception("Fallo controlado del adaptador web (%s)", type(error).__name__, exc_info=False)
-
-            return cls._json_bytes({
-                "success": True,
-                "report_id": updated.report_id,
-                "moderation_status": updated.moderation_status,
-                "moderated_by": updated.moderated_by,
-                "moderated_at": payload["moderated_at"],
-                "report": payload,
-            }, status_code=200)
-
-        except Exception as exc:
-
-            logger.exception("Fallo controlado del adaptador web (%s)", type(exc).__name__, exc_info=False)
-            return cls._error_bytes(f"Error al moderar denuncia: {exc!s}", 400)
+        except (ValueError, KeyError) as exc:
+            return cls._error_bytes(str(exc), 400)
+        try:
+            _report_repo.save(updated)
+        except Exception:
+            return cls._error_bytes("No se pudo persistir la moderacion", 503)
+        cls.denuncia_service._reports[report_id] = updated
+        payload = updated.model_dump(mode="json")
+        return cls._json_bytes({
+            "success": True, "report_id": updated.report_id,
+            "moderation_status": updated.moderation_status,
+            "moderated_by": updated.moderated_by,
+            "moderated_at": payload["moderated_at"], "report": payload,
+        })
 
     @classmethod
     def _dispatch_post_review(
@@ -941,7 +884,11 @@ class WebApiHandler(BaseHTTPRequestHandler):
         veedor = session["veedor"]
         reviewed_by = f"{veedor['name']} ({veedor['organization']})"
 
-        if not entity_id or not red_flag_ids or not status or not reviewed_by:
+        if (not isinstance(red_flag_ids, list) or not red_flag_ids
+                or any(not isinstance(flag_id, str) or not flag_id.strip() for flag_id in red_flag_ids)):
+            return cls._error_bytes("red_flag_ids debe ser una lista de identificadores", 400)
+        red_flag_ids = list(dict.fromkeys(red_flag_ids))
+        if not entity_id or not status or not reviewed_by:
             return cls._error_bytes(
                 "Campos requeridos: entity_id, red_flag_ids, status, reviewed_by",
                 400,
@@ -959,6 +906,9 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 400,
             )
 
+        if not _durable_repository(_alert_repo):
+            return cls._error_bytes("Persistencia duradera de alertas no disponible", 503)
+        pending_review = ReviewPanelService()
         try:
             if status == "published":
                 if _red_flag_repo is None:
@@ -966,7 +916,7 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 complete_flags = [_red_flag_repo.get_by_id(flag_id) for flag_id in red_flag_ids]
                 if any(flag is None for flag in complete_flags):
                     return cls._error_bytes("No se puede publicar sin evidencia completa de cada RedFlag", 409)
-                alert = cls.review_service.publish_alert(
+                alert = pending_review.publish_alert(
                     entity_id=entity_id,
                     red_flags=[flag for flag in complete_flags if flag is not None],
                     reviewer_id=reviewed_by,
@@ -978,7 +928,7 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 complete_flags = [_red_flag_repo.get_by_id(flag_id) for flag_id in red_flag_ids]
                 if any(flag is None for flag in complete_flags):
                     return cls._error_bytes("No se puede registrar la decision sin evidencia completa", 409)
-                alert = cls.review_service.discard_alert(
+                alert = pending_review.discard_alert(
                     entity_id=entity_id,
                     red_flags=[flag for flag in complete_flags if flag is not None],
                     reviewer_id=reviewed_by,
@@ -990,18 +940,23 @@ class WebApiHandler(BaseHTTPRequestHandler):
                     400,
                 )
 
-            snapshot = cls.get_snapshot()
             payload = alert.model_dump(mode="json")
-            snapshot.setdefault("alerts", []).append(payload)
 
             # Persistencia en base de datos operativa (Pilar 2)
             if _alert_repo is not None:
                 try:
-                    _alert_repo.save(alert)
-                except Exception as exc:
-                    logger.exception("Fallo controlado del adaptador web (%s)", type(exc).__name__, exc_info=False)
-                    return cls._error_bytes(f"No se pudo persistir la alerta: {exc}", 503)
+                    alert = _alert_repo.save_decision(alert)
+                    payload = alert.model_dump(mode="json")
+                except ValueError:
+                    return cls._error_bytes("El candidato ya tiene una decision distinta", 409)
+                except Exception:
+                    return cls._error_bytes("No se pudo persistir la alerta", 503)
 
+            cls.review_service._decisions[alert.alert_id] = alert
+            snapshot = cls.get_snapshot()
+            alerts = snapshot.setdefault("alerts", [])
+            alerts[:] = [row for row in alerts if row.get("alert_id") != alert.alert_id]
+            alerts.append(payload)
             return cls._json_bytes({**payload, "alert": payload}, status_code=201)
         except Exception as exc:
             logger.exception("Fallo controlado del adaptador web (%s)", type(exc).__name__, exc_info=False)
@@ -1036,11 +991,7 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 file_path = html_candidate
 
         if not file_path.exists() or file_path.is_dir():
-            index_path = base_path / "index.html"
-            if index_path.exists():
-                file_path = index_path
-            else:
-                return cls._error_bytes("Recurso no encontrado", 404)
+            return cls._error_bytes("Recurso no encontrado", 404)
 
         ctype, _ = mimetypes.guess_type(str(file_path))
         if not ctype:
@@ -1073,6 +1024,11 @@ class WebApiHandler(BaseHTTPRequestHandler):
             self.send_header("Content-Length", str(content_length))
         for header, val in SECURITY_HEADERS.items():
             self.send_header(header, val)
+        parsed = urllib.parse.urlparse(self.path)
+        self.send_header("Cache-Control", _cache_control(
+            self.command, parsed.path, urllib.parse.parse_qs(parsed.query), self._extract_headers(), status_code,
+        ))
+        self.send_header("Vary", "Authorization")
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
@@ -1148,19 +1104,13 @@ def app(environ: dict[str, Any], start_response: Any) -> list[bytes]:
         phrase = "OK"
     status_line = f"{status_code} {phrase}"
 
-    cache_control = "no-store"
-    if method == "GET" and status_code == 200:
-        if raw_path in ("/api/red-flags", "/api/auth/session"):
-            cache_control = "no-store"
-        elif raw_path.startswith("/api/"):
-            cache_control = "public, max-age=0, s-maxage=60, stale-while-revalidate=300"
-        else:
-            cache_control = "public, max-age=0, s-maxage=3600"
+    cache_control = _cache_control(method, raw_path, query, req_headers, status_code)
 
     response_headers: list[tuple[str, str]] = [
         ("Content-Type", content_type),
         ("Content-Length", str(len(response_body))),
         ("Cache-Control", cache_control),
+        ("Vary", "Authorization"),
         ("Access-Control-Allow-Origin", "*"),
         ("Access-Control-Allow-Methods", "GET, POST, OPTIONS"),
         ("Access-Control-Allow-Headers", "Content-Type, Authorization"),

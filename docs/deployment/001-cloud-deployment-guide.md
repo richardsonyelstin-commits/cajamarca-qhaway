@@ -81,7 +81,7 @@ El escape Unicode evita caracteres prohibidos en el archivo y conserva el entorn
   (`postgresql://postgres:[PASSWORD]@db.oglltrpvvifqvwmxmkjq.supabase.co:5432/postgres`).
 - `SUPABASE_URL`: `https://oglltrpvvifqvwmxmkjq.supabase.co`
 - `SUPABASE_ANON_KEY`: Llave publica `anon` protegida por politicas RLS.
-- `CAJAMARCA_QHAWAY_AUTH_SECRET`: Secreto criptografico para tokens de veedores acreditados.
+- Autenticacion: Supabase Auth verifica el access token y `app_metadata.role=reviewer`; no hay clave de firma ni usuarios locales predeterminados. Aplicar `0012_auth_revocations.sql` antes de habilitar revisores.
 
 ## 4. Despliegue en Vercel (`vercel.json` + `api/index.py`)
 
@@ -136,3 +136,22 @@ Si informa `password_placeholder: true`, sustituir el marcador por la contrasena
 
 La credencial vigente ya autentica en PostgreSQL; el fallo actual del ciclo combinado es SEACE.
 Los resultados del corte estan en docs/audits/2026-10-14-prod-cutover-certification.md.
+
+## Preparacion de Preview para TK-307
+
+La rama `agent/codex/audit-remediation` contiene las correcciones verificadas.
+El driver `psycopg[binary]` forma parte de las dependencias de runtime en
+`pyproject.toml` y `requirements.txt`, sin depender de instalar el extra `db`.
+Se verifico la instalacion base con `uv sync --frozen --no-dev` en un entorno
+virtual separado y se importaron el driver y el handler canonico.
+
+GitHub registra dos integraciones Preview de Vercel; la guia identifica
+`cajamarca-qhaway` como proyecto principal. El push de la rama permite que la
+integracion publique el Preview sin modificar `main` ni aplicar migraciones.
+Las variables de Preview deben verificarse en Vercel antes de probar escrituras.
+
+La URL Supabase facilitada para staging coincide con el proyecto documentado de
+produccion. Esa coincidencia no demuestra aislamiento de datos. No se ejecutan
+siembras, denuncias sinteticas, revisiones ni migraciones remotas sin verificar
+una rama/base/esquema de staging aislado y su conexion. Las credenciales se
+configuran de forma segura en el proveedor; no se incluyen en Git ni en el chat.

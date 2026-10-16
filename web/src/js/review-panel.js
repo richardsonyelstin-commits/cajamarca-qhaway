@@ -12,6 +12,7 @@
 import { GENERIC_REVIEWERS, CANONICAL_INDICATORS } from './config.js';
 import { supabaseClient } from './supabase-client.js';
 import { store } from './state.js';
+import { closeReviewerSession } from './veedor-auth.js';
 import { escapeHtml, formatDateTime } from './explicabilidad.js';
 
 /**
@@ -29,131 +30,11 @@ export function isAuthenticatedReviewer() {
  * Renderiza la pantalla de inicio de sesion (ADR 0005 Google OAuth & Sesion Nominal)
  */
 export function renderLoginView() {
-  const oauthGoogleUrl = supabaseClient.initiateGoogleOAuth('/admin/revision');
-
-  return `
-    <div class="admin-login-view max-w-600 mx-auto py-4">
-      <div class="card border-0 shadow-sm bg-body-surface">
-        <div class="card-header bg-primary text-white py-3">
-          <span class="badge bg-light text-primary mb-1">Acceso Restringido (CU5)</span>
-          <h1 class="h5 mb-0">Panel Interno de Revision Humana</h1>
-        </div>
-        <div class="card-body p-4">
-          <p class="text-secondary small mb-4">
-            Conforme al Articulo 14 de la Constitucion SDD, ninguna bandera algoritmica se publica al ciudadano sin la intervencion y firma de un revisor humano nominalmente identificado.
-          </p>
-
-          <!-- Opcion 1: Autenticacion Oficial OAuth 2.0 con Google (ADR 0005) -->
-          <div class="mb-4">
-            <h2 class="h6 fw-bold text-dark mb-2">Opcion 1: Google OAuth Supabase (ADR 0005)</h2>
-            <a href="${escapeHtml(oauthGoogleUrl)}" class="btn btn-outline-danger w-100 py-2 d-flex align-items-center justify-content-center gap-2">
-              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-                <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/>
-                <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/>
-                <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3s.2-1.6.4-2.3L1.9 7.3C.7 9.7 0 12.3 0 15s.7 5.3 1.9 7.7l3.7-2.9z"/>
-                <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16c1.8 3.7 5.6 7 10.1 7z"/>
-              </svg>
-              <span>Ingresar con Google Workspace Institucional</span>
-            </a>
-            <div class="form-text small mt-1">Conecta con el servidor de Supabase Auth en produccion.</div>
-          </div>
-
-          <div class="position-relative my-4 text-center">
-            <hr>
-            <span class="position-absolute top-50 start-50 translate-middle bg-body px-3 small text-muted">
-              o acreditacion de organizacion aliada
-            </span>
-          </div>
-
-          <!-- Opcion 2: Identificacion Nominal de Revisor Acreditado -->
-          <form id="form-nominal-login" novalidate>
-            <h2 class="h6 fw-bold text-dark mb-2">Opcion 2: Identidad Humana Acreditada</h2>
-
-            <div class="mb-3">
-              <label for="login-reviewer-name" class="form-label small fw-semibold">Nombre y Apellidos del Revisor</label>
-              <input type="text" class="form-control" id="login-reviewer-name" placeholder="Ejemplo: Maria Quispe Flores" required>
-            </div>
-
-            <div class="mb-3">
-              <label for="login-reviewer-email" class="form-label small fw-semibold">Correo Institucional Nominal</label>
-              <input type="email" class="form-control" id="login-reviewer-email" placeholder="maria.quispe@proetica.org.pe" required>
-              <div class="form-text small text-danger" id="login-email-error" style="display:none;"></div>
-            </div>
-
-            <div class="mb-3">
-              <label for="login-reviewer-org" class="form-label small fw-semibold">Organizacion o Medio de Prensa</label>
-              <select class="form-select" id="login-reviewer-org">
-                <option value="Proetica Cajamarca">Proetica (Capitulo Transparencia Cajamarca)</option>
-                <option value="Propuesta Ciudadana">Grupo Propuesta Ciudadana</option>
-                <option value="GRUFIDES">GRUFIDES (Vigilancia Ambiental y Obras)</option>
-                <option value="Red de Comunicacion Regional">RCR / Radio Rural Acreditada</option>
-                <option value="Periodista de Investigacion Independiente">Periodista de Investigacion Independiente</option>
-              </select>
-            </div>
-
-            <div class="alert alert-warning py-2 px-3 small mb-3">
-              <strong>Regla Antislop / ADR 0005:</strong> Quedan bloqueados los nombres genericos (ej: <code>admin</code>, <code>system</code>, <code>root</code> o <code>bot</code>).
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold" id="btn-login-submit">
-              Acceder al Panel de Revision Humana
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
-  `;
+  return '<p>El acceso requiere una identidad acreditada.</p><a href="/login">Ingresar con Google</a>';
 }
 
-/**
- * Eventos de la vista de login
- */
 export function setupLoginEvents() {
-  const form = document.getElementById('form-nominal-login');
-  if (!form) return;
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const nameInput = document.getElementById('login-reviewer-name');
-    const emailInput = document.getElementById('login-reviewer-email');
-    const orgSelect = document.getElementById('login-reviewer-org');
-    const emailError = document.getElementById('login-email-error');
-
-    const name = nameInput?.value?.trim() || '';
-    const email = emailInput?.value?.trim() || '';
-    const org = orgSelect?.value || 'Observatorio Civico';
-
-    if (!name || name.length < 3) {
-      alert('Debe ingresar un nombre y apellido validos.');
-      return;
-    }
-
-    if (!email || !email.includes('@')) {
-      alert('Debe ingresar un correo electronico valido.');
-      return;
-    }
-
-    const normEmail = email.toLowerCase();
-    const isGeneric = GENERIC_REVIEWERS.some(g => normEmail === g || normEmail.startsWith(g + '@'));
-
-    if (isGeneric) {
-      if (emailError) {
-        emailError.textContent = `Identidad generica denegada ("${email}"). Debe usar una identidad humana nominal.`;
-        emailError.style.display = 'block';
-      }
-      return;
-    }
-
-    // Registrar sesion
-    store.setReviewerSession({
-      name,
-      email,
-      organization: org,
-      authenticated_at: new Date().toISOString()
-    });
-
-    window.location.assign('/admin/revision');
-  });
+  // La autenticacion se realiza exclusivamente en /login mediante Supabase Auth.
 }
 
 /**
@@ -489,9 +370,13 @@ export function renderAdminAuditoriaView() {
 export function setupAdminEvents() {
   const btnLogout = document.getElementById('btn-logout-reviewer');
   if (btnLogout) {
-    btnLogout.addEventListener('click', () => {
-      store.clearReviewerSession();
-      window.location.assign('/login');
+    btnLogout.addEventListener('click', async () => {
+      try {
+        const token = sessionStorage.getItem('cajamarca_veedor_token') || '';
+        await closeReviewerSession(token);
+        store.clearReviewerSession();
+        window.location.assign('/login');
+      } catch (error) { window.showToast(error.message, 'error'); }
     });
   }
 
