@@ -22,8 +22,12 @@ ajustar la columna "Cargar cuando".
 
 | Documento | Responde a | Cargar cuando | Tokens |
 |---|---|---|---|
+| `architecture/007-audit-remediation-security-consistency.md` | Identidad acreditada, revocacion compartida, privacidad HTTP y guardado atomico | Corregir F01-F08 o configurar acceso de revisores | ~2200 |
+| `adr/0014-identidad-acreditada-y-consistencia-privada.md` | Propuesta de identidad Supabase y decisiones privadas consistentes | Evaluar o desplegar la remediacion de TK-307 | ~800 |
 | `architecture/006-budget-and-procurement-evidence.md` | Modelo presupuestal y evidencia oficial dual | Cambiar ingesta, persistencia o fuentes | ~900 |
 | `adr/0013-presupuesto-institucional-conectores-duales-e-identidad.md` | Decision propuesta de presupuesto, conectores e identidad | Revisar el contrato ampliado | ~700 |
+| `audits/2026-10-15-remediation-validation.md` | Correcciones verificadas localmente y pendientes de staging | Revisar cierre de TK-307 y preparar despliegue de prueba | ~1400 |
+| `audits/2026-10-15-e2e-security-baseline.md` | Ocho fallos reproducidos antes de la correccion de seguridad | Revisar ticket y regresiones de autenticacion, privacidad y persistencia | ~2600 |
 | `audits/2026-10-15-mef-control-table.md` | Cifras oficiales de 14 entidades y tres ejercicios | Reconciliar los importes presupuestales | ~2200 |
 | `../web/DESIGN.md` | Tokens oficiales, composicion y criterio visual | Modificar la interfaz Qhaway | ~700 |
 | `architecture/overview.md` | ¿Cómo está construido? | Cambio estructural, módulo nuevo | ~1800 |

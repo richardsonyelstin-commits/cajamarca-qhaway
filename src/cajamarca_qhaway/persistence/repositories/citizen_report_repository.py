@@ -41,6 +41,22 @@ class CitizenReportRepository:
             rows = cursor.fetchall()
             return [self._row_to_model(r) for r in rows]
 
+    def list_page(self, *, limit: int = 100, offset: int = 0,
+                  status: ModerationStatus | None = None) -> list[CitizenReport]:
+        if not 1 <= limit <= 200 or offset < 0:
+            raise ValueError("Paginacion invalida")
+        sql = "SELECT * FROM citizen_reports"
+        params: list[Any] = []
+        if status is not None:
+            sql += " WHERE moderation_status = ?"
+            params.append(status)
+        sql += " ORDER BY submitted_at DESC, report_id ASC LIMIT ? OFFSET ?"
+        params.extend((limit, offset))
+        with self.db.connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(sql, tuple(params))
+            return [self._row_to_model(row) for row in cursor.fetchall()]
+
     def save(self, report: CitizenReport) -> None:
         if not report.legal_disclaimer_shown:
             raise ValueError("Violacion de contrato CA-006-01: legal_disclaimer_shown debe ser True.")

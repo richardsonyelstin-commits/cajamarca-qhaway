@@ -306,6 +306,7 @@
   <script type="module">
     import { dataEngine } from '/src/js/data-engine.js';
     import { supabaseClient } from '/src/js/supabase-client.js';
+    import { verifyReviewerSession, closeReviewerSession } from '/src/js/veedor-auth.js';
 
     let candidates = [];
     let selectedCandidate = null;
@@ -318,7 +319,6 @@
     document.addEventListener('DOMContentLoaded', async () => {
       // 1. Barrera de Seguridad Obligatoria
       activeToken = sessionStorage.getItem('cajamarca_veedor_token');
-      const cachedProfile = sessionStorage.getItem('cajamarca_veedor_profile');
 
       if (!activeToken) {
         document.getElementById('auth-gate-status').textContent = 'Acceso bloqueado: No se encontró token de veedor.';
@@ -330,36 +330,8 @@
 
       // Validar token en el servidor
       try {
-        const authRes = await fetch('/api/auth/session', {
-          headers: { 'Authorization': `Bearer ${activeToken}` }
-        });
-
-        if (authRes.ok) {
-          const authData = await authRes.json();
-          activeVeedor = authData.veedor;
-          sessionStorage.setItem('cajamarca_veedor_profile', JSON.stringify(activeVeedor));
-        } else if (cachedProfile) {
-          try {
-            activeVeedor = JSON.parse(cachedProfile);
-            console.warn('Operando con credencial en caché de veedor acreditado');
-          } catch {
-            sessionStorage.removeItem('cajamarca_veedor_token');
-            sessionStorage.removeItem('cajamarca_veedor_profile');
-            document.getElementById('auth-gate-status').textContent = 'Sesión caducada. Redirigiendo a acreditación...';
-            setTimeout(() => {
-              window.location.href = '/login?reason=expired';
-            }, 1200);
-            return;
-          }
-        } else {
-          sessionStorage.removeItem('cajamarca_veedor_token');
-          sessionStorage.removeItem('cajamarca_veedor_profile');
-          document.getElementById('auth-gate-status').textContent = 'Sesión caducada o inválida. Redirigiendo a acreditación...';
-          setTimeout(() => {
-            window.location.href = '/login?reason=expired';
-          }, 1200);
-          return;
-        }
+        activeVeedor = await verifyReviewerSession(activeToken);
+        sessionStorage.setItem('cajamarca_veedor_profile', JSON.stringify(activeVeedor));
 
         // Ocultar barrera y mostrar panel
         const authGateModal = document.getElementById('auth-gate-modal');
@@ -412,11 +384,11 @@
       // 2. Cerrar Sesión
       document.getElementById('btn-logout-veedor').addEventListener('click', async () => {
         try {
-          await fetch('/api/auth/logout', {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${activeToken}` }
-          });
-        } catch {}
+          await closeReviewerSession(activeToken);
+        } catch (error) {
+          window.showToast(error.message || 'No se pudo confirmar el cierre de sesion.', 'error');
+          return;
+        }
         sessionStorage.removeItem('cajamarca_veedor_token');
         sessionStorage.removeItem('cajamarca_veedor_profile');
         window.showToast('Sesión segura finalizada', 'info');
@@ -558,6 +530,7 @@
       const entities = await dataEngine.getEntities();
       const procurements = await dataEngine.getProcurements();
       let redFlags = [];
+      reviewQueueAvailable = false;
       try {
         const queueResponse = await fetch('/api/review/queue', {
           headers: { 'Authorization': `Bearer ${activeToken}`, 'Accept': 'application/json' }
@@ -631,13 +604,36 @@
       document.getElementById('tab-flags-badge').textContent = candidates.length;
 
       // Cargar y renderizar denuncias ciudadanas
-      reportsList = snapshot.citizen_reports || [];
+      reportsList = [];
+      let reportsAvailable = true;
+      try {
+        for (let offset = 0; ; offset += 100) {
+          const response = await fetch(`/api/reports?limit=100&offset=${offset}`, {
+            headers: { 'Authorization': `Bearer ${activeToken}`, Accept: 'application/json' },
+            cache: 'no-store'
+          });
+          if (!response.ok) throw new Error('No se pudo consultar las denuncias.');
+          const page = await response.json();
+          if (!Array.isArray(page)) throw new Error('Respuesta privada invalida.');
+          reportsList.push(...page);
+          if (page.length < 100) break;
+        }
+      } catch (error) {
+        reportsAvailable = false;
+        reportsList = [];
+        selectedReport = null;
+        window.showToast(error.message, 'error');
+      }
       const pendingReports = reportsList.filter(r => (r.moderation_status || 'pending') === 'pending');
       document.getElementById('tab-reports-badge').textContent = pendingReports.length;
       document.getElementById('reports-count-label').textContent = `${reportsList.length} reportes (${pendingReports.length} pendientes)`;
 
       renderCandidatesList();
       renderReportsList();
+      if (!reportsAvailable) {
+        document.getElementById('reports-count-label').textContent = 'Bandeja privada no disponible';
+        document.getElementById('reports-list').textContent = 'No se pudo consultar las denuncias. Reintente cuando se restablezca la conexion segura.';
+      }
 
       if (candidates.length > 0) {
         selectCandidate(candidates[0]);

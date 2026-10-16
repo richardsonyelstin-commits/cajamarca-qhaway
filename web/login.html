@@ -56,7 +56,7 @@
   </nav>
 </header>
 
-  <!-- Contenido Principal: Login Seguro y Blindado Contra Hackeos -->
+  <!-- Acceso al panel con identidad verificada -->
   <main id="main-content" class="w-full flex-1 bg-surface flex items-center justify-center py-12 px-4 sm:px-6 qh-main">
     <div class="max-w-xl w-full mx-auto space-y-6">
       
@@ -65,17 +65,7 @@
         <span class="material-symbols-outlined text-alert-amber text-[22px] shrink-0 mt-0.5">lock</span>
         <div class="text-xs leading-relaxed">
           <strong class="font-semibold text-alert-amber block mb-0.5">Acceso Restringido al Panel Revisor (Invariante 01)</strong>
-          El panel de evaluación técnica de banderas rojas requiere autenticación fehaciente con credencial acreditada de veedor. Ingrese con sus datos asignados para continuar.
-        </div>
-      </div>
-
-      <!-- Alerta de Bloqueo por Ataques de Fuerza Bruta (Rate Limit 429) -->
-      <div id="lockout-banner" class="hidden p-4 rounded bg-alert-rose/10 border border-alert-rose text-alert-rose flex items-start gap-3">
-        <span class="material-symbols-outlined text-[22px] shrink-0 mt-0.5">gpp_bad</span>
-        <div class="text-xs leading-relaxed flex-1">
-          <strong class="font-bold block mb-1">Bloqueo de Seguridad Anti-Hackeo Activado</strong>
-          <p id="lockout-message">Demasiados intentos de acceso fallidos detectados. El sistema ha bloqueado temporalmente las solicitudes para proteger la integridad del observatorio.</p>
-          <div class="mt-2 font-mono font-bold text-sm" id="lockout-countdown">Reintento habilitado en: 15:00</div>
+          El panel de evaluación técnica de banderas rojas requiere autenticación fehaciente con credencial acreditada de veedor. Ingrese con Google para verificar su acreditacion.
         </div>
       </div>
 
@@ -87,83 +77,15 @@
           </div>
           <h1 class="font-headline-sm text-2xl font-semibold text-on-surface">Acreditación de Veedores</h1>
           <p class="text-body-sm text-on-surface-variant mt-1.5 leading-relaxed">
-            Módulo de autenticación con tokens criptográficos de 256 bits, protección contra fuerza bruta y mitigación de timing-attacks (CA-005).
+            Acceso seguro para el panel de revision ciudadana.
           </p>
         </div>
 
         <form id="login-form" class="space-y-4">
-          <!-- Campo Honeypot Oculto para bots -->
-          <input type="text" name="honeypot" id="login-honeypot" class="hidden" tabindex="-1" autocomplete="off" aria-label="Campo de seguridad, dejar vacío"/>
-
-          <div>
-            <label for="login-email" class="block font-label-sm text-xs font-semibold text-on-surface mb-1.5">
-              Correo Institucional o Entidad Acreditada *
-            </label>
-            <input id="login-email" required type="email" autocomplete="username" class="w-full bg-surface border border-slate-border px-3.5 py-2.5 rounded text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-secondary transition-colors" placeholder="veeduria-cajamarca@proetica.org.pe" value="veeduria-cajamarca@proetica.org.pe"/>
-          </div>
-
-          <div>
-            <div class="flex items-center justify-between mb-1.5">
-              <label for="login-pass" class="block font-label-sm text-xs font-semibold text-on-surface">
-                Código de Acreditación / Credencial Cifrada *
-              </label>
-              <span class="text-[11px] text-outline font-mono">SHA-256 Validated</span>
-            </div>
-            <div class="relative">
-              <input id="login-pass" required type="password" autocomplete="current-password" class="w-full bg-surface border border-slate-border px-3.5 py-2.5 pr-10 rounded text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-secondary transition-colors" placeholder="••••••••••••" value="demo-veedor-2025"/>
-              <button type="button" id="toggle-password-btn" class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface cursor-pointer" title="Mostrar/Ocultar contraseña">
-                <span class="material-symbols-outlined text-[18px]">visibility</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Contador de Intentos Restantes -->
-          <div id="attempts-feedback" class="hidden text-xs text-alert-rose font-medium flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-[16px]">warning</span>
-            <span id="attempts-text">Credenciales incorrectas.</span>
-          </div>
-
-          <button id="login-submit-btn" type="submit" class="w-full py-3 bg-primary text-on-primary rounded font-semibold text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2 cursor-pointer shadow-sm mt-3">
-            <span class="material-symbols-outlined text-[18px]">lock_open</span>
-            <span>Verificar Acreditación e Ingresar</span>
-          </button>
+          <p class="text-body-sm text-on-surface-variant">Ingrese con Google. El acceso al panel requiere acreditacion de revisor aprobada.</p>
+          <button id="login-submit-btn" type="submit" class="w-full py-3 bg-primary text-on-primary rounded font-semibold text-sm cursor-pointer">Ingresar con Google</button>
+          <p id="login-error" role="alert" class="text-body-sm text-alert-rose" hidden></p>
         </form>
-
-        <!-- Selector Rápido de Credenciales Acreditadas de Prueba -->
-        <div class="mt-6 pt-6 border-t border-slate-border">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-semibold text-on-surface uppercase tracking-wider">Acreditaciones de Sociedad Civil Registradas</span>
-            <span class="text-[10px] text-civic-emerald font-bold px-1.5 py-0.5 rounded bg-civic-emerald/10">3 Veedurías</span>
-          </div>
-          <p class="text-caption text-on-surface-variant mb-3 leading-relaxed">
-            Haga clic en cualquiera de las organizaciones autorizadas para autocompletar las credenciales en este entorno de evaluación:
-          </p>
-          <div class="grid grid-cols-1 gap-2">
-            <button type="button" class="credential-preset p-2.5 rounded border border-slate-border hover:border-secondary bg-surface text-left flex items-center justify-between text-xs cursor-pointer transition-colors" data-email="veeduria-cajamarca@proetica.org.pe" data-pass="demo-veedor-2025" data-role="Lic. Carlos Arana Silva • Proética (Capítulo TI)">
-              <div>
-                <strong class="text-on-surface block font-semibold">Proética Cajamarca (Veeduría Titular)</strong>
-                <span class="text-on-surface-variant text-[11px]">veeduria-cajamarca@proetica.org.pe • Lic. Carlos Arana</span>
-              </div>
-              <span class="text-[10px] font-mono text-secondary font-bold">Cargar →</span>
-            </button>
-
-            <button type="button" class="credential-preset p-2.5 rounded border border-slate-border hover:border-secondary bg-surface text-left flex items-center justify-between text-xs cursor-pointer transition-colors" data-email="veeduria.propuesta@cajamarca-qhaway.pe" data-pass="Propuesta#Civica2025!" data-role="Ing. Marco Tacilla • Grupo Propuesta Ciudadana">
-              <div>
-                <strong class="text-on-surface block font-semibold">Grupo Propuesta Ciudadana (Veedor Revisor)</strong>
-                <span class="text-on-surface-variant text-[11px]">veeduria.propuesta@cajamarca-qhaway.pe • Ing. Marco Tacilla</span>
-              </div>
-              <span class="text-[10px] font-mono text-secondary font-bold">Cargar →</span>
-            </button>
-
-            <button type="button" class="credential-preset p-2.5 rounded border border-slate-border hover:border-secondary bg-surface text-left flex items-center justify-between text-xs cursor-pointer transition-colors" data-email="veeduria.grufides@cajamarca-qhaway.pe" data-pass="Grufides#Veedor2025!" data-role="Abg. Mirtha Villanueva • GRUFIDES Cajamarca">
-              <div>
-                <strong class="text-on-surface block font-semibold">GRUFIDES Cajamarca (Veeduría Socioambiental)</strong>
-                <span class="text-on-surface-variant text-[11px]">veeduria.grufides@cajamarca-qhaway.pe • Abg. Mirtha Villanueva</span>
-              </div>
-              <span class="text-[10px] font-mono text-secondary font-bold">Cargar →</span>
-            </button>
-          </div>
-        </div>
 
         <div class="mt-6 pt-4 border-t border-slate-border text-caption text-on-surface-variant leading-relaxed">
           <strong class="font-semibold text-on-surface block mb-1">Mecanismo de Acreditación Oficial</strong>
@@ -183,159 +105,41 @@
 
   <script type="module" src="/src/js/app.js"></script>
   <script type="module">
-    import { updateVeedorHeaderStatus } from '/src/js/app.js';
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('reason') === 'required' || urlParams.get('unauthorized') === 'true') {
-        document.getElementById('unauthorized-banner').classList.remove('hidden');
-      }
-
-      // Ver contraseña toggle
-      const passInput = document.getElementById('login-pass');
-      const togglePassBtn = document.getElementById('toggle-password-btn');
-      if (togglePassBtn) {
-        togglePassBtn.addEventListener('click', () => {
-          const isPass = passInput.type === 'password';
-          passInput.type = isPass ? 'text' : 'password';
-          togglePassBtn.querySelector('.material-symbols-outlined').textContent = isPass ? 'visibility_off' : 'visibility';
+    import { SUPABASE_URL } from '/src/js/config.js';
+    const form = document.getElementById('login-form');
+    const button = document.getElementById('login-submit-btn');
+    const error = document.getElementById('login-error');
+    function showError(message) { error.textContent = message; error.hidden = false; }
+    const hash = new URLSearchParams(window.location.hash.slice(1));
+    const accessToken = hash.get('access_token');
+    if (window.location.hash) history.replaceState(null, '', window.location.pathname + window.location.search);
+    if (accessToken) {
+      button.disabled = true;
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ access_token: accessToken })
         });
+        const data = await response.json();
+        if (!response.ok || !data.token || !data.veedor) throw new Error(data.error || 'Acreditacion no valida.');
+        sessionStorage.setItem('cajamarca_veedor_token', data.token);
+        sessionStorage.setItem('cajamarca_veedor_profile', JSON.stringify(data.veedor));
+        window.location.replace('/admin/revision');
+      } catch (failure) {
+        sessionStorage.removeItem('cajamarca_veedor_token');
+        sessionStorage.removeItem('cajamarca_veedor_profile');
+        showError(failure.message || 'No se pudo verificar la acreditacion.');
+        button.disabled = false;
       }
-
-      // Clic en preset de credenciales
-      document.querySelectorAll('.credential-preset').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.getElementById('login-email').value = btn.dataset.email;
-          document.getElementById('login-pass').value = btn.dataset.pass;
-          window.showToast(`Credenciales cargadas para ${btn.dataset.role}`, 'info');
-        });
-      });
-
-      // Envío seguro de formulario de login
-      const form = document.getElementById('login-form');
-      const submitBtn = document.getElementById('login-submit-btn');
-      const attemptsFeedback = document.getElementById('attempts-feedback');
-      const attemptsText = document.getElementById('attempts-text');
-      const lockoutBanner = document.getElementById('lockout-banner');
-      const lockoutMessage = document.getElementById('lockout-message');
-      const lockoutCountdown = document.getElementById('lockout-countdown');
-
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const email = document.getElementById('login-email').value.trim();
-        const password = document.getElementById('login-pass').value;
-        const honeypot = document.getElementById('login-honeypot').value;
-
-        if (honeypot) {
-          window.showToast('Solicitud rechazada', 'error');
-          return;
-        }
-
-        submitBtn.disabled = true;
-        submitBtn.classList.add('opacity-75');
-        attemptsFeedback.classList.add('hidden');
-
-        const checkContingency = (em, pw) => {
-          const PRESETS = [
-            { email: 'veeduria-cajamarca@proetica.org.pe', pass: 'demo-veedor-2025', name: 'Lic. Carlos Arana Silva', organization: 'Proética (Capítulo TI)', accreditationNumber: 'VEED-PROETICA-2025-014', role: 'veedor_titular' },
-            { email: 'veeduria.proetica@cajamarca-qhaway.pe', pass: 'Proetica#Cajamarca2025!', name: 'Dra. Elena Santillán Mori', organization: 'Proética Cajamarca', accreditationNumber: 'VEED-PROETICA-2025-008', role: 'veedor_titular' },
-            { email: 'veeduria.propuesta@cajamarca-qhaway.pe', pass: 'Propuesta#Civica2025!', name: 'Ing. Marco Tacilla Vásquez', organization: 'Grupo Propuesta Ciudadana', accreditationNumber: 'VEED-PROPUESTA-2025-021', role: 'veedor_revisor' },
-            { email: 'veeduria.grufides@cajamarca-qhaway.pe', pass: 'Grufides#Veedor2025!', name: 'Abg. Mirtha Villanueva Quispe', organization: 'GRUFIDES Cajamarca', accreditationNumber: 'VEED-GRUFIDES-2025-003', role: 'veedor_titular' }
-          ];
-          return PRESETS.find(p => p.email.toLowerCase() === em.toLowerCase() && p.pass === pw);
-        };
-
-        try {
-          const res = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password, honeypot })
-          });
-
-          if (res.ok) {
-            const data = await res.json();
-            // Éxito: Guardar token de sesión en sessionStorage
-            sessionStorage.setItem('cajamarca_veedor_token', data.token);
-            sessionStorage.setItem('cajamarca_veedor_profile', JSON.stringify(data.veedor));
-            
-            updateVeedorHeaderStatus();
-            window.showToast(`Bienvenido ${data.veedor.name}. Sesión segura establecida.`, 'success');
-
-            setTimeout(() => {
-              window.location.href = '/admin/revision';
-            }, 500);
-            return;
-          }
-
-          if (res.status >= 500 || res.status === 404) {
-            const match = checkContingency(email, password);
-            if (match) {
-              const fallbackToken = 'cq-veedor-tok-' + btoa(unescape(encodeURIComponent(JSON.stringify({ ...match, expiresAt: Date.now() + 86400000 }))));
-              sessionStorage.setItem('cajamarca_veedor_token', fallbackToken);
-              sessionStorage.setItem('cajamarca_veedor_profile', JSON.stringify(match));
-              updateVeedorHeaderStatus();
-              window.showToast(`Bienvenido ${match.name}. Sesión segura establecida.`, 'success');
-              setTimeout(() => {
-                window.location.href = '/admin/revision';
-              }, 500);
-              return;
-            }
-          }
-
-          if (res.status === 429) {
-            const data = await res.json();
-            // Bloqueo por fuerza bruta (Rate limiting)
-            lockoutBanner.classList.remove('hidden');
-            lockoutMessage.textContent = data.error || 'Acceso bloqueado por múltiples intentos.';
-            startLockoutTimer(data.retryAfter || 900);
-            window.showToast('Acceso temporalmente bloqueado por seguridad anti-hackeo', 'error');
-          } else {
-            // Error de credenciales (401)
-            const data = await res.json().catch(() => ({ error: 'Credenciales inválidas' }));
-            attemptsFeedback.classList.remove('hidden');
-            const remaining = typeof data.remainingAttempts === 'number' ? data.remainingAttempts : '';
-            attemptsText.textContent = remaining > 0 
-              ? `${data.error} (Quedan ${remaining} intentos antes del bloqueo por seguridad)`
-              : data.error;
-            window.showToast(data.error || 'Credenciales inválidas', 'error');
-          }
-        } catch (err) {
-          console.error(err);
-          const match = checkContingency(email, password);
-          if (match) {
-            const fallbackToken = 'cq-veedor-tok-' + btoa(unescape(encodeURIComponent(JSON.stringify({ ...match, expiresAt: Date.now() + 86400000 }))));
-            sessionStorage.setItem('cajamarca_veedor_token', fallbackToken);
-            sessionStorage.setItem('cajamarca_veedor_profile', JSON.stringify(match));
-            updateVeedorHeaderStatus();
-            window.showToast(`Bienvenido ${match.name}. Sesión segura establecida (Contingencia).`, 'success');
-            setTimeout(() => {
-              window.location.href = '/admin/revision';
-            }, 500);
-            return;
-          }
-          window.showToast('Error de comunicación con el servidor de autenticación', 'error');
-        } finally {
-          submitBtn.disabled = false;
-          submitBtn.classList.remove('opacity-75');
-        }
-      });
-
-      function startLockoutTimer(seconds) {
-        submitBtn.disabled = true;
-        let left = seconds;
-        const interval = setInterval(() => {
-          left -= 1;
-          const mins = Math.floor(left / 60);
-          const secs = left % 60;
-          lockoutCountdown.textContent = `Reintento habilitado en: ${mins}:${secs < 10 ? '0' : ''}${secs}`;
-          if (left <= 0) {
-            clearInterval(interval);
-            lockoutBanner.classList.add('hidden');
-            submitBtn.disabled = false;
-          }
-        }, 1000);
-      }
+    }
+    if (hash.get('error')) showError('El proveedor no pudo completar el acceso.');
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      if (!SUPABASE_URL) { showError('El acceso no esta disponible.'); return; }
+      const target = new URL('/auth/v1/authorize', SUPABASE_URL);
+      target.searchParams.set('provider', 'google');
+      target.searchParams.set('redirect_to', window.location.origin + '/login');
+      window.location.assign(target.href);
     });
   </script>
 <script type="module" src="/src/js/brand-shell.js"></script></body>

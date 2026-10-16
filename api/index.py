@@ -6,14 +6,9 @@ evitando cualquier colision con `BaseHTTPRequestHandler` o fallos de importacion
 Cumple con Antislop R-02 (cero em-dash).
 """
 
-import base64
-import hashlib
-import hmac
 import json
 import mimetypes
-import os
 import posixpath
-import secrets
 import sys
 import time
 import traceback
@@ -84,96 +79,12 @@ def _load_sunat_stdlib():
             return _STDLIB_SUNAT_CACHE
         except Exception:
             pass
-_ACCREDITED_VEEDORES_STDLIB = [
-    {
-        "email": "veeduria-cajamarca@proetica.org.pe",
-        "password_hash": hashlib.sha256(b"demo-veedor-2025").hexdigest(),
-        "name": "Lic. Carlos Arana Silva",
-        "organization": "Proetica (Capitulo Peruano de Transparency International)",
-        "accreditationNumber": "VEED-PROETICA-2025-014",
-        "role": "veedor_titular",
-    },
-    {
-        "email": "veeduria.proetica@cajamarca-qhaway.pe",
-        "password_hash": hashlib.sha256(b"Proetica#Cajamarca2025!").hexdigest(),
-        "name": "Dra. Elena Santillan Mori",
-        "organization": "Proetica Cajamarca",
-        "accreditationNumber": "VEED-PROETICA-2025-008",
-        "role": "veedor_titular",
-    },
-    {
-        "email": "veeduria.propuesta@cajamarca-qhaway.pe",
-        "password_hash": hashlib.sha256(b"Propuesta#Civica2025!").hexdigest(),
-        "name": "Ing. Marco Tacilla Vasquez",
-        "organization": "Grupo Propuesta Ciudadana",
-        "accreditationNumber": "VEED-PROPUESTA-2025-021",
-        "role": "veedor_revisor",
-    },
-    {
-        "email": "veeduria.grufides@cajamarca-qhaway.pe",
-        "password_hash": hashlib.sha256(b"Grufides#Veedor2025!").hexdigest(),
-        "name": "Abg. Mirtha Villanueva Quispe",
-        "organization": "GRUFIDES Cajamarca",
-        "accreditationNumber": "VEED-GRUFIDES-2025-003",
-        "role": "veedor_titular",
-    },
-    {
-        "email": "veedor.regional@cajamarca-qhaway.pe",
-        "password_hash": hashlib.sha256(b"Veedor#Qhaway2025!").hexdigest(),
-        "name": "Prof. Jorge Terrones Bazan",
-        "organization": "Mesa de Concertacion y Veeduria Ciudadana Cajamarca",
-        "accreditationNumber": "VEED-MESA-2025-007",
-        "role": "veedor_colegiado",
-    },
-]
-
-_TOKEN_SECRET_STDLIB = os.environ.get(
-    "CAJAMARCA_QHAWAY_AUTH_SECRET",
-    "cajamarca-qhaway-civic-veedor-hmac-key-2026",
-).encode("utf-8")
-_REVOKED_TOKENS_STDLIB = set()
-_LOGIN_ATTEMPTS_STDLIB = {}
-_MAX_ATTEMPTS_STDLIB = 5
-_LOCKOUT_SECONDS_STDLIB = 15 * 60
-
-
-def _issue_veedor_token_stdlib(veedor, ttl_seconds=8 * 3600):
-    now_ms = int(time.time() * 1000)
-    expires_at = now_ms + (ttl_seconds * 1000)
-    payload = {
-        "veedor": {
-            "email": veedor["email"],
-            "name": veedor["name"],
-            "organization": veedor["organization"],
-            "accreditationNumber": veedor["accreditationNumber"],
-            "role": veedor["role"],
-        },
-        "createdAt": now_ms,
-        "expiresAt": expires_at,
-        "nonce": secrets.token_hex(8),
-    }
-    raw_bytes = json.dumps(payload, separators=(",", ":")).encode("utf-8")
-    b64_payload = base64.urlsafe_b64encode(raw_bytes).decode("ascii").rstrip("=")
-    sig = hmac.new(_TOKEN_SECRET_STDLIB, b64_payload.encode("ascii"), hashlib.sha256).hexdigest()
-    return f"{b64_payload}.{sig}", expires_at
+    return {}
 
 
 def _verify_veedor_token_stdlib(token):
-    if not token or token in _REVOKED_TOKENS_STDLIB or "." not in token:
-        return None
-    b64_payload, sig = token.split(".", 1)
-    expected_sig = hmac.new(_TOKEN_SECRET_STDLIB, b64_payload.encode("ascii"), hashlib.sha256).hexdigest()
-    if not hmac.compare_digest(sig, expected_sig):
-        return None
-    padding = "=" * (-len(b64_payload) % 4)
-    try:
-        raw = base64.urlsafe_b64decode(b64_payload + padding)
-        data = json.loads(raw.decode("utf-8"))
-    except Exception:
-        return None
-    if int(time.time() * 1000) > int(data.get("expiresAt", 0)):
-        return None
-    return data
+    # Missing canonical dependencies cannot weaken authentication.
+    return None
 
 
 def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
@@ -188,6 +99,21 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
     if path in ("/api/index.py", "/api/index", "/api"):
         path = "/index.html"
 
+    if method == "POST" and path != "/api/auth/logout":
+        try:
+            data = json.loads(body.decode("utf-8")) if body else {}
+            if not isinstance(data, dict):
+                raise ValueError("Se requiere objeto JSON")
+        except (ValueError, UnicodeDecodeError):
+            return 400, "application/json; charset=utf-8", b'{"error":"Se requiere un objeto JSON valido"}'
+    if path.startswith("/api/auth/"):
+        status = 401 if path == "/api/auth/session" and not req_headers.get("authorization") else 503
+        return status, "application/json; charset=utf-8", b'{"error":"Autenticacion segura no disponible"}'
+    if path in ("/api/review", "/api/review/queue", "/api/reports/moderate"):
+        status = 401 if not req_headers.get("authorization") else 503
+        return status, "application/json; charset=utf-8", b'{"error":"Repositorio privado no disponible"}'
+    if path == "/api/reports" and method == "POST":
+        return 503, "application/json; charset=utf-8", b'{"error":"No se puede confirmar persistencia del reporte"}'
     if path.startswith("/api/"):
         snap = _load_snapshot_stdlib()
         if path == "/api/health":
@@ -284,153 +210,9 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
             return 200, "application/json; charset=utf-8", json.dumps(flags).encode("utf-8")
 
         if path == "/api/reports":
-            if method == "POST" and (
-                os.environ.get("VERCEL") == "1"
-                or os.environ.get("CAJAMARCA_QHAWAY_DATABASE_URL")
-            ):
-                return 503, "application/json; charset=utf-8", json.dumps({
-                    "error": "No se puede confirmar persistencia del reporte; intente mas tarde"
-                }).encode("utf-8")
-            if method == "POST":
-                try:
-                    data = json.loads(body.decode("utf-8")) if body else {}
-                except Exception:
-                    return 400, "application/json; charset=utf-8", json.dumps({"error": "JSON invalido"}).encode("utf-8")
-                raw_text = str(data.get("raw_text", "")).strip()
-                if not raw_text:
-                    return 400, "application/json; charset=utf-8", json.dumps({"error": "Campo 'raw_text' es obligatorio"}).encode("utf-8")
-                if not bool(data.get("legal_disclaimer_shown") or data.get("disclaimer_accepted")):
-                    return 400, "application/json; charset=utf-8", json.dumps({"error": "Descargo legal obligatorio (CA-006-01)"}).encode("utf-8")
-                report_id = f"cr-{int(time.time()*1000):x}"
-                tracking_token = secrets.token_urlsafe(32)
-                tracking_token_hash = hashlib.sha256(tracking_token.encode("utf-8")).hexdigest()
-                now_iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-                payload = {
-                    "report_id": report_id,
-                    "submitted_at": now_iso,
-                    "channel": data.get("channel", "web"),
-                    "raw_text": raw_text,
-                    "related_entity_id": data.get("related_entity_id"),
-                    "moderation_status": "received",
-                    "legal_disclaimer_shown": True,
-                    "tracking_token_hash": tracking_token_hash,
-                }
-                snap.setdefault("citizen_reports", []).append(payload)
-                public_payload = {key: value for key, value in payload.items() if key != "tracking_token_hash"}
-                return 201, "application/json; charset=utf-8", json.dumps({**public_payload, "tracking_token": tracking_token, "report": public_payload}).encode("utf-8")
-            # GET requiere sesion de veedor
-            auth_h = req_headers.get("authorization", "")
-            token = auth_h[7:].strip() if auth_h.startswith("Bearer ") else ""
-            if not _verify_veedor_token_stdlib(token):
-                return 401, "application/json; charset=utf-8", json.dumps({"error": "Acceso restringido a veedores acreditados (Ley 29733)"}).encode("utf-8")
-            return 200, "application/json; charset=utf-8", json.dumps(snap.get("citizen_reports", [])).encode("utf-8")
-
+            return 401, "application/json; charset=utf-8", b'{"error":"Autenticacion requerida"}'
         if path == "/api/reports/track":
-            tok = query.get("token", [None])[0] or query.get("id", [None])[0]
-            if not tok:
-                return 400, "application/json; charset=utf-8", json.dumps({"error": "Parametro 'token' es obligatorio"}).encode("utf-8")
-            tok_clean = tok.strip()
-            reports = snap.get("citizen_reports", [])
-            token_hash = hashlib.sha256(tok_clean.encode("utf-8")).hexdigest()
-            m = next((r for r in reports if r.get("tracking_token_hash") == token_hash), None)
-            if not m:
-                return 404, "application/json; charset=utf-8", json.dumps({"error": "Expediente de denuncia no encontrado"}).encode("utf-8")
-            safe = {
-                "report_id": m.get("report_id"),
-                "submitted_at": m.get("submitted_at") or m.get("created_at"),
-                "moderation_status": m.get("moderation_status", "received"),
-                "related_entity_id": m.get("related_entity_id"),
-                "channel": m.get("channel", "web"),
-                "legal_disclaimer_shown": m.get("legal_disclaimer_shown", True),
-            }
-            return 200, "application/json; charset=utf-8", json.dumps(safe).encode("utf-8")
-
-        if path == "/api/review" and method == "POST":
-            auth_header = req_headers.get("authorization", "")
-            auth_token = auth_header[7:].strip() if auth_header.startswith("Bearer ") else ""
-            session = _verify_veedor_token_stdlib(auth_token)
-            if not session:
-                return 401, "application/json; charset=utf-8", json.dumps({"error": "Sesion de veedor requerida"}).encode("utf-8")
-            return 503, "application/json; charset=utf-8", json.dumps({"error": "El modo fallback no dispone de un repositorio privado de evidencia"}).encode("utf-8")
-
-        if path == "/api/auth/session":
-            auth_header = req_headers.get("authorization", "")
-            if not auth_header.startswith("Bearer "):
-                return 401, "application/json; charset=utf-8", json.dumps({"valid": False, "error": "No token provided"}).encode("utf-8")
-            token = auth_header[7:].strip()
-            session = _verify_veedor_token_stdlib(token)
-            if not session:
-                return 401, "application/json; charset=utf-8", json.dumps({"valid": False, "error": "Session expired"}).encode("utf-8")
-            return 200, "application/json; charset=utf-8", json.dumps({
-                "valid": True,
-                "veedor": session["veedor"],
-                "expiresAt": session["expiresAt"],
-            }).encode("utf-8")
-
-        if path == "/api/review/queue":
-            auth_header = req_headers.get("authorization", "")
-            token = auth_header[7:].strip() if auth_header.startswith("Bearer ") else ""
-            if not _verify_veedor_token_stdlib(token):
-                return 401, "application/json; charset=utf-8", json.dumps({"error": "Sesion de veedor requerida"}).encode("utf-8")
-            return 503, "application/json; charset=utf-8", json.dumps({"error": "El modo fallback no dispone de un repositorio privado de revision"}).encode("utf-8")
-
-        if path == "/api/auth/login" and method == "POST":
-            try:
-                data = json.loads(body.decode("utf-8")) if body else {}
-            except Exception:
-                return 400, "application/json; charset=utf-8", json.dumps({"error": "JSON invalido"}).encode("utf-8")
-            if data.get("honeypot"):
-                return 400, "application/json; charset=utf-8", json.dumps({"error": "Solicitud rechazada"}).encode("utf-8")
-            email = str(data.get("email", "")).strip().lower()
-            password = str(data.get("password", ""))
-            if not email or not password:
-                return 400, "application/json; charset=utf-8", json.dumps({"error": "Debe ingresar el correo y la contrasena de acreditacion"}).encode("utf-8")
-
-            now = time.time()
-            user_key = f"user:{email}"
-            record = _LOGIN_ATTEMPTS_STDLIB.get(user_key)
-            if record and record.get("locked_until", 0) > now:
-                remaining_sec = int(record["locked_until"] - now)
-                return 429, "application/json; charset=utf-8", json.dumps({
-                    "error": f"Cuenta bloqueada temporalmente por seguridad. Reintente en {max(1, remaining_sec // 60)} minutos.",
-                    "retryAfter": remaining_sec,
-                    "status": 429,
-                }).encode("utf-8")
-
-            cand_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
-            matched = next((v for v in _ACCREDITED_VEEDORES_STDLIB if v["email"] == email), None)
-            is_valid = bool(matched and hmac.compare_digest(matched["password_hash"], cand_hash))
-
-            if not is_valid or matched is None:
-                rec = _LOGIN_ATTEMPTS_STDLIB.setdefault(user_key, {"attempts": 0, "locked_until": 0.0})
-                rec["attempts"] += 1
-                if rec["attempts"] >= _MAX_ATTEMPTS_STDLIB:
-                    rec["locked_until"] = now + _LOCKOUT_SECONDS_STDLIB
-                remaining = max(0, _MAX_ATTEMPTS_STDLIB - rec["attempts"])
-                return 401, "application/json; charset=utf-8", json.dumps({
-                    "error": "Credenciales invalidas. Compruebe su correo u organizacion y el codigo de veeduria.",
-                    "remainingAttempts": remaining,
-                    "status": 401,
-                }).encode("utf-8")
-
-            if user_key in _LOGIN_ATTEMPTS_STDLIB:
-                del _LOGIN_ATTEMPTS_STDLIB[user_key]
-
-            token, expires_at = _issue_veedor_token_stdlib(matched)
-            return 200, "application/json; charset=utf-8", json.dumps({
-                "token": token,
-                "expiresAt": expires_at,
-                "veedor": {
-                    "email": matched["email"],
-                    "name": matched["name"],
-                    "organization": matched["organization"],
-                    "accreditationNumber": matched["accreditationNumber"],
-                    "role": matched["role"],
-                },
-            }).encode("utf-8")
-
-        if path == "/api/auth/logout" and method == "POST":
-            return 200, "application/json; charset=utf-8", json.dumps({"message": "Sesion finalizada correctamente"}).encode("utf-8")
+            return 503, "application/json; charset=utf-8", b'{"error":"Persistencia de denuncias no disponible"}'
 
         if path == "/api/sunat/ruc":
             dni_param = query.get("dni", [None])[0]
@@ -520,31 +302,6 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
                 signals = [s for s in signals if s.get("severity", "").strip().lower() == sev_clean]
             return 200, "application/json; charset=utf-8", json.dumps(signals).encode("utf-8")
 
-        if path == "/api/reports/moderate" and method == "POST":
-            auth_val = req_headers.get("authorization", "")
-            if not auth_val.startswith("Bearer "):
-                return 401, "application/json; charset=utf-8", json.dumps({"error": "Autenticacion requerida"}).encode("utf-8")
-            try:
-                data = json.loads(body.decode("utf-8")) if body else {}
-            except Exception:
-                return 400, "application/json; charset=utf-8", json.dumps({"error": "JSON invalido"}).encode("utf-8")
-            report_id = str(data.get("report_id", "")).strip()
-            status = str(data.get("status") or data.get("moderation_status", "")).strip()
-            moderator = str(data.get("moderated_by", "Veedor Acreditado")).strip()
-            if not report_id:
-                return 400, "application/json; charset=utf-8", json.dumps({"error": "report_id obligatorio"}).encode("utf-8")
-            if status not in ("accepted_as_lead", "rejected"):
-                return 400, "application/json; charset=utf-8", json.dumps({"error": "Estado invalido"}).encode("utf-8")
-            now_iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-            rep_res = {
-                "success": True,
-                "report_id": report_id,
-                "moderation_status": status,
-                "moderated_by": moderator,
-                "moderated_at": now_iso,
-            }
-            return 200, "application/json; charset=utf-8", json.dumps(rep_res).encode("utf-8")
-
         return 404, "application/json; charset=utf-8", json.dumps({"error": f"Ruta no encontrada: {path}", "status": 404}).encode("utf-8")
 
     clean_routes = {
@@ -581,9 +338,9 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
         cand = (base_path / f"{clean_path}.html").resolve()
         if cand.exists():
             file_path = cand
+    if not file_path.is_relative_to(base_path):
+        return 403, "text/plain; charset=utf-8", b"Forbidden"
     if not file_path.exists() or file_path.is_dir():
-        file_path = base_path / "index.html"
-    if not file_path.exists():
         return 404, "text/plain; charset=utf-8", b"Not Found"
 
     ctype, _ = mimetypes.guess_type(str(file_path))
@@ -634,6 +391,8 @@ def app(environ, start_response):
     headers = [
         ("Content-Type", content_type),
         ("Content-Length", str(len(resp_body))),
+        ("Cache-Control", "private, no-store"),
+        ("Vary", "Authorization"),
         ("Access-Control-Allow-Origin", "*"),
         ("Access-Control-Allow-Methods", "GET, POST, OPTIONS"),
         ("Access-Control-Allow-Headers", "Content-Type, Authorization"),

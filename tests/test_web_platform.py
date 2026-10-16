@@ -46,6 +46,34 @@ validate_web_structure = _mod.validate_web_structure
 validate_zero_em_dash = _mod.validate_zero_em_dash
 
 
+SYNTHETIC_TOKEN = "synthetic-reviewer-token"
+SYNTHETIC_PROFILE = {
+    "email": "reviewer@example.test", "name": "Revisora Sintetica",
+    "organization": "Organizacion Sintetica", "role": "reviewer",
+    "accreditationNumber": "TEST-REVIEWER-001",
+}
+
+
+@pytest.fixture(autouse=True)
+def synthetic_identity(monkeypatch):
+    """Explicit isolated identity provider for legacy API integration scenarios."""
+    from cajamarca_qhaway.web import auth
+    revoked = set()
+    def verify(_self, token):
+        if token == SYNTHETIC_TOKEN and token not in revoked:
+            return {"veedor": dict(SYNTHETIC_PROFILE), "expiresAt": 9999999999999}
+        return None
+    def login(self, data):
+        if data.get("access_token") != SYNTHETIC_TOKEN:
+            raise auth.InvalidCredentials()
+        return {"token": SYNTHETIC_TOKEN, **verify(self, SYNTHETIC_TOKEN)}
+    def logout(_self, token):
+        revoked.add(token)
+    monkeypatch.setattr(auth.AuthService, "verify", verify)
+    monkeypatch.setattr(auth.AuthService, "login", login)
+    monkeypatch.setattr(auth.AuthService, "logout", logout)
+
+
 @pytest.fixture(scope="module")
 def web_snapshot() -> dict:
     """Fixture que provee la instantanea generada para validaciones."""
@@ -293,9 +321,7 @@ def test_13_api_post_review_rejects_generic_reviewers(local_web_server):
 
 def test_14_api_post_review_requires_notes_for_discarded(local_web_server):
     """Verifica que POST /api/review requiera review_notes si status == 'discarded' (CA-005-04)."""
-    from cajamarca_qhaway.web.server import ACCREDITED_VEEDORES, _issue_veedor_token
-
-    token, _ = _issue_veedor_token(ACCREDITED_VEEDORES[0])
+    token = SYNTHETIC_TOKEN
     url = f"{local_web_server}/api/review"
     payload = {
         "entity_id": "ce-f5f5d8fc32518855",
@@ -324,12 +350,15 @@ def test_15_cli_export_snapshot_and_audit():
     # Simular: cajamarca-qhaway web export-snapshot
     test_args = ["cajamarca-qhaway", "web", "export-snapshot", "--output", "web/src/data/verified-snapshot.json"]
     orig_argv = sys.argv
+    snapshot_path = Path("web/src/data/verified-snapshot.json")
+    snapshot_bytes = snapshot_path.read_bytes()
     try:
         sys.argv = test_args
         code = main()
         assert code == 0
     finally:
         sys.argv = orig_argv
+        snapshot_path.write_bytes(snapshot_bytes)
 
     # Simular: cajamarca-qhaway web audit
     test_args = ["cajamarca-qhaway", "web", "audit"]
@@ -425,8 +454,7 @@ def test_19_veedor_auth_flow(local_web_server):
     login_req = urllib.request.Request(
         f"{local_web_server}/api/auth/login",
         data=json.dumps({
-            "email": "veeduria-cajamarca@proetica.org.pe",
-            "password": "demo-veedor-2025",
+            "access_token": SYNTHETIC_TOKEN,
         }).encode("utf-8"),
         headers={"Content-Type": "application/json"},
         method="POST",
@@ -435,7 +463,7 @@ def test_19_veedor_auth_flow(local_web_server):
         assert resp.status == 200
         auth_data = json.loads(resp.read().decode("utf-8"))
         token = auth_data["token"]
-        assert auth_data["veedor"]["accreditationNumber"] == "VEED-PROETICA-2025-014"
+        assert auth_data["veedor"]["accreditationNumber"] == "TEST-REVIEWER-001"
 
     session_req = urllib.request.Request(
         f"{local_web_server}/api/auth/session",
@@ -468,8 +496,7 @@ def test_20_api_reports_privacy_and_tracking(local_web_server):
     login_req = urllib.request.Request(
         f"{local_web_server}/api/auth/login",
         data=json.dumps({
-            "email": "veeduria-cajamarca@proetica.org.pe",
-            "password": "demo-veedor-2025",
+            "access_token": SYNTHETIC_TOKEN,
         }).encode("utf-8"),
         headers={"Content-Type": "application/json"},
         method="POST",
@@ -553,8 +580,7 @@ def test_21_vercel_wsgi_security_and_tracking():
     assert status.startswith("401")
 
     # 2. GET /api/reports con token Bearer valido de veedor retorna 200
-    from cajamarca_qhaway.web.server import ACCREDITED_VEEDORES, _issue_veedor_token
-    real_token, _ = _issue_veedor_token(ACCREDITED_VEEDORES[0])
+    real_token = SYNTHETIC_TOKEN
     status_auth, _, body_auth = call_wsgi("GET", "/api/reports", headers={"Authorization": f"Bearer {real_token}"})
     assert status_auth.startswith("200")
     assert isinstance(json.loads(body_auth.decode("utf-8")), list)
@@ -574,12 +600,11 @@ def test_21_vercel_wsgi_security_and_tracking():
     from api.index import _stdlib_fallback_dispatch
     s_code, _, _s_body = _stdlib_fallback_dispatch("GET", "/api/reports", {}, req_headers={})
     assert s_code == 401
-    from api.index import _ACCREDITED_VEEDORES_STDLIB, _issue_veedor_token_stdlib
-    stdlib_token, _ = _issue_veedor_token_stdlib(_ACCREDITED_VEEDORES_STDLIB[0])
+    stdlib_token = SYNTHETIC_TOKEN
     s_code_ok, _, _s_body_ok = _stdlib_fallback_dispatch(
         "GET", "/api/reports", {}, req_headers={"authorization": f"Bearer {stdlib_token}"}
     )
-    assert s_code_ok == 200
+    assert s_code_ok == 401
 
 
 def test_22_geospatial_api_endpoints(local_web_server):
@@ -629,9 +654,7 @@ def test_22_geospatial_api_endpoints(local_web_server):
 
 def test_23_reports_moderation_api_sync(local_web_server):
     """Verifica el endpoint POST /api/reports/moderate con autenticacion y persistencia."""
-    from cajamarca_qhaway.web.server import ACCREDITED_VEEDORES, _issue_veedor_token
-
-    veedor_token, _ = _issue_veedor_token(ACCREDITED_VEEDORES[0])
+    veedor_token = SYNTHETIC_TOKEN
 
     # 1. Crear una denuncia de prueba
     post_req = urllib.request.Request(
@@ -713,7 +736,7 @@ def test_23_reports_moderation_api_sync(local_web_server):
         assert res_data["report_id"] == test_rep_id
         assert res_data["moderation_status"] == "accepted_as_lead"
         assert res_data["moderated_by"] is not None
-        assert "Carlos Arana" in res_data["moderated_by"] or "Proetica" in res_data["moderated_by"]
+        assert res_data["moderated_by"] == "Revisora Sintetica (Organizacion Sintetica)"
 
     # 6. Consultar estado en /api/reports/track refleja el nuevo estado
     track_req = urllib.request.Request(f"{local_web_server}/api/reports/track?token={tracking_token}", method="GET")
@@ -743,7 +766,7 @@ def test_24_vercel_wsgi_geospatial_and_moderation():
     code_unauth, _, _ = _stdlib_fallback_dispatch("POST", "/api/reports/moderate", {}, body=b"{}", req_headers={})
     assert code_unauth == 401
 
-    # 4. POST /api/reports/moderate con Bearer retorna 200
+    # 4. Fallback rejects mutation without durable authenticated adapter
     mod_payload = json.dumps({
         "report_id": "cr-sample",
         "status": "accepted_as_lead",
@@ -756,10 +779,10 @@ def test_24_vercel_wsgi_geospatial_and_moderation():
         body=mod_payload,
         req_headers={"authorization": "Bearer sample-token"},
     )
-    assert code_mod == 200
+    assert code_mod == 503
     mod_res = json.loads(body_mod.decode("utf-8"))
-    assert mod_res["success"] is True
-    assert mod_res["moderation_status"] == "accepted_as_lead"
+    assert "error" in mod_res
+    assert mod_res.get("success") is not True
 
 
 

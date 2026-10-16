@@ -44,6 +44,29 @@ class AlertRepository:
             rows = cursor.fetchall()
             return [self._row_to_model(r) for r in rows]
 
+    def save_decision(self, alert: Alert) -> Alert:
+        """Insert an immutable human decision; retries return the committed version."""
+        with self.db.connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO alerts (alert_id, red_flag_ids, entity_id, status, reviewed_by, reviewed_at, "
+                "review_notes, disclaimer, legal_disclaimer, evidence, published_at) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT (alert_id) DO NOTHING",
+                (alert.alert_id, json.dumps(list(alert.red_flag_ids)), alert.entity_id, alert.status,
+                 alert.reviewed_by, alert.reviewed_at.isoformat(), alert.review_notes,
+                 alert.legal_disclaimer, alert.legal_disclaimer,
+                 json.dumps([item.model_dump(mode="json") for item in alert.evidence]),
+                 alert.published_at.isoformat() if alert.published_at else None),
+            )
+            cursor.execute("SELECT * FROM alerts WHERE alert_id = ?", (alert.alert_id,))
+            row = cursor.fetchone()
+            committed = self._row_to_model(row)
+            if (committed.status, committed.reviewed_by, committed.review_notes) != (
+                    alert.status, alert.reviewed_by, alert.review_notes):
+                raise ValueError("La decision existente no puede sobrescribirse")
+            conn.commit()
+            return committed
+
     def save(self, alert: Alert) -> None:
         sql = """
         INSERT INTO alerts

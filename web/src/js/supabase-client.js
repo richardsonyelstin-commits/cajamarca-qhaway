@@ -11,14 +11,13 @@ import {
   SUPABASE_URL,
   SUPABASE_ANON_KEY,
   LOCAL_SNAPSHOT_URL,
+  LOCAL_API_BASE,
   STANDARD_ALERT_DISCLAIMER,
   GENERIC_REVIEWERS,
   CANONICAL_ENTITIES
 } from './config.js';
 
 const TIMEOUT_MS = 3500;
-const STORAGE_PREFIX = 'cajamarca_qhaway_';
-
 /**
  * Genera un identificador pseudoaleatorio seguro o determinista
  * @param {string} prefix
@@ -55,26 +54,6 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = TIMEOUT_MS) {
   } catch (err) {
     clearTimeout(id);
     throw err;
-  }
-}
-
-/**
- * Guarda y recupera estado persistente local de respaldo
- */
-function getLocalCollection(key) {
-  try {
-    const raw = localStorage.getItem(`${STORAGE_PREFIX}${key}`);
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
-}
-
-function setLocalCollection(key, data) {
-  try {
-    localStorage.setItem(`${STORAGE_PREFIX}${key}`, JSON.stringify(data));
-  } catch (err) {
-    console.warn(`No se pudo persistir en localStorage: ${key}`, err);
   }
 }
 
@@ -286,62 +265,16 @@ export class SupabaseClient {
       throw new Error('El detalle de la denuncia no puede estar vacio.');
     }
 
-    const reportId = payload.report_id || generateUniqueId('cr');
-    const nowIso = new Date().toISOString();
-
-    const record = {
-      report_id: reportId,
-      submitted_at: nowIso,
-      channel: payload.channel || 'web',
-      raw_text: payload.raw_text.trim(),
-      related_entity_id: payload.related_entity_id || null,
-      moderation_status: 'pending',
-      moderated_by: null,
-      moderated_at: null,
-      legal_disclaimer_shown: true
-    };
-
-    // Intentar primero el backend propio, que valida y persiste la denuncia
-    let remoteSuccess = false;
-    try {
-      const backendResponse = await fetch(`${LOCAL_API_BASE}/reports`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(record)
-      });
-      remoteSuccess = backendResponse.ok;
-    } catch (err) {
-      console.info('Backend no disponible para la denuncia:', err.message);
+    const response = await fetchWithTimeout(`${LOCAL_API_BASE}/reports`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(payload)
+    }, 3500);
+    const result = await response.json();
+    if (!response.ok || !result.report_id || !result.tracking_token) {
+      throw new Error(result.error || 'No se pudo confirmar la recepcion de la denuncia.');
     }
-
-    // Contingencia: intentar POST directo a Supabase PostgREST
-    if (!remoteSuccess) {
-      try {
-        const url = `${this.supabaseUrl}/rest/v1/citizen_reports`;
-      const res = await fetchWithTimeout(url, {
-        method: 'POST',
-        headers: this.getHeaders(),
-        body: JSON.stringify(record)
-      }, 3000);
-      if (res.ok) {
-        remoteSuccess = true;
-      }
-      } catch (err) {
-        console.info('Supabase no disponible para la denuncia:', err.message);
-      }
-    }
-
-    // Persistir siempre en respaldo local del navegador
-    const current = getLocalCollection('citizenReports') || [];
-    current.unshift(record);
-    setLocalCollection('citizenReports', current);
-
-    return {
-      success: true,
-      report_id: reportId,
-      submitted_at: nowIso,
-      remote_synced: remoteSuccess
-    };
+    return { ...result, success: true, remote_synced: true };
   }
 
   /**
@@ -385,175 +318,34 @@ export class SupabaseClient {
       published_at: status === 'published' ? nowIso : null
     };
 
-    // Intentar persistir en el backend propio, con autenticacion del revisor
-    let remoteSuccess = false;
-    try {
-      const token = sessionStorage.getItem('cajamarca_veedor_token') || '';
-      const res = await fetchWithTimeout(`${LOCAL_API_BASE}/review`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {})
-        },
-        body: JSON.stringify(alertRecord)
-      }, 3000);
-      if (res.ok) {
-        remoteSuccess = true;
-      }
-    } catch (err) {
-      console.info('Backend no disponible para la revision:', err.message);
+    const token = sessionStorage.getItem('cajamarca_veedor_token') || '';
+    const res = await fetchWithTimeout(`${LOCAL_API_BASE}/review`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      body: JSON.stringify(alertRecord)
+    }, 3500);
+    const result = await res.json();
+    if (!res.ok || !result.alert) {
+      throw new Error(result.error || 'No se pudo confirmar la decision de revision.');
     }
-
-    // Persistir localmente
-    const currentAlerts = getLocalCollection('alerts') || [];
-    currentAlerts.unshift(alertRecord);
-    setLocalCollection('alerts', currentAlerts);
-
-    // Registrar en bitacora de auditoria local
-    const auditLog = getLocalCollection('auditLog') || [];
-    auditLog.unshift({
-      event: 'human_review_decision',
-      alert_id: finalAlertId,
-      status,
-      reviewed_by: reviewed_by.trim(),
-      timestamp: nowIso,
-      remote_synced: remoteSuccess
-    });
-    setLocalCollection('auditLog', auditLog);
-
-    return {
-      success: true,
-      alert: alertRecord,
-      remote_synced: remoteSuccess
-    };
+    return { success: true, alert: result.alert, remote_synced: true };
   }
 
-  /**
-   * Modera una denuncia ciudadana entrante (pending -> accepted_as_lead o rejected)
-   * @param {object} moderationPayload
-   * @returns {Promise<object>}
-   */
+  /** Modera solo cuando el servidor confirma la escritura y la identidad. */
   async moderateCitizenReport(moderationPayload) {
-    const { report_id, moderation_status, moderated_by, review_notes, notes } = moderationPayload;
-
-    if (!moderated_by || !moderated_by.trim()) {
-      throw new Error('Debe proporcionar el identificador del revisor humano nominal.');
+    const token = sessionStorage.getItem('cajamarca_veedor_token') || '';
+    const res = await fetchWithTimeout(`${LOCAL_API_BASE}/reports/moderate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      body: JSON.stringify(moderationPayload)
+    }, 3500);
+    const result = await res.json();
+    if (!res.ok || !result.success || !result.report) {
+      throw new Error(result.error || 'No se pudo confirmar la moderacion.');
     }
-    const norm = moderated_by.trim().toLowerCase();
-    if (GENERIC_REVIEWERS.includes(norm)) {
-      throw new Error(`Revisor generico no admitido: "${moderated_by}".`);
-    }
-
-    if (!['accepted_as_lead', 'rejected'].includes(moderation_status)) {
-      throw new Error('Estado de moderacion invalido.');
-    }
-
-    const nowIso = new Date().toISOString();
-    const token = sessionStorage.getItem('cajamarca_veedor_token') || localStorage.getItem('cajamarca_veedor_token') || '';
-    let remoteSuccess = false;
-
-    // 1. Invocar endpoint oficial de backend seguro con Bearer token
-    try {
-      const res = await fetchWithTimeout(`${LOCAL_API_BASE}/reports/moderate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {})
-        },
-        body: JSON.stringify({
-          report_id,
-          moderation_status,
-          moderated_by: moderated_by.trim(),
-          review_notes: review_notes || notes || null
-        })
-      }, 3500);
-
-      if (res.ok) {
-        remoteSuccess = true;
-      }
-    } catch (err) {
-      console.info('Backend no disponible para moderacion de denuncia:', err.message);
-    }
-
-    // 2. Sincronizacion directa con Supabase PostgREST RLS si backend no respondio
-    if (!remoteSuccess && this.supabaseUrl) {
-      try {
-        const patchUrl = `${this.supabaseUrl}/rest/v1/citizen_reports?report_id=eq.${encodeURIComponent(report_id)}`;
-        const patchRes = await fetchWithTimeout(patchUrl, {
-          method: 'PATCH',
-          headers: {
-            ...this.getHeaders(),
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            'Prefer': 'return=minimal'
-          },
-          body: JSON.stringify({
-            moderation_status,
-            moderated_by: moderated_by.trim(),
-            moderated_at: nowIso
-          })
-        }, 3000);
-
-        if (patchRes.ok) {
-          remoteSuccess = true;
-        }
-      } catch (err) {
-        console.info('Supabase PostgREST no disponible para moderacion:', err.message);
-      }
-    }
-
-    // 3. Persistir en almacenamiento local para resiliencia offline
-    const current = getLocalCollection('citizenReports') || [];
-    let updated = false;
-
-    const modified = current.map(item => {
-      if (item.report_id === report_id) {
-        updated = true;
-        return {
-          ...item,
-          moderation_status,
-          moderated_by: moderated_by.trim(),
-          moderated_at: nowIso
-        };
-      }
-      return item;
-    });
-
-    if (!updated) {
-      modified.push({
-        report_id,
-        moderation_status,
-        moderated_by: moderated_by.trim(),
-        moderated_at: nowIso,
-        channel: 'web',
-        raw_text: 'Reporte verificado de la semilla inicial',
-        legal_disclaimer_shown: true
-      });
-    }
-
-    setLocalCollection('citizenReports', modified);
-
-    // 4. Registrar en bitacora de auditoria local
-    const auditLog = getLocalCollection('auditLog') || [];
-    auditLog.unshift({
-      event: 'citizen_report_moderated',
-      report_id,
-      moderation_status,
-      moderated_by: moderated_by.trim(),
-      timestamp: nowIso,
-      remote_synced: remoteSuccess
-    });
-    setLocalCollection('auditLog', auditLog);
-
-    return {
-      success: true,
-      report_id,
-      moderation_status,
-      moderated_by: moderated_by.trim(),
-      moderated_at: nowIso,
-      remote_synced: remoteSuccess
-    };
+    return { ...result, remote_synced: true };
   }
 
   /**

@@ -40,6 +40,13 @@ Se escribe **en el PR**, no en el release: reconstruirlo después es inventarlo.
 
 ### Fixed
 
+- El paquete de despliegue instala el driver PostgreSQL necesario para autenticacion, revocaciones y escrituras confirmadas en Vercel.
+- La API acredita revisores con Supabase Auth y rol administrado, elimina cuentas de demostracion y registra revocaciones compartidas sin guardar tokens en claro.
+- Las respuestas privadas y autenticadas impiden cache compartida, incluso con rewrites de Vercel.
+- Denuncias, moderacion y decisiones confirman persistencia antes de actualizar el estado visible; el cliente rechaza fallos del backend sin anunciar exito local.
+- El listado de denuncias consulta el repositorio privado con paginacion y filtros; cloud exige almacenamiento PostgreSQL configurado.
+- Los cuerpos JSON que no son objetos reciben errores controlados y los recursos estaticos ausentes responden 404.
+
 - El daemon conserva el cursor remoto cuando PostgreSQL falla y deriva registros al spool.
 - El worker selecciona el secreto del entorno Production y comprueba destino sin revelar valores.
 - El worker expone las brechas de fuente y exige PostgreSQL confirmado y cero spool pendiente.
