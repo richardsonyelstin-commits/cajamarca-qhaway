@@ -1,0 +1,79 @@
+{
+  "source": "ai",
+  "generator": "codex-gpt-6.1-sol",
+  "generated_at": "2026-10-15T13:30:49.822198+00:00",
+  "confidence": "high",
+  "verified": false,
+  "base_url": "https://cajamarca-qhaway.vercel.app",
+  "snapshot_sha256": "9a6745b249d84c88261f1341b39f4a70b3ced08a3c384d70ff87e72b8cca4750",
+  "budget_records_equal": 42,
+  "procurement_records_equal": 475,
+  "routes": [
+    {
+      "route": "/",
+      "status": 200
+    },
+    {
+      "route": "/entidades",
+      "status": 200
+    },
+    {
+      "route": "/entidad?id=ce-f5f5d8fc32518855",
+      "status": 200
+    },
+    {
+      "route": "/alertas",
+      "status": 200
+    },
+    {
+      "route": "/contrataciones",
+      "status": 200
+    },
+    {
+      "route": "/contrato?id=pr-00bd3340ec7583fb",
+      "status": 200
+    },
+    {
+      "route": "/presupuesto",
+      "status": 200
+    },
+    {
+      "route": "/proveedores",
+      "status": 200
+    },
+    {
+      "route": "/concentracion",
+      "status": 200
+    },
+    {
+      "route": "/georreferenciacion",
+      "status": 200
+    },
+    {
+      "route": "/denuncia",
+      "status": 200
+    },
+    {
+      "route": "/admin/revision",
+      "status": 200
+    },
+    {
+      "route": "/login",
+      "status": 200
+    },
+    {
+      "route": "/transparencia",
+      "status": 200
+    },
+    {
+      "route": "/acerca",
+      "status": 200
+    },
+    {
+      "route": "/metodologia",
+      "status": 200
+    }
+  ],
+  "assets_equal": 10,
+  "staging_status": 404
+}

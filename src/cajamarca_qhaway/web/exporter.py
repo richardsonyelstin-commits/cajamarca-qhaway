@@ -135,7 +135,7 @@ def build_verified_web_snapshot(now: datetime | None = None) -> dict[str, Any]:
             "generated_at": generated_at.isoformat().replace("+00:00", "Z"),
             "source": "supabase-synchronized-spool",
             "region": "CAJAMARCA",
-            "constitution_version": "1.0",
+            "constitution_version": "2.0",
             "articles_covered": [10, 14, 15, 16, 17, 18, 19],
             "total_entities": len(entities),
             "total_procurements": len(procurements),

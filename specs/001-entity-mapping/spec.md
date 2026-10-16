@@ -4,13 +4,13 @@ spec: "001"
 capability: entity-mapping
 status: draft
 created: 2026-08-20
-updated: 2026-08-20
+updated: 2026-10-15
 consumes: []
 produces: [ContractingEntity]
-open_clarifications: 3
+open_clarifications: 1
 source: ai
-generator: claude-sonnet-5
-generated_at: 2026-08-20T00:00:00Z
+generator: codex-gpt-6
+generated_at: 2026-10-15T18:33:00Z
 confidence: medium
 verified: false
 ---
@@ -18,8 +18,9 @@ verified: false
 # Spec 001 - entity-mapping
 
 Construye y mantiene el universo verificado de entidades contratantes de la región Cajamarca:
-Gobierno Regional, las 13 municipalidades provinciales y un subconjunto priorizado de
-municipalidades distritales. Produce `ContractingEntity`, el contrato que filtra toda ingesta
+Gobierno Regional y las 13 municipalidades provinciales como raíces canónicas.
+Las ejecutoras verificadas se desglosan bajo su matriz sin incorporar distritales.
+Produce `ContractingEntity`, el contrato que filtra toda ingesta
 posterior - `002-seace-ingestion` y `003-mef-ingestion` no consultan nada que no esté aquí.
 
 ## Problema
@@ -32,12 +33,9 @@ verificado y estable, cada capacidad de ingesta tendría que redescubrir "qué e
 cuenta, con el riesgo de que dos capacidades usen listas distintas y produzcan datos
 incomparables.
 
-El problema no es solo técnico: **qué entidades entran en el universo de Fase 1 es una decisión
-de alcance y de recursos**, no un accidente de qué aparece primero en un feed. El Gobierno
-Regional y las 13 provinciales entran completas por decisión ya fijada en `PROJECT.yaml`; el
-subconjunto de distritales requiere un criterio explícito de priorización, porque cubrir las
-~127 municipalidades distritales de Cajamarca desde el día uno excede lo que un equipo pequeño
-puede mantener con calidad.
+La Fase 1 comprende exactamente el Gobierno Regional y las 13 provinciales.
+La enmienda humana v2.0 autoriza ejecutoras verificadas bajo esas raíces.
+Una ampliación a municipalidades distritales queda fuera del encargo actual.
 
 ## Usuarios e intención
 
@@ -53,7 +51,7 @@ puede mantener con calidad.
 | Campo | Origen | Obligatorio |
 |---|---|---|
 | Lista de las 13 provincias de Cajamarca | Fija, del propio Perú (Cajamarca, Cajabamba, Celendín, Chota, Contumazá, Cutervo, Hualgayoc, Jaén, San Ignacio, San Marcos, San Miguel, San Pablo, Santa Cruz) - enumerada en `docs/research/2026-08-20-diseno-cajamarca-qhaway-fase1.md`, §0 | sí |
-| Criterio de priorización de distritales | Ver Ambigüedades abiertas - no fijado en esta spec | sí, para completar el universo |
+| Relación de ejecutora dependiente | Fuente oficial que acredita identidad y entidad matriz | para desgloses |
 | Fuente oficial de RUC/razón social por entidad | SUNAT (padrón de entidades públicas) o el propio feed OCDS de OECE, con verificación cruzada | sí |
 | Fuente oficial de `consucode_id` | El propio feed OCDS de OECE (`parties[].identifier`, `scheme: PE-CONSUCODE`) | sí |
 
@@ -63,7 +61,7 @@ universo de entidades, antes de que exista ningún dato asociado a ellas.
 ## Salidas
 
 Un conjunto de `ContractingEntity` (contrato canónico, Artículo 19 de la constitución), uno por
-entidad verificada, más un registro explícito de qué distritales quedaron **fuera** y por qué.
+raíz verificada, con relaciones dependientes documentadas cuando existan.
 
 **Ubicación.** El universo vive como un artefacto versionado del proyecto (no en una base de
 datos de ejecución), porque cambia poco y cada cambio debe poder auditarse como un diff legible.
@@ -78,10 +76,9 @@ versionado en el propio repo, sembrado a la tabla `contracting_entities` de Post
 Ninguna entidad de este subconjunto se excluye por criterio de priorización: `PROJECT.yaml` ya
 fijó que son universo obligatorio de Fase 1.
 
-**RN-001-02. Las distritales entran por un criterio de priorización explícito y documentado.**
-No se puede incluir una municipalidad distrital "porque apareció en el feed" o "porque alguien la
-mencionó": la inclusión se justifica por un criterio declarado (ver Ambigüedades abiertas,
-AC-001-01) y queda registrada junto a la entidad.
+**RN-001-02. Las raíces de Fase 1 son exactamente 14, sin municipalidades distritales.**
+Una ejecutora dependiente requiere identidad y relación oficial verificadas con su matriz.
+Su presupuesto no se suma al total institucional de la matriz.
 
 **RN-001-03. Toda entidad lleva RUC y, si existe, `consucode_id`, verificados contra una fuente
 oficial.**
@@ -141,8 +138,8 @@ Dada cualquier entidad con `entity_level != "regional"`, `province` no es `null`
 lista fija de 13 provincias.
 
 **CA-001-07** · RN-001-02
-Dada cualquier municipalidad distrital en el universo, existe una justificación de inclusión
-distinta de "aparece en el feed", registrada junto a la entidad.
+Dado el universo canónico, no contiene municipalidades distritales.
+Todo desglose de ejecutora referencia una raíz verificada y no crea un total adicional.
 
 ## Casos límite
 
@@ -162,8 +159,7 @@ La entidad no se acepta sin verificación cruzada manual - RN-001-03 es estricta
 **CL-001-04** - El Gobierno Regional de Cajamarca tiene unidades ejecutoras propias (p. ej. UGEL
 Celendín, observada en la verificación técnica) que aparecen como `buyer` independiente en OCDS,
 con su propio `consucode_id` y a veces su propio RUC.
-`[NECESITA ACLARACIÓN: si una unidad ejecutora del Gobierno Regional es una `ContractingEntity`
-propia o se agrupa bajo la entidad matriz - ver Ambigüedades abiertas]`
+Se conserva su identidad oficial y relación con la matriz sin crear otra raíz agregable.
 
 ## Evidencia y manifiesto
 
@@ -183,26 +179,6 @@ incluir una distrital.
 - Geolocalización o límites administrativos en mapa: no hace falta para filtrar por RUC/nombre.
 
 ## Ambigüedades abiertas
-
-Quedan tres de las cuatro originales - AC-001-02 se movió a "Ambigüedades resueltas".
-
-**AC-001-01. Criterio de priorización de municipalidades distritales.**
-No lo cierro yo: exige una decisión de producto sobre cuántas distritales puede sostener el
-equipo con calidad, cruzada con el criterio de "sectores priorizados por evidencia de riesgo"
-que ya señala el diseño de Fase 1 (obras públicas y canon minero). Fijar un número o una lista
-aquí, sin ese cruce, produciría una priorización arbitraria que después habría que deshacer.
-`[NECESITA ACLARACIÓN: número y criterio de selección de distritales priorizadas - requiere
-decisión de producto, posiblemente informada por la coordinación con Proética/Propuesta
-Ciudadana/GRUFIDES que ya bloquea el roadmap]`
-
-**AC-001-03. Unidades ejecutoras del Gobierno Regional como entidad propia o agrupada.**
-Ver CL-001-04. Requiere mirar más muestras del feed OCDS para saber si el patrón
-"Gobierno Regional - UGEL X" es sistemático o incidental, y una decisión de si el análisis de
-red flags debe tratarlas como una sola entidad regional o como entidades separadas (afecta
-directamente los indicadores de `004-red-flags-engine`, p. ej. "proveedor recurrente por
-entidad").
-`[NECESITA ACLARACIÓN: agrupación de unidades ejecutoras - necesita más muestras del feed OCDS
-antes de decidir]`
 
 **AC-001-04. Periodicidad de revisión del universo (RN-001-06).**
 "Por evento" queda declarado como principio, pero no hay todavía un ciclo mínimo garantizado
@@ -224,10 +200,15 @@ JSON); esa elección puntual la hizo la implementación de esta ronda (`specs/00
 pedía esta sección; el paso de siembra falla ruidosamente si la tabla y el fichero divergen tras
 el commit, en vez de servir datos desactualizados sin avisar.
 
-Las otras tres ambigüedades (AC-001-01, AC-001-03, AC-001-04) siguen abiertas - ninguna se toca
-en esta ronda.
+AC-001-01 queda fuera de alcance por la enmienda humana v2.0.
+AC-001-03 queda resuelta como relación verificada con matriz sin doble conteo.
+AC-001-04 conserva su estado abierto y no impide trabajar con las 14 raíces vigentes.
 
 ## Historial
+
+Enmienda humana 2026-10-15: Constitución v2.0 fija 14 raíces y permite ejecutoras verificadas.
+AC-001-01 queda fuera de alcance y AC-001-03 se resuelve con relación padre-hijo verificada.
+Las preguntas históricas sobre ampliación distrital no bloquean este universo.
 
 | Fecha | Cambio | Estado |
 |---|---|---|

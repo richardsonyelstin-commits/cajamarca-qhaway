@@ -4,13 +4,13 @@ spec: "006"
 capability: denuncia-intake
 status: draft
 created: 2026-08-20
-updated: 2026-08-20
+updated: 2026-10-15
 consumes: []
 produces: [CitizenReport]
 open_clarifications: 6
 source: ai
-generator: claude-sonnet-5
-generated_at: 2026-08-20T00:00:00Z
+generator: codex-gpt-6
+generated_at: 2026-10-15T18:33:00Z
 confidence: low
 verified: false
 ---
@@ -63,6 +63,11 @@ revisado.
 
 ## Reglas de negocio
 
+**RN-006-08. Minimización técnica y confidencialidad.**
+No se almacena dirección IP y el identificador es aleatorio; las huellas usan SHA-256.
+Una huella no anonimiza el texto: nombres voluntarios permanecen sujetos a moderación privada.
+No se promete anonimato absoluto ni protección estatal.
+
 **RN-006-01. El aviso legal se muestra y se confirma antes de que el envío sea posible, no
 después.**
 `legal_disclaimer_shown` debe ser `true` en el momento de la creación del `CitizenReport`; un
@@ -107,6 +112,10 @@ investigación humana produce datos que sí encajan en ese contrato - pero eso p
 `005` como cualquier otro candidato, nunca por una vía directa de "denuncia → alerta pública".
 
 ## Criterios de aceptación
+
+**CA-006-07** · RN-006-08
+El registro persistido no contiene IP ni identificadores derivados de IP.
+La huella no sustituye el control de acceso ni se presenta como anonimización del relato.
 
 **CA-006-01** · RN-006-01
 Dado un intento de envío sin `legal_disclaimer_shown == true`, el `CitizenReport` no se crea.
@@ -165,10 +174,7 @@ propia persona).
 
 ## Fuera de alcance
 
-- Cualquier mecanismo de protección de identidad más allá de no recolectar datos innecesarios
-  (RN-006-06): no se construye un sistema de anonimización criptográfica ni de intermediación
-  legal en Fase 1 - el aviso (RN-006-01) es la mitigación primaria, no una promesa de protección
-  técnica que la plataforma no puede cumplir.
+- Intermediación legal y garantías de anonimato absoluto.
 - Canales `sms`/`whatsapp`: dependen de `009-sms-whatsapp-notify`, no construida.
 - Conversión automática de una denuncia en `RedFlag` o `Alert` (RN-006-05, RN-006-07).
 - Verificación de identidad del denunciante: el canal es deliberadamente de baja fricción, no
@@ -221,6 +227,8 @@ o forzar `RedFlag` a admitir texto libre sin estructura, que rompería el Artíc
 (explicabilidad basada en dato exacto y fuente verificable).
 
 ## Historial
+
+Enmienda humana 2026-10-15: minimización y huellas criptográficas, Constitución v2.0.
 
 | Fecha | Cambio | Estado |
 |---|---|---|

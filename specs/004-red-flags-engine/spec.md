@@ -4,13 +4,13 @@ spec: "004"
 capability: red-flags-engine
 status: draft
 created: 2026-08-20
-updated: 2026-10-14
+updated: 2026-10-15
 consumes: [ProcurementRecord, BudgetExecutionRecord]
 produces: [RedFlag]
 open_clarifications: 5
 source: ai
 generator: codex-gpt-6
-generated_at: 2026-10-14T04:02:22Z
+generated_at: 2026-10-15T18:33:00Z
 confidence: medium
 verified: false
 ---
@@ -74,10 +74,11 @@ Un indicador sin fórmula legible por un no técnico (CU4) o sin umbral numéric
 indicador válido de esta capacidad - es la traducción operativa del principio "nunca un score
 compuesto de caja negra" del diseño de producto (§3.4).
 
-**RN-004-03. Ningún indicador combina múltiples señales en un solo número compuesto.**
+**RN-004-03. Cada indicador conserva su fórmula; el expediente admite prioridad explicable.**
 Cada `RedFlag` corresponde a un único `indicator_code`. Si dos indicadores se activan sobre el
-mismo `ProcurementRecord`, se producen dos `RedFlag` distintos - nunca se suman en un score
-único. La agrupación de varios `RedFlag` en una sola `Alert` ocurre en `005-review-panel`, por
+mismo `ProcurementRecord`, se producen dos `RedFlag` distintos.
+La prioridad del expediente de 0 a 100 desglosa severidad, monto en UIT y fuentes concurrentes.
+La agrupación de varios `RedFlag` en una sola `Alert` ocurre en `005-review-panel`, por
 decisión humana, no aquí.
 
 **RN-004-04. Ningún indicador tiene como unidad de análisis una persona identificada por
@@ -94,12 +95,10 @@ constitución) - esta spec no resuelve esa tentación por su cuenta, ni siquiera
 registros concretos. Esto es lo que permite que `review-panel` (y después, cualquier `Alert`)
 cumpla el Artículo 15 de la constitución.
 
-**RN-004-06. Indicadores basados en umbrales absolutos, no en comparación estadística contra una
-muestra grande.**
-El diseño de producto (§5) señala que el menor volumen de una sola región reduce la significancia
-estadística de comparaciones tipo "outlier respecto a la media nacional". El catálogo de Fase 1
-prioriza reglas con umbral fijo y justificable en lenguaje simple (p. ej. "un solo postor" es
-verificable sin estadística) sobre reglas que dependen de una distribución muestral.
+**RN-004-06. Fórmulas deterministas y estadísticas reproducibles con cobertura declarada.**
+Se permiten umbrales absolutos, HHI, similitud vectorial y pruebas estadísticas.
+Cada técnica declara fórmula, umbral, unidad, versión y requisitos de muestra.
+Una muestra insuficiente produce brecha y no una señal interpretada como evidencia de fraude.
 
 **RN-004-07. Un `RedFlag` se recalcula, no se acumula, si los datos de origen cambian.**
 Si un `ProcurementRecord` se actualiza (ver AC-002-03 de `002-seace-ingestion`, todavía abierta),
@@ -137,6 +136,16 @@ universo anual. Si falta un RUC, no se produce una señal que pudiera sobreestim
 La regla queda aprobada por ADR 0010.
 
 ## Criterios de aceptación
+
+**CA-004-10** · RN-004-03 / Artículos 15-16 v2.0
+Contratación directa, contrato menor y modalidad desconocida no disparan plazo corto.
+El año UIT procede de fecha oficial, nunca del instante de extracción.
+El fraccionamiento exige montos individuales menores a 8 UIT, suma superior a 8 UIT,
+misma entidad y ejercicio y ventana de hasta 90 días.
+La agrupación usa similitud coseno mínima 0.78 o proveedor/familia semántica documentados.
+Cada resultado muestra suma en soles, similitud, fechas y procesos participantes.
+No se deducen propiedad de maquinaria ni corrupción desde una descripción contractual.
+Los índices temporales evitan recorridos cuadráticos de ventanas por proveedor.
 
 **CA-004-01** · RN-004-01
 Dado el catálogo de indicadores activos, tiene entre 5 y 10 entradas, ni más ni menos.
@@ -204,7 +213,7 @@ specs/pending-adrs.md]`
 
 - Publicar ninguna `Alert` (RN-004-08): eso es `005-review-panel`.
 - Cualquier indicador cuya unidad de análisis sea una persona (RN-004-04, Artículo 16).
-- Cualquier score compuesto o ranking agregado (RN-004-03).
+- Puntuaciones de personas o prioridades sin desglose verificable (RN-004-03).
 - Análisis de grafo proveedor-funcionario-empresa vía DJI: fuera de alcance hasta que
   `008-dji-ingestion` exista, y esa capacidad depende de evaluación legal previa (Artículo 17).
 - Reutilizar o adaptar directamente la librería Cardinal de OCP: esta spec no decide esa cuestión
@@ -251,6 +260,8 @@ el indicador con más evidencia documentada de relevancia para Cajamarca (CU1 de
 producto usa exactamente este ejemplo).
 
 ## Historial
+
+Enmienda humana 2026-10-15: TIER_1 reproducible y prioridad por expediente, Constitución v2.0.
 
 | Fecha | Cambio | Estado |
 |---|---|---|

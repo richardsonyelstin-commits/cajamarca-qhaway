@@ -4,13 +4,13 @@ spec: "002"
 capability: seace-ingestion
 status: draft
 created: 2026-08-20
-updated: 2026-08-20
+updated: 2026-10-15
 consumes: [ContractingEntity]
 produces: [ProcurementRecord]
 open_clarifications: 5
 source: ai
-generator: claude-sonnet-5
-generated_at: 2026-08-20T00:00:00Z
+generator: codex-gpt-6
+generated_at: 2026-10-15T18:33:00Z
 confidence: medium
 verified: false
 ---
@@ -71,6 +71,13 @@ persistencia - ver specs/pending-adrs.md]`
 
 ## Reglas de negocio
 
+**RN-002-09. Fuentes oficiales complementarias con evidencia independiente.**
+Se admiten OCDS, Pentaho OECE y buscador público SEACE bajo Constitución v2.0.
+Cada fila conserva payload, URL, fuente y extracción UTC.
+El enlace exige comprador canónico e identificador oficial; no se fabrican OCID ni CUI.
+Una denegación HTTP, CAPTCHA o sesión expirada registra brecha de esa fuente.
+Las reglas OCDS siguientes se aplican al adaptador OCDS, sin impedir los complementarios.
+
 **RN-002-01. El filtro geográfico es siempre del lado del cliente.**
 Ningún parámetro de la petición HTTP se asume como filtro efectivo: la petición al endpoint
 verificado no lleva parámetros de filtro (se confirmó que no tienen efecto). Todo el filtrado
@@ -124,6 +131,11 @@ código ni documento de este proyecto usa "región" para referirse al campo OCDS
 aclarar que es la provincia - evita el error de leer `region` como sinónimo de "Cajamarca".
 
 ## Criterios de aceptación
+
+**CA-002-09** · RN-002-09
+Reingerir evidencia de dos fuentes conserva los IDs y el payload original OCDS.
+Un desafío JSF produce brecha explícita y cero filas sintéticas.
+Un CUI solo se acepta desde campo explícito o etiqueta inequívoca de siete dígitos.
 
 **CA-002-01** · RN-002-01
 Dada cualquier petición de esta capacidad al endpoint, no lleva parámetros de filtro geográfico
@@ -187,14 +199,14 @@ cada `ProcurementRecord` - ver specs/pending-adrs.md]`
 
 ## Fuera de alcance
 
-- Normalizar, deduplicar contra otras fuentes o calcular cualquier indicador de riesgo: eso es
-  `004-red-flags-engine`.
+- Calcular indicadores de riesgo: corresponde a `004-red-flags-engine`.
+  El enlace de evidencia oficial y la deduplicación canónica sí pertenecen a esta ingesta.
 - Cruzar con ejecución presupuestal: eso es responsabilidad de `004`, usando la salida de `002` y
   `003` juntas - esta capacidad no llama a `003`.
 - Descargar o interpretar el `/downloads` en bloque de OECE mientras no se reverifique que
   resuelve desde una red externa.
-- Cubrir procesos de contratación anteriores a la fecha en que esta capacidad empieza a
-  consultar el feed: no hay mecanismo confirmado de cosecha retroactiva (RN-002-06).
+- Afirmar un histórico completo por cargar el feed rotativo OCDS.
+  La cobertura histórica de Pentaho se declara por recurso y ejercicio capturados.
 
 ## Ambigüedades abiertas
 
@@ -250,6 +262,8 @@ la región del RUC (que no codifica ubicación geográfica de forma estándar) o
 entidad (frágil ante variaciones de escritura).
 
 ## Historial
+
+Enmienda humana 2026-10-15: fuentes duales y trazabilidad según Constitución v2.0.
 
 | Fecha | Cambio | Estado |
 |---|---|---|

@@ -4,13 +4,13 @@ spec: "003"
 capability: mef-ingestion
 status: draft
 created: 2026-08-20
-updated: 2026-10-13
+updated: 2026-10-15
 consumes: [ContractingEntity]
 produces: [BudgetExecutionRecord]
 open_clarifications: 6
 source: ai
-generator: claude-sonnet-5
-generated_at: 2026-08-20T00:00:00Z
+generator: codex-gpt-6
+generated_at: 2026-10-15T18:33:00Z
 confidence: low
 verified: false
 ---
@@ -63,6 +63,14 @@ procedencia de cada fuente se conservan en `raw_payload`.
 
 ## Reglas de negocio
 
+**RN-003-07. Presupuesto institucional multidimensional.**
+Se navega exclusivamente por ¿Quién gasta?, Pliego 445 o SEC_EJEC provinciales verificados.
+Cada entidad tiene un maestro ActProy por ejercicio 2024, 2025 y 2026.
+Se conservan PIA, modificación, PIM, certificación, compromiso anual, atención mensual,
+devengado, girado, avance y fecha oficial del corte diario o mensual.
+Actividad, Proyecto, fuentes y rubros son particiones del maestro, nunca totales adicionales.
+El corte mensual se compara por separado y no se suma al diario.
+
 **RN-003-01. Solo se consultan fuentes oficiales verificadas del MEF.**
 La fuente Consulta Amigable es el módulo `id=504` bajo
 `apps5.mineco.gob.pe/transparencia/Mensual/` y `/Navegador/`. Su formulario ASP.NET se navega
@@ -86,8 +94,8 @@ derivan aparte, sin mutar el payload.
 
 **RN-003-04. Cruce con `002-seace-ingestion` es por `entity_id`, no por texto de nombre.**
 El cruce entre `BudgetExecutionRecord` y `ProcurementRecord` para que `004-red-flags-engine`
-compare monto adjudicado contra monto ejecutado se hace exclusivamente por `entity_id` (RUC), y
-opcionalmente por periodo/proyecto si el dataset lo permite - nunca por coincidencia aproximada
+compare monto adjudicado contra monto ejecutado exige `entity_id`, CUI verificado y periodo
+comparable; el devengado institucional no se atribuye a un contrato - nunca por coincidencia aproximada
 de nombre de entidad o de obra, que es frágil y no auditable.
 
 **RN-003-05. `retrieved_at` y `source` son obligatorios en todo registro.**
@@ -98,6 +106,12 @@ Una falla en una fuente se registra como hueco para esa fuente; la respuesta de 
 se presenta como sustituto ni como cobertura equivalente.
 
 ## Criterios de aceptación
+
+**CA-003-08** · RN-003-07
+Hay 42 maestros: 14 entidades por tres ejercicios, sin filas distritales.
+PIM de ActProy coincide con Actividad más Proyecto con tolerancia máxima de un sol.
+Modificación es PIM menos PIA y el avance es devengado/PIM redondeado a un decimal.
+Los importes son finitos y cumplen el orden presupuestal sin ajustar la evidencia original.
 
 **CA-003-01** · RN-003-01
 Dada una extracción de Consulta Amigable, se conserva la sesión ASP.NET y cada postback incluye
@@ -152,28 +166,26 @@ el `resource_id`; Consulta Amigable registra `FUENTE_URL` y `ruta_navegacion`.
 ## Fuera de alcance
 
 - Calcular sobrecostos o cualquier indicador de riesgo: eso es `004-red-flags-engine`.
-- Cubrir datasets del MEF que no sean de ejecución presupuestal (p. ej. inversión pública detallada
-  por proyecto SNIP/Invierte.pe): fuera del alcance declarado por `PROJECT.yaml` para Fase 1,
-  salvo que una spec futura lo incorpore explícitamente.
+- Inferir avance de una obra desde el presupuesto institucional agregado.
+  La v2.0 permite Invierte.pe/SSI como evidencia complementaria con CUI verificado.
 
 ## Ambigüedades abiertas
 
 **AC-003-01. `resource_id` del dataset de ejecución presupuestal.**
-Es la ambigüedad bloqueante de esta spec. La API real (`api.datosabiertos.mef.gob.pe`) exige un
+Es una brecha del adaptador CKAN; no bloquea Consulta Amigable bajo la v2.0.
+La API (`api.datosabiertos.mef.gob.pe`) exige un
 `resource_id` (UUID) por dataset, que el *frontend* Angular obtiene dinámicamente al navegar a
 cada página de dataset - no se encontró embebido en el *bundle* JavaScript principal descargado
 en esta ronda de verificación, porque probablemente se carga en un módulo distinto (lazy-loaded).
 No lo cierro yo: requiere abrir el sitio con un navegador real (ejecutando JavaScript) y capturar
 la petición de red al navegar al dataset de ejecución de gasto, o inspección manual humana del
-Portal. Sin este dato, ningún campo de `RN-003-02` en adelante se puede verificar contra el
-esquema real.
+Portal para verificar este adaptador contra su esquema real.
 `[NECESITA ACLARACIÓN: resource_id real - requiere sesión de verificación con navegador]`
 
 **AC-003-02. Esquema de columnas del dataset (nombres de campo reales).**
 Depende de AC-003-01: sin el `resource_id` no se puede consultar el esquema
-(`datastore_search` con `limit=1` revelaría las columnas). Los campos `budgeted_amount` y
-`executed_amount` del contrato canónico (Artículo 19) son nombres provisionales, no confirmados
-contra el dataset real.
+(`datastore_search` con `limit=1` revelaría las columnas).
+Para Consulta Amigable, PIM y Devengado ya tienen correspondencia canónica explícita.
 `[NECESITA ACLARACIÓN: nombres de columna reales - depende de AC-003-01]`
 
 **AC-003-03. Relación entre el Portal de Datos Abiertos y Consulta Amigable.**
@@ -214,6 +226,8 @@ enumerados en la orden v2.0 no coinciden todos con el padrón MEF validado; no s
 `MUNICIPAL_EXECUTOR_PROVINCES` del proyecto.
 
 ## Historial
+
+Enmienda humana 2026-10-15: momentos, cortes y particiones bajo Constitución v2.0.
 
 | Fecha | Cambio | Estado |
 |---|---|---|

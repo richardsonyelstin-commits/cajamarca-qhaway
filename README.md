@@ -442,7 +442,7 @@ cajamarca-qhaway/
 |   `-- pipeline.py                      # Orquestador del pipeline integral
 |-- tests/                               # Suite de pruebas automatizadas
 |   |-- test_web_platform.py             # Pruebas integrales de la plataforma web
-|   `-- ...                              # Pruebas unitarias de las capacidades (216 tests)
+|   `-- ...                              # Pruebas unitarias de las capacidades (220 tests)
 |-- web/                                 # Plataforma web frontend (MPA)
 |   |-- css/                             # Estilos CSS compilados y tokens
 |   |-- media/                           # Logotipos vectoriales SVG y emblemas
@@ -531,7 +531,7 @@ pip install -e ".[dev]"
 ```
 
 ### 13.2 Ejecucion de la Suite de Pruebas
-El corte ejecuta 216 pruebas Python y 12 pruebas Node deterministas:
+El corte ejecuta 220 pruebas Python y 12 pruebas Node deterministas:
 
 ```bash
 # Ejecutar todas las pruebas con reporte resumido

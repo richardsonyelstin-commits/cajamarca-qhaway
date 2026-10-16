@@ -19,11 +19,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install -e ".[db]"
+      - run: pip install -e ".[db,browser]"
+      - run: python -m playwright install --with-deps chromium
       - name: Capturar y persistir sin revelar credenciales
         env:
           CAJAMARCA_QHAWAY_DATABASE_URL: ${{ secrets.CAJAMARCA_QHAWAY_DATABASE_URL }}
-        run: python scripts/harvest-dual-sources.py --persist --current
+        run: python scripts/harvest-dual-sources.py --persist --current --browser
       - name: Conservar evidencia de cobertura
         if: always()
         uses: actions/upload-artifact@v4

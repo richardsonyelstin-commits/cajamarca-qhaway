@@ -117,9 +117,20 @@ class DatabaseManager:
             observed_value TEXT NOT NULL,
             procurement_ids TEXT NOT NULL DEFAULT '[]',
             execution_record_ids TEXT NOT NULL DEFAULT '[]',
+            source_evidence_ids TEXT NOT NULL DEFAULT '[]',
+            is_active INTEGER NOT NULL DEFAULT 1,
             evidence_source TEXT NOT NULL,
             evidence_retrieved_at TEXT NOT NULL,
             retrieved_at TEXT NOT NULL,
+            generated_at TEXT NOT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS review_case_analyses (
+            alert_id TEXT PRIMARY KEY REFERENCES alerts(alert_id),
+            entity_id TEXT NOT NULL,
+            case_priority_score REAL NOT NULL CHECK (case_priority_score BETWEEN 0 AND 100),
+            priority_components TEXT NOT NULL,
+            ai_copilot_analysis TEXT NOT NULL,
             generated_at TEXT NOT NULL
         );
 

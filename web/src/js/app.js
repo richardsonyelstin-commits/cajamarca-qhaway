@@ -1279,7 +1279,7 @@ function renderEntityCard(ent, stats, flagsCount, procsCount, year) {
   const color = rate >= 35 ? 'secondary' : rate >= 30 ? 'alert-amber' : 'alert-rose';
   const statusLabel = rate >= 35 ? 'Avance (>=35%)' : rate >= 30 ? 'Moderado (30-35%)' : 'Subejecucion (<30%)';
   const flagBadgeClass = flagsCount > 0 ? (flagsCount >= 4 ? 'bg-error-container text-on-error-container' : 'bg-alert-amber/10 text-alert-amber') : 'bg-surface-container text-on-surface-variant';
-  const flagText = flagsCount > 0 ? `${flagsCount} Banderas` : 'Sin Banderas';
+  const flagText = flagsCount > 0 ? `${flagsCount} Banderas` : 'Sin alertas publicadas';
   const yearLabel = year && year !== 'all' ? year : 'Consolidado';
   const observation = rate >= 35
     ? 'Avance del gasto sobre el presupuesto autorizado del ejercicio.'

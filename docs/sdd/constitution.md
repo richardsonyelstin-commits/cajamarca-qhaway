@@ -2,18 +2,21 @@
 title: Constitución del método - cajamarca-qhaway
 status: active
 created: 2026-08-20
-updated: 2026-08-20
+updated: 2026-10-15
+version: 2.0
 applies_to: specs/**
 source: ai
-generator: claude-sonnet-5
-generated_at: 2026-08-20T00:00:00Z
+generator: codex-gpt-6
+generated_at: 2026-10-15T18:33:00Z
 confidence: medium
 verified: false
 ---
 
 # Constitución del método - cajamarca-qhaway
 
-Diecinueve artículos que gobiernan cómo se escribe, se aprueba y se deriva una especificación en
+Constitución v2.0 autorizada por el propietario el 2026-10-15 mediante contrato arquitectónico.
+Tres niveles: garantías ético-legales, evidencia e inteligencia, y evolución territorial y visual.
+Diecinueve artículos gobiernan cómo se escribe, se aprueba y se deriva una especificación en
 este proyecto. Adaptada del método de `scientific-literature-pipeline`
 (`docs/sdd/constitution.md` de ese proyecto) - misma forma, mismo rigor falsable, vocabulario
 propio de este dominio. Los artículos 14-18 no tienen equivalente allá: encapsulan los
@@ -79,7 +82,7 @@ aunque el código funcione.
 
 `ContractingEntity`, `ProcurementRecord`, `BudgetExecutionRecord`, `RedFlag`, `Alert` y
 `CitizenReport` son vocabulario común a las seis capacidades activas de Fase 1 (definidos en el
-Artículo 15). Los nombres de campo son en inglés y en `snake_case`.
+Artículo 19). Los nombres de campo son en inglés y en `snake_case`.
 
 Una spec **usa** esos contratos; no los redefine, no los renombra y no les añade campos por su
 cuenta. Si una capacidad necesita un campo que no existe, eso es un `[NECESITA ACLARACIÓN]` con
@@ -119,6 +122,12 @@ vuelve a `review`. Si el cambio altera un contrato canónico o el orden del pipe
 en `status: proposed` antes de tocar el texto.
 
 ## Artículo 10. Evidencia como requisito, no como adorno
+
+Son admisibles fuentes primarias oficiales con payload íntegro, URL y extracción UTC:
+MEF (Consulta Amigable diaria/mensual, CKAN/PNDA e Invierte.pe/SSI), OECE/SEACE
+(OCDS, Pentaho, buscador público y CONOSCE), SUNAT, Copernicus, NASA y cámaras públicas.
+Cada adaptador declara cobertura real; HTTP 403, CAPTCHA o falta de identificadores
+no equivalen a una consulta exitosa ni autorizan evidencia sintética.
 
 Toda capacidad que produce o transforma un `RedFlag` o una `Alert` declara explícitamente, en su
 spec, de qué fuente exacta, con qué fecha de extracción y con qué payload original respalda cada
@@ -165,12 +174,18 @@ alcance" está mal escrita, salvo que `PROJECT.yaml` haya cambiado antes.
 
 ## Artículo 13. Enmienda de esta constitución
 
-Este documento solo lo modifica un humano. Un agente puede proponer una enmienda por ADR,
-citando el caso concreto que la motiva; hasta que se acepte, la regla vigente es la de aquí.
+La enmienda exige mandato humano explícito y registro de decisión.
+El propietario autorizó la v2.0 y su ejecución en esta conversación el 2026-10-15.
+Las futuras enmiendas requieren autorización humana con alcance identificado.
 
 ---
 
 ## Artículo 14. Ninguna alerta sin revisión humana
+
+Nivel I: toda publicación exige dictamen colegiado con firma nominal, `reviewed_by`,
+`reviewed_at` UTC, `review_notes`, evidencia y `legal_disclaimer` obligatorio.
+Se permiten públicamente agregados del motor, conteos de revisión y datos oficiales objetivos.
+Las banderas individuales y el dossier cognitivo privado no se publican automáticamente.
 
 Ninguna capacidad publica una `Alert` de forma autónoma. El motor de red flags (`004`) produce
 candidatos; solo una decisión humana explícita, registrada con `reviewed_by` y `reviewed_at`, en
@@ -183,9 +198,18 @@ humano (Artículo 13).
 
 ## Artículo 15. Explicabilidad completa como criterio de aceptación, no como nota al margen
 
+Nivel II: TIER_1_PROBATIVE comprende reglas calibradas por régimen, modalidad, monto y UIT,
+estadística reproducible y similitud vectorial con configuración versionada.
+Cada señal expone fórmula, valor observado, umbral y referencias verificables.
+Las técnicas estadísticas declaran tamaño y cobertura de muestra; no prueban corrupción.
+TIER_2_COGNITIVE_COPILOT asiste con resumen, hipótesis, contra-hipótesis y diligencias.
+Usa esquema estricto, temperatura 0.0 cuando el proveedor la soporte y evidencia suministrada.
+Su salida nunca crea una RedFlag ni aprueba una Alert.
+El modo determinista offline se identifica como tal y declara evidencia faltante.
+
 Toda `Alert` expone, sin excepción, como parte de sus **criterios de aceptación** (no de su
 descripción): qué `RedFlag` la origina, con qué fórmula y umbral; el dato exacto que la disparó;
-la fuente (`seace-ingestion`, `mef-ingestion` o `dji-ingestion` cuando exista) con su
+la fuente primaria oficial identificada por su adaptador, con su
 `retrieved_at`; y el descargo estándar de que es un indicador automatizado, no una prueba.
 
 **Comprobación:** una spec que describa la capa de explicabilidad en prosa pero no la traduzca en
@@ -193,6 +217,10 @@ al menos un `CA-NNN-nn` verificable no puede pasar a `approved`. Es el mismo cri
 Artículo 4, aplicado sin excepción a esta capa concreta.
 
 ## Artículo 16. Prohibido el scoring o ranking de personas
+
+Se autoriza `case_priority_score` de 0 a 100 por proceso o expediente con desglose explicable,
+HHI de mercado y grafos de relaciones públicas declaradas.
+Estos valores priorizan revisión; nunca califican honorabilidad ni responsabilidad penal.
 
 Ninguna spec asigna un puntaje, ranking o nivel de riesgo a una persona identificada por nombre.
 Las alertas son sobre procesos y contratos (`ProcurementRecord`, `BudgetExecutionRecord`), nunca
@@ -209,6 +237,11 @@ análisis sea una persona con nombre propio. Si aparece fuera de una ambigüedad
 defecto bloqueante.
 
 ## Artículo 17. DJI solo para relaciones declaradas, nunca cruzado con patrimonio no declarado
+
+Se admite enriquecimiento SUNAT oficial por RUC con estado, condición, inicio de actividades,
+CIIU y representantes públicos de personas jurídicas, sujeto a minimización y procedencia.
+CU4 usa identificadores aleatorios y huellas SHA-256 sin almacenar IP del denunciante.
+SHA-256 no anonimiza por sí solo un texto ni permite prometer anonimato absoluto.
 
 Cualquier spec que involucre datos de Declaraciones Juradas de Intereses (DJI) se limita a
 mapear relaciones **declaradas** funcionario-empresa-familiar. Ninguna spec cruza DJI con gasto
@@ -227,6 +260,11 @@ precisamente por este artículo. Cuando se especifique, debe citar aquí el sign
 antes de pasar a `review`.
 
 ## Artículo 18. Ámbito geográfico fijo en Cajamarca
+
+Nivel III: las raíces canónicas son GORE Cajamarca y 13 municipalidades provinciales.
+Se habilitan ejecutoras dependientes verificadas y proyectos CUI sin duplicar totales.
+Las particiones Actividad/Proyecto y Fuentes/Rubros nunca se suman con su maestro.
+La identidad `identidad-qhaway/` puede evolucionar preservando anclajes funcionales y accesibilidad.
 
 Ninguna spec generaliza a otra región del Perú. `PROJECT.yaml` fija el alcance; un agente que
 detecte la tentación de abstraer "por si se expande a otras regiones" lo marca como ambigüedad
@@ -265,7 +303,7 @@ confirmado aquí.
 
 | Campo | Tipo | Nota |
 |---|---|---|
-| `procurement_id` | string | Determinista, derivado de `ocid` + fecha de captura |
+| `procurement_id` | string | Determinista, derivado de `ocid`; estable entre capturas |
 | `ocid` | string | El `ocid` de OCDS, sin modificar |
 | `entity_id` | string | FK a `ContractingEntity` |
 | `title` | string | `tender.title`, sin transformar |
@@ -278,20 +316,34 @@ confirmado aquí.
 | `raw_payload` | objeto | El `release` OCDS completo, sin transformar |
 | `source` | string | Fijo: `"seace-ocds"` |
 | `retrieved_at` | ISO 8601 UTC | Cuándo se obtuvo este payload |
+| `source_evidence` | lista | Evidencia complementaria con fuente, URL, payload y extracción |
 
 ### `BudgetExecutionRecord`
 
-Un registro de ejecución presupuestal, por entidad y periodo. Los campos exactos dependen del
-esquema real del dataset del MEF, que `002-mef-ingestion`… (léase `003-mef-ingestion`) no pudo
-confirmar por completo (ver ambigüedades abiertas de esa spec). Forma preliminar:
+Un registro de ejecución por entidad, ejercicio y corte oficial.
+Un maestro ActProy integra las particiones sin sumarlas nuevamente.
+Los nombres siguientes preservan el contrato serializado vigente.
 
 | Campo | Tipo | Nota |
 |---|---|---|
 | `execution_record_id` | string | Determinista, derivado de `entity_id` + periodo + fuente |
 | `entity_id` | string | FK a `ContractingEntity` |
 | `fiscal_year` | integer | Año fiscal |
-| `budgeted_amount` | number | Presupuesto institucional modificado (PIM) u homólogo - `[NECESITA ACLARACIÓN: campo exacto, spec 003]` |
-| `executed_amount` | number | Monto devengado o ejecutado - `[NECESITA ACLARACIÓN: campo exacto, spec 003]` |
+| `budgeted_amount` | number | PIM oficial |
+| `executed_amount` | number | Devengado oficial |
+| `pia_amount` | number | Presupuesto de apertura |
+| `modification_amount` | number | PIM menos PIA |
+| `certified_amount` | number | Certificación |
+| `committed_annual_amount` | number | Compromiso anual |
+| `monthly_commitment_amount` | number | Atención de compromiso mensual |
+| `paid_amount` | number | Girado |
+| `execution_pct` | number | Avance oficial redondeado a un decimal |
+| `is_canonical_total` | boolean | Solo el maestro entra en agregados institucionales |
+| `cut_type` | enum | daily o monthly |
+| `official_cut_date` | fecha ISO | Fecha declarada por el módulo oficial |
+| `breakdown_by_scope` | objeto | Proyecto y Actividad con payload y corte propios |
+| `breakdown_by_funding_source` | lista | Fuentes con rubros anidados, sin doble conteo |
+| `comparison_cuts` | lista | Cortes comparativos independientes del maestro |
 | `budget_category` | string \| null | Genérica de gasto o categoría presupuestal, si el dataset la expone |
 | `raw_payload` | objeto | Fila fuente íntegra de CKAN/PNDA o Consulta Amigable |
 | `source` | string | `"mef-datastore"` o `"mef-consulta-amigable"` |
@@ -300,7 +352,8 @@ confirmar por completo (ver ambigüedades abiertas de esa spec). Forma prelimina
 ### `RedFlag`
 
 Un indicador de riesgo activado sobre uno o más `ProcurementRecord`/`BudgetExecutionRecord`.
-Nunca un score compuesto: siempre trazable a una fórmula pública y un umbral declarado.
+Siempre trazable a una fórmula pública y un umbral declarado.
+La prioridad compuesta pertenece al expediente y no reemplaza estas señales individuales.
 
 | Campo | Tipo | Nota |
 |---|---|---|
@@ -317,21 +370,27 @@ Nunca un score compuesto: siempre trazable a una fórmula pública y un umbral d
 
 ### `Alert`
 
-Lo único que puede llegar al dashboard público (`007`, no especificado aún). Nunca existe sin
-decisión humana.
+Expediente de revisión; solo su estado publicado puede llegar al dashboard público.
+Los estados generated e in_review no son decisiones humanas.
 
 | Campo | Tipo | Nota |
 |---|---|---|
 | `alert_id` | string | Determinista |
 | `red_flag_ids` | lista de string | Uno o más `RedFlag` agrupados bajo esta alerta |
 | `entity_id` | string | La `ContractingEntity` afectada |
-| `status` | enum | `published` \| `discarded` |
-| `reviewed_by` | string | Identificador del revisor humano - nunca vacío |
-| `reviewed_at` | ISO 8601 UTC | Cuándo se decidió |
-| `review_notes` | string | Motivo no vacío de toda decisión humana |
+| `status` | enum | `generated` \| `in_review` \| `published` \| `discarded` |
+| `reviewed_by` | string o null | Firma nominal obligatoria para decisión humana |
+| `reviewed_at` | ISO 8601 UTC o null | Obligatorio al decidir |
+| `review_notes` | string o null | Motivo no vacío al decidir |
 | `legal_disclaimer` | string | Texto fijo: indicador automatizado, no prueba de corrupción |
 | `evidence` | lista de evidencia | Fórmula, dato observado, umbral, fuente y extracción de cada `RedFlag` |
 | `published_at` | ISO 8601 UTC \| null | Solo si `status == published` |
+
+Extensión autorizada para implementación del Nodo 3:
+`case_priority_score` (0-100), componentes explicables y `ai_copilot_analysis` privado.
+El dossier contiene `executive_summary`, `risk_hypothesis`, `legal_counter_hypothesis`
+y `verification_checklist`, con modo, versión y referencias de evidencia.
+Estas extensiones no se declaran disponibles hasta superar pruebas y migraciones del Nodo 3.
 
 ### `CitizenReport`
 

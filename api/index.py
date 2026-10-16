@@ -10,7 +10,6 @@ import json
 import mimetypes
 import posixpath
 import sys
-import time
 import traceback
 import urllib.parse
 from http import HTTPStatus
@@ -96,6 +95,16 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
     if rewritten_path:
         path = rewritten_path if rewritten_path.startswith("/") else f"/{rewritten_path}"
 
+    # El respaldo no dispone de autenticacion ni persistencia autoritativas.
+    # Nunca debe simular una escritura, sesion o lectura confidencial.
+    if path.startswith("/api/") and (
+        method != "GET"
+        or path.startswith(("/api/auth/", "/api/reports", "/api/review"))
+    ):
+        return 503, "application/json; charset=utf-8", json.dumps({
+            "error": "Servicio transaccional o privado temporalmente no disponible"
+        }).encode("utf-8")
+
     if path in ("/api/index.py", "/api/index", "/api"):
         path = "/index.html"
 
@@ -118,13 +127,12 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
         snap = _load_snapshot_stdlib()
         if path == "/api/health":
             payload = {
-                "status": "healthy",
+                "status": "degraded",
                 "service": "cajamarca-qhaway-web",
                 "version": "1.0.0",
                 "timestamp": snap.get("metadata", {}).get("generated_at"),
                 "region": "CAJAMARCA",
                 "runtime_mode": "stdlib_fallback",
-                "import_error": _IMPORT_ERROR,
                 "invariants": {
                     "art_10_sources": ["seace-ocds", "mef-datastore"],
                     "art_14_human_review": True,
@@ -132,7 +140,7 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
                     "art_18_universe_size": 14,
                 },
             }
-            return 200, "application/json; charset=utf-8", json.dumps(payload).encode("utf-8")
+            return 503, "application/json; charset=utf-8", json.dumps(payload).encode("utf-8")
         if path == "/api/snapshot":
             public_snap = dict(snap)
             public_snap["citizen_reports"] = []
@@ -334,9 +342,11 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
 
     base_path = WEB_DIR.resolve()
     file_path = (base_path / clean_path).resolve()
+    if not file_path.is_relative_to(base_path):
+        return 404, "text/plain; charset=utf-8", b"Not Found"
     if not file_path.exists() and not file_path.suffix:
         cand = (base_path / f"{clean_path}.html").resolve()
-        if cand.exists():
+        if cand.is_relative_to(base_path) and cand.exists():
             file_path = cand
     if not file_path.is_relative_to(base_path):
         return 403, "text/plain; charset=utf-8", b"Forbidden"

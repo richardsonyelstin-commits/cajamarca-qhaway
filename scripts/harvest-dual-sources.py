@@ -12,12 +12,15 @@ import httpx
 
 from cajamarca_qhaway.capabilities.entity_mapping.dataset import load_universe
 from cajamarca_qhaway.capabilities.live_harvest.coverage_logger import CoverageGapLogger
+from cajamarca_qhaway.capabilities.live_harvest.official_source_probe import (
+    probe_public_source,
+)
 from cajamarca_qhaway.capabilities.seace_ingestion.official_sources import (
-    CAPTCHARequired,
     OECEPentahoClient,
     SEACEBuscadorPublicoClient,
     link_procurement_evidence,
 )
+from cajamarca_qhaway.capabilities.seace_ingestion.captcha_session import BrowserCaptchaSolver
 from cajamarca_qhaway.models import ProcurementRecord
 from cajamarca_qhaway.models.procurement_source_record import ProcurementSourceRecord
 from cajamarca_qhaway.persistence.connection import DatabaseManager
@@ -31,6 +34,8 @@ async def main() -> None:
     arguments = argparse.ArgumentParser()
     arguments.add_argument("--persist", action="store_true")
     arguments.add_argument("--current", action="store_true")
+    arguments.add_argument("--browser", action="store_true")
+    arguments.add_argument("--seace-only", action="store_true")
     options = arguments.parse_args()
     database = DatabaseManager() if options.persist else None
     if database and not database.is_postgres:
@@ -52,7 +57,9 @@ async def main() -> None:
         procurements = _read_jsonl(Path("data/harvested/procurements_all.jsonl"), ProcurementRecord)
     failed: list[str] = []
     async with OECEPentahoClient() as client:
-        resources = await client.discover([datetime.now(UTC).year] if options.current else [2024, 2025, 2026])
+        resources = [] if options.seace_only else await client.discover(
+            [datetime.now(UTC).year] if options.current else [2024, 2025, 2026],
+        )
         if options.current:
             last_order = next((item for item in reversed(resources) if item.dataset == "ordenes"), None)
             resources = [item for item in resources if item.dataset != "ordenes" or item == last_order]
@@ -83,12 +90,33 @@ async def main() -> None:
                                   status_code=getattr(getattr(error, "response", None), "status_code", None),
                                   endpoint=resource.url, error_message=str(error))
                 print(json.dumps({"file": filename, "status": "FAILED", "type": type(error).__name__}), flush=True)
-    async with SEACEBuscadorPublicoClient(coverage_logger=gaps) as client:
-        try:
-            records = await client.search(entities[0], 2026)
-            print(json.dumps({"source": "seace-public", "records": len(records)}), flush=True)
-        except CAPTCHARequired:
-            print(json.dumps({"source": "seace-public", "status": "CAPTCHA_REQUIRED"}), flush=True)
+    solver = BrowserCaptchaSolver() if options.browser else None
+    for entity in entities:
+        for year in ([datetime.now(UTC).year] if options.current else [2024, 2025, 2026]):
+            checkpoint = directory / f"seace-public-{entity.entity_id}-{year}.jsonl"
+            if checkpoint.exists():
+                records = _read_jsonl(checkpoint, ProcurementSourceRecord)
+                if repository:
+                    repository.upsert_many(link_procurement_evidence(records, procurements))
+                print(json.dumps({"source": "seace-public", "entity_id": entity.entity_id,
+                                  "fiscal_year": year, "status": "CHECKPOINT",
+                                  "records": len(records)}), flush=True)
+                continue
+            async with SEACEBuscadorPublicoClient(coverage_logger=gaps, captcha_solver=solver) as client:
+                probe = await probe_public_source(client, entity, year)
+            if probe.status == "CAPTURED":
+                linked = link_procurement_evidence(probe.records, procurements)
+                temporary = checkpoint.with_suffix(".jsonl.tmp")
+                temporary.write_text("".join(
+                    json.dumps(record.model_dump(mode="json"), ensure_ascii=True) + "\n"
+                    for record in linked
+                ), encoding="utf-8")
+                temporary.replace(checkpoint)
+            if repository and probe.records:
+                repository.upsert_many(link_procurement_evidence(probe.records, procurements))
+            print(json.dumps({"source": "seace-public", "entity_id": entity.entity_id,
+                              "fiscal_year": year, "status": probe.status,
+                              "records": len(probe.records)}), flush=True)
     if database:
         with database.connection() as connection:
             cursor = connection.cursor()

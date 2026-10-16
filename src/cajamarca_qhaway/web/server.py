@@ -41,7 +41,6 @@ from cajamarca_qhaway.capabilities.review_panel import ReviewPanelService
 from cajamarca_qhaway.models import BudgetExecutionRecord
 from cajamarca_qhaway.models.alert import GENERIC_REVIEWERS
 from cajamarca_qhaway.models.budget_reconciliation import canonical_budget_records
-from cajamarca_qhaway.models.citizen_report import CitizenReport
 from cajamarca_qhaway.web.exporter import (
     build_verified_web_snapshot,
 )
@@ -59,12 +58,15 @@ try:
     _alert_repo = AlertRepository(_db_manager)
     _report_repo = CitizenReportRepository(_db_manager)
     _red_flag_repo = RedFlagRepository(_db_manager)
+    from cajamarca_qhaway.persistence.repositories.case_analysis_repository import CaseAnalysisRepository
+    _case_analysis_repo = CaseAnalysisRepository(_db_manager)
 except Exception as error:
     logger.exception("Fallo controlado del adaptador web (%s)", type(error).__name__, exc_info=False)
     _db_manager = None
     _alert_repo = None
     _report_repo = None
     _red_flag_repo = None
+    _case_analysis_repo = None
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
@@ -74,6 +76,18 @@ SECURITY_HEADERS = {
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "Content-Security-Policy": "default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval';",
 }
+
+# La respuesta publica se construye mediante lista positiva: un campo nuevo
+# (por ejemplo, expedientes de revision) no se publica por accidente.
+PUBLIC_SNAPSHOT_FIELDS = (
+    "contracting_entities", "procurement_records", "budget_execution_records",
+    "alerts", "red_flags", "geospatial_works", "geospatial_signals",
+)
+PUBLIC_METADATA_FIELDS = (
+    "version", "generated_at", "source", "region", "constitution_version",
+    "articles_covered", "total_entities", "total_procurements",
+    "total_budget_executions", "budget_coverage_by_year", "total_geospatial_works",
+)
 
 CLEAN_PAGE_ROUTES: dict[str, str] = {
     "": "index.html",
@@ -450,7 +464,7 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 "expiresAt": session["expiresAt"],
             })
 
-        if path == "/api/review/queue":
+        if path in {"/api/review/queue", "/api/review/cases"}:
             auth_header = req_headers.get("authorization", "")
             if not auth_header.startswith("Bearer "):
                 return cls._json_bytes({"error": "Sesion de veedor requerida"}, status_code=401)
@@ -458,20 +472,29 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 return cls._json_bytes({"error": "Sesion de veedor invalida o expirada"}, status_code=401)
             if _red_flag_repo is None or _alert_repo is None:
                 return cls._json_bytes({"error": "Repositorio privado de revision no disponible"}, status_code=503)
-            reviewed_ids = {
-                flag_id
-                for alert in _alert_repo.list_all()
-                for flag_id in alert.red_flag_ids
-            }
+            if path == "/api/review/cases":
+                if _case_analysis_repo is None:
+                    return cls._json_bytes({"error": "Dossiers privados no disponibles"}, status_code=503)
+                return cls._json_bytes([case.model_dump(mode='json') for case in _case_analysis_repo.list_in_review()])
+            reviewed_ids = _alert_repo.decided_flag_ids()
+            cases = _case_analysis_repo.list_in_review() if _case_analysis_repo else []
+            by_flag = {node.node_id: case for case in cases
+                       for node in case.ai_copilot_analysis.evidence_graph.nodes if node.kind == 'signal'}
             queue = [
-                flag.model_dump(mode="json")
+                {**flag.model_dump(mode="json"),
+                 'entity_id': by_flag[flag.red_flag_id].entity_id if flag.red_flag_id in by_flag else None,
+                 'case_priority_score': by_flag[flag.red_flag_id].case_priority_score if flag.red_flag_id in by_flag else 0,
+                 'alert_id': by_flag[flag.red_flag_id].alert_id if flag.red_flag_id in by_flag else None}
                 for flag in _red_flag_repo.list_all()
-                if flag.red_flag_id not in reviewed_ids
+                if flag.is_active and flag.red_flag_id not in reviewed_ids
             ]
+            queue.sort(key=lambda item: (-item['case_priority_score'], item['red_flag_id']))
             return cls._json_bytes(queue)
 
         if path == "/api/snapshot":
-            public_snapshot = dict(snapshot)
+            public_snapshot = {
+                key: snapshot.get(key, []) for key in PUBLIC_SNAPSHOT_FIELDS
+            }
             public_snapshot["citizen_reports"] = []
             public_snapshot["alerts"] = [
                 alert for alert in public_snapshot.get("alerts", [])
@@ -487,6 +510,22 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 flag for flag in public_snapshot.get("red_flags", [])
                 if flag.get("red_flag_id") in published_ids
             ]
+            raw_metadata = snapshot.get("metadata", {})
+            if not isinstance(raw_metadata, dict):
+                raw_metadata = {}
+            public_metadata = {
+                key: raw_metadata[key] for key in PUBLIC_METADATA_FIELDS
+                if key in raw_metadata
+            }
+            published_count = len(public_snapshot["alerts"])
+            public_metadata.update({
+                "total_alerts": published_count,
+                "total_published_alerts": published_count,
+                "total_candidate_red_flags": len(public_snapshot["red_flags"]),
+                "alert_status_counts": {"published": published_count},
+                "total_citizen_reports": 0,
+            })
+            public_snapshot["metadata"] = public_metadata
             return cls._json_bytes(public_snapshot)
 
         if path == "/api/entities":
@@ -739,6 +778,10 @@ class WebApiHandler(BaseHTTPRequestHandler):
     @classmethod
     def _dispatch_post_reports(cls, data: dict[str, Any]) -> tuple[int, str, bytes]:
         """Procesa una denuncia ciudadana cumpliendo CA-006-01."""
+        if _report_repo is None or (
+            os.environ.get("VERCEL") and (_db_manager is None or not _db_manager.is_postgres)
+        ):
+            return cls._error_bytes("Persistencia de denuncias no disponible", 503)
         raw_text = str(data.get("raw_text", "")).strip()
         legal_disclaimer = bool(data.get("legal_disclaimer_shown") or data.get("disclaimer_accepted"))
         raw_channel = str(data.get("channel") or data.get("source_channel") or "web").strip().lower()
@@ -767,6 +810,7 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 channel=channel,
                 related_entity_id=entity_id,
                 tracking_token_hash=tracking_token_hash,
+                persist=_report_repo.save,
             )
             payload = report.model_dump(mode="json")
 
@@ -792,7 +836,9 @@ class WebApiHandler(BaseHTTPRequestHandler):
             )
         except Exception as exc:
             logger.exception("Fallo controlado del adaptador web (%s)", type(exc).__name__, exc_info=False)
-            return cls._error_bytes(f"Error al procesar denuncia: {exc!s}", 400)
+            if isinstance(exc, ValueError):
+                return cls._error_bytes(f"Error al procesar denuncia: {exc!s}", 400)
+            return cls._error_bytes("No se pudo procesar la denuncia", 503)
 
     @classmethod
     def _dispatch_post_reports_moderate(
@@ -801,6 +847,10 @@ class WebApiHandler(BaseHTTPRequestHandler):
         req_headers: dict[str, str] | None = None,
     ) -> tuple[int, str, bytes]:
         """Modera una denuncia ciudadana (Art. 14 y RN-006-03)."""
+        if _report_repo is None or (
+            os.environ.get("VERCEL") and (_db_manager is None or not _db_manager.is_postgres)
+        ):
+            return cls._error_bytes("Persistencia de denuncias no disponible", 503)
         req_headers = req_headers or {}
         auth_header = req_headers.get("authorization", "")
         if not auth_header.startswith("Bearer "):
@@ -817,10 +867,10 @@ class WebApiHandler(BaseHTTPRequestHandler):
         report_id = str(data.get("report_id", "")).strip()
         status = str(data.get("status") or data.get("moderation_status", "")).strip()
         custom_moderator = str(data.get("moderated_by", "")).strip()
-        if custom_moderator and custom_moderator.lower() in GENERIC_REVIEWERS:
-            return cls._error_bytes(f"moderated_by no puede ser generico: '{custom_moderator}'", 400)
+        if custom_moderator and custom_moderator != moderator_nominal:
+            return cls._error_bytes("moderated_by debe coincidir con la identidad acreditada", 400)
 
-        moderator_id = custom_moderator or moderator_nominal
+        moderator_id = moderator_nominal
 
         if not report_id:
             return cls._error_bytes("El campo 'report_id' es obligatorio", 400)
@@ -868,6 +918,10 @@ class WebApiHandler(BaseHTTPRequestHandler):
         req_headers: dict[str, str] | None = None,
     ) -> tuple[int, str, bytes]:
         """Procesa una decision de revision humana cumpliendo Art. 14 y CA-005-02."""
+        if _alert_repo is None or _red_flag_repo is None or (
+            os.environ.get("VERCEL") and (_db_manager is None or not _db_manager.is_postgres)
+        ):
+            return cls._error_bytes("Persistencia de decisiones no disponible", 503)
         req_headers = req_headers or {}
         entity_id = str(data.get("entity_id", "")).strip()
         red_flag_ids = data.get("red_flag_ids", [])
@@ -914,13 +968,14 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 if _red_flag_repo is None:
                     return cls._error_bytes("Repositorio de evidencia no disponible", 503)
                 complete_flags = [_red_flag_repo.get_by_id(flag_id) for flag_id in red_flag_ids]
-                if any(flag is None for flag in complete_flags):
+                if any(flag is None or not flag.is_active for flag in complete_flags):
                     return cls._error_bytes("No se puede publicar sin evidencia completa de cada RedFlag", 409)
                 alert = pending_review.publish_alert(
                     entity_id=entity_id,
                     red_flags=[flag for flag in complete_flags if flag is not None],
                     reviewer_id=reviewed_by,
                     review_notes=review_notes,
+                    persist=_alert_repo.save,
                 )
             elif status == "discarded":
                 if _red_flag_repo is None:
@@ -933,6 +988,7 @@ class WebApiHandler(BaseHTTPRequestHandler):
                     red_flags=[flag for flag in complete_flags if flag is not None],
                     reviewer_id=reviewed_by,
                     review_notes=review_notes,
+                    persist=_alert_repo.save,
                 )
             else:
                 return cls._error_bytes(
@@ -960,7 +1016,11 @@ class WebApiHandler(BaseHTTPRequestHandler):
             return cls._json_bytes({**payload, "alert": payload}, status_code=201)
         except Exception as exc:
             logger.exception("Fallo controlado del adaptador web (%s)", type(exc).__name__, exc_info=False)
-            return cls._error_bytes(f"Error al procesar decision: {exc!s}", 400)
+            if isinstance(exc, ValueError) and "ya tiene una decision" in str(exc):
+                return cls._error_bytes("Esta alerta ya fue revisada", 409)
+            if isinstance(exc, (ValueError, TypeError)):
+                return cls._error_bytes(f"Decision invalida: {exc!s}", 400)
+            return cls._error_bytes("No se pudo persistir la decision", 503)
 
     @classmethod
     def _resolve_static(cls, path: str) -> tuple[int, str, bytes]:
@@ -1020,6 +1080,7 @@ class WebApiHandler(BaseHTTPRequestHandler):
         ):
             content_type = f"{content_type}; charset=utf-8"
         self.send_header("Content-Type", content_type)
+        self.send_header("Cache-Control", "no-store" if self.path.startswith("/api/") else "public, max-age=0")
         if content_length is not None:
             self.send_header("Content-Length", str(content_length))
         for header, val in SECURITY_HEADERS.items():

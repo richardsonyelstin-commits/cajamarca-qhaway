@@ -31,6 +31,17 @@ def test_dom_anchor_baseline_is_preserved() -> None:
         assert {key for key, _ in expected["data_attributes"]} <= {key for key, _ in parser.data}, filename
 
 
+def test_login_and_dom_baseline_contain_no_embedded_credentials() -> None:
+    parser = Anchors()
+    parser.feed(Path("web/login.html").read_text(encoding="utf-8"))
+    baseline = json.loads(
+        Path("context/snapshots/2026-10-15-dom-anchor-baseline.json").read_text(encoding="utf-8")
+    )
+    banned = {"data-pass", "data-email"}
+    assert not any(key in banned for key, _ in parser.data)
+    assert not any(key in banned for key, _ in baseline["html"]["login.html"]["data_attributes"])
+
+
 def test_official_brand_assets_are_self_hosted() -> None:
     for source in Path("identidad-qhaway/web").rglob("*"):
         if source.is_file():

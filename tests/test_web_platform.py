@@ -23,6 +23,8 @@ from pathlib import Path
 
 import pytest
 
+pytestmark = pytest.mark.usefixtures("configured_test_veedor")
+
 from cajamarca_qhaway.models import (
     Alert,
     BudgetExecutionRecord,
@@ -157,7 +159,13 @@ def test_snapshot_recomputes_candidate_count_without_private_spool(tmp_path, mon
 
     monkeypatch.setattr(exporter, "REDFLAG_SPOOL_CANDIDATES", (tmp_path / "absent.jsonl",))
     snapshot = exporter.build_verified_web_snapshot()
-    assert snapshot["metadata"]["total_candidate_red_flags"] == 471
+    from cajamarca_qhaway.capabilities.red_flags_engine.engine import RedFlagsEngine
+    from cajamarca_qhaway.models import ProcurementRecord, BudgetExecutionRecord
+    expected = RedFlagsEngine().evaluate(
+        [ProcurementRecord.model_validate(p) for p in snapshot['procurement_records']],
+        [BudgetExecutionRecord.model_validate(b) for b in snapshot['budget_execution_records']],
+    )
+    assert snapshot["metadata"]["total_candidate_red_flags"] == len(expected)
     assert snapshot["red_flags"] == []
     assert not (tmp_path / "absent.jsonl").exists()
 
@@ -169,7 +177,7 @@ def test_cloud_fallback_does_not_acknowledge_volatile_reports(variable, monkeypa
     monkeypatch.setenv(variable, "1")
     status, _, body = _stdlib_fallback_dispatch("POST", "/api/reports", {})
     assert status == 503
-    assert "persistencia" in json.loads(body)["error"]
+    assert "temporalmente no disponible" in json.loads(body)["error"]
 
 
 def test_04_article_14_human_review_invariants(web_snapshot):
@@ -599,12 +607,11 @@ def test_21_vercel_wsgi_security_and_tracking():
     # 5. Probar directamente _stdlib_fallback_dispatch para certificar el fallback estricto
     from api.index import _stdlib_fallback_dispatch
     s_code, _, _s_body = _stdlib_fallback_dispatch("GET", "/api/reports", {}, req_headers={})
-    assert s_code == 401
-    stdlib_token = SYNTHETIC_TOKEN
+    assert s_code == 503
     s_code_ok, _, _s_body_ok = _stdlib_fallback_dispatch(
-        "GET", "/api/reports", {}, req_headers={"authorization": f"Bearer {stdlib_token}"}
+        "GET", "/api/reports", {}, req_headers={"authorization": "Bearer forged-token"}
     )
-    assert s_code_ok == 401
+    assert s_code_ok == 503
 
 
 def test_22_geospatial_api_endpoints(local_web_server):
@@ -762,9 +769,9 @@ def test_24_vercel_wsgi_geospatial_and_moderation():
     signals = json.loads(body_div.decode("utf-8"))
     assert isinstance(signals, list)
 
-    # 3. POST /api/reports/moderate sin auth retorna 401
+    # 3. El fallback carece de persistencia y no puede moderar, con o sin token.
     code_unauth, _, _ = _stdlib_fallback_dispatch("POST", "/api/reports/moderate", {}, body=b"{}", req_headers={})
-    assert code_unauth == 401
+    assert code_unauth == 503
 
     # 4. Fallback rejects mutation without durable authenticated adapter
     mod_payload = json.dumps({

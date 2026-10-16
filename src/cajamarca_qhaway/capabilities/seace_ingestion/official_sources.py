@@ -8,11 +8,11 @@ import json
 import re
 import tempfile
 import xml.etree.ElementTree as ET
-from collections.abc import AsyncIterator, Iterator, Sequence
+from collections.abc import AsyncIterator, Awaitable, Callable, Iterator, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from html.parser import HTMLParser
-from typing import IO, NoReturn, Self
+from typing import IO, Any, NoReturn, Self
 from urllib.parse import parse_qs, urljoin, urlparse
 from zipfile import ZipFile
 
@@ -29,8 +29,12 @@ JSF_FORM = "tbBuscador:idFormBuscarProceso"
 XLSX_NS = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
 
 
-class CAPTCHARequired(RuntimeError):
-    """La fuente exige un desafio humano que el adaptador no evade."""
+class OfficialSourceUnavailable(RuntimeError):
+    """La fuente no permite completar una consulta oficial verificable."""
+
+
+class CAPTCHARequired(OfficialSourceUnavailable):
+    """El proveedor no pudo validar el desafio de la sesion oficial."""
 
 
 @dataclass(frozen=True)
@@ -62,11 +66,17 @@ def _source_record(
     system: str, process_id: str | None = None,
 ) -> ProcurementSourceRecord:
     process = process_id or _field(row, "CODIGOCONVOCATORIA", "CODIGOPROCESO") or None
+    if not process and system == "seace_buscador_publico":
+        nomenclature = row.get("column_3", "").strip()
+        if re.fullmatch(r"[A-Z][A-Z0-9-]*-\d{4}-[A-Z0-9./-]+", nomenclature):
+            process = nomenclature
     document = _field(row, "N_COD_CONTRATO", "CODIGO_CONTRATO", "NUM_CONTRATO", "NUMEROCONTRATO",
                       "ORDEN", "NRO_DE_ORDEN", "NUMEROORDEN", "NUMEROORDENCOMPRA")
     identity = [process or "", _field(row, "CODIGOITEM", "NITEM", "NUMITEM"),
                 _field(row, "RUCPROVEEDOR", "RUCPOSTOR", "PROVEEDORRUC", "RUC_CONTRATISTA"),
                 document]
+    if system == "seace_buscador_publico" and process:
+        identity = [process, row.get("column_2", ""), row.get("column_4", ""), ""]
     if process or document:
         source_id = ":".join(identity)
     else:
@@ -78,7 +88,9 @@ def _source_record(
         "entity_id": entity.entity_id, "source_record_id": source_id,
         "official_process_id": process, "cui": _cui(row), "source_url": resource.url,
         "retrieved_at": datetime.now(UTC),
-        "raw_payload": {"source_system": system, "identity_version": 2, "record": row},
+        "raw_payload": {"source_system": system,
+                        "identity_version": 3 if system == "seace_buscador_publico" else 2,
+                        "record": row},
     })
 
 
@@ -141,6 +153,42 @@ class OECEPentahoClient(_PublicClient):
         super().__init__(http_client)
         self.entity_codes: dict[str, str] = {}
         self.entity_catalog_url: str | None = None
+        self.discovery_evidence: list[dict[str, str]] = []
+
+    async def _catalog_source(self) -> str:
+        assert self.http is not None
+        queue = [PENTAHO_URL]
+        seen: set[str] = set()
+        sources: list[str] = []
+        self.discovery_evidence = []
+        while queue and len(seen) < 16:
+            url = queue.pop(0)
+            if url in seen:
+                continue
+            seen.add(url)
+            response = await self.http.get(url)
+            response.raise_for_status()
+            if urlparse(str(response.url)).hostname != "bi.seace.gob.pe":
+                raise ValueError("El recurso de catálogo salió del host oficial")
+            sources.append(response.text)
+            self.discovery_evidence.append({
+                "url": url, "sha256": hashlib.sha256(response.content).hexdigest(),
+                "kind": "cda" if "doQuery" in response.text else "document",
+            })
+            resources = re.findall(
+                r'<(?:script|iframe)[^>]+src=["\']([^"\']+)', response.text, re.IGNORECASE,
+            )
+            for resource in resources:
+                target = urljoin(str(response.url), resource.replace("&amp;", "&"))
+                if urlparse(target).hostname == "bi.seace.gob.pe" and target not in seen:
+                    queue.append(target)
+            if (not queue and not any(re.search(r'const\s+BASEPATH\s*=', s) for s in sources)
+                    and PENTAHO_SCRIPT not in seen):
+                queue.append(PENTAHO_SCRIPT)
+        source = "\n".join(sources)
+        if not re.search(r'const\s+BASEPATH\s*=', source):
+            raise ValueError("No se verificó catálogo tras inspeccionar recursos oficiales")
+        return source
 
     async def _load_entity_codes(self, entities: Sequence[ContractingEntity]) -> None:
         assert self.http is not None
@@ -174,22 +222,15 @@ class OECEPentahoClient(_PublicClient):
         ),
     ) -> list[DownloadResource]:
         assert self.http is not None
-        response = await self.http.get(PENTAHO_URL)
-        response.raise_for_status()
-        scripts = re.findall(r'<script[^>]+src=["\']([^"\']+)', response.text, re.IGNORECASE)
-        script_url = next((urljoin(PENTAHO_URL, value) for value in scripts if value.startswith("/") or "renderhtml" in value), PENTAHO_SCRIPT)
-        if urlparse(script_url).hostname != "bi.seace.gob.pe":
-            raise ValueError("El catalogo no apunta a un recurso oficial OECE")
-        script = await self.http.get(script_url)
-        script.raise_for_status()
-        domain = re.search(r'const\s+DOMAIN\s*=\s*["\']([^"\']+)', script.text)
-        path = re.search(r'const\s+BASEPATH\s*=\s*["\']([^"\']+)', script.text)
+        catalog_source = await self._catalog_source()
+        domain = re.search(r'const\s+DOMAIN\s*=\s*["\']([^"\']+)', catalog_source)
+        path = re.search(r'const\s+BASEPATH\s*=\s*["\']([^"\']+)', catalog_source)
         if not domain or domain.group(1) != "https://conosce.osce.gob.pe" or not path:
             raise ValueError("No se verifico el catalogo de descargas OECE")
         base_path = path.group(1)
         if not re.fullmatch(r"/buscador/assets/[A-Za-z0-9-]+/reportes", base_path):
             raise ValueError("Ruta de catalogo OECE fuera del contrato verificado")
-        if "entidadescontratantes/entidades_contratantes.csv" in script.text:
+        if "entidadescontratantes/entidades_contratantes.csv" in catalog_source:
             self.entity_catalog_url = domain.group(1) + base_path + "/entidadescontratantes/entidades_contratantes.csv"
         result: list[DownloadResource] = []
         for dataset in datasets:
@@ -198,14 +239,14 @@ class OECEPentahoClient(_PublicClient):
             prefix = "ORDENESCOMPRA" if dataset == "ordenes" else dataset.upper()
             generator = re.search(
                 rf'generateSingleDownloadYears\(["\']{dataset}["\']\s*,\s*["\']{prefix}["\']',
-                script.text,
+                catalog_source,
             )
-            if f"CONOSCE_{prefix}" not in script.text and not generator:
+            if f"CONOSCE_{prefix}" not in catalog_source and not generator:
                 raise ValueError(f"No se encontro la plantilla oficial de {dataset}")
             for year in years:
                 if year not in (2024, 2025, 2026):
                     raise ValueError("Ejercicio OECE fuera del alcance")
-                months = re.findall(r'sufijo:\s*["\']([A-Z]+)["\']', script.text) if dataset == "ordenes" else [""]
+                months = re.findall(r'sufijo:\s*["\']([A-Z]+)["\']', catalog_source) if dataset == "ordenes" else [""]
                 if dataset == "ordenes":
                     months = list(dict.fromkeys(months))
                     if len(months) != 12:
@@ -274,9 +315,13 @@ class _JSFParser(HTMLParser):
         self.cell: list[str] | None = None
         self.table = False
         self.table_seen = False
+        self.column_index = 0
+        self.in_script = False
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         a = {key: value or "" for key, value in attrs}
+        if tag == "script":
+            self.in_script = True
         if tag == "form":
             self.form = a.get("id", "")
         if tag == "input" and a.get("name") == "javax.faces.ViewState":
@@ -291,6 +336,7 @@ class _JSFParser(HTMLParser):
             self.table = True
             self.table_seen = True
         if tag == "tr" and self.table:
+            self.column_index = 0
             self.row = None if "ui-datatable-empty-message" in a.get("class", "") else {}
             if self.row is not None:
                 explicit = a.get("data-codigoconvocatoria")
@@ -305,16 +351,19 @@ class _JSFParser(HTMLParser):
             self.cell = []
 
     def handle_data(self, data: str) -> None:
-        if self.cell is not None:
+        if self.cell is not None and not self.in_script:
             self.cell.append(data)
 
     def handle_endtag(self, tag: str) -> None:
+        if tag == "script":
+            self.in_script = False
         if tag == "form":
             self.form = ""
         if tag == "select":
             self.select = ""
         if tag == "td" and self.row is not None and self.cell is not None:
-            self.row[f"column_{len(self.row)}"] = " ".join("".join(self.cell).split())
+            self.row[f"column_{self.column_index}"] = " ".join("".join(self.cell).split())
+            self.column_index += 1
             self.cell = None
         if tag == "tr" and self.row is not None:
             if self.row:
@@ -324,43 +373,143 @@ class _JSFParser(HTMLParser):
             self.table = False
 
 
+class _EntitySelectionParser(HTMLParser):
+    def __init__(self, ruc: str) -> None:
+        super().__init__(convert_charrefs=True)
+        self.ruc = ruc
+        self.matches: dict[str, tuple[str, dict[str, str]]] = {}
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        values = dict(attrs)
+        if tag != "a" or not (values.get("id") or "").endswith(":ajaxEntidad"):
+            return
+        params = dict(re.findall(r"name:'([^']+)',value:'([^']*)'", values.get("onclick") or ""))
+        if params.get("rucEntidad") == self.ruc and params.get("idOrganismo", "").isdigit():
+            self.matches[params["idOrganismo"]] = (values["id"] or "", params)
+
+
 class SEACEBuscadorPublicoClient(_PublicClient):
     def __init__(
         self, http_client: httpx.AsyncClient | None = None, *,
         coverage_logger: CoverageGapLogger | None = None,
+        captcha_solver: Callable[[str, httpx.AsyncClient, int], Awaitable[str]] | None = None,
     ) -> None:
         super().__init__(http_client)
         self.coverage_logger = coverage_logger
         self.view_state = ""
+        self.captcha_solver = captcha_solver
+        self.captcha_attempt = 0
+        self.selected_entity_name: str | None = None
 
-    def _challenge(self, message: str) -> NoReturn:
+    async def _select_entity(self, parser: _JSFParser, entity: ContractingEntity) -> None:
+        source = JSF_FORM + ":btnBuscarEntidad"
+        base = {**parser.fields, JSF_FORM: JSF_FORM,
+                JSF_FORM + ":txtRucEntidad": entity.ruc,
+                JSF_FORM + ":txtNombreEntidad": "", JSF_FORM + ":txtsigla": "",
+                "javax.faces.partial.ajax": "true"}
+
+        async def post(component: str, params: dict[str, str], render: str) -> str:
+            fields = {**base, **params, component: component,
+                      "javax.faces.source": component,
+                      "javax.faces.partial.execute": "@all",
+                      "javax.faces.partial.render": render,
+                      "javax.faces.ViewState": self.view_state}
+            response = await self._request("POST", data=fields, headers={"Faces-Request": "partial/ajax"})
+            try:
+                root = ET.fromstring(response.text)
+            except ET.ParseError:
+                self._challenge("ENTITY_SELECTION_RESPONSE_INVALID")
+            if root.tag != "partial-response" or root.find("error") is not None or root.find("redirect") is not None:
+                self._challenge("ENTITY_SELECTION_SESSION_EXPIRED")
+            fragments: list[str] = []
+            for update in root.findall("./changes/update"):
+                if "javax.faces.ViewState" in update.attrib.get("id", ""):
+                    self.view_state = update.text or ""
+                else:
+                    fragments.append(update.text or "")
+            return "\n".join(fragments)
+
+        html = await post(source, {}, JSF_FORM + ":pnlTblEntidades")
+        picker = _EntitySelectionParser(entity.ruc)
+        picker.feed(html)
+        if len(picker.matches) != 1:
+            self._challenge("ENTITY_RUC_NOT_UNIQUELY_VERIFIED")
+        component, params = next(iter(picker.matches.values()))
+        updated = await post(component, params, JSF_FORM + ":nombreEntidad")
+        refreshed = _JSFParser()
+        refreshed.feed(f'<form id="{JSF_FORM}">{updated}</form>')
+        selected = refreshed.fields.get(JSF_FORM + ":nombreEntidad", "")
+        if not selected or selected.strip() != params.get("descripcionEntidad", "").strip():
+            self._challenge("ENTITY_SELECTION_NOT_CONFIRMED")
+        self.selected_entity_name = selected
+        parser.fields.update(refreshed.fields)
+
+    def _challenge(self, message: str, status_code: int | None = None) -> NoReturn:
         if self.coverage_logger:
             self.coverage_logger.log_incident(
-                source="seace-buscador-publico", attempt=1, status_code=None,
+                source="seace-buscador-publico", attempt=max(1, self.captcha_attempt), status_code=status_code,
                 endpoint=SEACE_PUBLIC_URL, error_message=message,
             )
-        raise CAPTCHARequired(message)
+        if "CAPTCHA" in message:
+            raise CAPTCHARequired(message)
+        raise OfficialSourceUnavailable(message)
+
+    async def _request(self, method: str, **kwargs: Any) -> httpx.Response:
+        assert self.http is not None
+        try:
+            response = await self.http.request(method, SEACE_PUBLIC_URL, **kwargs)
+            response.raise_for_status()
+        except httpx.HTTPError as error:
+            status = getattr(getattr(error, "response", None), "status_code", None)
+            self._challenge(f"HTTP_{status}" if status else "NETWORK_UNAVAILABLE", status)
+        return response
+
+    async def _solve_token(self, html: str) -> str:
+        assert self.http is not None
+        if self.captcha_solver is None:
+            self._challenge("CAPTCHA_REQUIRED")
+        last_status = "CAPTCHA_REQUIRED"
+        while self.captcha_attempt < 3:
+            self.captcha_attempt += 1
+            try:
+                token = await self.captcha_solver(html, self.http, self.captcha_attempt)
+                if token:
+                    return token
+                last_status = "CAPTCHA_TOKEN_UNAVAILABLE"
+            except (OfficialSourceUnavailable, TimeoutError) as error:
+                last_status = str(error) if isinstance(error, OfficialSourceUnavailable) else "CAPTCHA_PROVIDER_TIMEOUT"
+            if self.coverage_logger and self.captcha_attempt < 3:
+                self.coverage_logger.log_incident(
+                    source="seace-buscador-publico", attempt=self.captcha_attempt,
+                    status_code=None, endpoint=SEACE_PUBLIC_URL, error_message=last_status,
+                )
+        self._challenge(last_status)
 
     async def search(
         self, entity: ContractingEntity, year: int, *, captcha_token: str | None = None,
     ) -> list[ProcurementSourceRecord]:
         assert self.http is not None
-        response = await self.http.get(SEACE_PUBLIC_URL)
-        response.raise_for_status()
+        response = await self._request("GET")
         parser = _JSFParser()
         parser.feed(response.text)
+        self.captcha_attempt = 0
+        challenge_html = response.text
+        self.selected_entity_name = None
         self.view_state = parser.view_state
         if not self.view_state:
             self._challenge("SESSION_EXPIRED")
+        if JSF_FORM + ":txtRucEntidad" in parser.fields:
+            await self._select_entity(parser, entity)
         if "recaptcha" in response.text.lower() and not captcha_token:
-            self._challenge("CAPTCHA_REQUIRED")
+            captcha_token = await self._solve_token(challenge_html)
         source = JSF_FORM + ":btnBuscarSel"
-        fields = {**parser.fields, JSF_FORM: JSF_FORM,
+        fields = {**parser.fields, JSF_FORM: JSF_FORM, source: source,
                   JSF_FORM + ":hddNumeroRuc": entity.ruc,
+                  JSF_FORM + ":nombreEntidad": self.selected_entity_name or entity.official_name,
                   JSF_FORM + ":anioConvocatoria_input": str(year),
                   "javax.faces.partial.ajax": "true", "javax.faces.source": source,
                   "javax.faces.partial.execute": "@all",
-                  "javax.faces.partial.render": JSF_FORM + ":pnlGrdResultadosProcesos",
+                  "javax.faces.partial.render": JSF_FORM + ":pnlGrdResultadosProcesos frmMesajes:gPrincipal",
                   "javax.faces.ViewState": self.view_state, "submit": "S"}
         if captcha_token:
             fields[JSF_FORM + ":tokenBusProSel"] = captcha_token
@@ -371,21 +520,24 @@ class SEACEBuscadorPublicoClient(_PublicClient):
         page_size = 15
         while True:
             fields["javax.faces.ViewState"] = self.view_state
-            response = await self.http.post(SEACE_PUBLIC_URL, data=fields, headers={
+            response = await self._request("POST", data=fields, headers={
                 "Faces-Request": "partial/ajax",
                 "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
             })
-            if response.status_code in (403, 429):
-                self._challenge(f"ACCESS_LIMIT_{response.status_code}")
-            response.raise_for_status()
             try:
                 root = ET.fromstring(response.text)
             except ET.ParseError:
                 self._challenge("SESSION_OR_RESPONSE_INVALID")
             if root.tag != "partial-response" or root.find("redirect") is not None or root.find("error") is not None:
                 self._challenge("SESSION_EXPIRED")
+            for update in root.findall("./changes/update"):
+                if "javax.faces.ViewState" in update.attrib.get("id", ""):
+                    self.view_state = update.text or ""
             if re.search(r"captcha.{0,80}(?:inval|incorrect|requer)|(?:inval|incorrect).{0,50}captcha", response.text, re.IGNORECASE):
-                self._challenge("CAPTCHA_REQUIRED")
+                if self.captcha_solver is None or self.captcha_attempt >= 3 or offset:
+                    self._challenge("CAPTCHA_REQUIRED")
+                fields[JSF_FORM + ":tokenBusProSel"] = await self._solve_token(challenge_html)
+                continue
             rows: list[dict[str, str]] = []
             table_seen = False
             for update in root.findall("./changes/update"):
@@ -393,7 +545,10 @@ class SEACEBuscadorPublicoClient(_PublicClient):
                     self.view_state = update.text or ""
                 else:
                     fragment = _JSFParser()
-                    fragment.feed(update.text or "")
+                    html = update.text or ""
+                    if update.attrib.get("id") == table_id and re.match(r"\s*<tr\b", html):
+                        html = '<tbody class="ui-datatable-data">' + html + '</tbody>'
+                    fragment.feed(html)
                     table_seen |= fragment.table_seen
                     rows.extend(fragment.rows)
                     config = re.search(r'id:"' + re.escape(table_id) + r'",paginator:.*?rows:(\d+),rowCount:(\d+)', update.text or "", re.DOTALL)
@@ -401,6 +556,10 @@ class SEACEBuscadorPublicoClient(_PublicClient):
                         page_size, expected = map(int, config.groups())
             if not self.view_state or not table_seen:
                 self._challenge("SESSION_OR_TABLE_UNAVAILABLE")
+            if self.selected_entity_name and any(
+                row.get("column_1", "").strip() != self.selected_entity_name.strip() for row in rows
+            ):
+                self._challenge("ENTITY_RESULT_FILTER_MISMATCH")
             resource = DownloadResource("procedimientos", year, SEACE_PUBLIC_URL)
             result.extend(_source_record(row, entity, resource, "seace_buscador_publico") for row in rows)
             offset += len(rows)
@@ -408,13 +567,23 @@ class SEACEBuscadorPublicoClient(_PublicClient):
                 break
             if not rows or page_size <= 0 or offset > 100_000:
                 self._challenge("PAGINATION_INCOMPLETE")
+            fields.pop(source, None)
+            fields.pop("submit", None)
             fields.update({"javax.faces.source": table_id, "javax.faces.partial.execute": table_id,
                            "javax.faces.partial.render": table_id, "javax.faces.behavior.event": "page",
                            table_id + "_pagination": "true", table_id + "_first": str(offset),
-                           table_id + "_rows": str(page_size), table_id + "_skipChildren": "true"})
+                           table_id + "_rows": str(page_size), table_id + "_skipChildren": "true",
+                           table_id + "_encodeFeature": "true", "javax.faces.partial.event": "page"})
         unique = {record.source_evidence_id: record for record in result}
         if len(unique) != len(result):
             self._challenge("DUPLICATE_PAGE_OR_IDENTITY")
+        if self.selected_entity_name:
+            return [record.model_copy(update={"raw_payload": {
+                **record.raw_payload,
+                "verified_filter": {"entity_ruc": entity.ruc,
+                                    "entity_name": self.selected_entity_name,
+                                    "fiscal_year": year},
+            }}) for record in unique.values()]
         return list(unique.values())
 
 
@@ -423,6 +592,7 @@ def link_procurement_evidence(
     records: Sequence[ProcurementSourceRecord], procurements: Sequence[ProcurementRecord],
 ) -> list[ProcurementSourceRecord]:
     identities: dict[tuple[str, str], str] = {}
+    ambiguous_nomenclatures: set[tuple[str, str]] = set()
     for procurement in procurements:
         process = str(procurement.raw_payload.get("tender", {}).get("id", ""))
         if not process:
@@ -433,8 +603,26 @@ def link_procurement_evidence(
             if key in identities and identities[key] != procurement.procurement_id:
                 raise ValueError("Identidad de proceso ambigua en OCDS")
             identities[key] = procurement.procurement_id
+        if re.fullmatch(r"[A-Z][A-Z0-9-]*-\d{4}-[A-Z0-9./-]+", procurement.title):
+            key = (procurement.entity_id, procurement.title)
+            if key in identities and identities[key] != procurement.procurement_id:
+                ambiguous_nomenclatures.add(key)
+            identities[key] = procurement.procurement_id
+    for key in ambiguous_nomenclatures:
+        identities.pop(key, None)
     result: dict[str, ProcurementSourceRecord] = {}
     for record in records:
+        if record.source_system == "seace_buscador_publico" and record.raw_payload.get("identity_version") != 3:
+            name = str(record.raw_payload.get("record", {}).get("column_3", "")).strip()
+            if re.fullmatch(r"[A-Z][A-Z0-9-]*-\d{4}-[A-Z0-9./-]+", name):
+                row = record.raw_payload.get("record", {})
+                source_id = ":".join([name, str(row.get("column_2", "")), str(row.get("column_4", "")), ""])
+                key = f"{record.source_system}:{record.dataset}:{record.fiscal_year}:{record.entity_id}:{source_id}"
+                record = record.model_copy(update={
+                    "source_record_id": source_id, "official_process_id": name,
+                    "source_evidence_id": "pe-" + hashlib.sha256(key.encode()).hexdigest()[:24],
+                    "raw_payload": {**record.raw_payload, "identity_version": 3},
+                })
         procurement_id = identities.get((record.entity_id, record.official_process_id or ""))
         result[record.source_evidence_id] = record.model_copy(update={"procurement_id": procurement_id})
     return list(result.values())

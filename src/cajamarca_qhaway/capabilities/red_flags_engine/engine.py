@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 import unicodedata
 from collections import defaultdict
+from collections.abc import Sequence
 from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
@@ -25,6 +26,7 @@ from cajamarca_qhaway.models import (
     RedFlag,
     compute_red_flag_id,
 )
+from cajamarca_qhaway.models.procurement_source_record import ProcurementSourceRecord
 
 
 class RedFlagsEngine:
@@ -93,11 +95,46 @@ class RedFlagsEngine:
             "contratacion directa selectiva",
         }
 
+    @classmethod
+    def _competitive_above_minor_threshold(cls, procurement: ProcurementRecord) -> bool:
+        method = cls._normalized_method(procurement.procurement_method)
+        detail = cls._normalized_method(procurement.raw_payload.get("tender", {}).get("procurementMethodDetails"))
+        if cls._is_direct_award(procurement) or any(word in detail for word in ("directa", "menor", "especial")):
+            return False
+        competitive = method in {"open", "public", "competitiva"} or any(
+            word in detail for word in ("licitacion", "concurso", "adjudicacion simplificada", "subasta")
+        )
+        if not competitive or procurement.awarded_amount is None:
+            return False
+        official_date = cls._official_process_date(procurement)
+        try:
+            threshold = 8 * uit_value(official_date.year) if official_date else 44000
+        except ValueError:
+            return False
+        return procurement.awarded_amount > threshold
+
+    @staticmethod
+    def _official_process_date(procurement: ProcurementRecord) -> datetime | None:
+        tender = procurement.raw_payload.get("tender", {})
+        period = tender.get("tenderPeriod", {}) if isinstance(tender, dict) else {}
+        candidates = [period.get("startDate")] if isinstance(period, dict) else []
+        awards = procurement.raw_payload.get("awards", [])
+        candidates.extend(award.get("date") for award in awards if isinstance(award, dict))
+        for value in candidates:
+            if isinstance(value, str) and value.strip():
+                try:
+                    parsed = datetime.fromisoformat(value)
+                except ValueError:
+                    continue
+                return parsed.replace(tzinfo=UTC) if parsed.tzinfo is None else parsed.astimezone(UTC)
+        return None
+
     def evaluate(
         self,
         procurements: list[ProcurementRecord],
         executions: list[BudgetExecutionRecord] | None = None,
         now: datetime | None = None,
+        source_evidence: Sequence[ProcurementSourceRecord] = (),
     ) -> list[RedFlag]:
         """Ejecuta los indicadores activos sobre los registros y retorna los RedFlag disparados."""
         current_time = now or datetime.now(UTC)
@@ -143,25 +180,31 @@ class RedFlagsEngine:
         flags.extend(self._eval_recurrent_direct_award(procurements, current_time))
         flags.extend(self._eval_hhi_concentration(procurements, current_time))
 
+        if source_evidence:
+            from cajamarca_qhaway.capabilities.red_flags_engine.source_orders import (
+                evaluate_orders,
+            )
+            flags.extend(evaluate_orders(source_evidence, current_time))
+
         return flags
 
     def _eval_single_bidder(self, procurements: list[ProcurementRecord], now: datetime) -> list[RedFlag]:
         results: list[RedFlag] = []
         ind = self.catalog["single-bidder"]
         for p in procurements:
-            if p.number_of_bidders == 1 and (p.procurement_method or "").lower() in {"open", "competitiva", "public"}:
+            if p.number_of_bidders == 1 and self._competitive_above_minor_threshold(p):
                 rf_id = compute_red_flag_id(ind.code, p.procurement_id, p.retrieved_at.isoformat())
                 results.append(
                     RedFlag(
                         red_flag_id=rf_id,
                         indicator_code=ind.code,
                         formula_description=ind.formula_description,
-                        threshold=ind.default_threshold,
+                        threshold_value=ind.default_threshold,
                         observed_value=1,
                         procurement_ids=[p.procurement_id],
                         execution_record_ids=[],
                         evidence_source=p.source,
-                        evidence_retrieved_at=p.retrieved_at,
+                        retrieved_at=p.retrieved_at,
                         generated_at=now,
                     )
                 )
@@ -184,12 +227,12 @@ class RedFlagsEngine:
                             red_flag_id=rf_id,
                             indicator_code=ind.code,
                             formula_description=ind.formula_description,
-                            threshold=ind.default_threshold,
+                            threshold_value=ind.default_threshold,
                             observed_value=round(ratio, 4),
                             procurement_ids=[],
                             execution_record_ids=[e.execution_record_id],
                             evidence_source=e.source,
-                            evidence_retrieved_at=e.retrieved_at,
+                            retrieved_at=e.retrieved_at,
                             generated_at=now,
                         )
                     )
@@ -205,12 +248,12 @@ class RedFlagsEngine:
                             red_flag_id=rf_id,
                             indicator_code=ind.code,
                             formula_description=ind.formula_description,
-                            threshold=ind.default_threshold,
+                            threshold_value=ind.default_threshold,
                             observed_value=round(ratio, 4),
                             procurement_ids=[p.procurement_id],
                             execution_record_ids=[],
                             evidence_source=p.source,
-                            evidence_retrieved_at=p.retrieved_at,
+                            retrieved_at=p.retrieved_at,
                             generated_at=now,
                         )
                     )
@@ -251,12 +294,12 @@ class RedFlagsEngine:
                             red_flag_id=rf_id,
                             indicator_code=ind.code,
                             formula_description=ind.formula_description,
-                            threshold=ind.default_threshold,
+                            threshold_value=ind.default_threshold,
                             observed_value=round(share, 4),
                             procurement_ids=supplier_procs[sup_key],
                             execution_record_ids=[],
                             evidence_source=first_proc.source,
-                            evidence_retrieved_at=first_proc.retrieved_at,
+                            retrieved_at=first_proc.retrieved_at,
                             generated_at=now,
                         )
                     )
@@ -267,27 +310,41 @@ class RedFlagsEngine:
         results: list[RedFlag] = []
         ind = self.catalog["short-tender-window"]
         for p in procurements:
+            if not self._competitive_above_minor_threshold(p):
+                continue
+            from cajamarca_qhaway.capabilities.red_flags_engine.legal_calibration import (
+                call_date,
+                full_competitive_minimum,
+            )
+            called_at = call_date(p)
+            if called_at is None:
+                continue
+            minimum = full_competitive_minimum(p, called_at)
+            if minimum is None:
+                continue
             tender_period = p.raw_payload.get("tender", {}).get("tenderPeriod", {})
-            start_str = tender_period.get("startDate")
+            start_str = called_at.isoformat()
             end_str = tender_period.get("endDate")
             if start_str and end_str:
                 try:
                     start_dt = datetime.fromisoformat(start_str)
                     end_dt = datetime.fromisoformat(end_str)
                     duration_days = (end_dt - start_dt).total_seconds() / 86400.0
-                    if 0 <= duration_days < float(ind.default_threshold):
+                    if 0 <= duration_days < minimum:
                         rf_id = compute_red_flag_id(ind.code, p.procurement_id, p.retrieved_at.isoformat())
                         results.append(
                             RedFlag(
                                 red_flag_id=rf_id,
                                 indicator_code=ind.code,
-                                formula_description=ind.formula_description,
-                                threshold=ind.default_threshold,
+                                formula_description=("Días calendario desde convocatoria oficial a ofertas, "
+                                    f"cota superior de días hábiles; mínimo {minimum} hábiles para modalidad "
+                                    "no abreviada. Requiere verificar bases, régimen y excepciones."),
+                                threshold_value=minimum,
                                 observed_value=round(duration_days, 1),
                                 procurement_ids=[p.procurement_id],
                                 execution_record_ids=[],
                                 evidence_source=p.source,
-                                evidence_retrieved_at=p.retrieved_at,
+                                retrieved_at=p.retrieved_at,
                                 generated_at=now,
                             )
                         )
@@ -302,7 +359,9 @@ class RedFlagsEngine:
             method = (p.procurement_method or "").lower()
             if method in {"direct", "menor_cuantia", "contratacion_directa", "contrato_menor"}:
                 amt = p.awarded_amount or 0.0
-                process_date = self._procurement_date(p)
+                process_date = self._official_process_date(p)
+                if process_date is None:
+                    continue
                 try:
                     uit_threshold = 8 * uit_value(process_date.year)
                 except ValueError:
@@ -317,12 +376,12 @@ class RedFlagsEngine:
                             formula_description=(
                                 f"{ind.formula_description}; ejercicio {process_date.year}"
                             ),
-                            threshold=uit_threshold,
+                            threshold_value=uit_threshold,
                             observed_value=amt,
                             procurement_ids=[p.procurement_id],
                             execution_record_ids=[],
                             evidence_source=p.source,
-                            evidence_retrieved_at=p.retrieved_at,
+                            retrieved_at=p.retrieved_at,
                             generated_at=now,
                         )
                     )
@@ -339,12 +398,13 @@ class RedFlagsEngine:
         ind = self.catalog["direct-administration-equipment-rent"]
 
         for p in procurements:
-            title_low = (p.title or "").lower()
-            method_low = (p.procurement_method or "").lower()
-            raw_text = json.dumps(p.raw_payload, ensure_ascii=False).lower()
-
-            is_direct_admin = "administracion directa" in title_low or "administracion directa" in raw_text or "directa" in method_low
-            has_machinery_rent = "alquiler de maquinaria" in title_low or "horas maquina" in title_low or "alquiler de tractor" in title_low
+            from cajamarca_qhaway.capabilities.red_flags_engine.semantic import (
+                description,
+                equipment_rental,
+            )
+            raw_text = self._normalized_method(json.dumps(p.raw_payload, ensure_ascii=False))
+            is_direct_admin = "administracion directa" in self._normalized_method(p.title) or "administracion directa" in raw_text
+            has_machinery_rent = equipment_rental(description(p))
 
             if is_direct_admin and has_machinery_rent:
                 rf_id = compute_red_flag_id(ind.code, p.procurement_id, p.retrieved_at.isoformat())
@@ -353,12 +413,12 @@ class RedFlagsEngine:
                         red_flag_id=rf_id,
                         indicator_code=ind.code,
                         formula_description=ind.formula_description,
-                        threshold=ind.default_threshold,
+                        threshold_value=ind.default_threshold,
                         observed_value=1,
                         procurement_ids=[p.procurement_id],
                         execution_record_ids=[],
                         evidence_source=p.source,
-                        evidence_retrieved_at=p.retrieved_at,
+                        retrieved_at=p.retrieved_at,
                         generated_at=now,
                     )
                 )
@@ -368,58 +428,10 @@ class RedFlagsEngine:
     def _eval_contract_splitting_orders(
         self, procurements: list[ProcurementRecord], now: datetime
     ) -> list[RedFlag]:
-        """Detecta fraccionamiento en ordenes de servicio/compra menores a 8 UIT a un mismo proveedor."""
-        results: list[RedFlag] = []
-        ind = self.catalog["contract-splitting-orders"]
-
-        by_supplier: dict[tuple[str, str], list[ProcurementRecord]] = defaultdict(list)
-        for p in procurements:
-            amt = p.awarded_amount or 0.0
-            title = p.title.lower()
-            is_order = "orden de compra" in title or "orden de servicio" in title
-            try:
-                threshold = 8 * uit_value(self._procurement_date(p).year)
-            except ValueError:
-                continue
-            if is_order and 0 < amt < threshold and p.supplier_ruc:
-                by_supplier[(p.entity_id, p.supplier_ruc)].append(p)
-
-        for (entity_id, supplier_ruc), procs in by_supplier.items():
-            ordered = sorted(procs, key=self._procurement_date)
-            window: list[ProcurementRecord] = []
-            for procurement in ordered:
-                current_date = self._procurement_date(procurement)
-                window = [
-                    item for item in window
-                    if current_date - self._procurement_date(item) <= timedelta(days=30)
-                ]
-                window.append(procurement)
-                if len(window) < int(ind.default_threshold):
-                    continue
-                procs_in_window = list(window)
-                first_proc = procs_in_window[0]
-                rf_id = compute_red_flag_id(
-                    ind.code,
-                    f"{entity_id}:{supplier_ruc}:{','.join(p.procurement_id for p in procs_in_window)}",
-                    first_proc.retrieved_at.isoformat(),
-                )
-                results.append(
-                    RedFlag(
-                        red_flag_id=rf_id,
-                        indicator_code=ind.code,
-                        formula_description=ind.formula_description,
-                        threshold=ind.default_threshold,
-                        observed_value=len(procs_in_window),
-                        procurement_ids=[p.procurement_id for p in procs_in_window],
-                        execution_record_ids=[],
-                        evidence_source=first_proc.source,
-                        evidence_retrieved_at=first_proc.retrieved_at,
-                        generated_at=now,
-                    )
-                )
-                break
-
-        return results
+        from cajamarca_qhaway.capabilities.red_flags_engine.semantic import (
+            splitting_flags,
+        )
+        return splitting_flags(procurements, now, self._official_process_date)
 
     def _eval_mef_underspending(
         self, executions: list[BudgetExecutionRecord], now: datetime
@@ -503,14 +515,14 @@ class RedFlagsEngine:
         results: list[RedFlag] = []
         for (entity_id, supplier_ruc), dated_records in grouped.items():
             dated_records.sort(key=lambda item: (item[0], item[1].procurement_id))
+            start_index = 0
             for end_index, (end_date, _) in enumerate(dated_records):
                 window_start = end_date - timedelta(days=365)
-                window = [
-                    record for award_date, record in dated_records[: end_index + 1]
-                    if window_start <= award_date <= end_date
-                ]
-                if len(window) < int(ind.default_threshold):
+                while dated_records[start_index][0] < window_start:
+                    start_index += 1
+                if end_index - start_index + 1 < int(ind.default_threshold):
                     continue
+                window = [record for _, record in dated_records[start_index:end_index+1]]
                 window.sort(key=lambda record: record.procurement_id)
                 ids = [record.procurement_id for record in window]
                 retrieved_at = max(record.retrieved_at for record in window)
