@@ -7,7 +7,7 @@ garantizando operacion determinista sin depender de conectividad externa.
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -27,7 +27,7 @@ class SeaceIngester:
         self, releases: list[dict[str, Any]], retrieved_at: datetime | None = None
     ) -> list[ProcurementRecord]:
         """Procesa una lista de releases OCDS y retorna los records que pertenecen a Cajamarca."""
-        timestamp = retrieved_at or datetime.now(timezone.utc)
+        timestamp = retrieved_at or datetime.now(UTC)
         records: list[ProcurementRecord] = []
         for rel in releases:
             rec = parse_ocds_release(

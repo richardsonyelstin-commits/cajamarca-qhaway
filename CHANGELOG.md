@@ -40,6 +40,12 @@ Se escribe **en el PR**, no en el release: reconstruirlo después es inventarlo.
 
 ### Fixed
 
+- Consolidación local de las ramas en main, conservando OAuth, revocaciones y capacidades v2.
+- Tipos canónicos, campos SUNAT opcionales y listas de persistencia corregidos; lint sin incidencias.
+- Snapshot público filtrado también en contingencia, sin expedientes ni contadores privados.
+- Validación JSON uniforme, guardado único de decisiones y moderación condicional durable.
+- Tokens malformados rechazados y redirecciones del panel verificadas con el módulo real de sesión.
+
 - El paquete de despliegue instala el driver PostgreSQL necesario para autenticacion, revocaciones y escrituras confirmadas en Vercel.
 - La API acredita revisores con Supabase Auth y rol administrado, elimina cuentas de demostracion y registra revocaciones compartidas sin guardar tokens en claro.
 - Las respuestas privadas y autenticadas impiden cache compartida, incluso con rewrites de Vercel.

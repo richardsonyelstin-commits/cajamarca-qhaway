@@ -89,16 +89,20 @@ class Universe:
         return None
 
 
+class DatasetFormatError(ValueError):
+    """El documento de entidades no cumple la estructura YAML requerida."""
+
+
 def _load_raw(path: Path) -> list[dict[str, Any]]:
     with path.open("r", encoding="utf-8") as fh:
         data = yaml.safe_load(fh)
     if not isinstance(data, dict) or "entities" not in data:
-        raise ValueError(
+        raise DatasetFormatError(
             f"{path}: se esperaba un mapeo con la clave 'entities' en la raiz del YAML"
         )
     entities = data["entities"]
     if not isinstance(entities, list):
-        raise ValueError(f"{path}: 'entities' debe ser una lista")
+        raise DatasetFormatError(f"{path}: 'entities' debe ser una lista")
     return entities
 
 

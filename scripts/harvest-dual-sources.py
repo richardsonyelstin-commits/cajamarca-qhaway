@@ -15,12 +15,14 @@ from cajamarca_qhaway.capabilities.live_harvest.coverage_logger import CoverageG
 from cajamarca_qhaway.capabilities.live_harvest.official_source_probe import (
     probe_public_source,
 )
+from cajamarca_qhaway.capabilities.seace_ingestion.captcha_session import (
+    BrowserCaptchaSolver,
+)
 from cajamarca_qhaway.capabilities.seace_ingestion.official_sources import (
     OECEPentahoClient,
     SEACEBuscadorPublicoClient,
     link_procurement_evidence,
 )
-from cajamarca_qhaway.capabilities.seace_ingestion.captcha_session import BrowserCaptchaSolver
 from cajamarca_qhaway.models import ProcurementRecord
 from cajamarca_qhaway.models.procurement_source_record import ProcurementSourceRecord
 from cajamarca_qhaway.persistence.connection import DatabaseManager

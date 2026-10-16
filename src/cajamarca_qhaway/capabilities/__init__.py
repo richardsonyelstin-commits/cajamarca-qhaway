@@ -13,11 +13,11 @@ from cajamarca_qhaway.capabilities import (
 )
 
 __all__ = [
+    "denuncia_intake",
     "entity_mapping",
-    "seace_ingestion",
+    "live_harvest",
     "mef_ingestion",
     "red_flags_engine",
     "review_panel",
-    "denuncia_intake",
-    "live_harvest",
+    "seace_ingestion",
 ]

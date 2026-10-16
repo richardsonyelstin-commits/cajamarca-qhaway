@@ -10,8 +10,6 @@ from __future__ import annotations
 
 import json
 import re
-from collections import defaultdict
-from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -87,11 +85,6 @@ def parse_chat_messages() -> list[dict[str, Any]]:
 
     with open(txt_files[0], "r", encoding="utf-8", errors="ignore") as f:
         raw_text = f.read()
-
-    msg_pattern = re.compile(
-        r"^(\d{1,2}/\d{1,2}/\d{4},\s+\d{1,2}:\d{2}\s*[ap]\.?\s*m\.)\s*-\s*(.*?):\s*(.*)$",
-        re.MULTILINE
-    )
 
     parsed_messages: list[dict[str, Any]] = []
     lines = raw_text.splitlines()
@@ -235,8 +228,7 @@ def main() -> None:
         json.dump(threads, f, indent=2, ensure_ascii=False)
 
     with open(OUT_DIR / "training_dataset_qa.jsonl", "w", encoding="utf-8") as f:
-        for pair in training_pairs:
-            f.write(json.dumps(pair, ensure_ascii=False) + "\n")
+        f.writelines(json.dumps(pair, ensure_ascii=False) + "\n" for pair in training_pairs)
 
     # Guardar resumen de tipologias
     typologies = [

@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
 from cajamarca_qhaway.capabilities.denuncia_intake import DenunciaIntakeService
 from cajamarca_qhaway.models import CitizenReport
 
-NOW_UTC = datetime.now(timezone.utc)
+NOW_UTC = datetime.now(UTC)
 
 
 def test_rechazo_sin_descargo_legal():
@@ -86,7 +86,7 @@ def test_rechazo_moderador_generico():
 def test_filtrado_reportes_por_estado():
     service = DenunciaIntakeService()
     r1 = service.submit_report(raw_text="D1", legal_disclaimer_shown=True, submitted_at=NOW_UTC)
-    r2 = service.submit_report(raw_text="D2", legal_disclaimer_shown=True, submitted_at=NOW_UTC)
+    service.submit_report(raw_text="D2", legal_disclaimer_shown=True, submitted_at=NOW_UTC)
     service.moderate_report(r1.report_id, "accepted_as_lead", "mod1@ong.pe", NOW_UTC)
 
     assert len(service.list_reports()) == 2

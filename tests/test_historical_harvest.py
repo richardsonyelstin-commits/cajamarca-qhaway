@@ -3,18 +3,19 @@
 from __future__ import annotations
 
 import asyncio
-from datetime import datetime, timezone
-import io
-import json
+from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import AsyncMock, patch
-import zipfile
 
 import httpx
 import pytest
 
 from cajamarca_qhaway.capabilities.entity_mapping.dataset import load_universe
-from cajamarca_qhaway.capabilities.live_harvest.config import HarvestConfig, MefHarvestConfig, SeaceHarvestConfig
+from cajamarca_qhaway.capabilities.live_harvest.config import (
+    HarvestConfig,
+    MefHarvestConfig,
+    SeaceHarvestConfig,
+)
 from cajamarca_qhaway.capabilities.live_harvest.coverage_logger import CoverageGapLogger
 from cajamarca_qhaway.capabilities.live_harvest.daemon import HarvesterDaemon
 from cajamarca_qhaway.capabilities.live_harvest.mef_poller import MefPoller
@@ -216,7 +217,7 @@ def test_daemon_harvest_historical_and_recent(tmp_harvest_env):
             coverage_logger=c_logger,
         )
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         mock_proc = [
             ProcurementRecord(
                 procurement_id="proc-test-2024",

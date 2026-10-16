@@ -13,9 +13,8 @@ Cumple estrictamente con:
 from __future__ import annotations
 
 import asyncio
-from datetime import datetime, timezone
 import logging
-from typing import Any
+from datetime import UTC, datetime
 from urllib.parse import urlparse
 
 import httpx
@@ -58,7 +57,7 @@ class SeacePoller:
         """Advance deduplication cursor only after durable record persistence succeeds."""
         if self._pending_seen_ocids:
             self.watermark_store.update_seace_cursor(
-                datetime.now(timezone.utc), sorted(self._pending_seen_ocids)
+                datetime.now(UTC), sorted(self._pending_seen_ocids)
             )
             self._pending_seen_ocids.clear()
             self._pending_records.clear()
@@ -117,7 +116,7 @@ class SeacePoller:
         """
         self.last_cycle_status = "FAILED"
         effective_pages = page_limit or 1
-        window_start = datetime.now(timezone.utc)
+        window_start = datetime.now(UTC)
         all_harvested_records: list[ProcurementRecord] = list(self._pending_records.values())
         new_seen_ocids: list[str] = []
         total_items_received = 0
@@ -134,7 +133,7 @@ class SeacePoller:
 
             try:
                 response_payload = res.json()
-            except Exception as json_err:
+            except (ValueError, TypeError, KeyError) as json_err:
                 self.coverage_logger.log_incident(
                     source="seace-ocds",
                     attempt=1,
@@ -152,7 +151,7 @@ class SeacePoller:
 
             raw_releases = response_payload.get("releases", [])
             total_items_received += len(raw_releases)
-            retrieval_timestamp = datetime.now(timezone.utc)
+            retrieval_timestamp = datetime.now(UTC)
 
             for rel in raw_releases:
                 if not isinstance(rel, dict):
@@ -198,7 +197,7 @@ class SeacePoller:
                 break
             url = next_link
 
-        window_end = datetime.now(timezone.utc)
+        window_end = datetime.now(UTC)
 
         if cycle_failed and total_items_received == 0:
             self.coverage_logger.log_window(
@@ -250,8 +249,8 @@ class SeacePoller:
         self.last_historical_status = "FAILED"
         self.coverage_logger.log_window(
             source="seace-ocds",
-            start_time=datetime.now(timezone.utc),
-            end_time=datetime.now(timezone.utc),
+            start_time=datetime.now(UTC),
+            end_time=datetime.now(UTC),
             items_received=0,
             items_retained=0,
             status="FAILED",

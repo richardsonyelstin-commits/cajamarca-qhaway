@@ -5,9 +5,10 @@ from __future__ import annotations
 import json
 import os
 import uuid
-from datetime import datetime, timezone
+from collections.abc import Sequence
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any
 
 from cajamarca_qhaway.models import BudgetExecutionRecord, ProcurementRecord
 
@@ -34,14 +35,13 @@ class LocalSpooler:
         return self._write_atomic("budget_executions", items)
 
     def _write_atomic(self, prefix: str, items: Sequence[dict[str, Any]]) -> Path:
-        ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+        ts = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
         rand_id = uuid.uuid4().hex[:8]
         target_file = self.spool_dir / f"spool_{prefix}_{ts}_{rand_id}.jsonl"
         tmp_file = target_file.with_suffix(f".tmp.{os.getpid()}")
 
         with open(tmp_file, "w", encoding="utf-8") as f:
-            for item in items:
-                f.write(json.dumps(item, ensure_ascii=False) + "\n")
+            f.writelines(json.dumps(item, ensure_ascii=False) + "\n" for item in items)
             f.flush()
             os.fsync(f.fileno())
 

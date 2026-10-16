@@ -36,7 +36,7 @@ def review_context(monkeypatch):
         server.WebApiHandler, "get_snapshot", classmethod(lambda cls: snapshot)
     )
     monkeypatch.setattr(server, "_red_flag_repo", SimpleNamespace(get_by_id=lambda _id: flag))
-    token, _ = server._issue_veedor_token(server.ACCREDITED_VEEDORES[0])
+    token = "synthetic-reviewer-token"
     data = {
         "entity_id": "ent-test",
         "red_flag_ids": [flag.red_flag_id],
@@ -54,7 +54,7 @@ def test_failed_decision_persistence_never_publishes(monkeypatch, review_context
     def fail_write(_alert):
         raise OSError("connection unavailable")
 
-    monkeypatch.setattr(server, "_alert_repo", SimpleNamespace(save=fail_write))
+    monkeypatch.setattr(server, "_alert_repo", SimpleNamespace(save_decision=fail_write))
     code, _, body = server.WebApiHandler._dispatch_post_review(
         {**data, "status": status}, headers
     )
@@ -82,8 +82,9 @@ def test_duplicate_decision_conflict_does_not_overwrite(monkeypatch, review_cont
         if committed:
             raise ValueError("La alerta ya tiene una decision humana registrada")
         committed.append(alert)
+        return alert
 
-    monkeypatch.setattr(server, "_alert_repo", SimpleNamespace(save=insert_once))
+    monkeypatch.setattr(server, "_alert_repo", SimpleNamespace(save_decision=insert_once))
     code, _, _ = server.WebApiHandler._dispatch_post_review(data, headers)
     assert code == 201
     assert service.list_alerts("published") == committed

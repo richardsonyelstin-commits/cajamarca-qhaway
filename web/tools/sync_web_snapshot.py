@@ -31,7 +31,7 @@ def sync_snapshot(output_path: Path | str = "web/src/data/verified-snapshot.json
             mgr = SyncManager()
             status = mgr.status()
             print(f"Estado de persistencia Supabase / DB: entidades={status.get('active_entities')}")
-        except Exception as exc:
+        except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:
             print(f"Nota: Sincronizacion directa con Supabase no disponible ({exc}), operando con snapshot local.")
 
     print("Sincronizacion completada con exito.")

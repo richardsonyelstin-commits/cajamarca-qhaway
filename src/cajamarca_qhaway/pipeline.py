@@ -10,9 +10,8 @@ automaticamente una `Alert`. Toda Alerta requiere la intervencion del `ReviewPan
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from pathlib import Path
+from dataclasses import dataclass
+from datetime import UTC, datetime
 from typing import Any
 
 from cajamarca_qhaway.capabilities.denuncia_intake import DenunciaIntakeService
@@ -21,7 +20,6 @@ from cajamarca_qhaway.capabilities.geospatial_monitoring import (
     CAJAMARCA_PUBLIC_WORKS_CATALOG,
     DivergenceSeverity,
     PhysicalFinancialDivergenceSignal,
-    PublicWorkSite,
     SatelliteObservation,
     SatelliteSensor,
     evaluate_physical_financial_divergence,
@@ -30,7 +28,12 @@ from cajamarca_qhaway.capabilities.mef_ingestion import MefIngester
 from cajamarca_qhaway.capabilities.red_flags_engine import RedFlagsEngine
 from cajamarca_qhaway.capabilities.review_panel import ReviewPanelService
 from cajamarca_qhaway.capabilities.seace_ingestion import SeaceIngester
-from cajamarca_qhaway.models import BudgetExecutionRecord, ContractingEntity, ProcurementRecord, RedFlag
+from cajamarca_qhaway.models import (
+    BudgetExecutionRecord,
+    ContractingEntity,
+    ProcurementRecord,
+    RedFlag,
+)
 
 
 @dataclass(frozen=True)
@@ -69,9 +72,9 @@ class CajamarcaPipeline:
 
         Retorna unicamente candidatos de `RedFlag` listos para ser presentados al panel humano.
         """
-        current_time = now or datetime.now(timezone.utc)
+        current_time = now or datetime.now(UTC)
         if current_time.tzinfo is None:
-            current_time = current_time.replace(tzinfo=timezone.utc)
+            current_time = current_time.replace(tzinfo=UTC)
 
         # 1. Ingesta SEACE
         procs: list[ProcurementRecord] = []

@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Protocol, Sequence, TypeVar
+from collections.abc import Sequence
+from typing import Protocol, TypeVar
 
 T = TypeVar("T")
 

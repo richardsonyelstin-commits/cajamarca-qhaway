@@ -8,13 +8,17 @@ de distribución antes de aceptar filas.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
 import re
 import unicodedata
+from datetime import UTC, datetime
 from typing import Any
 
 from cajamarca_qhaway.capabilities.entity_mapping.entity_id import normalize_ruc
-from cajamarca_qhaway.models import BudgetExecutionRecord, ContractingEntity, compute_execution_record_id
+from cajamarca_qhaway.models import (
+    BudgetExecutionRecord,
+    ContractingEntity,
+    compute_execution_record_id,
+)
 
 PNDA_DATASET_URL = (
     "https://www.datosabiertos.gob.pe/dataset/"
@@ -196,17 +200,16 @@ def _match_entity_from_mef(
     prov_name = _normalize_text(str(record.get("PROVINCIA_EJECUTORA_NOMBRE") or record.get("provincia") or ""))
 
     # GORE Cajamarca
-    if is_cajamarca:
-        if (
-            nivel == "R"
-            or "GOBIERNO REGIONAL" in pliego
-            or "REGION CAJAMARCA" in pliego
-            or "GOBIERNO REGIONAL" in ejecutora
-            or "REGION CAJAMARCA" in ejecutora
-        ):
-            for ent in entities_by_id.values():
-                if ent.entity_level == "regional" and ent.department.upper() == "CAJAMARCA":
-                    return ent
+    if is_cajamarca and (
+        nivel == "R"
+        or "GOBIERNO REGIONAL" in pliego
+        or "REGION CAJAMARCA" in pliego
+        or "GOBIERNO REGIONAL" in ejecutora
+        or "REGION CAJAMARCA" in ejecutora
+    ):
+        for ent in entities_by_id.values():
+            if ent.entity_level == "regional" and ent.department.upper() == "CAJAMARCA":
+                return ent
 
     # Municipalidades Provinciales de Cajamarca
     if is_cajamarca or "CAJAMARCA" in pliego or "CAJAMARCA" in ejecutora:
@@ -312,9 +315,9 @@ def parse_mef_record(
     if budget_category is not None:
         budget_category = str(budget_category).strip()
 
-    timestamp = retrieved_at or datetime.now(timezone.utc)
+    timestamp = retrieved_at or datetime.now(UTC)
     if timestamp.tzinfo is None:
-        timestamp = timestamp.replace(tzinfo=timezone.utc)
+        timestamp = timestamp.replace(tzinfo=UTC)
 
     exec_id = compute_execution_record_id(matched_entity.entity_id, fiscal_year, budget_category)
 

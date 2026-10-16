@@ -4,10 +4,13 @@ from __future__ import annotations
 
 import json
 
+import pytest
+
 from cajamarca_qhaway.web import server
 
 
-def test_public_snapshot_uses_positive_allowlist_and_redacts_private_counts(monkeypatch):
+@pytest.mark.parametrize("fallback", [False, True])
+def test_public_snapshot_uses_positive_allowlist_and_redacts_private_counts(monkeypatch, fallback):
     snapshot = {
         "metadata": {
             "version": "1.0.0",
@@ -37,7 +40,13 @@ def test_public_snapshot_uses_positive_allowlist_and_redacts_private_counts(monk
         server.WebApiHandler, "get_snapshot", classmethod(lambda cls: snapshot)
     )
 
-    code, _, body = server.WebApiHandler._dispatch_api_get("/api/snapshot", {})
+    if fallback:
+        from api import index
+
+        monkeypatch.setattr(index, "_STDLIB_SNAPSHOT_CACHE", snapshot)
+        code, _, body = index._stdlib_fallback_dispatch("GET", "/api/snapshot", {})
+    else:
+        code, _, body = server.WebApiHandler._dispatch_api_get("/api/snapshot", {})
 
     assert code == 200
     assert b"NO-PUBLICAR" not in body

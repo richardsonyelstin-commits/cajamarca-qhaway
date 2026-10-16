@@ -25,6 +25,7 @@ ajustar la columna "Cargar cuando".
 |---|---|---|---|
 | `architecture/007-audit-remediation-security-consistency.md` | Identidad acreditada, revocacion compartida, privacidad HTTP y guardado atomico | Corregir F01-F08 o configurar acceso de revisores | ~2200 |
 | `adr/0014-identidad-acreditada-y-consistencia-privada.md` | Propuesta de identidad Supabase y decisiones privadas consistentes | Evaluar o desplegar la remediacion de TK-307 | ~800 |
+| `audits/2026-10-15-project-cleanup.md` | Limpieza y deuda | Retomar limpieza | ~1400 |
 | `adr/0014-constitucion-v2-y-priorizacion-de-expedientes.md` | Reforma humana v2 y niveles de IA | Aplicar el contrato autorizado el 2026-10-15 | ~700 |
 | `audits/2026-10-15-constitutional-v2-gates.md` | Evidencia de compuertas y brecha CAPTCHA | Retomar la ejecución del contrato v2 | ~700 |
 | `audits/2026-10-15-remediation-phase-two.md` | Endurecimiento de sesiones, moderación y snapshot público | Verificar la segunda fase de remediación | ~550 |

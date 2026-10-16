@@ -7,8 +7,9 @@ explícita de un revisor humano autenticado.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from typing import Callable, Literal
+from collections.abc import Callable
+from datetime import UTC, datetime
+from typing import Literal
 
 from cajamarca_qhaway.models import Alert, AlertEvidence, RedFlag, compute_alert_id
 
@@ -53,9 +54,9 @@ class ReviewPanelService:
         if not flag_ids:
             raise ValueError("Debe proporcionarse al menos un RedFlag para publicar una alerta")
 
-        now = reviewed_at or datetime.now(timezone.utc)
+        now = reviewed_at or datetime.now(UTC)
         if now.tzinfo is None:
-            now = now.replace(tzinfo=timezone.utc)
+            now = now.replace(tzinfo=UTC)
 
         alert_id = compute_alert_id(entity_id, flag_ids)
         alert = Alert(
@@ -91,9 +92,9 @@ class ReviewPanelService:
         if not flag_ids:
             raise ValueError("Debe proporcionarse al menos un RedFlag para registrar una alerta descartada")
 
-        now = reviewed_at or datetime.now(timezone.utc)
+        now = reviewed_at or datetime.now(UTC)
         if now.tzinfo is None:
-            now = now.replace(tzinfo=timezone.utc)
+            now = now.replace(tzinfo=UTC)
 
         alert_id = compute_alert_id(entity_id, flag_ids)
         alert = Alert(

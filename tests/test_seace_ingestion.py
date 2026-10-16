@@ -2,15 +2,17 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
 from cajamarca_qhaway.capabilities.entity_mapping.dataset import load_universe
-from cajamarca_qhaway.capabilities.seace_ingestion import SeaceIngester, parse_ocds_release
+from cajamarca_qhaway.capabilities.seace_ingestion import (
+    SeaceIngester,
+)
 from cajamarca_qhaway.models import ProcurementRecord
 
-NOW_UTC = datetime.now(timezone.utc)
+NOW_UTC = datetime.now(UTC)
 
 
 @pytest.fixture

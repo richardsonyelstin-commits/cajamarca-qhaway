@@ -23,7 +23,8 @@ SYNONYMS: dict[str, str] = {'arrendamiento': 'alquiler', 'arrendar': 'alquiler',
 def tokens(text: str) -> list[str]:
     normalized = ''.join(c for c in unicodedata.normalize('NFKD', text.casefold())
                          if not unicodedata.combining(c))
-    return [SYNONYMS[word] if word in SYNONYMS else word for word in re.findall(r'[a-z]{3,}', normalized)
+    words: list[str] = re.findall(r'[a-z]{3,}', normalized)
+    return [SYNONYMS.get(word, word) for word in words
             if word not in STOPWORDS]
 
 

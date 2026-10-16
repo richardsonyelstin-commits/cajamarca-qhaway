@@ -9,7 +9,7 @@ tecnicas de divergencia con salvaguardas constitucionales (Art. 14, 16, 18 y 19)
 from __future__ import annotations
 
 import hashlib
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from cajamarca_qhaway.capabilities.geospatial_monitoring.models import (
     DISCLAIMER_ART_14,
@@ -57,9 +57,9 @@ def evaluate_physical_financial_divergence(
                     "Prohibido el uso de feeds con lectura de placas (ALPR)."
                 )
 
-    eval_dt = evaluation_time or datetime.now(timezone.utc)
+    eval_dt = evaluation_time or datetime.now(UTC)
     if eval_dt.tzinfo is None:
-        eval_dt = eval_dt.replace(tzinfo=timezone.utc)
+        eval_dt = eval_dt.replace(tzinfo=UTC)
 
     # Analisis de sensores satelitales
     has_radar = any(obs.is_radar for obs in observations)
@@ -74,10 +74,9 @@ def evaluate_physical_financial_divergence(
         if obs.is_radar:
             # Radar SAR atraviesa nubes y lluvia, medicion valida
             valid_indices.append(obs.structural_activity_index)
-        elif obs.is_optical:
+        elif obs.is_optical and obs.cloud_cover_pct <= 50.0:
             # Optico: descartar si la nubosidad supera el 50%
-            if obs.cloud_cover_pct <= 50.0:
-                valid_indices.append(obs.structural_activity_index)
+            valid_indices.append(obs.structural_activity_index)
 
     # Sin observacion util no hay base para inferir actividad cero.
     if not valid_indices:

@@ -13,19 +13,18 @@ Cumple estrictamente con Antislop R-02 (cero em-dash en todo el codigo y datos).
 from __future__ import annotations
 
 import json
+
 import pytest
 
 from cajamarca_qhaway.capabilities.sunat_enrichment import (
     CodartSunatClient,
     ConstitutionalPrivacyGuardError,
-    SunatEnrichmentService,
     SunatRucProfile,
     assert_constitutional_ruc_only,
     assert_ruc_not_dni,
     validate_ruc_checksum,
 )
 from cajamarca_qhaway.web.server import WebApiHandler
-
 
 # --- 1. Validacion matematica Modulo 11 SUNAT ---
 
@@ -252,7 +251,7 @@ def test_endpoint_sunat_ruc_valid_lookup() -> None:
 
 def test_endpoint_sunat_ruc_blocks_dni_with_403() -> None:
     """Verifica que GET /api/sunat/ruc?dni=... sea bloqueado con 403 Forbidden citando Art. 16."""
-    status, ctype, body = WebApiHandler.dispatch("GET", "/api/sunat/ruc", {"dni": ["70238666"]})
+    status, _ctype, body = WebApiHandler.dispatch("GET", "/api/sunat/ruc", {"dni": ["70238666"]})
     assert status == 403
     data = json.loads(body.decode("utf-8"))
     assert data["code"] == "CONSTITUTIONAL_PRIVACY_GUARD_ART_16"
@@ -262,7 +261,7 @@ def test_endpoint_sunat_ruc_blocks_dni_with_403() -> None:
 
 def test_endpoint_sunat_ruc_blocks_8_digit_identifier_with_403() -> None:
     """Verifica que pasar un DNI de 8 digitos en el parametro ruc tambien devuelva 403 Forbidden."""
-    status, ctype, body = WebApiHandler.dispatch("GET", "/api/sunat/ruc", {"ruc": ["70238666"]})
+    status, _ctype, body = WebApiHandler.dispatch("GET", "/api/sunat/ruc", {"ruc": ["70238666"]})
     assert status == 403
     data = json.loads(body.decode("utf-8"))
     assert data["code"] == "CONSTITUTIONAL_PRIVACY_GUARD_ART_16"
@@ -271,7 +270,7 @@ def test_endpoint_sunat_ruc_blocks_8_digit_identifier_with_403() -> None:
 
 def test_endpoint_sunat_ruc_summary() -> None:
     """Verifica que GET /api/sunat/ruc sin parametros devuelva el resumen del padron consolidado."""
-    status, ctype, body = WebApiHandler.dispatch("GET", "/api/sunat/ruc", {})
+    status, _ctype, body = WebApiHandler.dispatch("GET", "/api/sunat/ruc", {})
     assert status == 200
     data = json.loads(body.decode("utf-8"))
     assert "total_records" in data

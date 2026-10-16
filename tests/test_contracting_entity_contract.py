@@ -2,27 +2,27 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 from pydantic import ValidationError
 
 from cajamarca_qhaway.models.contracting_entity import ContractingEntity
 
-NOW = datetime(2026, 8, 20, tzinfo=timezone.utc)
+NOW = datetime(2026, 8, 20, tzinfo=UTC)
 
 
 def _base_kwargs(**overrides: object) -> dict[str, object]:
-    kwargs: dict[str, object] = dict(
-        entity_id="ce-0000000000000000",
-        official_name="MUNICIPALIDAD PROVINCIAL DE CAJAMARCA",
-        entity_level="provincial_municipality",
-        province="CAJAMARCA",
-        ruc="20143623042",
-        consucode_id=None,
-        verified_at=NOW,
-        active=True,
-    )
+    kwargs: dict[str, object] = {
+        "entity_id": "ce-0000000000000000",
+        "official_name": "MUNICIPALIDAD PROVINCIAL DE CAJAMARCA",
+        "entity_level": "provincial_municipality",
+        "province": "CAJAMARCA",
+        "ruc": "20143623042",
+        "consucode_id": None,
+        "verified_at": NOW,
+        "active": True,
+    }
     kwargs.update(overrides)
     return kwargs
 

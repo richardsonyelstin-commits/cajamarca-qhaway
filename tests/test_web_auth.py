@@ -10,8 +10,6 @@ from contextlib import contextmanager
 import httpx
 import pytest
 
-from cajamarca_qhaway.persistence.config import DatabaseConfig
-from cajamarca_qhaway.persistence.connection import DatabaseManager
 from cajamarca_qhaway.web.auth import AuthService, AuthUnavailable, InvalidCredentials
 
 
@@ -20,27 +18,6 @@ def synthetic_token(**changes):
     encoded = base64.urlsafe_b64encode(json.dumps(payload).encode()).decode().rstrip("=")
     return f"synthetic-header.{encoded}.synthetic-signature"
 
-
-@pytest.fixture
-def auth_setup(monkeypatch):
-    monkeypatch.setenv("SUPABASE_URL", "https://synthetic-project.supabase.co")
-    monkeypatch.setenv("SUPABASE_ANON_KEY", "synthetic-public-key")
-    for name in ("VERCEL", "CAJAMARCA_QHAWAY_ENV", "ENVIRONMENT",
-                 "CAJAMARCA_QHAWAY_SUPABASE_URL", "CAJAMARCA_QHAWAY_SUPABASE_ANON_KEY"):
-        monkeypatch.delenv(name, raising=False)
-    db = DatabaseManager(DatabaseConfig(database_url=None))
-    user = {"id": "synthetic-reviewer-id", "email": "reviewer@example.test",
-            "email_confirmed_at": "2026-01-01T00:00:00Z",
-            "app_metadata": {"role": "reviewer", "name": "Persona Sintetica"}}
-    calls = []
-
-    def handle(request):
-        calls.append(request)
-        return httpx.Response(200, json=user)
-
-    client = httpx.Client(transport=httpx.MockTransport(handle))
-    yield db, user, calls, client
-    client.close()
 
 
 def test_identity_requires_provider_verified_accreditation(auth_setup):
@@ -127,10 +104,12 @@ def test_provider_errors_and_unconfirmed_identity_are_rejected(auth_setup):
     db, user, _, client = auth_setup
     user["email_confirmed_at"] = None
     assert AuthService(db, client=client).verify(synthetic_token()) is None
-    with httpx.Client(transport=httpx.MockTransport(
-        lambda request: httpx.Response(503))) as unavailable:
-        with pytest.raises(AuthUnavailable):
-            AuthService(db, client=unavailable).verify(synthetic_token())
+    with (
+        httpx.Client(transport=httpx.MockTransport(
+            lambda request: httpx.Response(503))) as unavailable,
+        pytest.raises(AuthUnavailable),
+    ):
+        AuthService(db, client=unavailable).verify(synthetic_token())
     with httpx.Client(transport=httpx.MockTransport(
         lambda request: httpx.Response(401))) as denied:
         assert AuthService(db, client=denied).verify(synthetic_token()) is None

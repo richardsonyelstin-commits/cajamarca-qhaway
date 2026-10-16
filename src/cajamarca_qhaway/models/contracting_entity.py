@@ -58,7 +58,7 @@ class ContractingEntity(BaseModel):
     active: bool = True
 
     @model_validator(mode="after")
-    def _ruc_es_de_once_digitos(self) -> "ContractingEntity":
+    def _ruc_es_de_once_digitos(self) -> ContractingEntity:
         """CA-001-02: el RUC tiene exactamente 11 digitos numericos."""
         if not (len(self.ruc) == 11 and self.ruc.isdigit()):
             raise ValueError(
@@ -67,7 +67,7 @@ class ContractingEntity(BaseModel):
         return self
 
     @model_validator(mode="after")
-    def _province_solo_null_para_regional(self) -> "ContractingEntity":
+    def _province_solo_null_para_regional(self) -> ContractingEntity:
         """RN-001-08 / CA-001-06: `province` es `None` solo para el Gobierno Regional."""
         if self.entity_level == "regional":
             if self.province is not None:
@@ -88,13 +88,13 @@ class ContractingEntity(BaseModel):
         return self
 
     @model_validator(mode="after")
-    def _entity_id_no_vacio(self) -> "ContractingEntity":
+    def _entity_id_no_vacio(self) -> ContractingEntity:
         if not self.entity_id:
             raise ValueError("entity_id no puede estar vacio")
         return self
 
     @model_validator(mode="after")
-    def _verified_at_con_zona_horaria(self) -> "ContractingEntity":
+    def _verified_at_con_zona_horaria(self) -> ContractingEntity:
         """`verified_at` es ISO 8601 UTC (Articulo 19): un `datetime` ingenuo no dice
         si es UTC u hora local de Peru, y eso rompe la trazabilidad que exige el
         Articulo 10 de la constitucion."""
@@ -125,4 +125,4 @@ PROVINCIAS_CAJAMARCA: frozenset[str] = frozenset(
     }
 )
 
-__all__ = ["ContractingEntity", "Department", "EntityLevel", "PROVINCIAS_CAJAMARCA"]
+__all__ = ["PROVINCIAS_CAJAMARCA", "ContractingEntity", "Department", "EntityLevel"]

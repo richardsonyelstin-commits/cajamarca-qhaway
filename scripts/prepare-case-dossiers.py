@@ -7,11 +7,23 @@ from collections import defaultdict
 from datetime import UTC, datetime
 from pathlib import Path
 
-from cajamarca_qhaway.capabilities.review_panel.ai_copilot import LocalForensicReasoner, case_priority
-from cajamarca_qhaway.models import Alert, AlertEvidence, BudgetExecutionRecord, ProcurementRecord, RedFlag, compute_alert_id
+from cajamarca_qhaway.capabilities.review_panel.ai_copilot import (
+    LocalForensicReasoner,
+    case_priority,
+)
+from cajamarca_qhaway.models import (
+    Alert,
+    AlertEvidence,
+    BudgetExecutionRecord,
+    ProcurementRecord,
+    RedFlag,
+    compute_alert_id,
+)
 from cajamarca_qhaway.models.case_analysis import ReviewCaseAnalysis
 from cajamarca_qhaway.models.procurement_source_record import ProcurementSourceRecord
-from cajamarca_qhaway.persistence.repositories.red_flag_repository import RedFlagRepository
+from cajamarca_qhaway.persistence.repositories.red_flag_repository import (
+    RedFlagRepository,
+)
 from cajamarca_qhaway.web.exporter import _read_jsonl
 
 

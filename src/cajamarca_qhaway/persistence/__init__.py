@@ -20,14 +20,14 @@ from cajamarca_qhaway.persistence.spool import LocalSpooler
 from cajamarca_qhaway.persistence.sync import SyncManager
 
 __all__ = [
+    "AlertRepository",
+    "BudgetExecutionRepository",
+    "CitizenReportRepository",
     "DatabaseConfig",
     "DatabaseManager",
-    "LocalSpooler",
-    "SyncManager",
     "EntityRepository",
+    "LocalSpooler",
     "ProcurementRepository",
-    "BudgetExecutionRepository",
     "RedFlagRepository",
-    "AlertRepository",
-    "CitizenReportRepository",
+    "SyncManager",
 ]

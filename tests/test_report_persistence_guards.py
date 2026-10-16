@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import io
 import hashlib
+import io
 import json
 from types import SimpleNamespace
 
@@ -11,14 +11,13 @@ import pytest
 
 pytestmark = pytest.mark.usefixtures("configured_test_veedor")
 
+from cajamarca_qhaway.capabilities.denuncia_intake.service import DenunciaIntakeService
 from cajamarca_qhaway.models import CitizenReport
+from cajamarca_qhaway.persistence.config import DatabaseConfig
+from cajamarca_qhaway.persistence.connection import DatabaseManager
 from cajamarca_qhaway.persistence.repositories.citizen_report_repository import (
     CitizenReportRepository,
 )
-from cajamarca_qhaway.persistence.config import DatabaseConfig
-from cajamarca_qhaway.persistence.connection import DatabaseManager
-
-from cajamarca_qhaway.capabilities.denuncia_intake.service import DenunciaIntakeService
 from cajamarca_qhaway.web import server
 
 
@@ -63,7 +62,7 @@ def test_report_moderation_failed_persistence_keeps_pending_status(monkeypatch):
     )
     snapshot["citizen_reports"].append(report.model_dump(mode="json"))
     before = json.dumps(snapshot, sort_keys=True)
-    token, _ = server._issue_veedor_token(server.ACCREDITED_VEEDORES[0])
+    token = "synthetic-reviewer-token"
     code, _, body = handler._dispatch_post_reports_moderate(
         {"report_id": report.report_id, "status": "accepted_as_lead"},
         {"authorization": f"Bearer {token}"},
@@ -91,7 +90,7 @@ def test_moderation_refuses_report_absent_from_database(monkeypatch):
     report = service.submit_report(raw_text="Solo en memoria", legal_disclaimer_shown=True)
     snapshot["citizen_reports"].append(report.model_dump(mode="json"))
     monkeypatch.setattr(server._report_repo, "get_by_id", lambda _id: None)
-    token, _ = server._issue_veedor_token(server.ACCREDITED_VEEDORES[0])
+    token = "synthetic-reviewer-token"
 
     code, _, _ = handler._dispatch_post_reports_moderate(
         {"report_id": report.report_id, "status": "rejected"},
@@ -104,7 +103,9 @@ def test_moderation_refuses_report_absent_from_database(monkeypatch):
 
 
 def test_moderation_compare_and_swap_prevents_second_decision():
-    from cajamarca_qhaway.capabilities.denuncia_intake.service import DenunciaIntakeService
+    from cajamarca_qhaway.capabilities.denuncia_intake.service import (
+        DenunciaIntakeService,
+    )
 
     repository = CitizenReportRepository(DatabaseManager(DatabaseConfig(database_url=None)))
     service = DenunciaIntakeService()
@@ -130,7 +131,7 @@ def test_wsgi_disables_api_shared_caching(monkeypatch):
     for app in (server.app, index.app):
         captured = {}
 
-        def start_response(status, headers):
+        def start_response(status, headers, captured=captured):
             captured["status"] = status
             captured["headers"] = dict(headers)
 
@@ -141,7 +142,7 @@ def test_wsgi_disables_api_shared_caching(monkeypatch):
             "wsgi.input": io.BytesIO(),
             "CONTENT_LENGTH": "0",
         }, start_response)
-        assert captured["headers"]["Cache-Control"] == "no-store"
+        assert captured["headers"]["Cache-Control"] == "private, no-store"
         assert b"".join(response)
 
     monkeypatch.setattr(index, "_canonical_wsgi_app", None)
@@ -157,4 +158,4 @@ def test_wsgi_disables_api_shared_caching(monkeypatch):
         "wsgi.input": io.BytesIO(),
         "CONTENT_LENGTH": "0",
     }, fallback_response)
-    assert captured["headers"]["Cache-Control"] == "no-store"
+    assert captured["headers"]["Cache-Control"] == "private, no-store"

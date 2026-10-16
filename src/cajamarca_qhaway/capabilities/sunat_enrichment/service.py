@@ -4,18 +4,20 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime, timezone
+from collections.abc import Iterable
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 import yaml
 
 from cajamarca_qhaway.capabilities.sunat_enrichment.client import CodartSunatClient
 from cajamarca_qhaway.capabilities.sunat_enrichment.models import SunatRucProfile
-from cajamarca_qhaway.capabilities.sunat_enrichment.padron import download_target_profiles
+from cajamarca_qhaway.capabilities.sunat_enrichment.padron import (
+    download_target_profiles,
+)
 from cajamarca_qhaway.capabilities.sunat_enrichment.validator import (
     assert_constitutional_ruc_only,
-    assert_ruc_not_dni,
     validate_ruc_checksum,
 )
 
@@ -56,7 +58,7 @@ class SunatEnrichmentService:
                         and item.get("raw_payload", {}).get("source_url")
                     ):
                         self._registry[ruc] = SunatRucProfile(**item)
-            except Exception as exc:
+            except (OSError, ValueError, TypeError, AttributeError) as exc:
                 logger.warning("Error leyendo registry existente: %s", exc)
 
     def extract_universe_entities(self) -> dict[str, dict[str, Any]]:
@@ -160,7 +162,7 @@ class SunatEnrichmentService:
     def save_registry(self) -> Path:
         """Persiste el padron consolidado de RUCs en data/sunat/ruc_registry.json."""
         self.registry_path.parent.mkdir(parents=True, exist_ok=True)
-        now_iso = datetime.now(timezone.utc).isoformat()
+        now_iso = datetime.now(UTC).isoformat()
 
         public_count = sum(1 for p in self._registry.values() if p.es_entidad_publica)
         contractors_count = len(self._registry) - public_count

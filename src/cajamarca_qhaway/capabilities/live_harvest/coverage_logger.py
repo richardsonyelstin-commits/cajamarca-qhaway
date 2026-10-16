@@ -7,7 +7,7 @@ declarando las ventanas temporales reales muestreadas e impidiendo el silenciami
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -36,14 +36,14 @@ class CoverageGapLogger:
     ) -> dict[str, Any]:
         """Registra la ventana de tiempo real muestreada (RN-002-06)."""
         if start_time.tzinfo is None:
-            start_time = start_time.replace(tzinfo=timezone.utc)
+            start_time = start_time.replace(tzinfo=UTC)
         if end_time.tzinfo is None:
-            end_time = end_time.replace(tzinfo=timezone.utc)
+            end_time = end_time.replace(tzinfo=UTC)
 
         record = {
             "type": "coverage_window",
             "source": source,
-            "logged_at": datetime.now(timezone.utc).isoformat(),
+            "logged_at": datetime.now(UTC).isoformat(),
             "window_start": start_time.isoformat(),
             "window_end": end_time.isoformat(),
             "items_received": items_received,
@@ -66,7 +66,7 @@ class CoverageGapLogger:
         record = {
             "type": "coverage_gap_incident",
             "source": source,
-            "logged_at": datetime.now(timezone.utc).isoformat(),
+            "logged_at": datetime.now(UTC).isoformat(),
             "attempt": attempt,
             "status_code": status_code,
             "endpoint": endpoint,

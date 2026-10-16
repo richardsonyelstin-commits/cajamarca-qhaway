@@ -29,6 +29,13 @@ Thumbs.db
 # Contexto generado: reconstruible, no versionado
 context/snapshots/*.tmp
 .cache/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyright/
+.coverage
+.coverage.*
+htmlcov/
 coverage/
 *.egg-info/
 src/*.egg-info/

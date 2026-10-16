@@ -4,9 +4,11 @@ export async function verifyReviewerSession(token) {
   const response = await fetch('/api/auth/session', {
     headers: { Authorization: `Bearer ${token}` }, cache: 'no-store'
   });
-  const result = await response.json();
+  const result = typeof response.json === 'function' ? await response.json() : {};
   if (!response.ok || result.valid !== true || !result.veedor || !result.expiresAt) {
-    throw new Error(result.error || 'No se pudo verificar la acreditacion.');
+    const failure = new Error(result.error || 'No se pudo verificar la acreditacion.');
+    failure.reason = response.status >= 500 ? 'error' : 'expired';
+    throw failure;
   }
   return result.veedor;
 }

@@ -6,7 +6,7 @@ constructores de URLs satelitales (NASA GIBS / CMR) y el evaluador de divergenci
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from pydantic import ValidationError
@@ -14,7 +14,6 @@ from pydantic import ValidationError
 from cajamarca_qhaway.capabilities.geospatial_monitoring import (
     CAJAMARCA_PROVINCES_GEO,
     CAJAMARCA_PUBLIC_WORKS_CATALOG,
-    DISCLAIMER_ART_14,
     DivergenceSeverity,
     GeoBoundingBox,
     PhysicalFinancialDivergenceSignal,
@@ -29,7 +28,7 @@ from cajamarca_qhaway.capabilities.geospatial_monitoring import (
     list_work_sites_by_province,
 )
 
-NOW_UTC = datetime.now(timezone.utc)
+NOW_UTC = datetime.now(UTC)
 
 
 def _test_work_site() -> PublicWorkSite:

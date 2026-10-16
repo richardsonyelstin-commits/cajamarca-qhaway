@@ -2,14 +2,12 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
-
-import pytest
+from datetime import UTC, datetime
 
 from cajamarca_qhaway.models import Alert, RedFlag
 from cajamarca_qhaway.pipeline import CajamarcaPipeline
 
-NOW_UTC = datetime.now(timezone.utc)
+NOW_UTC = datetime.now(UTC)
 
 
 def test_pipeline_e2e_flujo_completo():

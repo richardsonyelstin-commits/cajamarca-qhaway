@@ -63,7 +63,9 @@ def test_splitting_does_not_flag_small_total_or_mixed_fiscal_years() -> None:
 
 
 def test_pentaho_orders_feed_the_engine_with_real_evidence_ids() -> None:
-    from cajamarca_qhaway.models.procurement_source_record import ProcurementSourceRecord
+    from cajamarca_qhaway.models.procurement_source_record import (
+        ProcurementSourceRecord,
+    )
     orders = [ProcurementSourceRecord.model_validate({
         'source_evidence_id': f'pe-order-{i}', 'source_system': 'oece_pentaho_bi',
         'dataset': 'ordenes', 'fiscal_year': 2026, 'entity_id': 'ce-orders',
@@ -82,7 +84,9 @@ def test_pentaho_orders_feed_the_engine_with_real_evidence_ids() -> None:
 
 
 def test_verified_full_competitive_call_date_supports_short_window() -> None:
-    from cajamarca_qhaway.models.procurement_source_record import ProcurementSourceRecord
+    from cajamarca_qhaway.models.procurement_source_record import (
+        ProcurementSourceRecord,
+    )
     record = procurement('open')
     raw = record.raw_payload | {'tender': record.raw_payload['tender'] |
         {'procurementMethodDetails': 'Licitación Pública'}}
@@ -96,7 +100,10 @@ def test_verified_full_competitive_call_date_supports_short_window() -> None:
 
 
 def test_semantic_families_do_not_lose_later_matching_objects() -> None:
-    from cajamarca_qhaway.capabilities.red_flags_engine.semantic import Observation, observation_flags
+    from cajamarca_qhaway.capabilities.red_flags_engine.semantic import (
+        Observation,
+        observation_flags,
+    )
     rows = [Observation(str(i), 'ce-example', '20111111111', 25000, text, NOW,
                         'oece-pentaho', NOW, True) for i, text in enumerate([
         'Adquisición de víveres alimentos arroz',

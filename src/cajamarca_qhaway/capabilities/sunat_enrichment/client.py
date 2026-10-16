@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import logging
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -14,7 +14,6 @@ import httpx
 from cajamarca_qhaway.capabilities.sunat_enrichment.models import SunatRucProfile
 from cajamarca_qhaway.capabilities.sunat_enrichment.validator import (
     ConstitutionalPrivacyGuardError,
-    assert_constitutional_ruc_only,
     assert_ruc_not_dni,
 )
 
@@ -56,7 +55,7 @@ class CodartSunatClient:
                         and item.get("raw_payload", {}).get("source_url")
                     ):
                         self._memory_cache[ruc] = SunatRucProfile(**item)
-            except Exception as exc:
+            except (OSError, ValueError, TypeError, AttributeError, httpx.HTTPError) as exc:
                 logger.warning("No se pudo cargar la cache local de RUC: %s", exc)
 
     def consultar_dni(self, dni: str) -> None:
@@ -71,7 +70,7 @@ class CodartSunatClient:
         """Parsea e interpreta la respuesta JSON devuelta por el API Codart."""
         success = payload.get("success", False)
         result = payload.get("result", {})
-        now_iso = datetime.now(timezone.utc).isoformat()
+        now_iso = datetime.now(UTC).isoformat()
 
         if not success or not isinstance(result, dict):
             error_msg = payload.get("error") or payload.get("message") or "Sin datos"
@@ -84,7 +83,9 @@ class CodartSunatClient:
         )
         estado = result.get("estado") or result.get("estado_contribuyente")
         condicion = result.get("condicion") or result.get("condicion_domicilio")
-        if not all(isinstance(value, str) and value.strip() for value in (razon_social, estado, condicion)):
+        if (not isinstance(razon_social, str) or not razon_social.strip()
+                or not isinstance(estado, str) or not estado.strip()
+                or not isinstance(condicion, str) or not condicion.strip()):
             raise ValueError("La respuesta del proveedor carece de campos SUNAT verificables")
         razon_social = razon_social.strip()
         estado = estado.strip().upper()
@@ -153,7 +154,7 @@ class CodartSunatClient:
                     # Desactivar API temporalmente si token es invalido o rate-limited
                     self._circuit_broken = True
                     logger.info("Codart API no disponible (status %d). No se usaran datos de sustitucion.", response.status_code)
-        except Exception as exc:
+        except (OSError, ValueError, TypeError, AttributeError, httpx.HTTPError) as exc:
             self._circuit_broken = True
             logger.debug("Error conectando con Codart API: %s", exc)
         return None

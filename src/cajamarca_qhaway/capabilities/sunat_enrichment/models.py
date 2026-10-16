@@ -7,6 +7,7 @@ y Art. 16 (invariante de no perfilamiento de personas naturales).
 from __future__ import annotations
 
 from typing import Any
+
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from cajamarca_qhaway.capabilities.sunat_enrichment.validator import (

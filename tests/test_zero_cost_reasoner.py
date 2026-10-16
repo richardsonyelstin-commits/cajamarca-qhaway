@@ -40,8 +40,11 @@ def test_localhost_only_and_json_response():
 
 
 def test_default_reasoner_is_local_and_graph_does_not_invent_sources():
-    from cajamarca_qhaway.capabilities.review_panel.ai_copilot import LocalForensicReasoner
     from test_ai_review_copilot import case_and_flag
+
+    from cajamarca_qhaway.capabilities.review_panel.ai_copilot import (
+        LocalForensicReasoner,
+    )
     alert, flag = case_and_flag()
     result = LocalForensicReasoner().analyze(alert, [flag], [], [], now=datetime(2026, 10, 15, tzinfo=UTC))
     assert result.mode == 'deterministic'
@@ -61,8 +64,9 @@ def test_private_case_endpoint_rejects_anonymous_access():
 
 def test_archived_signals_cannot_be_published_by_service():
     import pytest
-    from cajamarca_qhaway.capabilities.review_panel.service import ReviewPanelService
     from test_ai_review_copilot import case_and_flag
+
+    from cajamarca_qhaway.capabilities.review_panel.service import ReviewPanelService
     alert, flag = case_and_flag()
     with pytest.raises(ValueError, match='inactivas'):
         ReviewPanelService().publish_alert(alert.entity_id, [flag.model_copy(update={'is_active': False})],

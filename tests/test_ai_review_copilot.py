@@ -49,12 +49,19 @@ def test_structured_copilot_falls_back_on_invalid_evidence_references() -> None:
 
 
 def test_private_case_repository_preserves_unsigned_review_state() -> None:
-    from cajamarca_qhaway.persistence.connection import DatabaseManager
-    from cajamarca_qhaway.persistence.config import DatabaseConfig
-    from cajamarca_qhaway.persistence.repositories.alert_repository import AlertRepository
-    from cajamarca_qhaway.persistence.repositories.case_analysis_repository import CaseAnalysisRepository
-    from cajamarca_qhaway.capabilities.review_panel.ai_copilot import AIReviewCopilot, case_priority
+    from cajamarca_qhaway.capabilities.review_panel.ai_copilot import (
+        AIReviewCopilot,
+        case_priority,
+    )
     from cajamarca_qhaway.models.case_analysis import ReviewCaseAnalysis
+    from cajamarca_qhaway.persistence.config import DatabaseConfig
+    from cajamarca_qhaway.persistence.connection import DatabaseManager
+    from cajamarca_qhaway.persistence.repositories.alert_repository import (
+        AlertRepository,
+    )
+    from cajamarca_qhaway.persistence.repositories.case_analysis_repository import (
+        CaseAnalysisRepository,
+    )
     alert, flag = case_and_flag()
     db = DatabaseManager(DatabaseConfig(database_url=None))
     AlertRepository(db).save(alert)

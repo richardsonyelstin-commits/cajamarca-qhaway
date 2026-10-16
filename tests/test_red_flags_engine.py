@@ -2,14 +2,18 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
-from cajamarca_qhaway.capabilities.red_flags_engine import ACTIVE_INDICATORS, RedFlagsEngine, uit_value
+from cajamarca_qhaway.capabilities.red_flags_engine import (
+    ACTIVE_INDICATORS,
+    RedFlagsEngine,
+    uit_value,
+)
 from cajamarca_qhaway.models import BudgetExecutionRecord, ProcurementRecord, RedFlag
 
-NOW_UTC = datetime.now(timezone.utc)
+NOW_UTC = datetime.now(UTC)
 
 
 @pytest.mark.contract
@@ -197,13 +201,13 @@ def test_mef_underspending_evalua_ejercicio_cerrado_y_omite_pim_cero() -> None:
         )
         for idx, pim, spent in ((1, 1000, 200), (2, 0, 0))
     ]
-    current = engine.evaluate([], records, now=datetime(2026, 6, 1, tzinfo=timezone.utc))
+    current = engine.evaluate([], records, now=datetime(2026, 6, 1, tzinfo=UTC))
     flags = [flag for flag in current if flag.indicator_code == "mef-underspending"]
     assert len(flags) == 1
     assert flags[0].observed_value == 0.8
     assert flags[0].threshold_value == 0.5
     assert set(flags[0].execution_record_ids) == {"me-close-1", "me-close-2"}
-    open_year = engine.evaluate([], records, now=datetime(2025, 12, 31, tzinfo=timezone.utc))
+    open_year = engine.evaluate([], records, now=datetime(2025, 12, 31, tzinfo=UTC))
     assert not [flag for flag in open_year if flag.indicator_code == "mef-underspending"]
 
 
@@ -218,10 +222,10 @@ def test_mef_underspending_admite_corte_oficial_vencido_del_ejercicio_abierto() 
         budget_category="TOTAL",
         source="mef-consulta-amigable",
         raw_payload={"FECHA_CORTE_OFICIAL": "2026-09-30"},
-        retrieved_at=datetime(2026, 10, 1, tzinfo=timezone.utc),
+        retrieved_at=datetime(2026, 10, 1, tzinfo=UTC),
     )
     flags = engine.evaluate(
-        [], [record], now=datetime(2026, 10, 14, tzinfo=timezone.utc)
+        [], [record], now=datetime(2026, 10, 14, tzinfo=UTC)
     )
     underspending = [flag for flag in flags if flag.indicator_code == "mef-underspending"]
     assert len(underspending) == 1
@@ -239,10 +243,10 @@ def test_mef_underspending_omite_ejercicio_abierto_sin_corte_oficial() -> None:
         executed_amount=25,
         budget_category="TOTAL",
         raw_payload={},
-        retrieved_at=datetime(2026, 10, 1, tzinfo=timezone.utc),
+        retrieved_at=datetime(2026, 10, 1, tzinfo=UTC),
     )
     flags = engine.evaluate(
-        [], [record], now=datetime(2026, 10, 14, tzinfo=timezone.utc)
+        [], [record], now=datetime(2026, 10, 14, tzinfo=UTC)
     )
     assert not [flag for flag in flags if flag.indicator_code == "mef-underspending"]
 

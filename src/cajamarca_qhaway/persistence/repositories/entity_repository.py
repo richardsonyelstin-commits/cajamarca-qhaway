@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-import sqlite3
 from collections.abc import Sequence
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+from typing import Any
 
 from cajamarca_qhaway.models import ContractingEntity
 from cajamarca_qhaway.persistence.connection import DatabaseManager
@@ -77,7 +77,7 @@ class EntityRepository:
                 e.consucode_id,
                 e.department,
                 e.verified_at.isoformat(),
-                True if e.active else False,
+                bool(e.active),
             )
             for e in entities
         ]
@@ -94,7 +94,7 @@ class EntityRepository:
         if isinstance(verified_at, str):
             verified_at = datetime.fromisoformat(verified_at)
         if verified_at.tzinfo is None:
-            verified_at = verified_at.replace(tzinfo=timezone.utc)
+            verified_at = verified_at.replace(tzinfo=UTC)
 
         return ContractingEntity(
             entity_id=row["entity_id"],

@@ -8,10 +8,11 @@ from __future__ import annotations
 
 import json
 import os
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any
 
 
 @dataclass
@@ -22,12 +23,12 @@ class WatermarkData:
     seen_seace_ocids: set[str] = field(default_factory=set)
     last_mef_timestamp: datetime | None = None
     last_mef_offset: int = 0
-    updated_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = field(default_factory=lambda: datetime.now(UTC))
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "last_seace_timestamp": self.last_seace_timestamp.isoformat() if self.last_seace_timestamp else None,
-            "seen_seace_ocids": sorted(list(self.seen_seace_ocids)),
+            "seen_seace_ocids": sorted(self.seen_seace_ocids),
             "last_mef_timestamp": self.last_mef_timestamp.isoformat() if self.last_mef_timestamp else None,
             "last_mef_offset": self.last_mef_offset,
             "updated_at": self.updated_at.isoformat(),
@@ -49,7 +50,7 @@ class WatermarkData:
             except ValueError:
                 pass
 
-        updated_at = datetime.now(timezone.utc)
+        updated_at = datetime.now(UTC)
         if data.get("updated_at"):
             try:
                 updated_at = datetime.fromisoformat(data["updated_at"])
@@ -125,7 +126,7 @@ class WatermarkStore:
 
     def save_atomic(self) -> None:
         """Escribe atomicamente el estado a disco y a PostgreSQL si esta disponible."""
-        self._state.updated_at = datetime.now(timezone.utc)
+        self._state.updated_at = datetime.now(UTC)
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
         tmp_path = self.file_path.with_suffix(f".tmp.{os.getpid()}")
 
@@ -188,14 +189,14 @@ class WatermarkStore:
 
     def update_seace_cursor(self, timestamp: datetime, new_ocids: Sequence[str]) -> None:
         if timestamp.tzinfo is None:
-            timestamp = timestamp.replace(tzinfo=timezone.utc)
+            timestamp = timestamp.replace(tzinfo=UTC)
         self._state.last_seace_timestamp = timestamp
         self._state.seen_seace_ocids.update(new_ocids)
         self.save_atomic()
 
     def update_mef_cursor(self, timestamp: datetime, offset: int) -> None:
         if timestamp.tzinfo is None:
-            timestamp = timestamp.replace(tzinfo=timezone.utc)
+            timestamp = timestamp.replace(tzinfo=UTC)
         self._state.last_mef_timestamp = timestamp
         self._state.last_mef_offset = offset
         self.save_atomic()

@@ -6,10 +6,16 @@ Somete todo reporte a una maquina de estados de moderacion humana (RN-006-03).
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from typing import Callable, Literal
+from collections.abc import Callable
+from datetime import UTC, datetime
+from typing import Literal
 
-from cajamarca_qhaway.models import ChannelType, CitizenReport, ModerationStatus, compute_report_id
+from cajamarca_qhaway.models import (
+    ChannelType,
+    CitizenReport,
+    ModerationStatus,
+    compute_report_id,
+)
 
 
 class DenunciaIntakeService:
@@ -37,9 +43,9 @@ class DenunciaIntakeService:
                 "La denuncia no puede ser aceptada sin previa confirmacion del descargo legal (CA-006-01)"
             )
 
-        now = submitted_at or datetime.now(timezone.utc)
+        now = submitted_at or datetime.now(UTC)
         if now.tzinfo is None:
-            now = now.replace(tzinfo=timezone.utc)
+            now = now.replace(tzinfo=UTC)
 
         rep_id = compute_report_id(raw_text, now)
         report = CitizenReport(
@@ -78,9 +84,9 @@ class DenunciaIntakeService:
                 f"El reporte '{report_id}' ya fue moderado con estado '{existing.moderation_status}'"
             )
 
-        now = moderated_at or datetime.now(timezone.utc)
+        now = moderated_at or datetime.now(UTC)
         if now.tzinfo is None:
-            now = now.replace(tzinfo=timezone.utc)
+            now = now.replace(tzinfo=UTC)
 
         updated = CitizenReport(
             report_id=existing.report_id,

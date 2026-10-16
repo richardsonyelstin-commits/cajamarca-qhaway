@@ -66,9 +66,11 @@ def test_recaptcha_provider_retries_with_fresh_viewstate_and_same_session() -> N
             '</tbody>]]></update></changes></partial-response>')
 
     async def scenario() -> None:
-        async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http:
-            async with SEACEBuscadorPublicoClient(http, captcha_solver=solve) as client:
-                assert await client.search(load_universe().entities[0].entity, 2026) == []
+        async with (
+            httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http,
+            SEACEBuscadorPublicoClient(http, captcha_solver=solve) as client,
+        ):
+            assert await client.search(load_universe().entities[0].entity, 2026) == []
 
     asyncio.run(scenario())
     assert [item[0] for item in calls] == [1, 2]
@@ -77,9 +79,14 @@ def test_recaptcha_provider_retries_with_fresh_viewstate_and_same_session() -> N
 
 
 def test_captcha_retries_are_bounded_and_logged(tmp_path) -> None:
-    from cajamarca_qhaway.capabilities.live_harvest.coverage_logger import CoverageGapLogger
-    from cajamarca_qhaway.capabilities.seace_ingestion.official_sources import CAPTCHARequired
     import pytest
+
+    from cajamarca_qhaway.capabilities.live_harvest.coverage_logger import (
+        CoverageGapLogger,
+    )
+    from cajamarca_qhaway.capabilities.seace_ingestion.official_sources import (
+        CAPTCHARequired,
+    )
 
     attempts: list[int] = []
 
@@ -96,11 +103,13 @@ def test_captcha_retries_are_bounded_and_logged(tmp_path) -> None:
 
     async def scenario() -> None:
         gaps = CoverageGapLogger(tmp_path / 'gaps.jsonl')
-        async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http:
-            async with SEACEBuscadorPublicoClient(http, captcha_solver=solver,
-                                                 coverage_logger=gaps) as client:
-                with pytest.raises(CAPTCHARequired):
-                    await client.search(load_universe().entities[0].entity, 2026)
+        async with (
+            httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http,
+            SEACEBuscadorPublicoClient(http, captcha_solver=solver,
+                                                 coverage_logger=gaps) as client,
+        ):
+            with pytest.raises(CAPTCHARequired):
+                await client.search(load_universe().entities[0].entity, 2026)
         assert gaps.read_records()[-1]['attempt'] == 3
 
     asyncio.run(scenario())

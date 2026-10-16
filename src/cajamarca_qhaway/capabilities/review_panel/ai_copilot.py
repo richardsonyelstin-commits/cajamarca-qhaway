@@ -77,8 +77,8 @@ class LocalForensicReasoner:
             verification_checklist=['Recuperar evidencia original mediante Ley 27806.',
                 'Contrastar el expediente íntegro antes de un dictamen humano.'],
             evidence_refs=[alert.alert_id],
-            limitations=['Bandera original ausente: conservar el historial, bloquear publicación y '
-                         'recuperar su trazabilidad. No se atribuye el presupuesto a una obra.'],
+            limitations=[('Bandera original ausente: conservar el historial, bloquear publicación y '
+                         'recuperar su trazabilidad. No se atribuye el presupuesto a una obra.')],
             mode='deterministic', generated_at=now or datetime.now(UTC),
             evidence_graph=EvidenceGraph(nodes=[EvidenceNode(node_id=alert.alert_id,
                 kind='case', facts={'entity_id': alert.entity_id, 'evidence_complete': False})]))

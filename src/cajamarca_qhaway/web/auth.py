@@ -6,6 +6,7 @@ import base64
 import hashlib
 import json
 import os
+import re
 import time
 from typing import Any
 from urllib.parse import urlsplit
@@ -64,7 +65,8 @@ class AuthService:
             raise AuthUnavailable("No se pudo verificar la revocacion compartida") from error
 
     def verify(self, token: str | None) -> dict[str, Any] | None:
-        if not token or not isinstance(token, str):
+        if (not isinstance(token, str) or len(token) > 8192
+                or re.fullmatch(r"[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+", token) is None):
             return None
         url, key = self._config()
         if self._is_revoked(token):
@@ -86,7 +88,7 @@ class AuthService:
         try:
             user = response.json()
             if not isinstance(user, dict):
-                raise ValueError("Perfil invalido")
+                raise TypeError("Perfil invalido")
             metadata = user.get("app_metadata")
             email = user.get("email")
             if (not isinstance(metadata, dict) or metadata.get("role") != "reviewer"

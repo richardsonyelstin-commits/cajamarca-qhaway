@@ -5,9 +5,14 @@ from __future__ import annotations
 import argparse
 import asyncio
 import sys
+from datetime import UTC
 
 from cajamarca_qhaway.capabilities.entity_mapping.dataset import load_universe
-from cajamarca_qhaway.capabilities.live_harvest import CoverageGapLogger, HarvesterDaemon, WatermarkStore
+from cajamarca_qhaway.capabilities.live_harvest import (
+    CoverageGapLogger,
+    HarvesterDaemon,
+    WatermarkStore,
+)
 from cajamarca_qhaway.capabilities.live_harvest.config import HarvestConfig
 from cajamarca_qhaway.capabilities.red_flags_engine.catalog import ACTIVE_INDICATORS
 from cajamarca_qhaway.pipeline import CajamarcaPipeline
@@ -330,7 +335,7 @@ def main() -> int:
 
             port = getattr(args, "port", 8080)
             web_dir = getattr(args, "web_dir", "web")
-            print(f"\nIniciando servidor web Cajamarca Qhaway...")
+            print("\nIniciando servidor web Cajamarca Qhaway...")
             print(f"Sirviendo directorio: {web_dir}")
             print(f"URL de acceso: http://localhost:{port}/")
             print("Presione Ctrl+C para detener el servidor.\n")
@@ -350,7 +355,6 @@ def main() -> int:
         from cajamarca_qhaway.capabilities.sunat_enrichment import (
             ConstitutionalPrivacyGuardError,
             SunatEnrichmentService,
-            assert_constitutional_ruc_only,
         )
 
         service = SunatEnrichmentService(registry_path=getattr(args, "registry_file", None))
@@ -406,12 +410,11 @@ def main() -> int:
 
     elif args.command == "geospatial":
         import json
-        from datetime import datetime, timezone
+        from datetime import datetime
         from pathlib import Path
 
         from cajamarca_qhaway.capabilities.geospatial_monitoring import (
             CAJAMARCA_PUBLIC_WORKS_CATALOG,
-            DivergenceSeverity,
             SatelliteObservation,
             SatelliteSensor,
             evaluate_physical_financial_divergence,
@@ -419,7 +422,7 @@ def main() -> int:
             list_work_sites_by_province,
         )
 
-        now_utc = datetime.now(timezone.utc)
+        now_utc = datetime.now(UTC)
 
         if args.geo_command == "catalog":
             prov = getattr(args, "province", None)

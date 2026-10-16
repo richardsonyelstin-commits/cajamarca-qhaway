@@ -27,7 +27,6 @@ import re
 import sys
 from html import unescape
 from pathlib import Path
-from typing import Any
 
 from cajamarca_qhaway.models import (
     Alert,
@@ -69,7 +68,7 @@ def validate_zero_em_dash(web_root: Path = Path("web")) -> list[str]:
                 content = f.read_text(encoding="utf-8")
                 if "\u2014" in content:
                     errors.append(f"Antislop R-02 violado (em-dash encontrado): {f}")
-            except Exception as exc:
+            except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:
                 errors.append(f"Error al leer archivo {f}: {exc}")
     return errors
 
@@ -82,7 +81,7 @@ def validate_snapshot_integrity(snapshot_path: Path = Path("web/src/data/verifie
 
     try:
         data = json.loads(snapshot_path.read_text(encoding="utf-8"))
-    except Exception as exc:
+    except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:
         return [f"Error al parsear snapshot JSON: {exc}"]
 
     # 1. Validar ContractingEntity (Art. 18: exactamente 14 entidades de Cajamarca)
@@ -95,7 +94,7 @@ def validate_snapshot_integrity(snapshot_path: Path = Path("web/src/data/verifie
         try:
             ent = ContractingEntity.model_validate(raw)
             entity_ids.add(ent.entity_id)
-        except Exception as exc:
+        except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:
             errors.append(f"ContractingEntity invalida: {exc}")
 
     # 2. Validar ProcurementRecord (Art. 10: seace-ocds)
@@ -107,7 +106,7 @@ def validate_snapshot_integrity(snapshot_path: Path = Path("web/src/data/verifie
                 errors.append(f"Art. 10 violado: source debe ser 'seace-ocds', recibido: '{proc.source}'")
             if proc.entity_id not in entity_ids:
                 errors.append(f"Procurement {proc.procurement_id} pertenece a entity_id ajena al universo: {proc.entity_id}")
-        except Exception as exc:
+        except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:
             errors.append(f"ProcurementRecord invalido: {exc}")
 
     # 3. Validar BudgetExecutionRecord (Art. 10: mef-datastore)
@@ -119,7 +118,7 @@ def validate_snapshot_integrity(snapshot_path: Path = Path("web/src/data/verifie
                 errors.append(f"Art. 10 violado: source MEF desconocida: '{b.source}'")
             if b.entity_id not in entity_ids:
                 errors.append(f"BudgetExecution {b.execution_record_id} pertenece a entity_id ajena: {b.entity_id}")
-        except Exception as exc:
+        except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:
             errors.append(f"BudgetExecutionRecord invalido: {exc}")
 
     # 4. Validar RedFlag (Art. 15 y Art. 16)
@@ -131,7 +130,7 @@ def validate_snapshot_integrity(snapshot_path: Path = Path("web/src/data/verifie
                 errors.append(f"Art. 15 violado: formula_description vacia en {flag.red_flag_id}")
             if hasattr(flag, "status"):
                 errors.append(f"Invariante violado: RedFlag no debe poseer campo 'status': {flag.red_flag_id}")
-        except Exception as exc:
+        except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:
             errors.append(f"RedFlag invalido: {exc}")
 
     # 5. Validar Alert (Art. 14, Art. 15, CA-005-02, CA-005-04)
@@ -154,7 +153,7 @@ def validate_snapshot_integrity(snapshot_path: Path = Path("web/src/data/verifie
             # Art. 15: disclaimer legal inmutable
             if alert.disclaimer != STANDARD_ALERT_DISCLAIMER:
                 errors.append(f"Art. 15 violado: disclaimer incorrecto en {alert.alert_id}")
-        except Exception as exc:
+        except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:
             errors.append(f"Alert invalida: {exc}")
 
     # 6. Validar CitizenReport (CA-006-01)
@@ -164,7 +163,7 @@ def validate_snapshot_integrity(snapshot_path: Path = Path("web/src/data/verifie
             rep = CitizenReport.model_validate(raw)
             if not rep.legal_disclaimer_shown:
                 errors.append(f"CA-006-01 violado: legal_disclaimer_shown debe ser True en {rep.report_id}")
-        except Exception as exc:
+        except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:
             errors.append(f"CitizenReport invalido: {exc}")
 
     return errors
@@ -237,7 +236,7 @@ def validate_static_snapshot_metrics(
                 if not any(token in actual for token in ("sin consolidado mef", "no consolidado", "no calculable", "sin dato mef", "cobertura mef parcial")):
                     errors.append(f"Cifra MEF no disponible presentada como dato en {filename} #{element_id}")
         return errors
-    except Exception as exc:
+    except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:
         return [f"Error al auditar cifras MPA frente al snapshot: {exc}"]
 
 

@@ -7,6 +7,9 @@ const html = readFileSync(new URL('../web/admin-revision.html', import.meta.url)
 const inlineModule = html.match(/<script type="module">\s*([\s\S]*?)<\/script>/)?.[1];
 assert.ok(inlineModule, 'El panel debe incluir el módulo de revisión');
 const code = inlineModule.replace(/^\s*import\s+[^;]+;\s*$/gm, '');
+const sessionCode = readFileSync(
+  new URL('../web/src/js/veedor-auth.js', import.meta.url), 'utf8',
+).replace(/^export /gm, '');
 
 class FakeElement {
   constructor(tag) {
@@ -67,6 +70,7 @@ function makePanel(fetchImplementation = async () => { throw Error('Desconectado
     setTimeout: () => { throw Error('No se permite un fallback diferido'); },
   };
   vm.createContext(sandbox);
+  vm.runInContext(sessionCode, sandbox, { filename: 'veedor-auth.js' });
   vm.runInContext(code, sandbox, { filename: 'admin-revision.html' });
   return { sandbox, document, elements, listeners, sessionStorage, redirects };
 }

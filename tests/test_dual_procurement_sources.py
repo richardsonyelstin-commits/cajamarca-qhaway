@@ -88,11 +88,13 @@ def test_pentaho_follows_official_iframe_and_nested_catalog_script() -> None:
         return httpx.Response(200, text='/* recurso sin catálogo */')
 
     async def scenario() -> None:
-        async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http:
-            async with OECEPentahoClient(http) as client:
-                resources = await client.discover([2024, 2025, 2026], datasets=('contratos',))
-                assert [r.fiscal_year for r in resources] == [2024, 2025, 2026]
-                assert all('/contratos/' in r.url for r in resources)
+        async with (
+            httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http,
+            OECEPentahoClient(http) as client,
+        ):
+            resources = await client.discover([2024, 2025, 2026], datasets=('contratos',))
+            assert [r.fiscal_year for r in resources] == [2024, 2025, 2026]
+            assert all('/contratos/' in r.url for r in resources)
     asyncio.run(scenario())
     assert '/nested.html' in requested
     assert '/catalog-nested.js' in requested

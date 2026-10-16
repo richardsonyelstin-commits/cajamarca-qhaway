@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from cajamarca_qhaway.models import CitizenReport, ModerationStatus
@@ -80,7 +80,7 @@ class CitizenReportRepository:
             report.moderation_status,
             report.moderated_by,
             report.moderated_at.isoformat() if report.moderated_at else None,
-            True if report.legal_disclaimer_shown else False,
+            bool(report.legal_disclaimer_shown),
             report.tracking_token_hash,
         )
 
@@ -120,14 +120,14 @@ class CitizenReportRepository:
         if isinstance(submitted_at, str):
             submitted_at = datetime.fromisoformat(submitted_at)
         if submitted_at.tzinfo is None:
-            submitted_at = submitted_at.replace(tzinfo=timezone.utc)
+            submitted_at = submitted_at.replace(tzinfo=UTC)
 
         moderated_at = row["moderated_at"]
         if moderated_at:
             if isinstance(moderated_at, str):
                 moderated_at = datetime.fromisoformat(moderated_at)
             if moderated_at.tzinfo is None:
-                moderated_at = moderated_at.replace(tzinfo=timezone.utc)
+                moderated_at = moderated_at.replace(tzinfo=UTC)
 
         return CitizenReport(
             report_id=row["report_id"],

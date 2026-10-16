@@ -6,7 +6,7 @@ Soporta ingesta desacoplada desde memoria y archivos locales (fixtures / dumps d
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -26,7 +26,7 @@ class MefIngester:
         self, records: list[dict[str, Any]], retrieved_at: datetime | None = None
     ) -> list[BudgetExecutionRecord]:
         """Procesa una lista de registros crudos del MEF."""
-        timestamp = retrieved_at or datetime.now(timezone.utc)
+        timestamp = retrieved_at or datetime.now(UTC)
         results: list[BudgetExecutionRecord] = []
         for raw in records:
             rec = parse_mef_record(

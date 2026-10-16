@@ -2,17 +2,19 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
 import os
-from pathlib import Path
 import tempfile
-from typing import Iterable
 import zipfile
+from collections.abc import Iterable
+from datetime import UTC, datetime
+from pathlib import Path
 
 import httpx
 
 from cajamarca_qhaway.capabilities.sunat_enrichment.models import SunatRucProfile
-from cajamarca_qhaway.capabilities.sunat_enrichment.validator import assert_constitutional_ruc_only
+from cajamarca_qhaway.capabilities.sunat_enrichment.validator import (
+    assert_constitutional_ruc_only,
+)
 
 PADRON_URL = "https://www2.sunat.gob.pe/padron_reducido_ruc.zip"
 PADRON_FILENAME = "padron_reducido_ruc.txt"
@@ -33,9 +35,9 @@ def download_target_profiles(
     if not targets:
         return []
 
-    retrieved = retrieved_at or datetime.now(timezone.utc)
+    retrieved = retrieved_at or datetime.now(UTC)
     if retrieved.tzinfo is None:
-        retrieved = retrieved.replace(tzinfo=timezone.utc)
+        retrieved = retrieved.replace(tzinfo=UTC)
     profiles: dict[str, SunatRucProfile] = {}
     temp_path: Path | None = None
     request_timeout = timeout or httpx.Timeout(connect=10.0, read=30.0, write=10.0, pool=10.0)
@@ -72,8 +74,7 @@ def download_target_profiles(
             with zipped.open(member) as binary_stream:
                 header_line = binary_stream.readline()
                 header_text = header_line.rstrip(b"\r\n").decode("cp1252", errors="strict") if header_line else ""
-                if header_text.endswith("|"):
-                    header_text = header_text[:-1]
+                header_text = header_text.removesuffix("|")
                 headers = header_text.split("|") if header_text else []
                 if not headers or any(not header for header in headers):
                     raise ValueError("El padrón oficial no contiene encabezados")

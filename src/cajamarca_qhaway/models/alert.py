@@ -105,9 +105,8 @@ class Alert(BaseModel):
         if self.review_notes is not None and not self.review_notes.strip():
             raise ValueError("review_notes no puede estar vacio cuando se proporciona")
 
-        if self.status in {"generated", "in_review", "discarded"}:
-            if self.published_at is not None:
-                raise ValueError(f"published_at debe ser None cuando status == '{self.status}'")
+        if self.status in {"generated", "in_review", "discarded"} and self.published_at is not None:
+            raise ValueError(f"published_at debe ser None cuando status == '{self.status}'")
 
         # CA-005-03: si es published, published_at es obligatorio
         evidence_ids = {item.red_flag_id for item in self.evidence}

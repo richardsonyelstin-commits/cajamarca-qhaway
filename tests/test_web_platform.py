@@ -23,8 +23,6 @@ from pathlib import Path
 
 import pytest
 
-pytestmark = pytest.mark.usefixtures("configured_test_veedor")
-
 from cajamarca_qhaway.models import (
     Alert,
     BudgetExecutionRecord,
@@ -160,7 +158,7 @@ def test_snapshot_recomputes_candidate_count_without_private_spool(tmp_path, mon
     monkeypatch.setattr(exporter, "REDFLAG_SPOOL_CANDIDATES", (tmp_path / "absent.jsonl",))
     snapshot = exporter.build_verified_web_snapshot()
     from cajamarca_qhaway.capabilities.red_flags_engine.engine import RedFlagsEngine
-    from cajamarca_qhaway.models import ProcurementRecord, BudgetExecutionRecord
+    from cajamarca_qhaway.models import BudgetExecutionRecord, ProcurementRecord
     expected = RedFlagsEngine().evaluate(
         [ProcurementRecord.model_validate(p) for p in snapshot['procurement_records']],
         [BudgetExecutionRecord.model_validate(b) for b in snapshot['budget_execution_records']],

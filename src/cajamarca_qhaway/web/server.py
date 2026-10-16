@@ -34,13 +34,14 @@ from datetime import UTC, datetime
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from cajamarca_qhaway.capabilities.denuncia_intake import DenunciaIntakeService
 from cajamarca_qhaway.capabilities.review_panel import ReviewPanelService
 from cajamarca_qhaway.models import BudgetExecutionRecord
 from cajamarca_qhaway.models.alert import GENERIC_REVIEWERS
 from cajamarca_qhaway.models.budget_reconciliation import canonical_budget_records
+from cajamarca_qhaway.models.citizen_report import ChannelType
 from cajamarca_qhaway.web.exporter import (
     build_verified_web_snapshot,
 )
@@ -58,7 +59,9 @@ try:
     _alert_repo = AlertRepository(_db_manager)
     _report_repo = CitizenReportRepository(_db_manager)
     _red_flag_repo = RedFlagRepository(_db_manager)
-    from cajamarca_qhaway.persistence.repositories.case_analysis_repository import CaseAnalysisRepository
+    from cajamarca_qhaway.persistence.repositories.case_analysis_repository import (
+        CaseAnalysisRepository,
+    )
     _case_analysis_repo = CaseAnalysisRepository(_db_manager)
 except Exception as error:
     logger.exception("Fallo controlado del adaptador web (%s)", type(error).__name__, exc_info=False)
@@ -394,7 +397,7 @@ class WebApiHandler(BaseHTTPRequestHandler):
         authoritative = bool(getattr(_db_manager, "is_postgres", False))
         if authoritative and _alert_repo is None:
             raise PublicProjectionUnavailable()
-        if _durable_repository(_alert_repo):
+        if _alert_repo is not None and _durable_repository(_alert_repo):
             try:
                 published = _alert_repo.list_published()
                 # An explicitly configured PostgreSQL database is authoritative even
@@ -622,11 +625,12 @@ class WebApiHandler(BaseHTTPRequestHandler):
                     raise ValueError("Estado invalido")
             except ValueError:
                 return cls._error_bytes("Paginacion o estado invalido", 400)
-            if not _durable_repository(_report_repo):
+            if _report_repo is None or not _durable_repository(_report_repo):
                 return cls._error_bytes("Repositorio privado no disponible", 503)
             try:
                 reports = _report_repo.list_page(limit=limit, offset=offset, status=status)
             except Exception:
+                logger.exception("Fallo del repositorio privado")
                 return cls._error_bytes("No se pudo consultar las denuncias", 503)
             return cls._json_bytes([report.model_dump(mode="json") for report in reports])
 
@@ -751,7 +755,11 @@ class WebApiHandler(BaseHTTPRequestHandler):
 
     @classmethod
     def _dispatch_post_login(cls, data: dict[str, Any], req_headers: dict[str, str]) -> tuple[int, str, bytes]:
-        from cajamarca_qhaway.web.auth import AuthService, AuthUnavailable, InvalidCredentials
+        from cajamarca_qhaway.web.auth import (
+            AuthService,
+            AuthUnavailable,
+            InvalidCredentials,
+        )
         if data.get("honeypot"):
             return cls._error_bytes("Solicitud rechazada", 400)
         try:
@@ -763,7 +771,11 @@ class WebApiHandler(BaseHTTPRequestHandler):
 
     @classmethod
     def _dispatch_post_logout(cls, req_headers: dict[str, str]) -> tuple[int, str, bytes]:
-        from cajamarca_qhaway.web.auth import AuthService, AuthUnavailable, InvalidCredentials
+        from cajamarca_qhaway.web.auth import (
+            AuthService,
+            AuthUnavailable,
+            InvalidCredentials,
+        )
         auth = req_headers.get("authorization", "")
         if not auth.startswith("Bearer "):
             return cls._error_bytes("Sesion requerida", 401)
@@ -785,7 +797,10 @@ class WebApiHandler(BaseHTTPRequestHandler):
         raw_text = str(data.get("raw_text", "")).strip()
         legal_disclaimer = bool(data.get("legal_disclaimer_shown") or data.get("disclaimer_accepted"))
         raw_channel = str(data.get("channel") or data.get("source_channel") or "web").strip().lower()
-        channel = "web" if raw_channel in ("web", "web_form") else raw_channel
+        channel_value = "web" if raw_channel in ("web", "web_form") else raw_channel
+        if channel_value not in ("web", "sms", "whatsapp"):
+            return cls._error_bytes("Canal de denuncia invalido", 400)
+        channel = cast(ChannelType, channel_value)
         entity_id = data.get("related_entity_id") or data.get("entity_id")
 
         if not raw_text:
@@ -801,7 +816,7 @@ class WebApiHandler(BaseHTTPRequestHandler):
         try:
             tracking_token = secrets.token_urlsafe(32)
             tracking_token_hash = hashlib.sha256(tracking_token.encode("utf-8")).hexdigest()
-            if not _durable_repository(_report_repo):
+            if _report_repo is None or not _durable_repository(_report_repo):
                 return cls._error_bytes("Persistencia duradera de denuncias no disponible", 503)
             pending_service = DenunciaIntakeService()
             report = pending_service.submit_report(
@@ -810,7 +825,6 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 channel=channel,
                 related_entity_id=entity_id,
                 tracking_token_hash=tracking_token_hash,
-                persist=_report_repo.save,
             )
             payload = report.model_dump(mode="json")
 
@@ -870,7 +884,6 @@ class WebApiHandler(BaseHTTPRequestHandler):
         if custom_moderator and custom_moderator != moderator_nominal:
             return cls._error_bytes("moderated_by debe coincidir con la identidad acreditada", 400)
 
-        moderator_id = moderator_nominal
 
         if not report_id:
             return cls._error_bytes("El campo 'report_id' es obligatorio", 400)
@@ -881,11 +894,12 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 400,
             )
 
-        if not _durable_repository(_report_repo):
+        if _report_repo is None or not _durable_repository(_report_repo):
             return cls._error_bytes("Persistencia duradera no disponible", 503)
         try:
             existing = _report_repo.get_by_id(report_id)
         except Exception:
+            logger.exception("Fallo del repositorio privado")
             return cls._error_bytes("No se pudo consultar la denuncia", 503)
         if existing is None:
             return cls._error_bytes("Denuncia no encontrada", 404)
@@ -899,8 +913,9 @@ class WebApiHandler(BaseHTTPRequestHandler):
         except (ValueError, KeyError) as exc:
             return cls._error_bytes(str(exc), 400)
         try:
-            _report_repo.save(updated)
+            _report_repo.moderate_pending(updated)
         except Exception:
+            logger.exception("Fallo del repositorio privado")
             return cls._error_bytes("No se pudo persistir la moderacion", 503)
         cls.denuncia_service._reports[report_id] = updated
         payload = updated.model_dump(mode="json")
@@ -975,7 +990,6 @@ class WebApiHandler(BaseHTTPRequestHandler):
                     red_flags=[flag for flag in complete_flags if flag is not None],
                     reviewer_id=reviewed_by,
                     review_notes=review_notes,
-                    persist=_alert_repo.save,
                 )
             elif status == "discarded":
                 if _red_flag_repo is None:
@@ -988,7 +1002,6 @@ class WebApiHandler(BaseHTTPRequestHandler):
                     red_flags=[flag for flag in complete_flags if flag is not None],
                     reviewer_id=reviewed_by,
                     review_notes=review_notes,
-                    persist=_alert_repo.save,
                 )
             else:
                 return cls._error_bytes(
@@ -1006,6 +1019,7 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 except ValueError:
                     return cls._error_bytes("El candidato ya tiene una decision distinta", 409)
                 except Exception:
+                    logger.exception("Fallo del repositorio privado")
                     return cls._error_bytes("No se pudo persistir la alerta", 503)
 
             cls.review_service._decisions[alert.alert_id] = alert
@@ -1080,7 +1094,6 @@ class WebApiHandler(BaseHTTPRequestHandler):
         ):
             content_type = f"{content_type}; charset=utf-8"
         self.send_header("Content-Type", content_type)
-        self.send_header("Cache-Control", "no-store" if self.path.startswith("/api/") else "public, max-age=0")
         if content_length is not None:
             self.send_header("Content-Length", str(content_length))
         for header, val in SECURITY_HEADERS.items():

@@ -3,8 +3,7 @@
 from __future__ import annotations
 
 import json
-from collections.abc import Sequence
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from cajamarca_qhaway.models import Alert
@@ -46,6 +45,8 @@ class AlertRepository:
 
     def save_decision(self, alert: Alert) -> Alert:
         """Insert an immutable human decision; retries return the committed version."""
+        if alert.reviewed_at is None:
+            raise ValueError("Una decision exige fecha de revision humana")
         with self.db.connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -110,22 +111,22 @@ class AlertRepository:
         red_flag_ids = row["red_flag_ids"]
         if isinstance(red_flag_ids, str):
             try:
-                red_flag_ids = tuple(json.loads(red_flag_ids))
+                red_flag_ids = list(json.loads(red_flag_ids))
             except json.JSONDecodeError:
-                red_flag_ids = ()
+                red_flag_ids = []
 
         reviewed_at = row["reviewed_at"]
         if isinstance(reviewed_at, str):
             reviewed_at = datetime.fromisoformat(reviewed_at)
         if reviewed_at is not None and reviewed_at.tzinfo is None:
-            reviewed_at = reviewed_at.replace(tzinfo=timezone.utc)
+            reviewed_at = reviewed_at.replace(tzinfo=UTC)
 
         published_at = row["published_at"]
         if published_at:
             if isinstance(published_at, str):
                 published_at = datetime.fromisoformat(published_at)
             if published_at.tzinfo is None:
-                published_at = published_at.replace(tzinfo=timezone.utc)
+                published_at = published_at.replace(tzinfo=UTC)
 
         evidence = row["evidence"]
         if isinstance(evidence, str):

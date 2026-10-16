@@ -7,11 +7,15 @@ Conserva el raw_payload integro (Articulo 10 de la constitucion).
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
 import unicodedata
+from datetime import UTC, datetime
 from typing import Any
 
-from cajamarca_qhaway.models import ContractingEntity, ProcurementRecord, compute_procurement_id
+from cajamarca_qhaway.models import (
+    ContractingEntity,
+    ProcurementRecord,
+    compute_procurement_id,
+)
 
 
 def _normalize_name(name: str) -> str:
@@ -85,9 +89,8 @@ def find_matching_entity(
 
     for party in parties:
         roles = party.get("roles", [])
-        if "buyer" in roles or "procuringEntity" in roles:
-            if party.get("name"):
-                candidate_names.append(_normalize_name(party["name"]))
+        if ("buyer" in roles or "procuringEntity" in roles) and party.get("name"):
+            candidate_names.append(_normalize_name(party["name"]))
 
     for cand in candidate_names:
         # GORE Cajamarca
@@ -186,9 +189,9 @@ def parse_ocds_release(
 
     supplier_name, supplier_ruc = extract_supplier_info(effective_release)
 
-    timestamp = retrieved_at or datetime.now(timezone.utc)
+    timestamp = retrieved_at or datetime.now(UTC)
     if timestamp.tzinfo is None:
-        timestamp = timestamp.replace(tzinfo=timezone.utc)
+        timestamp = timestamp.replace(tzinfo=UTC)
 
     return ProcurementRecord(
         procurement_id=compute_procurement_id(ocid),

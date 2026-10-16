@@ -373,7 +373,7 @@
 
       } catch (err) {
         console.error('Error al validar sesión:', err);
-        denyAccess('error', 'Error de conexión con el servidor seguro.');
+        denyAccess(err.reason || 'error', err.message || 'No se pudo verificar la sesión.');
         return;
       }
 

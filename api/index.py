@@ -7,6 +7,7 @@ Cumple con Antislop R-02 (cero em-dash).
 """
 
 import json
+import logging
 import mimetypes
 import posixpath
 import sys
@@ -24,15 +25,19 @@ if str(SRC_PATH) not in sys.path:
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+logger = logging.getLogger(__name__)
+
 _IMPORT_ERROR = None
 _canonical_wsgi_app = None
 
 try:
-    from cajamarca_qhaway.web.server import WebApiHandler, app as _srv_app
+    from cajamarca_qhaway.web.server import WebApiHandler
+    from cajamarca_qhaway.web.server import app as _srv_app
 
     WebApiHandler.web_dir = WEB_DIR
     _canonical_wsgi_app = _srv_app
 except Exception:
+    logger.exception("No se pudo cargar el adaptador canonico")
     _IMPORT_ERROR = traceback.format_exc()
 
 _STDLIB_SNAPSHOT_CACHE = None
@@ -77,7 +82,7 @@ def _load_sunat_stdlib():
             _STDLIB_SUNAT_CACHE = json.loads(sunat_path.read_text(encoding="utf-8"))
             return _STDLIB_SUNAT_CACHE
         except Exception:
-            pass
+            logger.exception("Fallo del adaptador; se activa el respaldo restringido")
     return {}
 
 
@@ -95,6 +100,16 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
     if rewritten_path:
         path = rewritten_path if rewritten_path.startswith("/") else f"/{rewritten_path}"
 
+    if path in ("/api/index.py", "/api/index", "/api"):
+        path = "/index.html"
+
+    if method == "POST" and path != "/api/auth/logout":
+        try:
+            data = json.loads(body.decode("utf-8")) if body else {}
+            if not isinstance(data, dict):
+                raise TypeError("Se requiere objeto JSON")
+        except (ValueError, TypeError, UnicodeDecodeError):
+            return 400, "application/json; charset=utf-8", b'{"error":"Se requiere un objeto JSON valido"}'
     # El respaldo no dispone de autenticacion ni persistencia autoritativas.
     # Nunca debe simular una escritura, sesion o lectura confidencial.
     if path.startswith("/api/") and (
@@ -105,16 +120,7 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
             "error": "Servicio transaccional o privado temporalmente no disponible"
         }).encode("utf-8")
 
-    if path in ("/api/index.py", "/api/index", "/api"):
-        path = "/index.html"
 
-    if method == "POST" and path != "/api/auth/logout":
-        try:
-            data = json.loads(body.decode("utf-8")) if body else {}
-            if not isinstance(data, dict):
-                raise ValueError("Se requiere objeto JSON")
-        except (ValueError, UnicodeDecodeError):
-            return 400, "application/json; charset=utf-8", b'{"error":"Se requiere un objeto JSON valido"}'
     if path.startswith("/api/auth/"):
         status = 401 if path == "/api/auth/session" and not req_headers.get("authorization") else 503
         return status, "application/json; charset=utf-8", b'{"error":"Autenticacion segura no disponible"}'
@@ -142,7 +148,10 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
             }
             return 503, "application/json; charset=utf-8", json.dumps(payload).encode("utf-8")
         if path == "/api/snapshot":
-            public_snap = dict(snap)
+            public_snap = {key: snap.get(key, []) for key in (
+                "contracting_entities", "procurement_records", "budget_execution_records",
+                "alerts", "red_flags", "geospatial_works", "geospatial_signals",
+            )}
             public_snap["citizen_reports"] = []
             public_snap["alerts"] = [
                 alert for alert in public_snap.get("alerts", [])
@@ -158,6 +167,23 @@ def _stdlib_fallback_dispatch(method, path, query, body=b"", req_headers=None):
                 flag for flag in public_snap.get("red_flags", [])
                 if flag.get("red_flag_id") in published_ids
             ]
+            raw_metadata = snap.get("metadata", {})
+            if not isinstance(raw_metadata, dict):
+                raw_metadata = {}
+            metadata = {key: raw_metadata[key] for key in (
+                "version", "generated_at", "source", "region", "constitution_version",
+                "articles_covered", "total_entities", "total_procurements",
+                "total_budget_executions", "budget_coverage_by_year", "total_geospatial_works",
+            ) if key in raw_metadata}
+            published_count = len(public_snap["alerts"])
+            metadata.update({
+                "total_alerts": published_count,
+                "total_published_alerts": published_count,
+                "total_candidate_red_flags": len(public_snap["red_flags"]),
+                "alert_status_counts": {"published": published_count},
+                "total_citizen_reports": 0,
+            })
+            public_snap["metadata"] = metadata
             return 200, "application/json; charset=utf-8", json.dumps(public_snap).encode("utf-8")
         if path == "/api/entities":
             entities = snap.get("contracting_entities", [])
@@ -366,7 +392,7 @@ def app(environ, start_response):
         try:
             return _canonical_wsgi_app(environ, start_response)
         except Exception:
-            pass
+            logger.exception("Fallo del adaptador; se activa el respaldo restringido")
 
     method = environ.get("REQUEST_METHOD", "GET").upper()
     raw_path = environ.get("PATH_INFO", "/") or "/"
@@ -378,7 +404,7 @@ def app(environ, start_response):
     if content_length and content_length.isdigit():
         try:
             body_bytes = environ["wsgi.input"].read(int(content_length))
-        except Exception:
+        except (OSError, ValueError, KeyError, AttributeError):
             body_bytes = b""
 
     req_headers = {}

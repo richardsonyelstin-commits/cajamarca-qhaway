@@ -10,10 +10,8 @@ Invariantes constitucionales:
 
 from __future__ import annotations
 
-import hashlib
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from enum import Enum
-from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -233,7 +231,7 @@ class PhysicalFinancialDivergenceSignal(BaseModel):
     radar_backup_used: bool = False
     weather_degraded: bool = False
     disclaimer: str = DISCLAIMER_ART_14
-    generated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    generated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     @model_validator(mode="after")
     def _validate_disclaimer(self) -> PhysicalFinancialDivergenceSignal:
@@ -259,11 +257,11 @@ class PhysicalFinancialDivergenceSignal(BaseModel):
             red_flag_id=red_flag_id,
             indicator_code=indicator_code,
             formula_description=formula,
-            threshold=0.25,
+            threshold_value=0.25,
             observed_value=round(self.divergence_score, 4),
             procurement_ids=[self.cui_or_ocid] if self.cui_or_ocid.startswith("ocds-") else [],
             execution_record_ids=[self.cui_or_ocid] if not self.cui_or_ocid.startswith("ocds-") else [],
             evidence_source=f"geospatial_monitoring:satellites_and_cameras:{self.site_id}",
-            evidence_retrieved_at=self.generated_at,
+            retrieved_at=self.generated_at,
             generated_at=self.generated_at,
         )

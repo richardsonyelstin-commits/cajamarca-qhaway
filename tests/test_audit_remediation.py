@@ -13,7 +13,11 @@ from cajamarca_qhaway.capabilities.review_panel import ReviewPanelService
 from cajamarca_qhaway.models import RedFlag
 from cajamarca_qhaway.persistence.config import DatabaseConfig
 from cajamarca_qhaway.persistence.connection import DatabaseManager
-from cajamarca_qhaway.persistence.repositories import AlertRepository, CitizenReportRepository, RedFlagRepository
+from cajamarca_qhaway.persistence.repositories import (
+    AlertRepository,
+    CitizenReportRepository,
+    RedFlagRepository,
+)
 from cajamarca_qhaway.web import server
 
 SESSION = {"veedor": {"email": "reviewer@example.test", "name": "Synthetic Reviewer",
@@ -147,16 +151,18 @@ def test_review_failure_and_retry_are_atomic_idempotent_and_conflicts_rejected(i
 def test_moderation_failure_preserves_pending_state_and_nominal_identity(isolated, monkeypatch):
     _, created = dispatch("POST", "/api/reports", {"raw_text": "synthetic", "legal_disclaimer_shown": True})
     report_id = created["report_id"]
-    original = isolated[1].save
+    original = isolated[1].moderate_pending
     before = copy.deepcopy(server.WebApiHandler.denuncia_service.get_report(report_id))
     def failed(_):
         raise RuntimeError("synthetic write failure")
-    monkeypatch.setattr(isolated[1], "save", failed)
+    monkeypatch.setattr(isolated[1], "moderate_pending", failed)
     payload = {"report_id": report_id, "status": "accepted_as_lead", "moderated_by": "Impersonated Person"}
+    assert dispatch("POST", "/api/reports/moderate", payload, headers=AUTH)[0] == 400
+    payload.pop("moderated_by")
     assert dispatch("POST", "/api/reports/moderate", payload, headers=AUTH)[0] == 503
     assert server.WebApiHandler.denuncia_service.get_report(report_id) == before
     assert isolated[1].get_by_id(report_id).moderation_status == "pending"
-    monkeypatch.setattr(isolated[1], "save", original)
+    monkeypatch.setattr(isolated[1], "moderate_pending", original)
     status, result = dispatch("POST", "/api/reports/moderate", payload, headers=AUTH)
     assert status == 200
     assert result["moderated_by"] == "Synthetic Reviewer (Synthetic Team)"

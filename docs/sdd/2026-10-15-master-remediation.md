@@ -130,14 +130,14 @@ Un resultado verde de una prueba unitaria no acredita una configuración externa
 
 ## 6. Compuertas de aceptación antes de liberar
 
-- **G0 — alcance:** cada hallazgo tiene severidad, propietario, reproducción y contrato.
-- **G1 — seguridad:** todas las rutas privadas fallan cerradas sin identidad válida.
-- **G2 — consistencia:** decisiones y denuncias tienen transición durable y atómica.
-- **G3 — migraciones:** ensayo de esquema y RLS superado con respaldo verificable.
-- **G4 — producto:** `pytest`, JS y E2E pasan sin nuevas regresiones críticas.
-- **G5 — datos:** muestras auditadas llevan procedencia y no se inventan resultados.
-- **G6 — operación:** alertas, rollback, secretos y permisos revisados por humano.
-- **G7 — liberación:** autorización humana explícita antes de migración o despliegue.
+- **G0 - alcance:** cada hallazgo tiene severidad, propietario, reproducción y contrato.
+- **G1 - seguridad:** todas las rutas privadas fallan cerradas sin identidad válida.
+- **G2 - consistencia:** decisiones y denuncias tienen transición durable y atómica.
+- **G3 - migraciones:** ensayo de esquema y RLS superado con respaldo verificable.
+- **G4 - producto:** `pytest`, JS y E2E pasan sin nuevas regresiones críticas.
+- **G5 - datos:** muestras auditadas llevan procedencia y no se inventan resultados.
+- **G6 - operación:** alertas, rollback, secretos y permisos revisados por humano.
+- **G7 - liberación:** autorización humana explícita antes de migración o despliegue.
 
 Un fallo en G1, G2 o G3 bloquea la liberación.
 No se permite rebajar severidad basándose solo en una mitigación visual.

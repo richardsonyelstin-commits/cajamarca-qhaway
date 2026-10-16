@@ -18,6 +18,7 @@ import argparse
 import os
 import sys
 from pathlib import Path
+from typing import LiteralString, cast
 
 from cajamarca_qhaway.capabilities.entity_mapping.dataset import Universe, load_universe
 
@@ -85,10 +86,11 @@ def seed_to_postgres(dataset_path: Path, dsn: str) -> int:
     ante una discrepancia fichero/tabla, no servir datos desactualizados en silencio).
     """
     import psycopg  # import perezoso: unico punto del paquete que depende del extra `db`
+    from psycopg.sql import SQL
 
     universe = load_universe(dataset_path)
     rows = _rows_from_universe(universe)
-    expected_ids = {row["entity_id"] for row in rows}
+    expected_ids = {entity.entity_id for entity in universe.contracting_entities}
 
     with psycopg.connect(dsn) as conn:
         with conn.cursor() as cur:
@@ -98,7 +100,7 @@ def seed_to_postgres(dataset_path: Path, dsn: str) -> int:
                 / "migrations"
                 / "0001_create_contracting_entities.sql"
             ).read_text(encoding="utf-8")
-            cur.execute(migration_sql)
+            cur.execute(SQL(cast(LiteralString, migration_sql)))
             cur.executemany(_UPSERT_SQL, rows)
         conn.commit()
 

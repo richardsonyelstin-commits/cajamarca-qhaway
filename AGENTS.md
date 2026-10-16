@@ -107,6 +107,10 @@ Decisiones arquitectónicas que las specs destaparon pero no resolvieron: `specs
 
 ## Antes de empezar
 
+Por instrucción expresa del propietario del 2026-10-15, trabajar directamente en `main`.
+No crear ramas divergentes ni worktrees para este proyecto.
+Esta preferencia sustituye el modo branch del workspace dentro de `cajamarca-qhaway`.
+
 1. Lee `context/snapshots/latest.md` si existe.
 2. Lee `docs/INDEX.md` y carga **solo** lo que la tarea active.
 3. No leas `src/` de forma exhaustiva: busca, no listes.

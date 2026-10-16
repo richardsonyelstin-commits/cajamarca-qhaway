@@ -5,19 +5,18 @@ Cubre los 6 contratos canonicos especificados en el Articulo 19 de `docs/sdd/con
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 from pydantic import ValidationError
 
 from cajamarca_qhaway.models import (
+    STANDARD_ALERT_DISCLAIMER,
     Alert,
     BudgetExecutionRecord,
     CitizenReport,
-    ContractingEntity,
     ProcurementRecord,
     RedFlag,
-    STANDARD_ALERT_DISCLAIMER,
     compute_alert_id,
     compute_execution_record_id,
     compute_procurement_id,
@@ -25,7 +24,7 @@ from cajamarca_qhaway.models import (
     compute_report_id,
 )
 
-NOW_UTC = datetime.now(timezone.utc)
+NOW_UTC = datetime.now(UTC)
 
 
 @pytest.mark.contract

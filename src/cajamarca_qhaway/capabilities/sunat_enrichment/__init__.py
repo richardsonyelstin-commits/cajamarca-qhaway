@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from cajamarca_qhaway.capabilities.sunat_enrichment.client import CodartSunatClient
 from cajamarca_qhaway.capabilities.sunat_enrichment.models import SunatRucProfile
-from cajamarca_qhaway.capabilities.sunat_enrichment.service import SunatEnrichmentService
+from cajamarca_qhaway.capabilities.sunat_enrichment.service import (
+    SunatEnrichmentService,
+)
 from cajamarca_qhaway.capabilities.sunat_enrichment.validator import (
     ConstitutionalPrivacyGuardError,
     assert_constitutional_ruc_only,

@@ -11,11 +11,12 @@ Valida:
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import httpx
 import pytest
+from pydantic import ValidationError
 
 from cajamarca_qhaway.capabilities.entity_mapping.dataset import load_universe
 from cajamarca_qhaway.capabilities.live_harvest.backoff import calculate_jitter_delay
@@ -30,7 +31,6 @@ from cajamarca_qhaway.capabilities.live_harvest.mef_poller import MefPoller
 from cajamarca_qhaway.capabilities.live_harvest.seace_poller import SeacePoller
 from cajamarca_qhaway.capabilities.live_harvest.watermark_store import WatermarkStore
 from cajamarca_qhaway.models import ContractingEntity
-
 
 # ============================================================================
 # Fixtures
@@ -75,7 +75,7 @@ def test_harvest_config_defaults_and_immutability():
     assert cfg.mef.cajamarca_dep_code == "06"
 
     # Inmutabilidad (frozen=True)
-    with pytest.raises(Exception):
+    with pytest.raises(ValidationError, match="frozen"):
         cfg.seace.poll_interval_seconds = 10  # type: ignore
 
 
@@ -101,7 +101,7 @@ def test_watermark_store_atomic_save_and_reload(tmp_harvest_dir: Path):
     assert store.state.seen_seace_ocids == set()
     assert store.state.last_mef_offset == 0
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     store.update_seace_cursor(timestamp=now, new_ocids=["ocds-dgv273-001", "ocds-dgv273-002"])
     store.update_mef_cursor(timestamp=now, offset=250)
 
@@ -121,8 +121,8 @@ def test_watermark_store_atomic_save_and_reload(tmp_harvest_dir: Path):
 
 
 def test_coverage_logger_append_and_read(coverage_logger: CoverageGapLogger):
-    t1 = datetime(2026, 10, 12, 10, 0, tzinfo=timezone.utc)
-    t2 = datetime(2026, 10, 12, 10, 5, tzinfo=timezone.utc)
+    t1 = datetime(2026, 10, 12, 10, 0, tzinfo=UTC)
+    t2 = datetime(2026, 10, 12, 10, 5, tzinfo=UTC)
 
     coverage_logger.log_window(
         source="seace-ocds",
@@ -531,9 +531,9 @@ def test_harvester_daemon_run_once_persists_records(tmp_harvest_dir: Path):
         assert seace_file.exists()
         assert mef_file.exists()
 
-        with open(seace_file, "r", encoding="utf-8") as f:
-            line = json.loads(f.readline())
-            assert line["ocid"] == "ocds-dgv273-2026-TEST-99"
+        content = await asyncio.to_thread(seace_file.read_text, encoding="utf-8")
+        line = json.loads(content.splitlines()[0])
+        assert line["ocid"] == "ocds-dgv273-2026-TEST-99"
 
         await daemon.aclose()
 
