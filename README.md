@@ -2,8 +2,6 @@
 title: "Cajamarca Qhaway"
 status: active
 updated: 2026-10-16
-source: ai
-generator: codex
 generated_at: 2026-10-16T07:14:27.989761+00:00
 confidence: high
 verified: false
