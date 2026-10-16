@@ -4,13 +4,13 @@ spec: "005"
 capability: review-panel
 status: draft
 created: 2026-08-20
-updated: 2026-08-20
+updated: 2026-10-15
 consumes: [RedFlag]
 produces: [Alert]
 open_clarifications: 4
 source: ai
-generator: claude-sonnet-5
-generated_at: 2026-08-20T00:00:00Z
+generator: codex-gpt-6
+generated_at: 2026-10-15T18:33:00Z
 confidence: medium
 verified: false
 ---
@@ -51,6 +51,9 @@ reputacional real.
 
 ## Salidas
 
+El expediente previo a decisión admite generated e in_review con evidencia y sin firma fabricada.
+Solo published o discarded representan decisiones humanas y exigen identidad, fecha y notas.
+
 Un `Alert` (contrato canónico, Artículo 19) por cada decisión de publicar, y un registro de
 descarte (mismo contrato, con `status == "discarded"`) por cada decisión de no publicar - ambos
 casos quedan registrados, no solo el positivo, porque un `RedFlag` descartado sin rastro sería
@@ -59,6 +62,13 @@ indistinguible de uno que nunca se generó, y eso rompería la auditoría de qu�
 **Ubicación.** `[NECESITA ACLARACIÓN: depende del stack - ver specs/pending-adrs.md]`
 
 ## Reglas de negocio
+
+**RN-005-08. Copiloto privado anclado a evidencia.**
+Los expedientes in_review reciben resumen, hipótesis, contra-hipótesis y checklist.
+Cada afirmación referencia evidencia suministrada o declara ausencia de dato.
+La síntesis determinista y la respuesta LLM con esquema estricto indican su modo de generación.
+El análisis no genera señales, firmas ni decisiones y no se incluye en el snapshot público.
+La cola se ordena por prioridad explicable del expediente, sin puntuar personas.
 
 **RN-005-01. Un `RedFlag` no se convierte en `Alert` sin una decisión humana explícita.**
 No existe ninguna regla de auto-aprobación por antigüedad, por umbral de confianza ni por
@@ -103,6 +113,13 @@ edita el registro original: se crea una acción de retiro explícita que referen
 original y declara el motivo. El historial de decisiones nunca se reescribe.
 
 ## Criterios de aceptación
+
+**CA-005-07** · RN-005-08
+El dossier contiene executive_summary, risk_hypothesis, legal_counter_hypothesis
+y verification_checklist, con procedencia y limitaciones.
+Evidencia faltante se informa sin fabricar datos SUNAT, satelitales ni ejecución de obra.
+Ningún error LLM cambia el estado de revisión o crea una RedFlag.
+El acceso anónimo no recibe el dossier ni las señales individuales pendientes.
 
 **CA-005-01** · RN-005-01
 Dado un `RedFlag` recién generado, no existe ningún camino de código que produzca una `Alert` a
@@ -195,6 +212,8 @@ está mal calculado, el defecto se corrige en `004-red-flags-engine`, no editand
 en el panel.
 
 ## Historial
+
+Enmienda humana 2026-10-15: TIER_2 privado y prioridad de casos, Constitución v2.0.
 
 | Fecha | Cambio | Estado |
 |---|---|---|

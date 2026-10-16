@@ -4,7 +4,8 @@ status: active
 created: 2026-08-20
 updated: 2026-10-15
 source: ai
-generator: claude-sonnet-5
+generator: codex-gpt-6
+generated_at: 2026-10-15T18:36:00Z
 confidence: high
 verified: false
 ---
@@ -22,6 +23,9 @@ ajustar la columna "Cargar cuando".
 
 | Documento | Responde a | Cargar cuando | Tokens |
 |---|---|---|---|
+| `adr/0014-constitucion-v2-y-priorizacion-de-expedientes.md` | Reforma humana v2 y niveles de IA | Aplicar el contrato autorizado el 2026-10-15 | ~700 |
+| `audits/2026-10-15-constitutional-v2-gates.md` | Evidencia de compuertas y brecha CAPTCHA | Retomar la ejecución del contrato v2 | ~700 |
+| `audits/2026-10-15-remediation-phase-two.md` | Endurecimiento de sesiones, moderación y snapshot público | Verificar la segunda fase de remediación | ~550 |
 | `architecture/006-budget-and-procurement-evidence.md` | Modelo presupuestal y evidencia oficial dual | Cambiar ingesta, persistencia o fuentes | ~900 |
 | `adr/0013-presupuesto-institucional-conectores-duales-e-identidad.md` | Decision propuesta de presupuesto, conectores e identidad | Revisar el contrato ampliado | ~700 |
 | `audits/2026-10-15-mef-control-table.md` | Cifras oficiales de 14 entidades y tres ejercicios | Reconciliar los importes presupuestales | ~2200 |
@@ -48,6 +52,7 @@ ajustar la columna "Cargar cuando".
 | `research/2026-08-20-diseno-cajamarca-qhaway-fase1.md` | ¿Qué se investigó y diseñó para Fase 1 (Cajamarca)? Casos de uso, arquitectura propuesta, riesgos, decisiones pendientes | Antes de tocar alcance, arquitectura o roadmap | ~3500 |
 | `research/2026-08-20-verificacion-tecnica-fuentes.md` | ¿Funciona de verdad la API OCDS de OECE y hay API real en el MEF? Evidencia HTTP real, no supuesta | Antes de tocar `002-seace-ingestion` o `003-mef-ingestion` | ~2200 |
 | `sdd/constitution.md` | ¿Qué reglas gobiernan cómo se escribe una spec aquí? Incluye los contratos canónicos compartidos | Antes de crear o modificar cualquier `specs/NNN-*/` | ~2800 |
+| `sdd/2026-10-15-master-remediation.md` | ¿Cómo se corrigen y validan las causas raíz de la auditoría? | Antes de ejecutar o cerrar remediaciones | ~2200 |
 | `sdd/README.md` | ¿Qué es SDD en este proyecto y cómo se usa? | Primera vez que se toca `specs/` | ~400 |
 | `../specs/README.md` | ¿Qué capacidades tienen spec y cuáles están reservadas, y por qué? | Antes de elegir qué capacidad especificar o implementar | ~500 |
 | `../specs/007-geospatial-satellite-monitoring/spec.md` | ¿Cuáles son las reglas de negocio y criterios de aceptación del monitoreo geoespacial de obras? | Antes de modificar o auditar Capacidad 007 | ~1500 |

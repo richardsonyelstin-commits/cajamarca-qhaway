@@ -8,7 +8,8 @@
     "dev": "python -m cajamarca_qhaway.web.server",
     "serve": "python -m cajamarca_qhaway.web.server",
     "audit": "python web/tools/validate_web_integrity.py",
-    "test": "python -m pytest -q tests/test_web_platform.py",
+    "test": "python -m pytest -q && node --test tests/admin-review-security.test.mjs",
+    "test:frontend-security": "node --test tests/admin-review-security.test.mjs",
     "lint": "python web/tools/validate_web_integrity.py"
   }
 }

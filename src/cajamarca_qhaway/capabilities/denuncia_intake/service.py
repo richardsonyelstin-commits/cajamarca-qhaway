@@ -7,7 +7,7 @@ Somete todo reporte a una maquina de estados de moderacion humana (RN-006-03).
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from typing import Literal
+from typing import Callable, Literal
 
 from cajamarca_qhaway.models import ChannelType, CitizenReport, ModerationStatus, compute_report_id
 
@@ -26,6 +26,7 @@ class DenunciaIntakeService:
         related_entity_id: str | None = None,
         submitted_at: datetime | None = None,
         tracking_token_hash: str | None = None,
+        persist: Callable[[CitizenReport], None] | None = None,
     ) -> CitizenReport:
         """Registra una nueva denuncia ciudadana.
 
@@ -53,6 +54,9 @@ class DenunciaIntakeService:
             legal_disclaimer_shown=True,
             tracking_token_hash=tracking_token_hash,
         )
+        # Confirmar la escritura antes de incorporar el reporte al estado local.
+        if persist is not None:
+            persist(report)
         self._reports[report.report_id] = report
         return report
 
@@ -62,6 +66,7 @@ class DenunciaIntakeService:
         new_status: Literal["accepted_as_lead", "rejected"],
         moderator_id: str,
         moderated_at: datetime | None = None,
+        persist: Callable[[CitizenReport], None] | None = None,
     ) -> CitizenReport:
         """Modera una denuncia ciudadana pendiente asignandole un estado y moderador humano."""
         existing = self._reports.get(report_id)
@@ -89,6 +94,9 @@ class DenunciaIntakeService:
             legal_disclaimer_shown=True,
             tracking_token_hash=existing.tracking_token_hash,
         )
+        # El cambio de estado solo se publica localmente tras confirmar la escritura.
+        if persist is not None:
+            persist(updated)
         self._reports[report_id] = updated
         return updated
 

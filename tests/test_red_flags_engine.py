@@ -163,7 +163,7 @@ def test_deteccion_contract_splitting_orders():
             title=f"Orden de servicio de consultoria tecnica parte {i}",
             awarded_amount=25000.0,
             supplier_ruc="20999888777",
-            raw_payload={},
+            raw_payload={"awards": [{"date": "2026-06-01T00:00:00Z"}]},
             retrieved_at=NOW_UTC,
         )
         for i in range(1, 4)
@@ -172,7 +172,8 @@ def test_deteccion_contract_splitting_orders():
     split_flags = [f for f in flags if f.indicator_code == "contract-splitting-orders"]
     assert len(split_flags) == 1
     flag = split_flags[0]
-    assert flag.observed_value == 3
+    assert flag.observed_value["count"] == 3
+    assert flag.observed_value["total_pen"] == 75000
     assert len(flag.procurement_ids) == 3
 
 

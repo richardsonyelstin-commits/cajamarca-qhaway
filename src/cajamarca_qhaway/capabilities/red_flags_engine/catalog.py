@@ -49,9 +49,9 @@ ACTIVE_INDICATORS: dict[str, IndicatorDefinition] = {
     "short-tender-window": IndicatorDefinition(
         code="short-tender-window",
         name="Ventana anormalmente corta de licitacion",
-        formula_description="Periodo de convocatoria y presentacion de ofertas inferior al plazo minimo prudencial de 5 dias",
-        default_threshold=5,
-        unit="dias",
+        formula_description="Cota en días calendario desde convocatoria oficial a ofertas inferior al mínimo hábil de la modalidad no abreviada; no usa el inicio de recepción como convocatoria",
+        default_threshold=22,
+        unit="dias habiles (cota calendario conservadora)",
     ),
     "direct-award-threshold": IndicatorDefinition(
         code="direct-award-threshold",
@@ -63,16 +63,16 @@ ACTIVE_INDICATORS: dict[str, IndicatorDefinition] = {
     "direct-administration-equipment-rent": IndicatorDefinition(
         code="direct-administration-equipment-rent",
         name="Alquiler irregular de maquinaria en administracion directa",
-        formula_description="Facturacion o cobro de alquiler de maquinaria propia en obras por administracion directa hacia RDR",
+        formula_description="Alquiler u horas-máquina de equipo pesado con administración directa declarada; requiere verificar necesidad y titularidad, no presume propiedad ni irregularidad",
         default_threshold=1,
         unit="ocurrencias",
     ),
     "contract-splitting-orders": IndicatorDefinition(
         code="contract-splitting-orders",
         name="Fraccionamiento en ordenes consecutivas menores a 8 UIT",
-        formula_description="Tres o mas ordenes menores a 8 UIT al mismo proveedor dentro de una ventana de 30 dias",
-        default_threshold=3,
-        unit="ordenes",
+        formula_description="Órdenes individuales menores a 8 UIT, suma superior a 8 UIT del ejercicio y objetos con similitud coseno >= 0.78 en hasta 90 días",
+        default_threshold=0.78,
+        unit="similitud coseno",
     ),
     "mef-underspending": IndicatorDefinition(
         code="mef-underspending",

@@ -21,6 +21,7 @@ Cumple con politicas de seguridad (CSP, nosniff, DENY) y Antislop R-02 (cero em-
 from __future__ import annotations
 
 import base64
+import binascii
 import hashlib
 import hmac
 import json
@@ -43,7 +44,6 @@ from cajamarca_qhaway.capabilities.review_panel import ReviewPanelService
 from cajamarca_qhaway.models import BudgetExecutionRecord
 from cajamarca_qhaway.models.alert import GENERIC_REVIEWERS
 from cajamarca_qhaway.models.budget_reconciliation import canonical_budget_records
-from cajamarca_qhaway.models.citizen_report import CitizenReport
 from cajamarca_qhaway.web.exporter import (
     build_verified_web_snapshot,
 )
@@ -61,12 +61,15 @@ try:
     _alert_repo = AlertRepository(_db_manager)
     _report_repo = CitizenReportRepository(_db_manager)
     _red_flag_repo = RedFlagRepository(_db_manager)
+    from cajamarca_qhaway.persistence.repositories.case_analysis_repository import CaseAnalysisRepository
+    _case_analysis_repo = CaseAnalysisRepository(_db_manager)
 except Exception as error:
     logger.exception("Fallo controlado del adaptador web (%s)", type(error).__name__, exc_info=False)
     _db_manager = None
     _alert_repo = None
     _report_repo = None
     _red_flag_repo = None
+    _case_analysis_repo = None
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
@@ -76,6 +79,18 @@ SECURITY_HEADERS = {
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "Content-Security-Policy": "default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval';",
 }
+
+# La respuesta publica se construye mediante lista positiva: un campo nuevo
+# (por ejemplo, expedientes de revision) no se publica por accidente.
+PUBLIC_SNAPSHOT_FIELDS = (
+    "contracting_entities", "procurement_records", "budget_execution_records",
+    "alerts", "red_flags", "geospatial_works", "geospatial_signals",
+)
+PUBLIC_METADATA_FIELDS = (
+    "version", "generated_at", "source", "region", "constitution_version",
+    "articles_covered", "total_entities", "total_procurements",
+    "total_budget_executions", "budget_coverage_by_year", "total_geospatial_works",
+)
 
 CLEAN_PAGE_ROUTES: dict[str, str] = {
     "": "index.html",
@@ -100,53 +115,44 @@ CLEAN_PAGE_ROUTES: dict[str, str] = {
     "acreditacion": "login.html",
 }
 
-ACCREDITED_VEEDORES: list[dict[str, str]] = [
-    {
-        "email": "veeduria-cajamarca@proetica.org.pe",
-        "password_hash": hashlib.sha256(b"demo-veedor-2025").hexdigest(),
-        "name": "Lic. Carlos Arana Silva",
-        "organization": "Proetica (Capitulo Peruano de Transparency International)",
-        "accreditationNumber": "VEED-PROETICA-2025-014",
-        "role": "veedor_titular",
-    },
-    {
-        "email": "veeduria.proetica@cajamarca-qhaway.pe",
-        "password_hash": hashlib.sha256(b"Proetica#Cajamarca2025!").hexdigest(),
-        "name": "Dra. Elena Santillan Mori",
-        "organization": "Proetica Cajamarca",
-        "accreditationNumber": "VEED-PROETICA-2025-008",
-        "role": "veedor_titular",
-    },
-    {
-        "email": "veeduria.propuesta@cajamarca-qhaway.pe",
-        "password_hash": hashlib.sha256(b"Propuesta#Civica2025!").hexdigest(),
-        "name": "Ing. Marco Tacilla Vasquez",
-        "organization": "Grupo Propuesta Ciudadana",
-        "accreditationNumber": "VEED-PROPUESTA-2025-021",
-        "role": "veedor_revisor",
-    },
-    {
-        "email": "veeduria.grufides@cajamarca-qhaway.pe",
-        "password_hash": hashlib.sha256(b"Grufides#Veedor2025!").hexdigest(),
-        "name": "Abg. Mirtha Villanueva Quispe",
-        "organization": "GRUFIDES Cajamarca",
-        "accreditationNumber": "VEED-GRUFIDES-2025-003",
-        "role": "veedor_titular",
-    },
-    {
-        "email": "veedor.regional@cajamarca-qhaway.pe",
-        "password_hash": hashlib.sha256(b"Veedor#Qhaway2025!").hexdigest(),
-        "name": "Prof. Jorge Terrones Bazan",
-        "organization": "Mesa de Concertacion y Veeduria Ciudadana Cajamarca",
-        "accreditationNumber": "VEED-MESA-2025-007",
-        "role": "veedor_colegiado",
-    },
-]
+def _load_accredited_veedores() -> list[dict[str, str]]:
+    """Carga credenciales scrypt provisionadas fuera del repositorio."""
+    configured = os.environ.get("CAJAMARCA_QHAWAY_VEEDORES_JSON", "")
+    if not configured:
+        return []
+    try:
+        users = json.loads(configured)
+        fields = (
+            "email", "name", "organization", "accreditationNumber", "role",
+            "password_salt", "password_scrypt_hash",
+        )
+        if not isinstance(users, list):
+            raise ValueError("Se requiere una lista")
+        for user in users:
+            if not isinstance(user, dict) or any(not isinstance(user.get(key), str)
+                                                or not user[key].strip() for key in fields):
+                raise ValueError("Registro de acreditacion incompleto")
+            if len(bytes.fromhex(user["password_salt"])) < 16:
+                raise ValueError("Salt de contrasena demasiado corto")
+            if len(bytes.fromhex(user["password_scrypt_hash"])) != 64:
+                raise ValueError("Hash scrypt de tamano invalido")
+            if user["email"] != user["email"].lower():
+                raise ValueError("Email de acreditacion debe ser minuscula")
+        emails = [user["email"] for user in users]
+        if len(set(emails)) != len(emails):
+            raise ValueError("Acreditaciones duplicadas")
+        return users
+    except (ValueError, TypeError, KeyError) as exc:
+        logger.error("Configuracion de veedores invalida (%s)", type(exc).__name__)
+        return []
 
-_TOKEN_SECRET = os.environ.get(
-    "CAJAMARCA_QHAWAY_AUTH_SECRET",
-    "cajamarca-qhaway-civic-veedor-hmac-key-2026",
-).encode("utf-8")
+
+ACCREDITED_VEEDORES: list[dict[str, str]] = _load_accredited_veedores()
+_configured_auth_secret = os.environ.get("CAJAMARCA_QHAWAY_AUTH_SECRET", "")
+_TOKEN_SECRET: bytes | None = (
+    _configured_auth_secret.encode("utf-8") if len(_configured_auth_secret.encode("utf-8")) >= 32
+    else None
+)
 _REVOKED_TOKENS: set[str] = set()
 _LOGIN_ATTEMPTS: dict[str, dict[str, Any]] = {}
 _MAX_ATTEMPTS = 5
@@ -154,6 +160,10 @@ _LOCKOUT_SECONDS = 15 * 60
 
 
 def _issue_veedor_token(veedor: dict[str, str], ttl_seconds: int = 8 * 3600) -> tuple[str, int]:
+    if _TOKEN_SECRET is None:
+        raise RuntimeError("Autenticacion no configurada")
+    if not 0 < ttl_seconds <= 8 * 3600:
+        raise ValueError("Duracion de sesion fuera de rango")
     now_ms = int(time.time() * 1000)
     expires_at = now_ms + (ttl_seconds * 1000)
     payload = {
@@ -175,22 +185,40 @@ def _issue_veedor_token(veedor: dict[str, str], ttl_seconds: int = 8 * 3600) -> 
 
 
 def _verify_veedor_token(token: str | None) -> dict[str, Any] | None:
-    if not token or token in _REVOKED_TOKENS or "." not in token:
+    if (_TOKEN_SECRET is None or not token or len(token) > 4096
+            or token in _REVOKED_TOKENS or token.count(".") != 1):
         return None
-    b64_payload, sig = token.split(".", 1)
-    expected_sig = hmac.new(_TOKEN_SECRET, b64_payload.encode("ascii"), hashlib.sha256).hexdigest()
-    if not hmac.compare_digest(sig, expected_sig):
-        return None
-    padding = "=" * (-len(b64_payload) % 4)
     try:
-        raw = base64.urlsafe_b64decode(b64_payload + padding)
+        b64_payload, sig = token.split(".", 1)
+        expected_sig = hmac.new(_TOKEN_SECRET, b64_payload.encode("ascii"), hashlib.sha256).hexdigest()
+        if len(sig) != 64 or not hmac.compare_digest(sig, expected_sig):
+            return None
+        padding = "=" * (-len(b64_payload) % 4)
+        raw = base64.b64decode(b64_payload + padding, altchars=b"-_", validate=True)
         data = json.loads(raw.decode("utf-8"))
-    except Exception as error:
-        logger.exception("Fallo controlado del adaptador web (%s)", type(error).__name__, exc_info=False)
+        if not isinstance(data, dict) or not isinstance(data.get("veedor"), dict):
+            return None
+        issued_at, expires_at = data.get("createdAt"), data.get("expiresAt")
+        now_ms = int(time.time() * 1000)
+        if (type(issued_at) is not int or type(expires_at) is not int
+                or issued_at > now_ms + 60_000 or expires_at <= now_ms
+                or expires_at <= issued_at or expires_at - issued_at > 8 * 3600 * 1000
+                or not isinstance(data.get("nonce"), str)
+                or len(data["nonce"]) != 16):
+            return None
+        claimed = data["veedor"]
+        fields = ("email", "name", "organization", "accreditationNumber", "role")
+        if not all(isinstance(claimed.get(key), str) for key in fields):
+            return None
+        # La firma no basta: la acreditacion puede haberse retirado o cambiado.
+        accredited = next((user for user in ACCREDITED_VEEDORES
+                           if user["email"] == claimed["email"]), None)
+        if accredited is None or any(accredited[key] != claimed[key] for key in fields):
+            return None
+        data["veedor"] = {key: accredited[key] for key in fields}
+        return data
+    except (UnicodeError, ValueError, TypeError, KeyError, OverflowError, binascii.Error):
         return None
-    if int(time.time() * 1000) > int(data.get("expiresAt", 0)):
-        return None
-    return data
 
 
 class WebApiHandler(BaseHTTPRequestHandler):
@@ -453,7 +481,7 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 "expiresAt": session["expiresAt"],
             })
 
-        if path == "/api/review/queue":
+        if path in {"/api/review/queue", "/api/review/cases"}:
             auth_header = req_headers.get("authorization", "")
             if not auth_header.startswith("Bearer "):
                 return cls._json_bytes({"error": "Sesion de veedor requerida"}, status_code=401)
@@ -461,20 +489,29 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 return cls._json_bytes({"error": "Sesion de veedor invalida o expirada"}, status_code=401)
             if _red_flag_repo is None or _alert_repo is None:
                 return cls._json_bytes({"error": "Repositorio privado de revision no disponible"}, status_code=503)
-            reviewed_ids = {
-                flag_id
-                for alert in _alert_repo.list_all()
-                for flag_id in alert.red_flag_ids
-            }
+            if path == "/api/review/cases":
+                if _case_analysis_repo is None:
+                    return cls._json_bytes({"error": "Dossiers privados no disponibles"}, status_code=503)
+                return cls._json_bytes([case.model_dump(mode='json') for case in _case_analysis_repo.list_in_review()])
+            reviewed_ids = _alert_repo.decided_flag_ids()
+            cases = _case_analysis_repo.list_in_review() if _case_analysis_repo else []
+            by_flag = {node.node_id: case for case in cases
+                       for node in case.ai_copilot_analysis.evidence_graph.nodes if node.kind == 'signal'}
             queue = [
-                flag.model_dump(mode="json")
+                {**flag.model_dump(mode="json"),
+                 'entity_id': by_flag[flag.red_flag_id].entity_id if flag.red_flag_id in by_flag else None,
+                 'case_priority_score': by_flag[flag.red_flag_id].case_priority_score if flag.red_flag_id in by_flag else 0,
+                 'alert_id': by_flag[flag.red_flag_id].alert_id if flag.red_flag_id in by_flag else None}
                 for flag in _red_flag_repo.list_all()
-                if flag.red_flag_id not in reviewed_ids
+                if flag.is_active and flag.red_flag_id not in reviewed_ids
             ]
+            queue.sort(key=lambda item: (-item['case_priority_score'], item['red_flag_id']))
             return cls._json_bytes(queue)
 
         if path == "/api/snapshot":
-            public_snapshot = dict(snapshot)
+            public_snapshot = {
+                key: snapshot.get(key, []) for key in PUBLIC_SNAPSHOT_FIELDS
+            }
             public_snapshot["citizen_reports"] = []
             public_snapshot["alerts"] = [
                 alert for alert in public_snapshot.get("alerts", [])
@@ -490,6 +527,22 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 flag for flag in public_snapshot.get("red_flags", [])
                 if flag.get("red_flag_id") in published_ids
             ]
+            raw_metadata = snapshot.get("metadata", {})
+            if not isinstance(raw_metadata, dict):
+                raw_metadata = {}
+            public_metadata = {
+                key: raw_metadata[key] for key in PUBLIC_METADATA_FIELDS
+                if key in raw_metadata
+            }
+            published_count = len(public_snapshot["alerts"])
+            public_metadata.update({
+                "total_alerts": published_count,
+                "total_published_alerts": published_count,
+                "total_candidate_red_flags": len(public_snapshot["red_flags"]),
+                "alert_status_counts": {"published": published_count},
+                "total_citizen_reports": 0,
+            })
+            public_snapshot["metadata"] = public_metadata
             return cls._json_bytes(public_snapshot)
 
         if path == "/api/entities":
@@ -700,6 +753,8 @@ class WebApiHandler(BaseHTTPRequestHandler):
 
     @classmethod
     def _dispatch_post_login(cls, data: dict[str, Any], req_headers: dict[str, str]) -> tuple[int, str, bytes]:
+        if _TOKEN_SECRET is None or not ACCREDITED_VEEDORES:
+            return cls._error_bytes("Servicio de acreditacion no configurado", 503)
         if data.get("honeypot"):
             return cls._error_bytes("Solicitud rechazada", 400)
 
@@ -722,9 +777,14 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 status_code=429,
             )
 
-        cand_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
         matched = next((v for v in ACCREDITED_VEEDORES if v["email"] == email), None)
-        is_valid = bool(matched and hmac.compare_digest(matched["password_hash"], cand_hash))
+        is_valid = False
+        if matched:
+            cand_hash = hashlib.scrypt(
+                password.encode("utf-8"), salt=bytes.fromhex(matched["password_salt"]),
+                n=2**14, r=8, p=1, dklen=64,
+            ).hex()
+            is_valid = hmac.compare_digest(matched["password_scrypt_hash"], cand_hash)
 
         if not is_valid or matched is None:
             rec = _LOGIN_ATTEMPTS.setdefault(user_key, {"attempts": 0, "locked_until": 0.0})
@@ -760,13 +820,21 @@ class WebApiHandler(BaseHTTPRequestHandler):
     @classmethod
     def _dispatch_post_logout(cls, req_headers: dict[str, str]) -> tuple[int, str, bytes]:
         auth_header = req_headers.get("authorization", "")
-        if auth_header.startswith("Bearer "):
-            _REVOKED_TOKENS.add(auth_header[7:].strip())
+        if not auth_header.startswith("Bearer "):
+            return cls._error_bytes("Sesion de veedor requerida", 401)
+        token = auth_header[7:].strip()
+        if not _verify_veedor_token(token):
+            return cls._error_bytes("Sesion de veedor invalida o expirada", 401)
+        _REVOKED_TOKENS.add(token)
         return cls._json_bytes({"message": "Sesion finalizada correctamente"})
 
     @classmethod
     def _dispatch_post_reports(cls, data: dict[str, Any]) -> tuple[int, str, bytes]:
         """Procesa una denuncia ciudadana cumpliendo CA-006-01."""
+        if _report_repo is None or (
+            os.environ.get("VERCEL") and (_db_manager is None or not _db_manager.is_postgres)
+        ):
+            return cls._error_bytes("Persistencia de denuncias no disponible", 503)
         raw_text = str(data.get("raw_text", "")).strip()
         legal_disclaimer = bool(data.get("legal_disclaimer_shown") or data.get("disclaimer_accepted"))
         raw_channel = str(data.get("channel") or data.get("source_channel") or "web").strip().lower()
@@ -792,19 +860,9 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 channel=channel,
                 related_entity_id=entity_id,
                 tracking_token_hash=tracking_token_hash,
+                persist=_report_repo.save,
             )
             payload = report.model_dump(mode="json")
-
-            # Persistencia en base de datos operativa (Pilar 2)
-            if _report_repo is not None:
-                try:
-                    _report_repo.save(report)
-                except Exception as exc:
-                    logger.exception("Fallo controlado del adaptador web (%s)", type(exc).__name__, exc_info=False)
-                    logger.exception("No se pudo persistir la denuncia antes de confirmar su recepcion")
-                    return cls._error_bytes(
-                        f"No se pudo guardar la denuncia: {type(exc).__name__}", 503
-                    )
 
             snapshot = cls.get_snapshot()
             snapshot.setdefault("citizen_reports", []).append(payload)
@@ -818,7 +876,9 @@ class WebApiHandler(BaseHTTPRequestHandler):
             )
         except Exception as exc:
             logger.exception("Fallo controlado del adaptador web (%s)", type(exc).__name__, exc_info=False)
-            return cls._error_bytes(f"Error al procesar denuncia: {exc!s}", 400)
+            if isinstance(exc, ValueError):
+                return cls._error_bytes(f"Error al procesar denuncia: {exc!s}", 400)
+            return cls._error_bytes("No se pudo procesar la denuncia", 503)
 
     @classmethod
     def _dispatch_post_reports_moderate(
@@ -827,6 +887,10 @@ class WebApiHandler(BaseHTTPRequestHandler):
         req_headers: dict[str, str] | None = None,
     ) -> tuple[int, str, bytes]:
         """Modera una denuncia ciudadana (Art. 14 y RN-006-03)."""
+        if _report_repo is None or (
+            os.environ.get("VERCEL") and (_db_manager is None or not _db_manager.is_postgres)
+        ):
+            return cls._error_bytes("Persistencia de denuncias no disponible", 503)
         req_headers = req_headers or {}
         auth_header = req_headers.get("authorization", "")
         if not auth_header.startswith("Bearer "):
@@ -843,10 +907,10 @@ class WebApiHandler(BaseHTTPRequestHandler):
         report_id = str(data.get("report_id", "")).strip()
         status = str(data.get("status") or data.get("moderation_status", "")).strip()
         custom_moderator = str(data.get("moderated_by", "")).strip()
-        if custom_moderator and custom_moderator.lower() in GENERIC_REVIEWERS:
-            return cls._error_bytes(f"moderated_by no puede ser generico: '{custom_moderator}'", 400)
+        if custom_moderator and custom_moderator != moderator_nominal:
+            return cls._error_bytes("moderated_by debe coincidir con la identidad acreditada", 400)
 
-        moderator_id = custom_moderator or moderator_nominal
+        moderator_id = moderator_nominal
 
         if not report_id:
             return cls._error_bytes("El campo 'report_id' es obligatorio", 400)
@@ -862,32 +926,20 @@ class WebApiHandler(BaseHTTPRequestHandler):
         matched = next((r for r in reports if r.get("report_id") == report_id), None)
 
         now_utc = datetime.now(UTC)
-        now_iso = now_utc.isoformat()
-
-        # Si no esta en el servicio en memoria pero si en snapshot o DB, sincronizarlo
-        if not cls.denuncia_service.get_report(report_id):
-            if matched:
-                cls.denuncia_service._reports[report_id] = CitizenReport(
-                    report_id=matched["report_id"],
-                    submitted_at=datetime.fromisoformat(matched.get("submitted_at") or now_iso),
-                    channel=matched.get("channel", "web"),
-                    raw_text=matched.get("raw_text", "Texto de denuncia verificado"),
-                    related_entity_id=matched.get("related_entity_id"),
-                    moderation_status="pending",
-                    legal_disclaimer_shown=True,
-                )
-            elif _report_repo is not None:
-                db_r = _report_repo.get_by_id(report_id)
-                if db_r:
-                    cls.denuncia_service._reports[report_id] = db_r
 
         try:
+            # La base de datos determina existencia y estado; el snapshot puede estar obsoleto.
+            persisted = _report_repo.get_by_id(report_id)
+            if persisted is None:
+                return cls._error_bytes("Reporte no encontrado", 404)
+            cls.denuncia_service._reports[report_id] = persisted
             # Invocar maquina de estados de DenunciaIntakeService
             updated = cls.denuncia_service.moderate_report(
                 report_id=report_id,
                 new_status=status,
                 moderator_id=moderator_id,
                 moderated_at=now_utc,
+                persist=_report_repo.moderate_pending,
             )
             payload = updated.model_dump(mode="json")
 
@@ -896,13 +948,6 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 matched.update(payload)
             else:
                 reports.append(payload)
-
-            # Persistir en base de datos operativa / Supabase (Pilar 2)
-            if _report_repo is not None:
-                try:
-                    _report_repo.save(updated)
-                except Exception as error:
-                    logger.exception("Fallo controlado del adaptador web (%s)", type(error).__name__, exc_info=False)
 
             return cls._json_bytes({
                 "success": True,
@@ -914,9 +959,10 @@ class WebApiHandler(BaseHTTPRequestHandler):
             }, status_code=200)
 
         except Exception as exc:
-
             logger.exception("Fallo controlado del adaptador web (%s)", type(exc).__name__, exc_info=False)
-            return cls._error_bytes(f"Error al moderar denuncia: {exc!s}", 400)
+            if isinstance(exc, (ValueError, KeyError)):
+                return cls._error_bytes(f"Error al moderar denuncia: {exc!s}", 400)
+            return cls._error_bytes("No se pudo persistir la moderacion", 503)
 
     @classmethod
     def _dispatch_post_review(
@@ -925,6 +971,10 @@ class WebApiHandler(BaseHTTPRequestHandler):
         req_headers: dict[str, str] | None = None,
     ) -> tuple[int, str, bytes]:
         """Procesa una decision de revision humana cumpliendo Art. 14 y CA-005-02."""
+        if _alert_repo is None or _red_flag_repo is None or (
+            os.environ.get("VERCEL") and (_db_manager is None or not _db_manager.is_postgres)
+        ):
+            return cls._error_bytes("Persistencia de decisiones no disponible", 503)
         req_headers = req_headers or {}
         entity_id = str(data.get("entity_id", "")).strip()
         red_flag_ids = data.get("red_flag_ids", [])
@@ -964,13 +1014,14 @@ class WebApiHandler(BaseHTTPRequestHandler):
                 if _red_flag_repo is None:
                     return cls._error_bytes("Repositorio de evidencia no disponible", 503)
                 complete_flags = [_red_flag_repo.get_by_id(flag_id) for flag_id in red_flag_ids]
-                if any(flag is None for flag in complete_flags):
+                if any(flag is None or not flag.is_active for flag in complete_flags):
                     return cls._error_bytes("No se puede publicar sin evidencia completa de cada RedFlag", 409)
                 alert = cls.review_service.publish_alert(
                     entity_id=entity_id,
                     red_flags=[flag for flag in complete_flags if flag is not None],
                     reviewer_id=reviewed_by,
                     review_notes=review_notes,
+                    persist=_alert_repo.save,
                 )
             elif status == "discarded":
                 if _red_flag_repo is None:
@@ -983,6 +1034,7 @@ class WebApiHandler(BaseHTTPRequestHandler):
                     red_flags=[flag for flag in complete_flags if flag is not None],
                     reviewer_id=reviewed_by,
                     review_notes=review_notes,
+                    persist=_alert_repo.save,
                 )
             else:
                 return cls._error_bytes(
@@ -992,20 +1044,18 @@ class WebApiHandler(BaseHTTPRequestHandler):
 
             snapshot = cls.get_snapshot()
             payload = alert.model_dump(mode="json")
-            snapshot.setdefault("alerts", []).append(payload)
-
-            # Persistencia en base de datos operativa (Pilar 2)
-            if _alert_repo is not None:
-                try:
-                    _alert_repo.save(alert)
-                except Exception as exc:
-                    logger.exception("Fallo controlado del adaptador web (%s)", type(exc).__name__, exc_info=False)
-                    return cls._error_bytes(f"No se pudo persistir la alerta: {exc}", 503)
+            alerts = snapshot.setdefault("alerts", [])
+            alerts[:] = [row for row in alerts if row.get("alert_id") != alert.alert_id]
+            alerts.append(payload)
 
             return cls._json_bytes({**payload, "alert": payload}, status_code=201)
         except Exception as exc:
             logger.exception("Fallo controlado del adaptador web (%s)", type(exc).__name__, exc_info=False)
-            return cls._error_bytes(f"Error al procesar decision: {exc!s}", 400)
+            if isinstance(exc, ValueError) and "ya tiene una decision" in str(exc):
+                return cls._error_bytes("Esta alerta ya fue revisada", 409)
+            if isinstance(exc, (ValueError, TypeError)):
+                return cls._error_bytes(f"Decision invalida: {exc!s}", 400)
+            return cls._error_bytes("No se pudo persistir la decision", 503)
 
     @classmethod
     def _resolve_static(cls, path: str) -> tuple[int, str, bytes]:
@@ -1069,6 +1119,7 @@ class WebApiHandler(BaseHTTPRequestHandler):
         ):
             content_type = f"{content_type}; charset=utf-8"
         self.send_header("Content-Type", content_type)
+        self.send_header("Cache-Control", "no-store" if self.path.startswith("/api/") else "public, max-age=0")
         if content_length is not None:
             self.send_header("Content-Length", str(content_length))
         for header, val in SECURITY_HEADERS.items():
@@ -1149,13 +1200,8 @@ def app(environ: dict[str, Any], start_response: Any) -> list[bytes]:
     status_line = f"{status_code} {phrase}"
 
     cache_control = "no-store"
-    if method == "GET" and status_code == 200:
-        if raw_path in ("/api/red-flags", "/api/auth/session"):
-            cache_control = "no-store"
-        elif raw_path.startswith("/api/"):
-            cache_control = "public, max-age=0, s-maxage=60, stale-while-revalidate=300"
-        else:
-            cache_control = "public, max-age=0, s-maxage=3600"
+    if method == "GET" and status_code == 200 and not raw_path.startswith("/api/"):
+        cache_control = "public, max-age=0, s-maxage=3600"
 
     response_headers: list[tuple[str, str]] = [
         ("Content-Type", content_type),

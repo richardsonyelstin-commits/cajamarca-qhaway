@@ -193,6 +193,12 @@
               </div>
             </div>
 
+            <section id="case-dossier" aria-label="Dossier forense privado" aria-live="polite"
+                     class="space-y-3" style="overflow-wrap:anywhere">
+              <h4 class="font-headline-sm">Dossier forense privado</h4>
+              <p>Seleccione un candidato para consultar su análisis y limitaciones.</p>
+            </section>
+
             <!-- Formulario de Dictamen Humano (Art. 14 / CU5) -->
             <form id="review-decision-form" class="space-y-4 pt-4 border-t border-slate-border">
               <input type="hidden" id="candidate-id" value=""/>
@@ -315,16 +321,29 @@
     let activeVeedor = null;
     let reviewQueueAvailable = false;
 
+    function denyAccess(reason, message) {
+      activeToken = null;
+      activeVeedor = null;
+      sessionStorage.removeItem('cajamarca_veedor_token');
+      sessionStorage.removeItem('cajamarca_veedor_profile');
+      document.getElementById('auth-gate-status').textContent = message;
+      window.location.replace(`/login?reason=${encodeURIComponent(reason)}`);
+    }
+
+    // Datos del servidor y testimonios ciudadanos solo ingresan al DOM como texto.
+    function textNode(tag, classes, value) {
+      const node = document.createElement(tag);
+      node.className = classes;
+      if (value !== undefined && value !== null) node.textContent = String(value);
+      return node;
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
       // 1. Barrera de Seguridad Obligatoria
       activeToken = sessionStorage.getItem('cajamarca_veedor_token');
-      const cachedProfile = sessionStorage.getItem('cajamarca_veedor_profile');
 
       if (!activeToken) {
-        document.getElementById('auth-gate-status').textContent = 'Acceso bloqueado: No se encontró token de veedor.';
-        setTimeout(() => {
-          window.location.href = '/login?reason=required';
-        }, 1500);
+        denyAccess('required', 'Acceso bloqueado: No se encontró token de veedor.');
         return;
       }
 
@@ -334,32 +353,17 @@
           headers: { 'Authorization': `Bearer ${activeToken}` }
         });
 
-        if (authRes.ok) {
-          const authData = await authRes.json();
-          activeVeedor = authData.veedor;
-          sessionStorage.setItem('cajamarca_veedor_profile', JSON.stringify(activeVeedor));
-        } else if (cachedProfile) {
-          try {
-            activeVeedor = JSON.parse(cachedProfile);
-            console.warn('Operando con credencial en caché de veedor acreditado');
-          } catch {
-            sessionStorage.removeItem('cajamarca_veedor_token');
-            sessionStorage.removeItem('cajamarca_veedor_profile');
-            document.getElementById('auth-gate-status').textContent = 'Sesión caducada. Redirigiendo a acreditación...';
-            setTimeout(() => {
-              window.location.href = '/login?reason=expired';
-            }, 1200);
-            return;
-          }
-        } else {
-          sessionStorage.removeItem('cajamarca_veedor_token');
-          sessionStorage.removeItem('cajamarca_veedor_profile');
-          document.getElementById('auth-gate-status').textContent = 'Sesión caducada o inválida. Redirigiendo a acreditación...';
-          setTimeout(() => {
-            window.location.href = '/login?reason=expired';
-          }, 1200);
+        if (!authRes.ok) {
+          denyAccess('expired', 'Sesión caducada o inválida. Redirigiendo a acreditación...');
           return;
         }
+        const authData = await authRes.json();
+        if (!authData?.veedor?.name || !authData.veedor.organization) {
+          denyAccess('expired', 'La sesión no contiene una identidad acreditada válida.');
+          return;
+        }
+        activeVeedor = authData.veedor;
+        sessionStorage.setItem('cajamarca_veedor_profile', JSON.stringify(activeVeedor));
 
         // Ocultar barrera y mostrar panel
         const authGateModal = document.getElementById('auth-gate-modal');
@@ -381,31 +385,7 @@
 
       } catch (err) {
         console.error('Error al validar sesión:', err);
-        if (cachedProfile) {
-          try {
-            activeVeedor = JSON.parse(cachedProfile);
-            const authGateModal = document.getElementById('auth-gate-modal');
-            if (authGateModal) authGateModal.classList.add('hidden');
-            const mainPanel = document.getElementById('main-content') || document.getElementById('main-panel-content');
-            if (mainPanel) mainPanel.classList.remove('opacity-0');
-
-            if (activeVeedor) {
-              const nameEl = document.getElementById('veedor-name-display');
-              if (nameEl) nameEl.textContent = activeVeedor.name;
-              const orgEl = document.getElementById('veedor-org-display');
-              if (orgEl) orgEl.textContent = `${activeVeedor.organization} • Acreditación N° ${activeVeedor.accreditationNumber}`;
-              const badgeEl = document.getElementById('veedor-accreditation-badge');
-              if (badgeEl) badgeEl.textContent = `Rol: ${(activeVeedor.role || 'veedor').replace('_', ' ').toUpperCase()} (Contingencia)`;
-              const revInput = document.getElementById('reviewed-by');
-              if (revInput) revInput.value = `${activeVeedor.name} (${activeVeedor.organization})`;
-            }
-            return;
-          } catch {}
-        }
-        document.getElementById('auth-gate-status').textContent = 'Error de conexión con el servidor seguro.';
-        setTimeout(() => {
-          window.location.href = '/login?reason=error';
-        }, 1500);
+        denyAccess('error', 'Error de conexión con el servidor seguro.');
         return;
       }
 
@@ -511,7 +491,7 @@
 
         const payload = {
           entity_id: selectedCandidate.entity_id,
-          red_flag_ids: selectedCandidate.red_flag_ids || ['rf-001'],
+          red_flag_ids: selectedCandidate.red_flag_ids,
           status,
           reviewed_by: `${activeVeedor.name} (${activeVeedor.organization})`,
           review_notes: reviewNotes
@@ -558,12 +538,19 @@
       const entities = await dataEngine.getEntities();
       const procurements = await dataEngine.getProcurements();
       let redFlags = [];
+      let caseDossiers = [];
+      reviewQueueAvailable = false;
       try {
         const queueResponse = await fetch('/api/review/queue', {
           headers: { 'Authorization': `Bearer ${activeToken}`, 'Accept': 'application/json' }
         });
         if (queueResponse.ok) {
           redFlags = await queueResponse.json();
+          const dossierResponse = await fetch('/api/review/cases', {
+            headers: { 'Authorization': `Bearer ${activeToken}`, 'Accept': 'application/json' },
+            cache: 'no-store'
+          });
+          if (dossierResponse.ok) caseDossiers = await dossierResponse.json();
           reviewQueueAvailable = true;
         } else {
           console.warn('Cola privada de revisión no disponible:', queueResponse.status);
@@ -599,27 +586,28 @@
       candidates = pendingFlags.map((flag) => {
         const procId = (flag.procurement_ids && flag.procurement_ids[0]) || null;
         const proc = procId ? procMap.get(procId) : null;
-        const entityId = proc ? proc.entity_id : null;
+        const entityId = flag.entity_id || proc?.entity_id || null;
         const entity = entityId ? entityMap.get(entityId) : null;
 
         const flagCode = codeMap[flag.indicator_code] || (flag.indicator_code || 'R-RIESGO').toUpperCase();
         const flagTitle = flag.formula_description || 'Patron de riesgo detectado en contratacion publica';
         const entityName = entity ? entity.official_name : (proc?.raw_payload?.buyer?.name || 'Entidad Publica de Cajamarca');
         const province = entity?.province || 'Cajamarca';
-        const ruc = entity?.ruc || '20000000000';
+        const ruc = entity?.ruc || 'Sin RUC enlazado';
         const amount = Number(proc?.awarded_amount || proc?.raw_payload?.tender?.value?.amount || 0);
         const tenderDesc = proc?.raw_payload?.tender?.description || proc?.title || 'Contratacion publica registrada en SEACE.';
 
         return {
           id: `cand-${flag.red_flag_id}`,
-          entity_id: entityId || (entity ? entity.entity_id : 'ce-cajamarca'),
+          entity_id: entityId,
+          dossier: caseDossiers.find(item => item.alert_id === flag.alert_id) || null,
           entity_name: entityName,
           province: province,
           ruc: ruc,
           red_flag_ids: [flag.red_flag_id],
           flag_code: flagCode,
           flag_title: flagTitle,
-          flag_desc: `Proceso: ${proc?.title || procId || 'Sin codigo'}. ${tenderDesc} (Valor observado: ${flag.observed_value}, Umbral: ${flag.threshold}).`,
+          flag_desc: `Proceso: ${proc?.title || procId || 'Evidencia independiente: '+(flag.source_evidence_ids || []).join(', ')}. ${tenderDesc} (Valor observado: ${JSON.stringify(flag.observed_value)}, Umbral: ${JSON.stringify(flag.threshold_value)}).`,
           amount: amount
         };
       });
@@ -668,7 +656,8 @@
         return;
       }
 
-      listEl.innerHTML = reportsList.map(r => {
+      listEl.replaceChildren();
+      for (const r of reportsList) {
         const status = r.moderation_status || 'pending';
         let badgeColor = 'bg-alert-amber/15 text-alert-amber border-alert-amber/30';
         let statusText = 'Pendiente';
@@ -681,30 +670,29 @@
         }
 
         const dateStr = r.submitted_at ? new Date(r.submitted_at).toLocaleDateString('es-PE') : 'Fecha N/D';
-
-        return `
-          <article class="report-item p-4 bg-surface-container-low border border-slate-border rounded hover:border-secondary transition-colors cursor-pointer" data-id="${r.report_id}">
-            <div class="flex items-center justify-between gap-2 mb-1">
-              <span class="font-mono text-caption font-bold ${badgeColor} px-2 py-0.5 rounded border">${statusText}</span>
-              <span class="text-caption font-label-sm text-outline">${dateStr}</span>
-            </div>
-            <h3 class="font-headline-sm text-sm font-semibold text-on-surface line-clamp-1 mt-1">Pliego: ${r.related_entity_id || 'Regional'}</h3>
-            <p class="text-caption text-on-surface-variant line-clamp-2 mt-1 leading-relaxed">${r.raw_text}</p>
-            <div class="mt-2 text-caption font-mono text-outline flex items-center justify-between">
-              <span>Canal: ${(r.channel || 'web').toUpperCase()}</span>
-              <span>ID: ${r.report_id}</span>
-            </div>
-          </article>
-        `;
-      }).join('');
-
-      document.querySelectorAll('.report-item').forEach(item => {
+        const item = textNode('article', 'report-item p-4 bg-surface-container-low border border-slate-border rounded hover:border-secondary transition-colors cursor-pointer');
+        item.dataset.id = String(r.report_id);
+        const header = textNode('div', 'flex items-center justify-between gap-2 mb-1');
+        header.append(
+          textNode('span', `font-mono text-caption font-bold ${badgeColor} px-2 py-0.5 rounded border`, statusText),
+          textNode('span', 'text-caption font-label-sm text-outline', dateStr),
+        );
+        const footer = textNode('div', 'mt-2 text-caption font-mono text-outline flex items-center justify-between');
+        footer.append(
+          textNode('span', '', `Canal: ${String(r.channel || 'web').toUpperCase()}`),
+          textNode('span', '', `ID: ${r.report_id}`),
+        );
+        item.append(
+          header,
+          textNode('h3', 'font-headline-sm text-sm font-semibold text-on-surface line-clamp-1 mt-1', `Pliego: ${r.related_entity_id || 'Regional'}`),
+          textNode('p', 'text-caption text-on-surface-variant line-clamp-2 mt-1 leading-relaxed', r.raw_text),
+          footer,
+        );
         item.addEventListener('click', () => {
-          const id = item.dataset.id;
-          const found = reportsList.find(r => r.report_id === id);
-          if (found) selectReport(found);
+          selectReport(r);
         });
-      });
+        listEl.append(item);
+      }
     }
 
     function selectReport(report) {
@@ -727,57 +715,61 @@
 
       const dateFormatted = report.submitted_at ? new Date(report.submitted_at).toLocaleString('es-PE') : 'N/D';
 
-      document.getElementById('detail-report-content').innerHTML = `
-        <div class="p-4 bg-surface border border-slate-border rounded space-y-3">
-          <div class="flex items-center justify-between text-caption font-mono text-outline">
-            <span>Fecha de Envio: ${dateFormatted}</span>
-            <span>Canal Seguro: ${(report.channel || 'web').toUpperCase()}</span>
-          </div>
-
-          <div class="border-t border-slate-border pt-2">
-            <span class="text-caption font-semibold uppercase text-outline block mb-1">Testimonio y Hechos Denunciados</span>
-            <p class="text-body-sm text-on-surface leading-relaxed whitespace-pre-wrap">${report.raw_text}</p>
-          </div>
-
-          <div class="border-t border-slate-border pt-2 flex items-center gap-2 text-caption text-civic-emerald font-semibold">
-            <span class="material-symbols-outlined text-[16px]">verified</span>
-            <span>Descargo legal Ley 29733 verificado y aceptado por el denunciante (CA-006-01)</span>
-          </div>
-
-          ${report.moderated_by ? `
-            <div class="p-2.5 bg-surface-container rounded text-caption font-mono text-on-surface-variant">
-              <span>Moderado por: ${report.moderated_by}</span>
-              ${report.moderated_at ? ` · <span>Fecha: ${new Date(report.moderated_at).toLocaleString('es-PE')}</span>` : ''}
-            </div>
-          ` : ''}
-        </div>
-      `;
+      const details = textNode('div', 'p-4 bg-surface border border-slate-border rounded space-y-3');
+      const metadata = textNode('div', 'flex items-center justify-between text-caption font-mono text-outline');
+      metadata.append(
+        textNode('span', '', `Fecha de Envio: ${dateFormatted}`),
+        textNode('span', '', `Canal Seguro: ${String(report.channel || 'web').toUpperCase()}`),
+      );
+      const testimony = textNode('div', 'border-t border-slate-border pt-2');
+      testimony.append(
+        textNode('span', 'text-caption font-semibold uppercase text-outline block mb-1', 'Testimonio y Hechos Denunciados'),
+        textNode('p', 'text-body-sm text-on-surface leading-relaxed whitespace-pre-wrap', report.raw_text),
+      );
+      const consent = textNode('div', 'border-t border-slate-border pt-2 flex items-center gap-2 text-caption text-civic-emerald font-semibold');
+      consent.append(
+        textNode('span', 'material-symbols-outlined text-[16px]', 'verified'),
+        textNode('span', '', 'Descargo legal Ley 29733 verificado y aceptado por el denunciante (CA-006-01)'),
+      );
+      details.append(metadata, testimony, consent);
+      if (report.moderated_by) {
+        const moderation = textNode('div', 'p-2.5 bg-surface-container rounded text-caption font-mono text-on-surface-variant');
+        moderation.append(textNode('span', '', `Moderado por: ${report.moderated_by}`));
+        if (report.moderated_at) {
+          moderation.append(textNode('span', '', ` · Fecha: ${new Date(report.moderated_at).toLocaleString('es-PE')}`));
+        }
+        details.append(moderation);
+      }
+      document.getElementById('detail-report-content').replaceChildren(details);
     }
 
     function renderCandidatesList() {
       const listEl = document.getElementById('candidates-list');
-      listEl.innerHTML = candidates.map(c => `
-        <article class="candidate-item p-4 bg-surface-container-low border border-slate-border rounded hover:border-secondary transition-colors cursor-pointer" data-id="${c.id}">
-          <div class="flex items-center justify-between gap-2 mb-1">
-            <span class="font-mono text-caption text-alert-rose font-bold">${c.flag_code}</span>
-            <span class="text-caption font-label-sm text-outline">${c.province}</span>
-          </div>
-          <h3 class="font-headline-sm text-base font-semibold text-on-surface line-clamp-1">${c.entity_name}</h3>
-          <p class="text-caption text-on-surface-variant line-clamp-2 mt-1">${c.flag_title}</p>
-          <div class="mt-3 flex items-center justify-between text-caption font-mono">
-            <span class="text-outline">Monto en Observación:</span>
-            <span class="font-bold text-on-surface">${dataEngine.formatCurrency(c.amount)}</span>
-          </div>
-        </article>
-      `).join('');
-
-      document.querySelectorAll('.candidate-item').forEach(item => {
+      listEl.replaceChildren();
+      for (const c of candidates) {
+        const item = textNode('article', 'candidate-item p-4 bg-surface-container-low border border-slate-border rounded hover:border-secondary transition-colors cursor-pointer');
+        item.dataset.id = String(c.id);
+        const header = textNode('div', 'flex items-center justify-between gap-2 mb-1');
+        header.append(
+          textNode('span', 'font-mono text-caption text-alert-rose font-bold', c.flag_code),
+          textNode('span', 'text-caption font-label-sm text-outline', c.province),
+        );
+        const amount = textNode('div', 'mt-3 flex items-center justify-between text-caption font-mono');
+        amount.append(
+          textNode('span', 'text-outline', 'Monto en Observación:'),
+          textNode('span', 'font-bold text-on-surface', dataEngine.formatCurrency(c.amount)),
+        );
+        item.append(
+          header,
+          textNode('h3', 'font-headline-sm text-base font-semibold text-on-surface line-clamp-1', c.entity_name),
+          textNode('p', 'text-caption text-on-surface-variant line-clamp-2 mt-1', c.flag_title),
+          amount,
+        );
         item.addEventListener('click', () => {
-          const id = item.dataset.id;
-          const found = candidates.find(c => c.id === id);
-          if (found) selectCandidate(found);
+          selectCandidate(c);
         });
-      });
+        listEl.append(item);
+      }
     }
 
     function selectCandidate(c) {
@@ -794,20 +786,48 @@
       document.getElementById('detail-entity-id').textContent = `Pliego: ${c.entity_id} • RUC ${c.ruc}`;
       document.getElementById('detail-entity-name').textContent = c.entity_name;
       document.getElementById('detail-flag-badge').textContent = c.flag_code;
+      const dossierEl = document.getElementById('case-dossier');
+      dossierEl.replaceChildren();
+      const addText = (tag, text) => {
+        const element = document.createElement(tag);
+        element.textContent = text;
+        dossierEl.append(element);
+      };
+      addText('h4', 'Dossier forense privado');
+      if (c.dossier) {
+        const analysis = c.dossier.ai_copilot_analysis;
+        addText('p', `Prioridad del expediente: ${c.dossier.case_priority_score}/100. No es un puntaje de personas.`);
+        for (const [title, field] of [['Resumen ejecutivo', 'executive_summary'],
+          ['Hipótesis técnica', 'risk_hypothesis'], ['Contra-hipótesis de descargo', 'legal_counter_hypothesis']]) {
+          addText('h5', title);
+          addText('p', analysis[field]);
+        }
+        addText('h5', 'Verificación por Ley 27806');
+        for (const item of analysis.verification_checklist) addText('p', item);
+        addText('h5', 'Limitaciones de evidencia');
+        for (const item of analysis.limitations) addText('p', item);
+        addText('p', `Grafo: ${analysis.evidence_graph.nodes.length} nodos y ${analysis.evidence_graph.edges.length} relaciones. Motor: ${analysis.mode}. Corte: ${analysis.generated_at}.`);
+      } else {
+        addText('p', 'Dossier no disponible. No se infieren hipótesis ni fuentes faltantes.');
+      }
 
-      document.getElementById('detail-flags-container').innerHTML = `
-        <div class="p-4 bg-surface border border-slate-border rounded space-y-2">
-          <div class="flex items-center justify-between mb-1">
-            <strong class="font-label-sm text-body-sm text-on-surface">${c.flag_title}</strong>
-            <span class="font-mono text-caption text-on-surface font-bold">${dataEngine.formatCurrency(c.amount)}</span>
-          </div>
-          <p class="text-body-sm text-on-surface-variant leading-relaxed">${c.flag_desc}</p>
-          <div class="pt-2 border-t border-slate-border flex items-center justify-between text-caption text-outline font-mono">
-            <span>RUC: ${c.ruc}</span>
-            <span>Provincia: ${c.province}</span>
-          </div>
-        </div>
-      `;
+      const flag = textNode('div', 'p-4 bg-surface border border-slate-border rounded space-y-2');
+      const header = textNode('div', 'flex items-center justify-between mb-1');
+      header.append(
+        textNode('strong', 'font-label-sm text-body-sm text-on-surface', c.flag_title),
+        textNode('span', 'font-mono text-caption text-on-surface font-bold', dataEngine.formatCurrency(c.amount)),
+      );
+      const footer = textNode('div', 'pt-2 border-t border-slate-border flex items-center justify-between text-caption text-outline font-mono');
+      footer.append(
+        textNode('span', '', `RUC: ${c.ruc}`),
+        textNode('span', '', `Provincia: ${c.province}`),
+      );
+      flag.append(
+        header,
+        textNode('p', 'text-body-sm text-on-surface-variant leading-relaxed', c.flag_desc),
+        footer,
+      );
+      document.getElementById('detail-flags-container').replaceChildren(flag);
     }
   </script>
 <script type="module" src="/src/js/brand-shell.js"></script></body>

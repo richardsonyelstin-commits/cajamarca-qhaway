@@ -20,12 +20,16 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0",
+    # La suite completa ejerce funciones de persistencia y requiere el driver real.
+    "psycopg[binary]>=3.1",
 ]
-# ADR 0002/0003/0006: la siembra a PostgreSQL es un paso operativo aparte, no una
-# dependencia de ejecucion del paquete. Ningun modulo bajo src/ importa psycopg a nivel
-# de modulo: solo scripts/seed_contracting_entities.py, que declara este extra.
+# El backend importa psycopg de forma diferida cuando usa PostgreSQL.
+# Los despliegues con persistencia deben instalar el extra db.
 db = [
     "psycopg[binary]>=3.1",
+]
+browser = [
+    "playwright==1.58.0",
 ]
 
 [project.scripts]

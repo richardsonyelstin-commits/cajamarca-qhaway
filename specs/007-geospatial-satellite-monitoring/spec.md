@@ -4,13 +4,13 @@ spec: "007"
 capability: geospatial-satellite-monitoring
 status: draft
 created: 2026-10-13
-updated: 2026-10-13
+updated: 2026-10-15
 consumes: [ProcurementRecord, BudgetExecutionRecord, ContractingEntity]
 produces: [RedFlag, PhysicalFinancialDivergenceSignal]
 open_clarifications: 0
 source: ai
-generator: geospatial-analyst
-generated_at: 2026-10-13T07:00:00Z
+generator: codex-gpt-6
+generated_at: 2026-10-15T18:33:00Z
 confidence: high
 verified: false
 ---
@@ -52,6 +52,12 @@ El monitoreo geoespacial independiente resuelve esta asimetria al aportar observ
 
 ## Reglas de negocio
 
+**RN-007-06. Correspondencia física y financiera verificable.**
+La divergencia exige CUI, geometría y periodos comparables acreditados por fuentes primarias.
+El presupuesto institucional no representa avance de una obra específica.
+NASA GIBS es contexto visual; una imagen de contexto no prueba avance físico.
+Sin obra y observaciones verificadas no se emite señal ni convergencia satelital.
+
 **RN-007-01. Ambito territorial estricto a las 13 provincias de Cajamarca.**
 Toda observacion satelital y poligono de obra procesado debe situarse rigurosamente dentro de los limites geograficos del departamento de Cajamarca (Articulo 18 de la constitucion). Queda prohibido procesar coordenadas fuera de este perimetro regional en Fase 1.
 
@@ -68,6 +74,11 @@ Las transmisiones de camaras publicas se orientan exclusivamente al espacio fisi
 Ninguna discrepancia fisico-financiera se publica de manera autonoma como alerta ciudadana. Toda divergencia detectada constituye unicamente un candidato a `RedFlag` sujeto a revision humana acreditada en `005-review-panel`. Cada senal emitida incorpora obligatoriamente el descargo legal estandarizado que niega caracter probatorio penal o administrativo automatizado.
 
 ## Criterios de aceptacion
+
+**CA-007-06** · RN-007-06
+Un contrato sin CUI o geometría verificados no recibe divergencia físico-financiera.
+La falta de cobertura se declara y no se rellena con observaciones simuladas.
+Las señales reproducibles permanecen en TIER_1 y las hipótesis del copiloto en TIER_2.
 
 **CA-007-01. Validacion de perimetro y ubicacion en Cajamarca.**
 Dado un sitio de obra publica, el sistema valida que sus coordenadas geodesicas correspondan a una de las 13 provincias de Cajamarca. Si las coordenadas exceden la delimitacion regional, la operacion es rechazada con un error formal de validacion geografica.

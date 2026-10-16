@@ -8,7 +8,7 @@ explícita de un revisor humano autenticado.
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from typing import Literal
+from typing import Callable, Literal
 
 from cajamarca_qhaway.models import Alert, AlertEvidence, RedFlag, compute_alert_id
 
@@ -42,10 +42,13 @@ class ReviewPanelService:
         reviewer_id: str,
         review_notes: str | None = None,
         reviewed_at: datetime | None = None,
+        persist: Callable[[Alert], None] | None = None,
     ) -> Alert:
         """Aprueba y publica una Alerta para su consumo en el dashboard publico."""
         if review_notes is None or not review_notes.strip():
             raise ValueError("review_notes es obligatorio para publicar una alerta")
+        if any(not flag.is_active for flag in red_flags):
+            raise ValueError('No se publican señales históricas inactivas; requieren recalibración')
         flag_ids = [rf.red_flag_id for rf in red_flags]
         if not flag_ids:
             raise ValueError("Debe proporcionarse al menos un RedFlag para publicar una alerta")
@@ -66,6 +69,8 @@ class ReviewPanelService:
             evidence=self._evidence(red_flags),
             published_at=now,
         )
+        if persist is not None:
+            persist(alert)
         self._decisions[alert.alert_id] = alert
         return alert
 
@@ -76,6 +81,7 @@ class ReviewPanelService:
         reviewer_id: str,
         review_notes: str,
         reviewed_at: datetime | None = None,
+        persist: Callable[[Alert], None] | None = None,
     ) -> Alert:
         """Descarta un candidato de Alerta registrando el motivo obligatorio del descarte."""
         if not review_notes or not review_notes.strip():
@@ -101,6 +107,8 @@ class ReviewPanelService:
             evidence=self._evidence(red_flags),
             published_at=None,
         )
+        if persist is not None:
+            persist(alert)
         self._decisions[alert.alert_id] = alert
         return alert
 

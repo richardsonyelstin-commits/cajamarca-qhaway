@@ -42,6 +42,8 @@ class RedFlag(BaseModel):
     observed_value: Any
     procurement_ids: list[str] = Field(default_factory=list)
     execution_record_ids: list[str] = Field(default_factory=list)
+    source_evidence_ids: list[str] = Field(default_factory=list)
+    is_active: bool = True
     evidence_source: str
     retrieved_at: datetime = Field(
         validation_alias=AliasChoices("retrieved_at", "evidence_retrieved_at")
@@ -56,7 +58,7 @@ class RedFlag(BaseModel):
             raise ValueError("indicator_code no puede ser vacio")
         if not self.formula_description.strip():
             raise ValueError("formula_description no puede ser vacio (Articulo 15)")
-        if not self.procurement_ids and not self.execution_record_ids:
+        if not self.procurement_ids and not self.execution_record_ids and not self.source_evidence_ids:
             raise ValueError("Debe incluir al menos un procurement_id o execution_record_id como evidencia")
         offset = self.retrieved_at.utcoffset()
         if offset is None or offset != timedelta(0):

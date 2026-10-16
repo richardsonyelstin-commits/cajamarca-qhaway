@@ -74,3 +74,13 @@ repo:
   default_branch: main
 
 dependencies_on_projects: []  # otros proyectos de los que este depende
+
+governance:
+  constitution_version: '2.0'
+  authorized_at: '2026-10-15'
+  evidence_tier: TIER_1_PROBATIVE
+  assistance_tier: TIER_2_COGNITIVE_COPILOT
+  priority_unit: case
+  canonical_roots: 14
+  dependent_units: verified_only
+  public_individual_signals: human_review_required

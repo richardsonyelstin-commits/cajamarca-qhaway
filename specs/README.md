@@ -2,10 +2,10 @@
 title: Mapa de capacidades - cajamarca-qhaway
 status: active
 created: 2026-08-20
-updated: 2026-10-13
+updated: 2026-10-15
 source: ai
-generator: claude-sonnet-5
-generated_at: 2026-10-13T07:00:00Z
+generator: codex-gpt-6
+generated_at: 2026-10-15T18:33:00Z
 confidence: high
 verified: false
 ---
@@ -33,6 +33,11 @@ flowchart LR
 ```
 
 ## Capacidades con spec (`draft`)
+
+El propietario autorizó la reforma Constitución v2.0 el 2026-10-15.
+Las specs 001-007 incorporan fuentes plurales, particiones presupuestales y niveles de IA.
+La extensión 010 fija criterios de presupuesto, evidencia dual e identidad.
+La disponibilidad del copiloto y la recalibración se certifica al cerrar el Nodo 3.
 
 | # | Capacidad | Produce | Estado |
 |---|---|---|---|

@@ -44,6 +44,14 @@ class AlertRepository:
             rows = cursor.fetchall()
             return [self._row_to_model(r) for r in rows]
 
+    def decided_flag_ids(self) -> set[str]:
+        with self.db.connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT red_flag_ids FROM alerts WHERE status IN ('published', 'discarded')")
+            return {identifier for row in cursor.fetchall()
+                    for identifier in (json.loads(row['red_flag_ids'])
+                        if isinstance(row['red_flag_ids'], str) else row['red_flag_ids'])}
+
     def save(self, alert: Alert) -> None:
         sql = """
         INSERT INTO alerts
@@ -51,15 +59,7 @@ class AlertRepository:
              review_notes, disclaimer, legal_disclaimer, evidence, published_at)
         VALUES
             (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT (alert_id) DO UPDATE SET
-            status = excluded.status,
-            reviewed_by = excluded.reviewed_by,
-            reviewed_at = excluded.reviewed_at,
-            review_notes = excluded.review_notes,
-            disclaimer = excluded.disclaimer,
-            legal_disclaimer = excluded.legal_disclaimer,
-            evidence = excluded.evidence,
-            published_at = excluded.published_at
+        ON CONFLICT (alert_id) DO NOTHING
         """
 
         params = (
@@ -68,7 +68,7 @@ class AlertRepository:
             alert.entity_id,
             alert.status,
             alert.reviewed_by,
-            alert.reviewed_at.isoformat(),
+            alert.reviewed_at.isoformat() if alert.reviewed_at else None,
             alert.review_notes,
             alert.legal_disclaimer,
             alert.legal_disclaimer,
@@ -79,6 +79,8 @@ class AlertRepository:
         with self.db.connection() as conn:
             cursor = conn.cursor()
             cursor.execute(sql, params)
+            if cursor.rowcount != 1:
+                raise ValueError("La alerta ya tiene una decision humana registrada")
             conn.commit()
 
     @staticmethod
@@ -93,7 +95,7 @@ class AlertRepository:
         reviewed_at = row["reviewed_at"]
         if isinstance(reviewed_at, str):
             reviewed_at = datetime.fromisoformat(reviewed_at)
-        if reviewed_at.tzinfo is None:
+        if reviewed_at is not None and reviewed_at.tzinfo is None:
             reviewed_at = reviewed_at.replace(tzinfo=timezone.utc)
 
         published_at = row["published_at"]

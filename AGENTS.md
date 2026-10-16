@@ -1,3 +1,11 @@
+---
+title: cajamarca-qhaway
+source: ai
+generator: codex-gpt-6
+generated_at: 2026-10-15T18:33:00Z
+confidence: high
+verified: false
+---
 # cajamarca-qhaway
 
 L0 del proyecto. Presupuesto: **150 líneas**. Si algo no cabe, va a `docs/` y se enlaza
@@ -64,9 +72,16 @@ python scripts/seed_contracting_entities.py --dry-run   # solo valida el dataset
 
 ## Método
 
+La Constitución v2.0 fue autorizada expresamente por el propietario el 2026-10-15.
+Fuentes oficiales plurales conservan payload, URL y extracción UTC.
+TIER_1_PROBATIVE produce señales reproducibles; TIER_2_COGNITIVE_COPILOT asiste al panel privado.
+La prioridad se calcula sobre expedientes con componentes explicables, nunca sobre personas.
+Las raíces son 14 entidades; ejecutoras y CUI verificados son desgloses sin doble conteo.
+El encargo humano autoriza la reforma SDD, implementación, sincronización y despliegue.
+
 Spec-Driven Development. Las specs viven en `specs/NNN-<slug>/` y son **la fuente de verdad**
 para las seis primeras capacidades del pipeline (`001-entity-mapping` a `006-denuncia-intake`);
-`007-009` quedan reservadas sin spec - ver `specs/README.md` para el porqué de cada una.
+`007` cubre monitoreo geoespacial; `008-009` quedan reservadas sin spec.
 Las reglas del método, incluidos los invariantes de arriba convertidos en artículos falsables y
 los seis contratos canónicos compartidos (`ContractingEntity`, `ProcurementRecord`,
 `BudgetExecutionRecord`, `RedFlag`, `Alert`, `CitizenReport`), están en

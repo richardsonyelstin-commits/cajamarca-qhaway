@@ -52,10 +52,7 @@ class CitizenReportRepository:
              tracking_token_hash)
         VALUES
             (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT (report_id) DO UPDATE SET
-            moderation_status = excluded.moderation_status,
-            moderated_by = excluded.moderated_by,
-            moderated_at = excluded.moderated_at
+        ON CONFLICT (report_id) DO NOTHING
         """
 
         params = (
@@ -74,6 +71,31 @@ class CitizenReportRepository:
         with self.db.connection() as conn:
             cursor = conn.cursor()
             cursor.execute(sql, params)
+            if cursor.rowcount != 1:
+                raise ValueError("El reporte ya existe; use moderate_pending para cambiar su estado")
+            conn.commit()
+
+    def moderate_pending(self, report: CitizenReport) -> None:
+        """Transicion atomica de pending a estado moderado, sin permitir doble revision."""
+        if report.moderation_status not in ("accepted_as_lead", "rejected"):
+            raise ValueError("Estado de moderacion invalido")
+        if not report.moderated_by or report.moderated_at is None:
+            raise ValueError("Moderador y fecha son obligatorios")
+        sql = """
+        UPDATE citizen_reports
+        SET moderation_status = ?, moderated_by = ?, moderated_at = ?
+        WHERE report_id = ? AND moderation_status = 'pending'
+        """
+        with self.db.connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(sql, (
+                report.moderation_status,
+                report.moderated_by,
+                report.moderated_at.isoformat(),
+                report.report_id,
+            ))
+            if cursor.rowcount != 1:
+                raise ValueError("Reporte inexistente o ya moderado")
             conn.commit()
 
     @staticmethod

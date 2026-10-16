@@ -43,9 +43,9 @@ class RedFlagRepository:
         INSERT INTO red_flags
             (red_flag_id, indicator_code, formula_description, threshold, threshold_value, observed_value,
              procurement_ids, execution_record_ids, evidence_source, evidence_retrieved_at,
-             retrieved_at, generated_at)
+             retrieved_at, generated_at, source_evidence_ids, is_active)
         VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT (red_flag_id) DO NOTHING
         """
 
@@ -54,15 +54,17 @@ class RedFlagRepository:
                 f.red_flag_id,
                 f.indicator_code,
                 f.formula_description,
-                f.threshold,
-                str(f.threshold_value),
-                f.observed_value,
+                json.dumps(f.threshold) if isinstance(f.threshold, (dict, list)) else f.threshold,
+                json.dumps(f.threshold_value) if isinstance(f.threshold_value, (dict, list)) else str(f.threshold_value),
+                json.dumps(f.observed_value) if isinstance(f.observed_value, (dict, list)) else f.observed_value,
                 json.dumps(list(f.procurement_ids)),
                 json.dumps(list(f.execution_record_ids)),
                 f.evidence_source,
                 f.evidence_retrieved_at.isoformat(),
                 f.retrieved_at.isoformat(),
                 f.generated_at.isoformat(),
+                json.dumps(f.source_evidence_ids),
+                f.is_active,
             )
             for f in flags
         ]
@@ -105,10 +107,15 @@ class RedFlagRepository:
             red_flag_id=row["red_flag_id"],
             indicator_code=row["indicator_code"],
             formula_description=row["formula_description"],
-            threshold_value=row["threshold_value"],
-            observed_value=row["observed_value"],
+            threshold_value=json.loads(row["threshold_value"]) if isinstance(row["threshold_value"], str)
+                and row["threshold_value"].startswith(("{", "[")) else row["threshold_value"],
+            observed_value=json.loads(row["observed_value"]) if isinstance(row["observed_value"], str)
+                and row["observed_value"].startswith(("{", "[")) else row["observed_value"],
             procurement_ids=procurement_ids,
             execution_record_ids=execution_record_ids,
+            source_evidence_ids=json.loads(row["source_evidence_ids"]) if isinstance(row["source_evidence_ids"], str)
+                else row["source_evidence_ids"],
+            is_active=bool(row["is_active"]),
             evidence_source=row["evidence_source"],
             retrieved_at=retrieved_at,
             generated_at=generated_at,

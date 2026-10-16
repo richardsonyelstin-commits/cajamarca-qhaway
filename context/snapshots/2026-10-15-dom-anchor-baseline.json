@@ -3318,6 +3318,14 @@
       "data_attributes": [
         [
           "data-action",
+          "open-civic-dict"
+        ],
+        [
+          "data-action",
+          "toggle-lang-mode"
+        ],
+        [
+          "data-action",
           "toggle-rural"
         ],
         [
@@ -3329,40 +3337,12 @@
           "light"
         ],
         [
-          "data-email",
-          "veeduria-cajamarca@proetica.org.pe"
+          "data-modo",
+          "ciudadano"
         ],
         [
-          "data-email",
-          "veeduria.grufides@cajamarca-qhaway.pe"
-        ],
-        [
-          "data-email",
-          "veeduria.propuesta@cajamarca-qhaway.pe"
-        ],
-        [
-          "data-pass",
-          "Grufides#Veedor2025!"
-        ],
-        [
-          "data-pass",
-          "Propuesta#Civica2025!"
-        ],
-        [
-          "data-pass",
-          "demo-veedor-2025"
-        ],
-        [
-          "data-role",
-          "Abg. Mirtha Villanueva • GRUFIDES Cajamarca"
-        ],
-        [
-          "data-role",
-          "Ing. Marco Tacilla • Grupo Propuesta Ciudadana"
-        ],
-        [
-          "data-role",
-          "Lic. Carlos Arana Silva • Proética (Capítulo TI)"
+          "data-source-cut",
+          ""
         ]
       ],
       "classes": [
